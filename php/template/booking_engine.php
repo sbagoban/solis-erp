@@ -5,14 +5,14 @@
                 <ul class="nav nav-tabs nav-underline" id="myTab">
                     <div class="liner"></div>
                     <li class="">
-                        <a href="#accomodations" data-toggle="tab" title="accomodations" aria-expanded="true">
-                            <span class="round-tabs two">
+                        <a href="#accomodations" data-toggle="tab" title="Accomodations" aria-expanded="true">
+                            <span class="round-tabs one">
                                 <i class="fa fa-home fa-lg"></i><br>Accomodations                                    
                             </span>
                         </a>
                     </li>
 
-                    <li class="active">
+                    <li class="">
                         <a href="#excursions_bkeng" data-toggle="tab" title="Excursions" aria-expanded="true">
                             <span class="round-tabs two">
                                 <i class="fa fa-envira fa-lg"></i><br>Excursions
@@ -20,7 +20,7 @@
                         </a>
                     </li>
 
-                    <li class="">
+                    <li class="active">
                         <a href="#transfers_bkeng" data-toggle="tab" title="Transfers" aria-expanded="true">
                             <span class="round-tabs three">
                                 <i class="fa fa-cab fa-lg"></i><br>Transfers
@@ -568,7 +568,7 @@
                 <!-- End First Tab -->
 
                 <!-- Start Second Tab -->
-                <div class="tab-pane active in fade" id="excursions_bkeng">
+                <div class="tab-pane fade" id="excursions_bkeng">
                     <form>
                         <div class="row">
                             <div class="col-md-12">
@@ -971,7 +971,7 @@
                 <!-- End Second Tab -->
 
                 <!-- Start Third Tab -->
-                <div class="tab-pane fade" id="transfers_bkeng">
+                <div class="tab-pane active in fade" id="transfers_bkeng">
                     <form>
                         <div class="row">
                             <div class="col-md-12">
@@ -1084,10 +1084,10 @@
 
                                     <h5>Select Category</h5>
                                     <select id="multiselect" multiple="multiple" class="checkBoxMain">
-                                        <option value="http://ipv4.download.thinkbroadband.com/5MB.zip">Option 1</option>
-                                        <option value="http://ipv4.download.thinkbroadband.com/10MB.zip">Option 2</option>
-                                        <option value="http://ipv4.download.thinkbroadband.com/20MB.zip">Option 3</option>
-                                        <option value="http://ipv4.download.thinkbroadband.com/50MB.zip">Option 4</option>
+                                        <option value="Option 1">Option 1</option>
+                                        <option value="Option 2">Option 2</option>
+                                        <option value="Option 3">Option 3</option>
+                                        <option value="Option 4">Option 4</option>
                                     </select>
 
                                 </div>
@@ -1168,6 +1168,50 @@
                             </div>
                         </div>
                     </form>
+
+                    <!-- Search Result for Transfers -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table id="example" class="table table-striped table-bordered nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Number of Vehicles/Seats</th>
+                                        <th>Price</th>
+                                        <th>Operate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td>SIC (Seat in Coach)</td>
+                                        <td>Bus</td>
+                                        <td>
+                                            <input type="number" class="form-control" placeholder="Number Of Vehicles" min=0 max=20>
+                                        </td>
+                                        <td>$ 211.00</td>
+                                        <td>
+                                            <button type="button" class="btn btn-inline btn-success btn-sm">Select</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Number of Vehicles/Seats</th>
+                                        <th>Price</th>
+                                        <th>Operate</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        </div>
+                        <!-- Search Result for Transfers -->
+
+
                 </div>
                 <!-- End Third Tab -->
 
