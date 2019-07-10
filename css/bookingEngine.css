@@ -261,3 +261,29 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
   text-align: left;
   vertical-align: middle;
 }
+
+/* results for excursions */
+.detailsExcursions {
+  padding: 27px;
+  width: 186px;
+  font-size: 14px;
+  color: #3c8dbc;
+  margin: 14px;
+  font-weight: 700;
+}
+
+.detailExcursionsMain {
+  font-size: 14px;
+  font-weight: 600;
+}
+.compulsoryResult {
+  padding: 29px;
+  border: 10px solid #3c8dbc;
+  background: #e0dddd;
+}
+
+.addOnsResult {
+  background: white;
+  border: 10px solid #3c8dbc4a;
+  margin: 2px 0px;
+}

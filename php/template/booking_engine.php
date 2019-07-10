@@ -855,7 +855,7 @@
 
                                     <tr>
                                         <td class="more_details">
-                                            <a data-toggle="collapse" data-target="#demo1" class="accordion-toggle" href="#">
+                                            <a data-toggle="collapse" data-target="#demo2" class="accordion-toggle" href="#">
                                                 <i class="fa fa-plus-circle"></i>
                                             </a>
                                         </td>
@@ -868,16 +868,44 @@
                                     </tr>
                                     <tr>
                                         <td colspan="12" class="hiddenRow">
-                                            <div class="accordian-body collapse" id="demo1">
-                                                <div class="excursions-details">
-                                                    <div class="m-a">
-                                                        <!-- Compulsory row -->
-                                                        <div class="col-md-12">
-                                                            
-                                                        </div>
-                                                        <!-- Compulsory row -->
+                                            <div class="accordian-body collapse" id="demo2">
+                                                <!-- Compulsory row -->
+                                                <div class="col-md-12 compulsoryResult">
+                                                    <div class="col-md-7">
+                                                        <h3>Park Entrance
+                                                            <span class="label label-success">Compulsory fee</span>
+                                                        </h3>
+                                                        <p class="detailExcursionsMain">
+                                                        Entrance + Safari (Zebras, ostriches, antelopes, white rhinoceros, impalas, kudus), Avalanche mine (Toboggans x 2),
+                                                        3D Interactive map, walk thru the aviary, Big cats viewing, Giraffe viewing, Camel viewing, Hippo viewing, 
+                                                        Kid’s playground, Petting farm, 4D Cinema and a new ride.
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-5 detailsExcursions">
+                                                        Duration : 08 : 00
+                                                        Max Capacity : 1 pax 
+                                                        Adults : 2 * 29.00 AUD
                                                     </div>
                                                 </div>
+                                                <!-- Compulsory row -->
+
+                                                <!-- Add Ons row -->
+                                                <div class="col-md-12 addOnsResult">
+                                                    <div class="col-md-5">
+                                                        <h3>Feeding Aldabra Tortoise</h3>
+                                                        <h5>Every day from 9h30 - 16h30</h5>
+                                                        <h5 style="color: red;">Min. age: 4</h5>
+                                                    </div>
+                                                    <div class="col-md-5 detailsExcursions">
+                                                        Duration : 08 : 00
+                                                        Max Capacity : 1 pax
+                                                    </div>
+                                                    <div class="col-md-2 detailsExcursions">
+                                                        <label></label>
+                                                        <input type="number" placeholder="Adults" min=0>
+                                                    </div>
+                                                </div>
+                                                <!--  Add Ons row -->
                                             </div>
                                         </td>
                                     </tr>
