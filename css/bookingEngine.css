@@ -286,6 +286,17 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
   background: white;
   border: 5px solid #abbdc74a;
   margin: 2px 0px;
+}
+
+.adultsNumber {
+  padding: 23px;
+  font-size: 14px;
+  color: #3c8dbc;
+  font-weight: 700;
+}
+.addOnsResult:hover {
+  background: #f9f9f9;
+  transition: all 0.5s ease;
   border: 5px solid #5ca3cc;
   cursor: pointer;
 }
