@@ -1,0 +1,15 @@
+DATABASE CHANGES:
+-----------------
+
+ALTER TABLE `dbsolis`.`tblservice_contract_cancellation` 
+CHANGE COLUMN `days_before_arrival_from` `days_before_arrival_from` INT(11) NULL DEFAULT NULL ,
+CHANGE COLUMN `days_before_arrival_to` `days_before_arrival_to` INT(11) NULL DEFAULT NULL ;
+
+ALTER TABLE `dbsolis`.`tblservice_contract` 
+CHANGE COLUMN `rollover_basis` `rollover_basis` VARCHAR(50) NOT NULL DEFAULT 'PER' ;
+
+///
+Test 2
+Git test 3
+test 4
+test 345
