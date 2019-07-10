@@ -279,11 +279,26 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
 .compulsoryResult {
   padding: 29px;
   border: 10px solid #3c8dbc;
-  background: #e0dddd;
+  background: #f9f9f9;
 }
 
 .addOnsResult {
   background: white;
-  border: 10px solid #3c8dbc4a;
+  border: 5px solid #abbdc74a;
   margin: 2px 0px;
+  border: 5px solid #5ca3cc;
+  cursor: pointer;
+}
+
+#checkboxesExcursionSelect input[type=checkbox]{
+  display: none;
+}
+
+#checkboxesExcursionSelect input[type=checkbox]:checked + .addOnsResult{
+  border: 5px solid #5ca3cc;
+  background: #f9f9f9;
+}
+
+#checkboxesExcursionSelect input[type=checkbox] + .addOnsResult{
+  background: #f9f9f9;
 }

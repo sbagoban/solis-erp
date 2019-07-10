@@ -70,4 +70,14 @@ $(function () {
             });
         }
     });
+
+    $('#excursionCheckboxResult :checkbox').change(function(event) {
+      // this will contain a reference to the checkbox   
+      if (this.checked) {
+        console.log('sdfsd', $(this).val());
+          // the checkbox is now checked 
+      } else {
+          // the checkbox is now no longer checked
+      }
+    });
 });

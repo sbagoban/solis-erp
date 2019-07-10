@@ -888,38 +888,82 @@
                                                     </div>
                                                 </div>
                                                 <!-- Compulsory row -->
+                                                <form id="excursionCheckboxResult">
+                                                    <!-- Add Ons row -->
+                                                    <div id="checkboxesExcursionSelect">
+                                                        <input type="checkbox" name="rGroup0" value="0" id="r1"/>                                       
+                                                        <label class="col-md-12 addOnsResult" for="r1">
+                                                            <div class="col-md-5">
+                                                                <h3>Feeding Aldabra Tortoise</h3>
+                                                                <h5>Every day from 9h30 - 16h30</h5>
+                                                                <h5 style="color: red;">Min. age: 4</h5>
+                                                            </div>
+                                                            <div class="col-md-5 detailsExcursions">
+                                                                Duration : 08 : 00
+                                                                Max Capacity : 1 pax
+                                                            </div>
+                                                            <div class="col-md-2 adultsNumber">
+                                                                <div class="form-group">
+                                                                    <label></label>
+                                                                    <input type="number" class="form-control" placeholder="Number of Adults" min=0>
+                                                                </div>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <!--  Add Ons row -->
 
-                                                <!-- Add Ons row -->
-                                                <div class="col-md-12 addOnsResult">
-                                                    <div class="col-md-5">
-                                                        <h3>Feeding Aldabra Tortoise</h3>
-                                                        <h5>Every day from 9h30 - 16h30</h5>
-                                                        <h5 style="color: red;">Min. age: 4</h5>
+                                                    <!-- Add Ons row -->
+                                                    <div id="checkboxesExcursionSelect">
+                                                        <input type="checkbox" name="rGroup1" value="1" id="r2"/>                                       
+                                                        <label class="col-md-12 addOnsResult" for="r2">
+                                                            <div class="col-md-5">
+                                                                <h3>Feeding Aldabra Tortoise</h3>
+                                                                <h5>Every day from 9h30 - 16h30</h5>
+                                                                <h5 style="color: red;">Min. age: 4</h5>
+                                                            </div>
+                                                            <div class="col-md-5 detailsExcursions">
+                                                                Duration : 08 : 00
+                                                                Max Capacity : 1 pax
+                                                            </div>
+                                                            <div class="col-md-2 adultsNumber">
+                                                                <div class="form-group">
+                                                                    <label></label>
+                                                                    <input type="number" class="form-control" placeholder="Number of Adults" min=0>
+                                                                </div>
+                                                            </div>
+                                                        </label>
                                                     </div>
-                                                    <div class="col-md-5 detailsExcursions">
-                                                        Duration : 08 : 00
-                                                        Max Capacity : 1 pax
+                                                    <!--  Add Ons row -->
+
+                                                    <!-- Add Ons row -->
+                                                    <div id="checkboxesExcursionSelect">
+                                                        <input type="checkbox" name="rGroup2" value="2" id="r3"/>                                       
+                                                        <label class="col-md-12 addOnsResult" for="r3">
+                                                            <div class="col-md-5">
+                                                                <h3>Feeding Aldabra Tortoise</h3>
+                                                                <h5>Every day from 9h30 - 16h30</h5>
+                                                                <h5 style="color: red;">Min. age: 4</h5>
+                                                            </div>
+                                                            <div class="col-md-5 detailsExcursions">
+                                                                Duration : 08 : 00
+                                                                Max Capacity : 1 pax
+                                                            </div>
+                                                            <div class="col-md-2 adultsNumber">
+                                                                <div class="form-group">
+                                                                    <label></label>
+                                                                    <input type="number" class="form-control" placeholder="Number of Adults" min=0>
+                                                                </div>
+                                                            </div>
+                                                        </label>
                                                     </div>
-                                                    <div class="col-md-2 detailsExcursions">
-                                                        <label></label>
-                                                        <input type="number" placeholder="Adults" min=0>
-                                                    </div>
-                                                </div>
-                                                <!--  Add Ons row -->
+                                                    <!--  Add Ons row -->
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
 
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th>Name</th>
-                                        <th>Transfer</th>
-                                        <th>Price</th>
-                                        <th>Operate</th>
-                                    </tr>
-                                </tfoot>
+                                
                             </table>
                         </div>
                     </div>
