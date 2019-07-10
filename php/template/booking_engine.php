@@ -471,97 +471,99 @@
                             &nbsp;
                         </div>
                     </div>
+                    <!-- Result Accomodations -->
+                    <div class="row">
 
-                    <!--  <div class="row">
+                        <div class="col-md-12">
+                            <table id="example" class="table table-striped table-bordered nowrap" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Instant Information</th>
+                                        <th>Hotel Name</th>
+                                        <th>Room Name</th>
+                                        <th>Meal Plan</th>
+                                        <th>Price</th>
+                                        <th>Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-            <div class="col-md-12">
-                <table id="example" class="table table-striped table-bordered nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Instant Information</th>
-                            <th>Hotel Name</th>
-                            <th>Room Name</th>
-                            <th>Meal Plan</th>
-                            <th>Price</th>
-                            <th>Select</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                                    <tr>
+                                        <td class="more_details">
+                                            <a data-toggle="collapse" data-target="#demo1" class="accordion-toggle" href="#">
+                                                <i class="fa fa-plus-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td>#</td>
+                                        <td>Luxe Resort</td>
+                                        <td>1 X Deluxe Seaview</td>
+                                        <td>BB - Bed And Breakfast</td>
+                                        <td>$ 211.00</td>
+                                        <td>
+                                            <button type="button" class="btn btn-inline btn-success btn-sm">Select</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12" class="hiddenRow">
+                                            <div class="accordian-body collapse" id="demo1">
+                                                <div class="accommodation-details">
+                                                    <div class="m-a">
+                                                        <p><strong>Contracts:</strong> <a target="_blank" style="top: 0;" href="/en/admin/hotels/66/contracts/2868/edit">#2868</a> </p>
+                                                        <p><strong>Special offers:</strong> <a target="_blank" style="top: 0;" href="/en/admin/special_offers/6432/edit">Super Saver Offer B</a> </p>
+                                                        <p><strong>Type of rate:</strong> A</p>
+                                                        <p><strong>Hotel:</strong> Heritage Le Telfair 5*, <strong>Rooms:</strong> Junior suite Beachfront X 1, <strong>Check in:</strong> 2019-06-27, <strong>Check out:</strong> 2019-07-04, <strong>Duration:</strong> 7 nights</p>
+                                                        <p><strong>Price:</strong> 1 610.70 EUR <span class="label label-pill label-success">Special offer</span> - Instant confirmation</p>
+                                                        <p><strong>Meal plan:</strong> BB</p>
+                                                        <p><strong>Combination:</strong> <span class="label label-primary">Adults: 1</span> </p>
+                                                        <p style="margin-top:1rem;"><strong>Special offers:</strong> Super Saver Offer B</p>
+                                                        <p></p>
+                                                        <p>Super Saver Offer B</p>
+                                                        <p>Validity: Applicable Year round, Except Peak.</p>
+                                                        <p>Booking Code: HLT/EUR/18-19/SSO-B</p>
+                                                        <p>Stay minimum 7 nights and Save 35%</p>
+                                                        <p>i.e Stay for minimum 7,8,9,..etc nights and Get 35% discount</p>
+                                                        <p>Applicable on Bed &amp; Breakfast or Half Board basis only and if taken, the Gourmet</p>
+                                                        <p>Bliss supplement applies in full.</p>
+                                                        <p>Combinable with Family and/or Repeater offer only.</p>
+                                                        <p>This offer is applicable for Adults, Children and Teenagers</p>
+                                                        <p>
+                                                            <br>
+                                                        </p>
+                                                        <p>Repeater Offer</p>
+                                                        <p>Validity: Year round, except peak</p>
+                                                        <p>Booking Code: HLT/EUR/18-19/REP</p>
+                                                        <p>10% additional discount as from 3rd stay.</p>
+                                                        <p>Applicable on Bed &amp; Breakfast or Half Board basis only and if taken, the Gourmet</p>
+                                                        <p>Bliss supplement applies in full.</p>
+                                                        <p>Combinable with Family Offer and/or Super Saver only.</p>
+                                                        <p>This offer is applicable for Adults, Children and Teenagers</p>
+                                                        <p>
+                                                            <br>
+                                                        </p>
+                                                        <p></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                        <tr>
-                            <td class="more_details">
-                                <a data-toggle="collapse" data-target="#demo1" class="accordion-toggle" href="#">
-                                    <i class="fa fa-plus-circle"></i>
-                                </a>
-                            </td>
-                            <td>#</td>
-                            <td>Luxe Resort</td>
-                            <td>1 X Deluxe Seaview</td>
-                            <td>BB - Bed And Breakfast</td>
-                            <td>$ 211.00</td>
-                            <td>
-                                <button type="button" class="btn btn-inline btn-success btn-sm">Select</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="12" class="hiddenRow">
-                                <div class="accordian-body collapse" id="demo1">
-                                    <div class="accommodation-details">
-                                        <div class="m-a">
-                                            <p><strong>Contracts:</strong> <a target="_blank" style="top: 0;" href="/en/admin/hotels/66/contracts/2868/edit">#2868</a> </p>
-                                            <p><strong>Special offers:</strong> <a target="_blank" style="top: 0;" href="/en/admin/special_offers/6432/edit">Super Saver Offer B</a> </p>
-                                            <p><strong>Type of rate:</strong> A</p>
-                                            <p><strong>Hotel:</strong> Heritage Le Telfair 5*, <strong>Rooms:</strong> Junior suite Beachfront X 1, <strong>Check in:</strong> 2019-06-27, <strong>Check out:</strong> 2019-07-04, <strong>Duration:</strong> 7 nights</p>
-                                            <p><strong>Price:</strong> 1 610.70 EUR <span class="label label-pill label-success">Special offer</span> - Instant confirmation</p>
-                                            <p><strong>Meal plan:</strong> BB</p>
-                                            <p><strong>Combination:</strong> <span class="label label-primary">Adults: 1</span> </p>
-                                            <p style="margin-top:1rem;"><strong>Special offers:</strong> Super Saver Offer B</p>
-                                            <p></p>
-                                            <p>Super Saver Offer B</p>
-                                            <p>Validity: Applicable Year round, Except Peak.</p>
-                                            <p>Booking Code: HLT/EUR/18-19/SSO-B</p>
-                                            <p>Stay minimum 7 nights and Save 35%</p>
-                                            <p>i.e Stay for minimum 7,8,9,..etc nights and Get 35% discount</p>
-                                            <p>Applicable on Bed &amp; Breakfast or Half Board basis only and if taken, the Gourmet</p>
-                                            <p>Bliss supplement applies in full.</p>
-                                            <p>Combinable with Family and/or Repeater offer only.</p>
-                                            <p>This offer is applicable for Adults, Children and Teenagers</p>
-                                            <p>
-                                                <br>
-                                            </p>
-                                            <p>Repeater Offer</p>
-                                            <p>Validity: Year round, except peak</p>
-                                            <p>Booking Code: HLT/EUR/18-19/REP</p>
-                                            <p>10% additional discount as from 3rd stay.</p>
-                                            <p>Applicable on Bed &amp; Breakfast or Half Board basis only and if taken, the Gourmet</p>
-                                            <p>Bliss supplement applies in full.</p>
-                                            <p>Combinable with Family Offer and/or Super Saver only.</p>
-                                            <p>This offer is applicable for Adults, Children and Teenagers</p>
-                                            <p>
-                                                <br>
-                                            </p>
-                                            <p></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Hotel Name</th>
+                                        <th>Room Name</th>
+                                        <th>Meal Plan</th>
+                                        <th>Price</th>
+                                        <th>Select</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Result Accomodations -->
 
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>#</th>
-                            <th>Hotel Name</th>
-                            <th>Room Name</th>
-                            <th>Meal Plan</th>
-                            <th>Price</th>
-                            <th>Select</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            </div>-->
                 </div>
                 <!-- End First Tab -->
 
@@ -653,7 +655,7 @@
                                 </div>
 
                                 <!-- Modal Number of children -->
-                                <div class="container">                                         
+                                <div class="container">
                                     <!-- Modal -->
                                     <div class="modal fade" id="myModalNumberChildren" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
                                         <div class="modal-dialog">
@@ -876,31 +878,27 @@
                                                             <span class="label label-success">Compulsory fee</span>
                                                         </h3>
                                                         <p class="detailExcursionsMain">
-                                                        Entrance + Safari (Zebras, ostriches, antelopes, white rhinoceros, impalas, kudus), Avalanche mine (Toboggans x 2),
-                                                        3D Interactive map, walk thru the aviary, Big cats viewing, Giraffe viewing, Camel viewing, Hippo viewing, 
-                                                        Kid’s playground, Petting farm, 4D Cinema and a new ride.
+                                                            Entrance + Safari (Zebras, ostriches, antelopes, white rhinoceros, impalas, kudus), Avalanche mine (Toboggans x 2), 3D Interactive map, walk thru the aviary, Big cats viewing, Giraffe viewing, Camel viewing, Hippo viewing, Kid’s playground, Petting farm, 4D Cinema and a new ride.
                                                         </p>
                                                     </div>
                                                     <div class="col-md-5 detailsExcursions">
-                                                        Duration : 08 : 00
-                                                        Max Capacity : 1 pax 
-                                                        Adults : 2 * 29.00 AUD
+                                                        Duration : 08 : 00 Max Capacity : 1 pax Adults : 2 * 29.00 AUD
                                                     </div>
                                                 </div>
                                                 <!-- Compulsory row -->
                                                 <form id="excursionCheckboxResult">
                                                     <!-- Add Ons row -->
                                                     <div id="checkboxesExcursionSelect">
-                                                        <input type="checkbox" name="rGroup0" value="0" id="r1"/>                                       
+                                                        <input type="checkbox" name="rGroup0" value="0" id="r1" />
                                                         <label class="col-md-12 addOnsResult" for="r1">
+                                                            <div class="checkExcursion"></div>
                                                             <div class="col-md-5">
                                                                 <h3>Feeding Aldabra Tortoise</h3>
                                                                 <h5>Every day from 9h30 - 16h30</h5>
                                                                 <h5 style="color: red;">Min. age: 4</h5>
                                                             </div>
                                                             <div class="col-md-5 detailsExcursions">
-                                                                Duration : 08 : 00
-                                                                Max Capacity : 1 pax
+                                                                Duration : 08 : 00 Max Capacity : 1 pax
                                                             </div>
                                                             <div class="col-md-2 adultsNumber">
                                                                 <div class="form-group">
@@ -914,16 +912,16 @@
 
                                                     <!-- Add Ons row -->
                                                     <div id="checkboxesExcursionSelect">
-                                                        <input type="checkbox" name="rGroup1" value="1" id="r2"/>                                       
+                                                        <input type="checkbox" name="rGroup1" value="1" id="r2" />
                                                         <label class="col-md-12 addOnsResult" for="r2">
+                                                            <div class="checkExcursion"></div>
                                                             <div class="col-md-5">
                                                                 <h3>Feeding Aldabra Tortoise</h3>
                                                                 <h5>Every day from 9h30 - 16h30</h5>
                                                                 <h5 style="color: red;">Min. age: 4</h5>
                                                             </div>
                                                             <div class="col-md-5 detailsExcursions">
-                                                                Duration : 08 : 00
-                                                                Max Capacity : 1 pax
+                                                                Duration : 08 : 00 Max Capacity : 1 pax
                                                             </div>
                                                             <div class="col-md-2 adultsNumber">
                                                                 <div class="form-group">
@@ -937,16 +935,16 @@
 
                                                     <!-- Add Ons row -->
                                                     <div id="checkboxesExcursionSelect">
-                                                        <input type="checkbox" name="rGroup2" value="2" id="r3"/>                                       
+                                                        <input type="checkbox" name="rGroup2" value="2" id="r3" />
                                                         <label class="col-md-12 addOnsResult" for="r3">
+                                                            <div class="checkExcursion"></div>
                                                             <div class="col-md-5">
                                                                 <h3>Feeding Aldabra Tortoise</h3>
                                                                 <h5>Every day from 9h30 - 16h30</h5>
                                                                 <h5 style="color: red;">Min. age: 4</h5>
                                                             </div>
                                                             <div class="col-md-5 detailsExcursions">
-                                                                Duration : 08 : 00
-                                                                Max Capacity : 1 pax
+                                                                Duration : 08 : 00 Max Capacity : 1 pax
                                                             </div>
                                                             <div class="col-md-2 adultsNumber">
                                                                 <div class="form-group">
@@ -963,7 +961,7 @@
                                     </tr>
 
                                 </tbody>
-                                
+
                             </table>
                         </div>
                     </div>
@@ -1258,7 +1256,6 @@
                     </div>
                 </div>
                 <!-- End Forth Tab -->
-
             </div>
         </div>
     </div>

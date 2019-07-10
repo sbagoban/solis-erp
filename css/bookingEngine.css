@@ -313,3 +313,21 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
 #checkboxesExcursionSelect input[type=checkbox] + .addOnsResult{
   background: #f9f9f9;
 }
+
+.checkExcursion {
+  width: 26px;
+  height: 26px;
+  background: #e3e8eb;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.addOnsResult:hover .checkExcursion { 
+  background: #5ca3cc;
+}
+
+
+#checkboxesExcursionSelect input[type=checkbox]:checked .checkExcursion {
+  background: #5ca3cc;
+}
