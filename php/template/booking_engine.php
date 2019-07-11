@@ -12,7 +12,7 @@
                         </a>
                     </li>
 
-                    <li class="">
+                    <li class="active">
                         <a href="#excursions_bkeng" data-toggle="tab" title="Excursions" aria-expanded="true">
                             <span class="round-tabs two">
                                 <i class="fa fa-envira fa-lg"></i><br>Excursions
@@ -20,7 +20,7 @@
                         </a>
                     </li>
 
-                    <li class="active">
+                    <li class="">
                         <a href="#transfers_bkeng" data-toggle="tab" title="Transfers" aria-expanded="true">
                             <span class="round-tabs three">
                                 <i class="fa fa-cab fa-lg"></i><br>Transfers
@@ -568,7 +568,7 @@
                 <!-- End First Tab -->
 
                 <!-- Start Second Tab -->
-                <div class="tab-pane fade" id="excursions_bkeng">
+                <div class="tab-pane active in fade" id="excursions_bkeng">
                     <form>
                         <div class="row">
                             <div class="col-md-12">
@@ -580,8 +580,9 @@
                                 <div class="col-md-6">
                                     <fieldset class="form-group">
                                         <h5 class="control-label">Select Market*</h5>
-                                        <select class="form-control">
-                                            <option>Default select</option>
+                                        <select 
+                                            class="form-control" 
+                                            id="ddlSelectMarketExcursions">
                                         </select>
                                     </fieldset>
                                 </div>
@@ -698,25 +699,19 @@
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
                                                     <input type='checkbox'>
-                                                    <span>Hotel</span>
+                                                    <span>Land</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
                                                     <input type='checkbox'>
-                                                    <span>Villa</span>
+                                                    <span>Sea</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
                                                     <input type='checkbox'>
-                                                    <span>Apartment</span>
-                                                </label>
-                                            </li>
-                                            <li class="checkBoxMain">
-                                                <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
-                                                    <span>Residence</span>
+                                                    <span>Air</span>
                                                 </label>
                                             </li>
                                         </div>
@@ -971,7 +966,7 @@
                 <!-- End Second Tab -->
 
                 <!-- Start Third Tab -->
-                <div class="tab-pane active in fade" id="transfers_bkeng">
+                <div class="tab-pane fade" id="transfers_bkeng">
                     <form>
                         <div class="row">
                             <div class="col-md-12">

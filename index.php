@@ -638,13 +638,13 @@ if ($menu == "newsroom" || $menu == "") {
         <!-- jQuery 3 -->
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="libraries/jquery/jquery.maskedinput.min.js"></script>
-        
+                
         <!-- Sandeep Start -->
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <!-- Sandeep End -->
-        
+
         <!-- Bootstrap 3.3.7 -->
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
         <!-- FastClick -->
@@ -796,7 +796,8 @@ else if($menu == "managebookings")
         <script src="js/booking_engine/control/excursionsCtrl.js"></script>
         <script src="js/booking_engine/control/transfersCtrl.js"></script>
         <script src="js/booking_engine/utils/rangeSlider.js"></script>
-        <script src="js/booking_engine/script.js"></script>';
+        <script src="js/booking_engine/script.js"></script>
+        <script src="js/booking_engine/models/excursionsModel.js"></script>';
 }
 ?>
 
