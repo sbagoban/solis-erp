@@ -52,6 +52,7 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="css/bookingEngine.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
         <!-- Sandeep End -->
 
         <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
@@ -634,7 +635,6 @@ if ($menu == "newsroom" || $menu == "") {
         </div>
         <!-- ./wrapper -->
 
-
         <!-- jQuery 3 -->
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="libraries/jquery/jquery.maskedinput.min.js"></script>
@@ -643,6 +643,8 @@ if ($menu == "newsroom" || $menu == "") {
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+        <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
         <!-- Sandeep End -->
 
         <!-- Bootstrap 3.3.7 -->

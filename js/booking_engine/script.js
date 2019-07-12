@@ -34,14 +34,14 @@ $(document).ready(function () {
     // });
 
     // Drop Off Place Excursions
-    var dropOffObj = [
-        "Heriatge", "Luxe", "Sofitel", "Long Beach", "Casuarina"
-    ];
+    // var dropOffObj = [
+    //     "Heriatge", "Luxe", "Sofitel", "Long Beach", "Casuarina"
+    // ];
 
-    $('#dropOffTags').autocomplete({
-        appendTo: '.dropOffCheck',
-        source: dropOffObj
-    });
+    // $('#dropOffTags').autocomplete({
+    //     appendTo: '.dropOffCheck',
+    //     source: dropOffObj
+    // });
 
 });
 

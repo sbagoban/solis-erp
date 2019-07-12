@@ -1,8 +1,9 @@
-///////////////////////////////////////
-// model --> fetch Api Select Market //
-///////////////////////////////////////
+
 $(document).ready(function(){
-    const URL = "php/api/combos/market_combo.php?t=" + encodeURIComponent(global_token); 
+        ///////////////////////////////////////
+        // model --> fetch Api Select Market //
+        ///////////////////////////////////////
+        const URL = "php/api/combos/market_combo.php?t=" + encodeURIComponent(global_token); 
         $.ajax({
             url : URL,
             type : "GET",
@@ -16,43 +17,72 @@ $(document).ready(function(){
             error:function(error) {
                 console.log('Error ${error}');
             }
-        })
-
-
-var helpersDropdown = {
-    buildDropdown: function(result, dropdown, emptyMessage) {
-        // Remove current options
-        dropdown.html('');
-        // Add the empty option with the empty message
-        dropdown.append('<option value="">' + emptyMessage + '</option>');
-        // Check result isnt empty
-        if(result != '') {
-            // Loop through each of the results and append the option to the dropdown
-            $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id + '">' + result.market_name + '</option>');
-            });
+        });
+        var helpersDropdown = {
+            buildDropdown: function(result, dropdown, emptyMessage) {
+                // Remove current options
+                dropdown.html('');
+                // Add the empty option with the empty message
+                dropdown.append('<option value="">' + emptyMessage + '</option>');
+                // Check result isnt empty
+                if(result != '') {
+                    // Loop through each of the results and append the option to the dropdown
+                    $.each(result, function(data, result) {
+                        dropdown.append('<option value="' + result.id + '">' + result.market_name + '</option>');
+                    });
+                }
+            }
         }
-    }
-}
 
-////////////////////////////////////////
-// model --> Pick up + Drop Off Place //
-////////////////////////////////////////
+        ////////////////////////////////////////
+        // model --> Pick up + Drop Off Place //
+        ////////////////////////////////////////
+        const URL2 = "php/api/combos/places_combo.php?t=" + encodeURIComponent(global_token); 
+        $.ajax({
+            url : URL2,
+            type : "GET",            
+            dataType: "json",
+            success: function (data) {
+                var placesNames = data.map(function (data) {
+                    return data.places
+                  });
+                sendListPlacesNames(placesNames);
+                sendListPlacesNamesDropOff(placesNames);
 
-// NOTE : Call --> OnKeyup
-    $('#pickUpTags').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "php/api/combos/market_combo.php?t=" + encodeURIComponent(global_token),
-                data: 'query=' + query,            
-                dataType: "json",
-                type: "POST",
-                success: function (data) {
-                    result($.map(data, function (item) {
-                        return item;
-                    }));
+            }
+        });
+        ////////////////////////////////////////
+        // model --> Pick up ///////////////////
+        ////////////////////////////////////////
+        function sendListPlacesNames(data) {
+            $('#pickUpTags').autocomplete({
+                source: data,
+                appendTo: '.pickUpCheck',
+                classes: {
+                    "ui-autocomplete": "highlight"
+                },
+                select: function(event, ui) {
+                    // Selected Value
+                    console.log(ui.value);
                 }
             });
         }
-    });
+        ////////////////////////////////////////
+        // model --> Drop Off Place ////////////
+        ////////////////////////////////////////
+        function sendListPlacesNamesDropOff(data) {
+            $('#dropOffTags').autocomplete({
+                source: data,
+                appendTo: '.dropOffCheck',
+                classes: {
+                    "ui-autocomplete": "highlight"
+                },
+                select: function(event, ui) {
+                    // Selected Value
+                    console.log(ui.value);
+                }
+            });
+        }
 });
+
+
