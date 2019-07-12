@@ -621,7 +621,7 @@
                                 <div class="col-md-3">
                                     <fieldset class="form-group">
                                         <h5>Adults</h5>
-                                        <select class="custom-select form-control form-control-sm" style="width: 100%;" name="accommodation[adults]" id="number_adults">
+                                        <select class="custom-select form-control form-control-sm" style="width: 100%;" name="accommodation[adults]" id="ddlAdultsNumber">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -698,19 +698,19 @@
                                         <div class="filterBlock resize form-control">
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' name="typeOfActivity">
                                                     <span>Land</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' name="typeOfActivity">
                                                     <span>Sea</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' name="typeOfActivity">
                                                     <span>Air</span>
                                                 </label>
                                             </li>
