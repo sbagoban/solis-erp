@@ -1,4 +1,3 @@
-
 $(document).ready(function(){
     ///////////////////////////////////////
     // model --> fetch Api Select Market //
@@ -44,17 +43,35 @@ $(document).ready(function(){
     });
     // Selected Number of Adults
     $("#ddlAdultsNumber").change(function () {
-        var color = $(this);
-        var ddlAdultNumber = color.val(); 
+        var numebrOfAdult = $(this);
+        var ddlAdultNumber = numebrOfAdult.val(); 
         console.log(ddlAdultNumber);
     });
     // CHECKED VALUES FOR TYPE OF ACTIVITY
-    var favorite = [];
-    $.each($("input[name='typeOfActivity']:checked"), function(){            
-        favorite.push($(this).val());
+    var typeOfActivityArr = [];
+    $('input[name="typeOfActivity"]').click(function(){
+        if($(this).prop("checked") == true){
+            typeOfActivityArr.push($(this).val());
+        }
+        else {
+            if ((index = typeOfActivityArr.indexOf($(this).val())) !== -1) {
+                typeOfActivityArr.splice(index, 1);
+            }
+        }
     });
-    console.log(favorite.join(", "));
 
+    // CHECKED VALUES FOR Coast
+    var coastArr = [];
+    $('input[name="coast"]').click(function(){
+        if($(this).prop("checked") == true){
+            coastArr.push($(this).val());
+        }
+        else {
+            if ((index = coastArr.indexOf($(this).val())) !== -1) {
+                coastArr.splice(index, 1);
+            }
+        }
+    });
 
     ////////////////////////////////////////
     // model --> Pick up + Drop Off Place //

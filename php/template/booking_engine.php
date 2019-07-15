@@ -698,19 +698,19 @@
                                         <div class="filterBlock resize form-control">
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox' name="typeOfActivity">
+                                                    <input type='checkbox' value="Land" name="typeOfActivity">
                                                     <span>Land</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox' name="typeOfActivity">
+                                                    <input type='checkbox' value="Sea" name="typeOfActivity">
                                                     <span>Sea</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox' name="typeOfActivity">
+                                                    <input type='checkbox' value="Air" name="typeOfActivity">
                                                     <span>Air</span>
                                                 </label>
                                             </li>
@@ -723,12 +723,13 @@
                                     <!-- Filter Two Locations -->
                                     <fieldset class="form-group">
                                         <h5>Date</h5>
-                                        <div class="input-group date datepicker-in" data-provide="datepicker">
+                                        <div class="input-group date datepicker-in" id="datetimepicker" data-provide="datepicker">
                                             <input type="text" class="form-control" placeholder="dd-mm-yyyy">
                                             <div class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </div>
                                         </div>
+                                        
                                     </fieldset>
                                     <!-- Filter One Locations -->
                                 </div>
@@ -739,55 +740,55 @@
                                         <div class="filterBlock resize form-control">
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="North" name="coast">
                                                     <span>North</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="East" name="coast">
                                                     <span>East</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="South" name="coast">
                                                     <span>South</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="West" name="coast">
                                                     <span>West</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="South East" name="coast">
                                                     <span>South East</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="South West" name="coast">
                                                     <span>South West</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="North East" name="coast">
                                                     <span>North East</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="North West" name="coast">
                                                     <span>North West</span>
                                                 </label>
                                             </li>
                                             <li class="checkBoxMain">
                                                 <label class='with-square-checkbox'>
-                                                    <input type='checkbox'>
+                                                    <input type='checkbox' value="Centre" name="coast">
                                                     <span>Centre</span>
                                                 </label>
                                             </li>
@@ -857,7 +858,9 @@
                                             </a>
                                         </td>
                                         <td>Casela Nature Park Activities (from 12 as adult)</td>
-                                        <td>Bgfhjgfjgfjgj</td>
+                                        <td>
+                                            <input type="number" class="form-control" placeholder="Transfers" min=0 max=20>
+                                        </td>
                                         <td>$ 211.00</td>
                                         <td>
                                             <button type="button" class="btn btn-inline btn-success btn-sm">Select</button>

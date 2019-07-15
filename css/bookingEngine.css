@@ -262,6 +262,13 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
   vertical-align: middle;
 }
 
+/* Date Picker Excursions */
+.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+  background: 0 0;
+  color: #e4e4e4;
+  cursor: not-allowed;
+}
+
 /* results for excursions */
 .detailsExcursions {
   padding: 27px;
@@ -326,7 +333,6 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
 .addOnsResult:hover .checkExcursion { 
   background: #5ca3cc;
 }
-
 
 #checkboxesExcursionSelect input[type=checkbox]:checked .checkExcursion {
   background: #5ca3cc;
