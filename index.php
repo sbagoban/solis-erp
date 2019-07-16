@@ -418,9 +418,14 @@ if ($menu == "newsroom" || $menu == "") {
     include 'php/template/userprofile.php';
 } else if ($menu == "norights") {
     include 'php/template/norights.php';
-} else if ($menu == "managebookings") {
+} 
+else if ($menu == "managebookings") {
     include 'php/template/booking_engine.php';
-}else {
+// } 
+// else if ($menu == "managebookings") {
+//     include 'php/template/addexcursions.php';
+// }
+else {
     echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
 }
 ?>
