@@ -79,6 +79,10 @@ label.with-square-checkbox span {
     height: 131px!important;
 }
 
+.filterBlock.resize2.form-control {
+  height: 138px!important;
+}
+
 /* Star Rating */
 .star-rating {    
     display: flex;
@@ -404,7 +408,9 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
   display: inline-block;
   padding-right: 10px;
 }
-
+.input-group-addon {
+  border: 0px;
+}
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */

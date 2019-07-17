@@ -53,6 +53,8 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="css/bookingEngine.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
+        <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
+		<link rel="stylesheet" href="css/editor.css" type="text/css"/>
         <!-- Sandeep End -->
 
         <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
@@ -419,12 +421,12 @@ if ($menu == "newsroom" || $menu == "") {
 } else if ($menu == "norights") {
     include 'php/template/norights.php';
 } 
-else if ($menu == "managebookings") {
-    include 'php/template/booking_engine.php';
-// } 
 // else if ($menu == "managebookings") {
-//     include 'php/template/addexcursions.php';
-// }
+//     include 'php/template/booking_engine.php';
+// } 
+else if ($menu == "managebookings") {
+    include 'php/template/addexcursions.php';
+}
 else {
     echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
 }
@@ -647,6 +649,7 @@ else {
         <!-- Sandeep Start -->
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+        <script src="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
@@ -804,7 +807,8 @@ else if($menu == "managebookings")
         <script src="js/booking_engine/control/transfersCtrl.js"></script>
         <script src="js/booking_engine/utils/rangeSlider.js"></script>
         <script src="js/booking_engine/script.js"></script>
-        <script src="js/booking_engine/models/excursionsModel.js"></script>';
+        <script src="js/booking_engine/models/excursionsModel.js"></script>
+        <script src="js/booking_engine/utils/editor.js"></script>';
 }
 ?>
 
