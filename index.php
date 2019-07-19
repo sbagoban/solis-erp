@@ -815,12 +815,11 @@ else if($menu == "backoff_excursions")
     echo '<script src="js/boexcursions/script_backOff_Excursions.js"></script>
         <script src="js/boexcursions/utils/editor.js"></script>
         <script src="js/boexcursions/utils/table-sortable.js"></script>
-        <script src="js/boexcursions/scriptExcursionTableGrid.js"></script>';
+        <script src="js/boexcursions/scriptExcursionTableGrid.js"></script>
+        <script src="js/boexcursions/utils/generateOptionCode.js"></script>
+        <script src="js/boexcursions/models/boexcursionsModel.js"></script>';
 }
 ?>
-
-
         <div id = "alert_placeholder"></div>
-
     </body>
 </html>

@@ -84,7 +84,7 @@ $(document).ready(function(){
         success: function (data) {
             var placesNames = data.map(function (data) {
                 return data.places
-              });
+            });
             sendListPlacesNames(placesNames);
             sendListPlacesNamesDropOff(placesNames);
 

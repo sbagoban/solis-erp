@@ -27,13 +27,7 @@
                             <div class="form-group has-warning">
                                 <label class="col-md-2 control-label">Service Type</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                        <option selected disabled hidden>Choose Service Type</option>
-                                        <option value="1">CR</option>
-                                        <option value="2">CT</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
+                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
                                     </select>
                                 </div>
                             </div>
@@ -63,8 +57,12 @@
                                         <option value="5">5</option>
                                     </select>
                                 </div>
-                                <div class="col-md-7">
-                                    <input type="text" name="regular" class="form-control" name="placeholder" placeholder="Option Code DS****">
+                                <div class="col-md-1">
+                                    <!-- <input type="text" name="regular" class="form-control" name="placeholder" placeholder="Option Code DS****"> -->
+                                    <h3><code id="output">0000</code></h3>
+                                </div>
+                                <div class="col-md-5">
+                                    <a id="generate" data-toggle="tooltip" title="Generate"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                             <div class="form-group">
