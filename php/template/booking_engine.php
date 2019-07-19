@@ -580,9 +580,7 @@
                                 <div class="col-md-6">
                                     <fieldset class="form-group">
                                         <h5 class="control-label">Select Market*</h5>
-                                        <select 
-                                            class="form-control" 
-                                            id="ddlSelectMarketExcursions">
+                                        <select class="form-control" id="ddlSelectMarketExcursions">
                                         </select>
                                     </fieldset>
                                 </div>
@@ -729,7 +727,7 @@
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </div>
                                         </div>
-                                        
+
                                     </fieldset>
                                     <!-- Filter One Locations -->
                                 </div>
@@ -1194,7 +1192,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                
+
                                 <tfoot>
                                     <tr>
                                         <th>Name</th>
@@ -1206,9 +1204,8 @@
                                 </tfoot>
                             </table>
                         </div>
-                        </div>
-                        <!-- Search Result for Transfers -->
-
+                    </div>
+                    <!-- Search Result for Transfers -->
 
                 </div>
                 <!-- End Third Tab -->

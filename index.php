@@ -54,7 +54,8 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="css/bookingEngine.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
-		<link rel="stylesheet" href="css/editor.css" type="text/css"/>
+        <link rel="stylesheet" href="css/editor.css" type="text/css"/>
+        <link rel="stylesheet" href="css/gridStyle.css" type="text/css"/>
         <!-- Sandeep End -->
 
         <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
@@ -421,10 +422,10 @@ if ($menu == "newsroom" || $menu == "") {
 } else if ($menu == "norights") {
     include 'php/template/norights.php';
 } 
-// else if ($menu == "managebookings") {
-//     include 'php/template/booking_engine.php';
-// } 
 else if ($menu == "managebookings") {
+    include 'php/template/booking_engine.php';
+} 
+else if ($menu == "backoff_excursions") {
     include 'php/template/addexcursions.php';
 }
 else {
@@ -807,8 +808,14 @@ else if($menu == "managebookings")
         <script src="js/booking_engine/control/transfersCtrl.js"></script>
         <script src="js/booking_engine/utils/rangeSlider.js"></script>
         <script src="js/booking_engine/script.js"></script>
-        <script src="js/booking_engine/models/excursionsModel.js"></script>
-        <script src="js/booking_engine/utils/editor.js"></script>';
+        <script src="js/booking_engine/models/excursionsModel.js"></script>';
+}
+else if($menu == "backoff_excursions")
+{
+    echo '<script src="js/boexcursions/script_backOff_Excursions.js"></script>
+        <script src="js/boexcursions/utils/editor.js"></script>
+        <script src="js/boexcursions/utils/table-sortable.js"></script>
+        <script src="js/boexcursions/scriptExcursionTableGrid.js"></script>';
 }
 ?>
 

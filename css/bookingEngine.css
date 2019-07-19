@@ -79,10 +79,6 @@ label.with-square-checkbox span {
     height: 131px!important;
 }
 
-.filterBlock.resize2.form-control {
-  height: 138px!important;
-}
-
 /* Star Rating */
 .star-rating {    
     display: flex;
@@ -411,6 +407,51 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
 .input-group-addon {
   border: 0px;
 }
+
+.filterBlock.resize2.form-control {
+  height: 138px!important;
+}
+
+.resize3.form-control {
+  height: 65px!important;
+}
+
+.resize3.form-control .policiesGroup {
+  display: inline-flex;
+  padding-top: 15px;
+}
+
+.resize3.form-control .policiesGroup p { 
+  padding-right: 10px;
+}
+
+.resize4.form-control {
+  height: 36px!important;
+}
+
+.resize4.form-control .policiesGroup {
+  display: inline-flex;
+  padding-top: 2px;
+}
+
+.resize4.form-control .policiesGroup p { 
+  padding-right: 10px;
+}
+
+.blockStay.form-control {
+  height: auto;
+}
+
+.fa.fa-trash-o {
+  color: red;
+  padding-top: 15px;
+}
+
+a i.fa.fa-plus.fa-lg {
+  padding-top: 14px;
+  cursor: pointer;
+}
+
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
