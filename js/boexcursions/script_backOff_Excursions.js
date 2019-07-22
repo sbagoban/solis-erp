@@ -1,8 +1,8 @@
 document.getElementById("aTitle").innerHTML = "Back Office Excursions";
 
-$(document).ready(function () {
-
-    
+$(document).ready(function () {    
+    // Tooltip
+    $('[data-toggle="tooltip"]').tooltip();  
     var counter = 0;
     var button = document.getElementById("btnCounter");
 
@@ -16,8 +16,6 @@ $(document).ready(function () {
             $('#alertModal').modal();
         }
     });
-
-
 
     function addRow() {
         var main = $('.addMain').val();
@@ -41,6 +39,7 @@ $(document).ready(function () {
             '<td class="col-xs-1 text-center"><a class="deleteBtn" data-toggle="tooltip" title="Delete Row">' +
             '<i id="deleteBtn" class="fa fa-trash-o fa-lg" aria-hidden="true"></a></td></tr>';
     };
+    
     // Add Row
     $('.addBtn').click(function()  {
         addRow();
@@ -54,42 +53,4 @@ $(document).ready(function () {
     $("#txtEditor").Editor();
     // Add Excursions
     // Add Excursions
-
-    var date = new Date();
-    date.setDate(date.getDate() + 1);
-    console.log('chk', date.getDate() + 1);
-    $('#datetimepicker').datepicker({
-        format: 'dd-mm-yyyy',
-        startDate: date
-    });
-
-    $('.filterBlock').slimScroll({
-        height: '205px',
-        color: '#DCDEE2',
-        size: '5px',
-        alwaysVisible: false
-    });
-
-    // Hotel Names Accomodations
-    var hotelNamesObj = [
-        "Heriatge", "Luxe", "Sofitel", "Long Beach", "Casuarina"
-    ];
-
-    $("#hotelNametags").autocomplete({
-        appendTo: '.hotelNamecheck',
-        source: hotelNamesObj
-    });
-});
-
-$(document).ready(function () {
-    $('#multiselect').multiselect({
-        buttonWidth: '313px',
-        includeSelectAllOption: true,
-        nonSelectedText: 'Select an Option',
-        enableFiltering: true,
-        enableHTML: true,
-        buttonClass: 'btn large btn-primary',
-    });
-    // Tooltip
-    $('[data-toggle="tooltip"]').tooltip();   
 });

@@ -10,17 +10,12 @@
                     </div>
 
                     <div class="panel-body">
-                        <form class="form-horizontal row-border" action="#">
+                        <form class="form-horizontal row-border" action="#" onsubmit="return false">
                             <div class="form-group has-warning">
                                 <label class="col-md-2 control-label">Location</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm" id="inputSuccess" placeholder="Default Location" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                        <option selected disabled hidden>Choose Location</option>
-                                        <option value="1">CR</option>
-                                        <option value="2">CT</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
+                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
+                                        <option value="selectedCountry" selected disabled hidden>Choose Location</option>
                                     </select>
                                 </div>
                             </div>
@@ -35,7 +30,7 @@
                             <div class="form-group has-warning">
                                 <label class="col-md-2 control-label">Supplier</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="location[location]" id="chooseLocation">
+                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
                                         <option selected disabled hidden>Choose Supplier</option>
                                         <option value="1">CR</option>
                                         <option value="2">CT</option>
@@ -48,7 +43,7 @@
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Option Code</label>
                                 <div class="col-md-3">
-                                    <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
+                                    <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
                                         <option selected disabled hidden>Choose Dept</option>
                                         <option value="1">DS</option>
                                         <option value="2">CT</option>
@@ -58,28 +53,32 @@
                                     </select>
                                 </div>
                                 <div class="col-md-1">
-                                    <!-- <input type="text" name="regular" class="form-control" name="placeholder" placeholder="Option Code DS****"> -->
                                     <h3><code id="output">0000</code></h3>
                                 </div>
+                                
                                 <div class="col-md-5">
-                                    <a id="generate" data-toggle="tooltip" title="Generate"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
+                                    <a id="generateNone" style="display: block;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-lg" aria-hidden="true"></i></a>
+                                    <a id="generate" style="display: none;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Desctription</label>
                                 <div class="col-md-10">
-                                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                                    <textarea class="form-control" rows="5" id="addedDescription"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-2 control-label">Comments</label>
                                 <div class="col-md-10">
-                                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                                    <textarea class="form-control" rows="5" id="addedComment"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-12">
-                                    <button class="btn btn-primary pull-right">Next &raquo;</button>
+                                    <button id="createNewService" class="btn btn-primary pull-right">Create New Service &raquo;</button>
+                                    <button type="button" class="btn btn-success pull-right searchServices">
+                                        <span class="glyphicon glyphicon-search"></span> Search Services
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -90,7 +89,7 @@
         <!-- Row end -->
 
         <!-- Row start - Service Details  -->
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
@@ -116,7 +115,7 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div> -->
             <!-- Row end - Service Details -->
             <!-- Row Search Service Details -->
             <div class="row">

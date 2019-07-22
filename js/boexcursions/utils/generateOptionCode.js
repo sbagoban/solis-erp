@@ -17,11 +17,9 @@
                 var index = _getRandomInt( 0, parts.length - 1 );
                 id += parts[index];	 
             }
-            
+            console.log('id -->', id);
             return id;
         }
-
-        
     }
     
     document.addEventListener( "DOMContentLoaded", function() {

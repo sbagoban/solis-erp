@@ -468,8 +468,17 @@ code {
   top: 0;
 }
 
+a#generateNone i.fa.fa-refresh.fa-lg {
+  color: grey;
+  cursor: default;
+}
+
 .fa.fa-refresh.fa-spin-hover:hover {
   animation: spin 2s infinite linear;
+}
+
+button.btn.btn-success.pull-right.searchServices {
+  margin-right: 11px;
 }
 
 @keyframes spin {
