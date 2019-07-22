@@ -754,7 +754,7 @@ function ratescalculator() {
             for (var c = 0; c < arr_grand_total.length; c++)
             {
                 var colid = c + "_colid";
-                var value = arr_grand_total[c];
+                var value = arr_grand_total[c].toFixed(2);
                 grid_results.cells(rwid, grid_results.getColIndexById(colid)).setValue(value);
 
             }

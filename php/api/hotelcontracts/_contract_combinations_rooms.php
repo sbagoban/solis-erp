@@ -79,15 +79,232 @@ function _contract_combinationscapacitydates_units_combinations($arr_rules) {
 
             $therulecapacities_arr = $therulerow["rule_capacity"];
 
+            $arr_ageranges = _contract_combinations_getageranges_units($therulecapacities_arr);
+
+            //========================================================================
+            //========================================================================
+            //generate the standard possibilities first
             $arr_std_min_max = _contract_combinations_getstdminmax_units($therulecapacities_arr, "STANDARDOCCUPATION", 0, 0);
+            $arr_occup = _contract_combinationscapacitydates_units_combinations_std($arr_std_min_max, $arr_ageranges);
+
+
+            //========================================================================
+            //========================================================================
+            //get the additional adults and children per age groups
+            $arr_extra_min_max = array();
+
             $arr_add_adult_min_max = _contract_combinations_getstdminmax_units($therulecapacities_arr, "ADDITIONALPERSONS", 0, 0);
 
-            // [-1,-1],[0,4],[12,17]
-            $arr_ageranges = _contract_combinations_getageranges_units($therulecapacities_arr);
+            $arr_extra_min_max[] = array("AGEFROM" => -1, "AGETO" => -1, "MIN" => $arr_add_adult_min_max["MIN"], "MAX" => $arr_add_adult_min_max["MAX"]);
+
+            for ($i = 0; $i < count($arr_ageranges); $i++) {
+                $age_from = $arr_ageranges[$i]["AGEFROM"];
+                $age_to = $arr_ageranges[$i]["AGETO"];
+                $arr_add_ch_min_max = _contract_combinations_getstdminmax_units($therulecapacities_arr, "CH", $age_from, $age_to);
+                $arr_extra_min_max[] = array("AGEFROM" => $age_from, "AGETO" => $age_to, "MIN" => $arr_add_ch_min_max["MIN"], "MAX" => $arr_add_ch_min_max["MAX"]);
+            }
+
+            $arr_extra_occup = _contract_combinationscapacitydates_units_combinations_add($arr_extra_min_max);
+            
+            //========================================================================
+            //========================================================================
+            //mix std occupancy with extra occupancy
+            $mycombinations_arr = array();
+            
+            for($i = 0; $i < count($arr_occup); $i++)
+            {
+                $mycombinations_arr[] = $arr_occup[$i]; //push std occupation first
+                
+                for($j = 0; $j < count($arr_extra_occup); $j++)
+                {
+                    $arr_item = _contract_combinationscapacitydates_units_combine_stdextra($arr_occup[$i],$arr_extra_occup[$j]);
+                    $mycombinations_arr[] = $arr_item;
+                    
+                }
+            }
+            
+            //========================================================================
+            //========================================================================
+            
+            //eliminate duplicates
+            $mycombinations_arr = array_values(array_unique($mycombinations_arr, SORT_REGULAR));
         }
     }
 
     return $mycombinations_arr;
+}
+
+function _contract_combinationscapacitydates_units_combine_stdextra($std_item,$extra_item)
+{
+    for($i = 0; $i < count($extra_item); $i++)
+    {
+        $ag_from = $extra_item[$i]["AGEFROM"];
+        $ag_to = $extra_item[$i]["AGETO"];
+        $no = $extra_item[$i]["No"];
+        
+        $found = false;
+        
+        for($j = 0; $j < count($std_item); $j++)
+        {
+            $_ag_from = $std_item[$j]["AGEFROM"];
+            $_ag_to = $std_item[$j]["AGETO"];
+            
+            if($_ag_from == $ag_from && $_ag_to == $ag_to)
+            {
+                $std_item[$j]["No"] += $no;
+                $found = true;
+            }
+        }
+        
+        if(!$found)
+        {
+            $std_item[] = $extra_item[$i];
+        }
+    }
+    
+    return $std_item;
+}
+
+function _contract_combinationscapacitydates_units_combinations_add($arr_extra_min_max) {
+    $x = 0;
+    $str = "";
+    $arr_extra_combinations = array();
+
+
+    _contract_combinationscapacitydates_units_combinations_extra_recur($x, $arr_extra_min_max, $str, $arr_extra_combinations);
+
+    //===============================================
+
+    $arr_matrix = array();
+
+    for ($i = 0; $i < count($arr_extra_combinations); $i++) {
+        $arr = array();
+
+        $str = $arr_extra_combinations[$i];
+        $arr_pax = explode("_", $str);
+        for ($x = 0; $x < count($arr_pax); $x++) {
+            $count = $arr_pax[$x];
+            if ($count > 0) {
+                $agefrom = $arr_extra_min_max[$x]["AGEFROM"];
+                $ageto = $arr_extra_min_max[$x]["AGETO"];
+
+                $arr[] = array("AGEFROM" => $agefrom, "AGETO" => $ageto, "No" => $count);
+            }
+        }
+
+        $arr_matrix[] = $arr;
+    }
+
+    //===============================================
+
+    return $arr_matrix;
+}
+
+function _contract_combinationscapacitydates_units_combinations_extra_recur($x, $arr_extra_min_max, $str, &$arr_extra_combinations) {
+    if ($x == count($arr_extra_min_max)) {
+        $arr_extra_combinations[] = $str;
+    } else {
+        $min = $arr_extra_min_max[$x]["MIN"];
+        $max = $arr_extra_min_max[$x]["MAX"];
+
+        for ($j = $min; $j <= $max; $j++) {
+            $temp_str = $str;
+            if (trim($str) != "") {
+                $temp_str .= "_";
+            }
+            $temp_str .= $j;
+            _contract_combinationscapacitydates_units_combinations_extra_recur(($x + 1), $arr_extra_min_max, $temp_str, $arr_extra_combinations);
+        }
+    }
+}
+
+function _contract_combinationscapacitydates_units_combinations_std($arr_std_min_max, $arr_ageranges) {
+    $arr_matrix = array();
+    $arr_matrix_line = array(array("AGEFROM" => -1, "AGETO" => -1)); //ADULT
+
+
+    $min_std = $arr_std_min_max["MIN"];
+    $max_std = $arr_std_min_max["MAX"];
+
+
+    for ($i = 0; $i < count($arr_ageranges); $i++) {
+        $agefrom = $arr_ageranges[$i]["AGEFROM"];
+        $ageto = $arr_ageranges[$i]["AGETO"];
+        $arr_matrix_line[] = array("AGEFROM" => $agefrom, "AGETO" => $ageto); //for each children
+    }
+
+
+    $x = 0;
+    $str = "";
+    $arr_std_combinations = array();
+    _contract_combinationscapacitydates_units_combinations_std_recur($x, $arr_matrix_line, $min_std, $max_std, $str, $arr_std_combinations);
+
+
+
+    //===============================================
+    for ($i = 0; $i < count($arr_std_combinations); $i++) {
+        $arr = array();
+
+        $str = $arr_std_combinations[$i];
+        $arr_pax = explode("_", $str);
+        for ($x = 0; $x < count($arr_pax); $x++) {
+            $count = $arr_pax[$x];
+            if ($count > 0) {
+                $agefrom = $arr_matrix_line[$x]["AGEFROM"];
+                $ageto = $arr_matrix_line[$x]["AGETO"];
+
+                $arr[] = array("AGEFROM" => $agefrom, "AGETO" => $ageto, "No" => $count);
+            }
+        }
+
+        $arr_matrix[] = $arr;
+    }
+
+    //===============================================
+
+    return $arr_matrix;
+}
+
+function _contract_combinationscapacitydates_units_combinations_std_recur($x, $arr_matrix_line, $min_std, $max_std, $str, &$arr_std_combinations) {
+    if ($x == count($arr_matrix_line)) {
+        if (_contract_combinationscapacitydates_units_combinations_std_validate($min_std, $max_std, $str)) {
+            $arr_std_combinations[] = $str;
+        }
+    } else {
+        for ($j = 0; $j <= $max_std; $j++) {
+            $temp_str = $str;
+            if (trim($str) != "") {
+                $temp_str .= "_";
+            }
+            $temp_str .= $j;
+            _contract_combinationscapacitydates_units_combinations_std_recur(($x + 1), $arr_matrix_line, $min_std, $max_std, $temp_str, $arr_std_combinations);
+        }
+    }
+}
+
+function _contract_combinationscapacitydates_units_combinations_std_validate($min_std, $max_std, $str) {
+    //validate
+    //the first number cannot be 0: that is adult cannot be zero
+    //the sum pax >= min and sum pax <= max
+
+    $arr_pax = explode("_", $str);
+
+    if ($arr_pax[0] == 0) {
+        return false;
+    }
+
+    $sum = 0;
+    for ($i = 0; $i < count($arr_pax); $i++) {
+        $sum += $arr_pax[$i];
+    }
+
+    if ($sum < $min_std) {
+        return false;
+    }
+    if ($sum > $max_std) {
+        return false;
+    }
+    return true;
 }
 
 function _contract_combinations_getstdminmax_units($arr_rules, $category, $agfrom, $agto) {
@@ -101,7 +318,7 @@ function _contract_combinations_getstdminmax_units($arr_rules, $category, $agfro
                 if ($line["capacity_child_agefrom"] == $agfrom &&
                         $line["capacity_child_ageto"] == $agto) {
                     $min = $line["capacity_minpax"];
-                    $max = $line["capacity_mixpax"];
+                    $max = $line["capacity_maxpax"];
                 }
             } else {
                 $min = $line["capacity_minpax"];
@@ -138,7 +355,7 @@ function _contract_combinationscapacitydates_persons_combinations($arr_rules) {
             $mycombinations_arr = array_merge($mycombinations_arr, $arr_permutations);
 
             //eliminate duplicates
-            $mycombinations_arr = array_unique($mycombinations_arr, SORT_REGULAR);
+            $mycombinations_arr = array_values(array_unique($mycombinations_arr, SORT_REGULAR));
         }
     }
 

@@ -6,19 +6,10 @@ function _rates_calculator($con, $arr_params) {
         $time_pre = microtime(true);
 
 
-        $adult = $arr_params["adults"];
         $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
-        $checkin_time = $arr_params["checkin_time"];
         $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
-        $checkout_time = $arr_params["checkout_time"];
-        $children = $arr_params["children"];
-        $country = $arr_params["country"];
-        $hotel = $arr_params["hotel"];
         $hotelroom = $arr_params["hotelroom"];
-        $mealplan = $arr_params["mealplan"];
         $supp_mealplan = $arr_params["supp_mealplan"];
-        $rate = $arr_params["rate"];
-        $touroperator = $arr_params["touroperator"];
 
         //cleanup:
         $arr_params["contractids"] = trim($arr_params["contractids"]);
@@ -143,7 +134,6 @@ function _rates_calculator($con, $arr_params) {
         for ($idx = 0; $idx < count($arr_days["DAILY"]); $idx++) {
 
 
-
             $this_date = $arr_days["DAILY"][$idx]["DATE"];
 
             //======================================================================
@@ -204,7 +194,7 @@ function _rates_calculator($con, $arr_params) {
 
 
                 //TEST 3: CHILDREN AGES
-                $children_age_test = _rates_calculator_test_children_ages($arr_capacity, $arr_params, $con);
+                $children_age_test = _rates_calculator_test_children_ages($arr_params, $con);
                 if ($children_age_test != "OK") {
                     $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 3</font>: CHILDREN AGES: $children_age_test",
                         "COSTINGS" => array());
@@ -215,26 +205,26 @@ function _rates_calculator($con, $arr_params) {
                         "COSTINGS" => array());
 
                     //TEST 4: ADULT AND CHILDREN CAPACITY
-                    $capacity_test_adch = _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date, $con);
-                    if ($capacity_test_adch != "OK") {
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 4</font>: CAPACITY TEST ADULT + CHILDREN SHARING: $capacity_test_adch",
+                    $capacity_test_adch = _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date);
+                    if ($capacity_test_adch["MSG"] != "OK") {
+                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 4</font>: CAPACITY TEST ADULT + CHILDREN SHARING: " . $capacity_test_adch["MSG"],
                             "COSTINGS" => array());
 
                         $arr_daily[$idx]["STATUS"] = "CAPACITY_FAIL";
                     } else {
 
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING",
+                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: " . ($capacity_test_adch["INDEX"]),
                             "COSTINGS" => array());
 
                         //TEST 5: CHILDREN IN OWN ROOM
                         $capacity_test_ch_ownroom = _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_date);
-                        if ($capacity_test_ch_ownroom != "OK") {
-                            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 5</font>: CAPACITY TEST CHILDREN OWN ROOM: $capacity_test_ch_ownroom",
+                        if ($capacity_test_ch_ownroom["MSG"] != "OK") {
+                            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 5</font>: CAPACITY TEST CHILDREN OWN ROOM: " . $capacity_test_ch_ownroom["MSG"],
                                 "COSTINGS" => array());
 
                             $arr_daily[$idx]["STATUS"] = "CHILDREN_OWN_ROOM_FAIL";
                         } else {
-                            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM",
+                            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM. COMBINATION INDEX:" . ($capacity_test_adch["INDEX"]),
                                 "COSTINGS" => array());
                         }
 
@@ -265,7 +255,7 @@ function _rates_calculator($con, $arr_params) {
 
                         $arr = _rates_calculator_lookup_rates_calc_PPPN($arr, $arr_params, $arr_taxcomm, $con, "ROOM");
 
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"] = $arr;
+                        $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr);
 
                         //$arr[n][MSG]
                         //       [COSTINGS]
@@ -471,7 +461,7 @@ function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_d
     return array("CHARGE_TYPE" => "", "WORKINGS" => "", "CHARGE_VALUE" => "");
 }
 
-function _rates_calculator_test_children_ages($arr_capacity, $arr_params, $con) {
+function _rates_calculator_test_children_ages($arr_params, $con) {
     try {
 
         $current_contract_id = $arr_params["current_contract_id"];
@@ -538,9 +528,8 @@ function _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_dat
 
         if ($room_type == "UNITS") {
             //this check is not applicable here!
-            return "OK";
+            return array("MSG" => "OK", "INDEX" => "CHECK NOT APPLICABLE FOR UNIT ROOM");
         }
-
 
         $children = array();
         for ($i = 0; $i < count($arr_params["children"]); $i++) {
@@ -550,49 +539,47 @@ function _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_dat
             }
         }
 
-
         if (count($children) == 0) {
-            return true; //there is children in own room to test here
+            return array("MSG" => "OK", "INDEX" => "NO CHILDREN IN OWN ROOM"); //there is NO children in own room to test here
         }
 
         $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
 
-
         if (!is_null($rules)) {
-            $arr_capacity_rules = $rules["date_capacity_rules"];
 
+            $date_rwid = $rules["date_rwid"];
 
-            //============ for each capacity rule =================
-            for ($i = 0; $i < count($arr_capacity_rules); $i++) {
-                $rule_capacity = $arr_capacity_rules[$i]["rule_capacity"];
+            //generate the combinations for that room and date
+            $arr_combinations = _contract_combinations_rooms($arr_capacity, $hotelroom, $date_rwid);
 
-                $adult = 0; //test children own room with adult = 0
-                if (_rates_calculator_test_capacity_rule_persons($rule_capacity, $adult, $children)) {
-                    return "OK";
-                }
+            $adult = 0; //test with zero adult
+            $combi_index = _rates_calculator_test_capacity_adch_combii($arr_combinations, $adult, $children);
+
+            if ($combi_index != -1) {
+                //successful capacity check
+                return array("MSG" => "OK", "INDEX" => $combi_index);
             }
+
             //======================================================
             //if we are here means that no rules satisfy
-            return "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT";
+            return array("MSG" => "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT");
         } else {
-            return "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT";
+            return array("MSG" => "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT");
         }
     } catch (Exception $ex) {
-        return "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage();
+        return array("MSG" => "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage());
     }
 }
 
-function _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date, $con) {
+function _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date) {
 
     //test adult + SHARING children
     //return OK if capacity is satisfied, error message otherwise
     try {
 
-
         $hotelroom = $arr_params["hotelroom"];
 
         $room_details = _rates_calculator_get_room_details($arr_capacity, $hotelroom);
-        $room_type = $room_details["room_variants"]; //"PERSONS", "UNITS"
 
         $children = array();
         for ($i = 0; $i < count($arr_params["children"]); $i++) {
@@ -606,35 +593,109 @@ function _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date,
         $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
 
         if (!is_null($rules) && !is_null($room_details)) {
-            $arr_capacity_rules = $rules["date_capacity_rules"];
+            $date_rwid = $rules["date_rwid"];
 
+            //generate the combinations for that room and date
+            $arr_combinations = _contract_combinations_rooms($arr_capacity, $hotelroom, $date_rwid);
 
-            //============ for each capacity rule =================
-            for ($i = 0; $i < count($arr_capacity_rules); $i++) {
-                $rule_capacity = $arr_capacity_rules[$i]["rule_capacity"];
+            $combi_index = _rates_calculator_test_capacity_adch_combii($arr_combinations, $adult, $children);
 
-                if ($room_type == "PERSONS") {
-                    if (_rates_calculator_test_capacity_rule_persons($rule_capacity, $adult, $children)) {
-                        return "OK";
-                    }
-                } else if ($room_type == "UNITS") {
-                    if (_rates_calculator_test_capacity_rule_units($rule_capacity, $arr_params, $con)) {
-                        return "OK";
-                    }
-                }
+            if ($combi_index != -1) {
+                //successful capacity check
+                return array("MSG" => "OK", "INDEX" => $combi_index);
             }
+
             //======================================================
             //if we are here means that no rules satisfy
-            return "ADULT AND CHILDREN CAPACITY <B>NOT</B> SATISFIED";
+            return array("MSG" => "ADULT AND CHILDREN CAPACITY <B>NOT</B> SATISFIED");
         } else {
-            return "NO ADULT AND CHILDREN CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT";
+            return array("MSG" => "NO ADULT AND CHILDREN CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT");
         }
     } catch (Exception $ex) {
-        return "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage();
+        return array("MSG" => "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage());
     }
 }
 
-function _rates_calculator_test_capacity_rule_units_getoccupation($rule_capacity, $category) {
+function _rates_calculator_test_capacity_adch_combii($arr_room_combinations, $adult, $children) {
+    $arr_date_combinations = $arr_room_combinations["room_combinations"];
+    for ($cix = 0; $cix < count($arr_date_combinations); $cix ++) {
+        $arr_combinations = $arr_date_combinations[$cix]["combinations_array"];
+
+        //returns the index of the combination that matched the search
+        for ($i = 0; $i < count($arr_combinations); $i++) {
+            $combo = $arr_combinations[$i];
+            if (_rates_calculator_test_capacity_adch_combii_combo($combo, $adult, $children)) {
+                return ($i + 1); //return the index of the successful combination. start from 1
+            }
+        }
+        return -1;
+    }
+}
+
+function _rates_calculator_test_capacity_adch_combii_combo($combo, $adult, $children) {
+    //return true if combination a valid one
+    //return false otherwise
+    //deduct adult first
+    $found = false;
+    for ($i = 0; $i < count($combo); $i++) {
+        $agfrom = $combo[$i]["AGEFROM"];
+        $agto = $combo[$i]["AGETO"];
+
+        if ($agfrom == -1 && $agto == -1) {
+            //adult
+            if ($combo[$i]["No"] >= $adult) {
+                $combo[$i]["No"] -= $adult;
+                $found = true;
+            }
+        }
+    }
+
+    if (!$found) {
+        return false; //adult check failed
+    }
+
+    //================================
+    //====== now test children =======
+    for ($j = 0; $j < count($children); $j++) {
+        $found = false;
+        
+        $age = $children[$j]["age"];
+        
+        for ($i = 0; $i < count($combo); $i++) {
+            $agfrom = $combo[$i]["AGEFROM"];
+            $agto = $combo[$i]["AGETO"];
+            
+            if ($agfrom <= $age && $age <= $agto) {
+                if ($combo[$i]["No"] > 0) {
+                    $found = true;
+                    $combo[$i]["No"] --; //decrement the children count
+                }
+            }            
+        }
+        
+        if(!$found)
+        {
+            return false;
+        }
+    }
+
+
+
+
+    //now assess the combo: the total pax should be zero
+    $sum = 0;
+    for ($i = 0; $i < count($combo); $i++) {
+        $sum += $combo[$i]["No"];
+    }
+
+    if ($sum != 0) {
+        return false;
+    }
+
+    return true;
+}
+
+function _rates_calculator_get_capacity_rule_units_getoccupation($rule_capacity, $category) {
     $arr = array();
 
     for ($i = 0; $i < count($rule_capacity); $i++) {
@@ -657,95 +718,8 @@ function _rates_calculator_test_capacity_rule_units_getoccupation($rule_capacity
     return $arr;
 }
 
-function _rates_calculator_test_capacity_rule_units($rule_capacity, $arr_params, $con) {
-    //test the specific capacity rule to know if adult and children are allowable
-    //return true if fine, false other wise
-
-    $adult = count($arr_params["adults"]);
-    $children = $arr_params["children"];
-
-    $number_pax = $adult + count($children);
-
-    $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con);
-
-
-    //get the rules occupation rules
-    $arr_std_occup = _rates_calculator_test_capacity_rule_units_getoccupation($rule_capacity, "STANDARDOCCUPATION");
-    $arr_add_adult_occup = _rates_calculator_test_capacity_rule_units_getoccupation($rule_capacity, "ADDITIONALPERSONS");
-    $arr_children_rules = _rates_calculator_test_capacity_rule_units_getoccupation($rule_capacity, "CH");
-
-    //$arr_std_occup and $arr_add_adult_occup should have only 1 entry
-    //$arr_children_rules can have multiple entries for each age group
-    //CHECK 1: STANDARD OCCUPATION 
-    //first check if adults fit in standard occupation rules
-
-    $std_min = $arr_std_occup[0]["MIN"];
-    $std_max = $arr_std_occup[0]["MAX"];
-
-    //====================================================
-    //is there enough pax?
-    if ($number_pax < $std_min) {
-        return false;
-    }
-
-    //====================================================
-
-    _rates_calculator_test_capacity_rule_units_extra_adult($std_max, $adult);
-    _rates_calculator_test_capacity_rule_units_extra_child($std_max, $arr_group_children);
-
-    //=====================================================
-    //check for adult
-    if ($adult > 0) {
-        //there is extra adult
-        $extra_adult_max = $arr_add_adult_occup[0]["MAX"];
-        if ($adult > $extra_adult_max) {
-            return false;
-        }
-    }
-
-    //=====================================================
-    //check for children
-    for ($i = 0; $i < count($arr_group_children); $i++) {
-        $age_from = $arr_group_children[$i]["AGFROM"];
-        $age_to = $arr_group_children[$i]["AGTO"];
-        $arr_children = $arr_group_children[$i]["CHILDREN"];
-        $child_count = count($arr_children);
-        if ($child_count > 0) {
-            //got extra children here
-            //check if it is within the range of that age group
-            if (!_rates_calculator_test_capacity_rule_units_children_age($child_count, $age_from, $age_to, $arr_children_rules)) {
-                return false;
-            }
-        }
-    }
-
-    //==========================================================
-
-
-    return true;
-}
-
-function _rates_calculator_test_capacity_rule_units_children_age($child_count, $age_from, $age_to, $arr_children_rules) {
-    for ($i = 0; $i < count($arr_children_rules); $i++) {
-
-        if ($arr_children_rules[$i]["AGE_FROM"] == $age_from &&
-                $arr_children_rules[$i]["AGE_TO"] == $age_to) {
-            $max = $arr_children_rules[$i]["MAX"];
-            if ($child_count > $max) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
-    return true;
-}
-
 function _rates_calculator_test_capacity_rule_units_extra_child(&$std_max, &$arr_group_children) {
     //decrement children from the standard allocation to see what children are left as extra
-
-    $arr_idx_to_remove = array();
 
     $i = count($arr_group_children) - 1;
     while ($i >= 0) {
@@ -771,71 +745,6 @@ function _rates_calculator_test_capacity_rule_units_extra_adult(&$std_max, &$adu
     }
 
     return;
-}
-
-function _rates_calculator_test_capacity_rule_persons($rule_capacity, $adult, $children) {
-    //test the specific capacity rule to know if adult and children are allowable
-    //return true if fine, false other wise
-    //if ($adult > 0) {
-    if (!_rates_calculator_adch_capacity_test("ADULT", $adult, 0, $rule_capacity)) {
-        return false;
-    }
-    //}
-    //adult check passed, now check for each accompanying chid
-    for ($c = 0; $c < count($children); $c++) {
-        $age = $children[$c]["age"];
-        if (!_rates_calculator_adch_capacity_test("CHILD", 1, $age, $rule_capacity)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-function _rates_calculator_adch_capacity_test($adch, $pax_count, $age, &$rule_capacity) {
-
-    for ($j = 0; $j < count($rule_capacity); $j++) {
-        $capacity_category = $rule_capacity[$j]["capacity_category"];
-        $capacity_minpax = $rule_capacity[$j]["capacity_minpax"];
-        $capacity_maxpax = $rule_capacity[$j]["capacity_maxpax"];
-        $capacity_child_agefrom = $rule_capacity[$j]["capacity_child_agefrom"];
-        $capacity_child_ageto = $rule_capacity[$j]["capacity_child_ageto"];
-
-        if ($capacity_minpax == "") {
-            $capacity_minpax = 0;
-        }
-        if ($capacity_maxpax == "") {
-            $capacity_maxpax = 0;
-        }
-
-
-        if ($adch == $capacity_category) {
-            if ($capacity_minpax <= $pax_count && $pax_count <= $capacity_maxpax) {
-                if ($adch == "ADULT") {
-                    return true;
-                } else if ($adch == "CHILD") {
-                    //age check for children
-                    if ($capacity_child_agefrom <= $age && $age <= $capacity_child_ageto) {
-                        $rule_capacity[$j]["capacity_maxpax"] --; //decrement for next child if needed
-                        return true;
-                    }
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-function _rates_calculator_get_arrcapacity_room($arr_capacity, $roomid) {
-    for ($i = 0; $i < count($arr_capacity); $i++) {
-        //get the room
-        if ($roomid == $arr_capacity[$i]["room_id"]) {
-            return $arr_capacity[$i];
-        }
-    }
-
-    return null;
 }
 
 function _rates_calculator_get_room_details($arr_capacity, $roomid) {
@@ -970,7 +879,7 @@ function _rates_calculator_lookup_rates($arr_capacity, $arr_params, $this_date, 
 
 function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_date, $con, $arr_eci) {
     $arr = array();
-    
+
     $adult = count($arr_params["adults"]);
     $children = $arr_params["children"];
 
@@ -985,19 +894,26 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
         $arr_capacity_rules = $rules["date_capacity_rules"];
 
         $rule_capacity = $arr_capacity_rules[0]["rule_capacity"]; //only one rule                
-        $arr_std_occup = _rates_calculator_test_capacity_rule_units_getoccupation($rule_capacity, "STANDARDOCCUPATION");
+        $arr_std_occup = _rates_calculator_get_capacity_rule_units_getoccupation($rule_capacity, "STANDARDOCCUPATION");
 
         $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con);
 
         $std_max = $arr_std_occup[0]["MAX"];
 
+        //get the unit normal price first
+        $arr_normal = _rates_calculator_lookup_rates_units_standard($rules, $arr_params);
+        $normal_rates = $arr_normal["RATES_STANDARD"];
+        $normal_workings = $arr_normal["WORKINGS_STANDARD"];
+
+
+
         //get extra adults and children
         _rates_calculator_test_capacity_rule_units_extra_adult($std_max, $adult);
         _rates_calculator_test_capacity_rule_units_extra_child($std_max, $arr_group_children);
 
-        
+
         $flg_extra_people = false;
-        
+
         //for each extra adult and extra children, calculate the price
         if ($adult > 0) {
             //there is extra adult
@@ -1005,12 +921,12 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
             $extra_adult_rates = $arr_extra_adult["RATES_EXTRA_ADULT"];
             $extra_adult_workings = $arr_extra_adult["WORKINGS_EXTRA_ADULT"];
             $flg_extra_people = true;
-            $arr[] = array("MSG"=>$extra_adult_workings,"COSTINGS"=>$extra_adult_rates);
+            $arr[] = array("MSG" => $extra_adult_workings, "COSTINGS" => $extra_adult_rates);
         }
 
         //for each extra children, calculate the price
         $arr_children_rules = $rules["date_childpolicies_rules"];
-        
+
         for ($i = 0; $i < count($arr_group_children); $i++) {
             $arr_children = $arr_group_children[$i]["CHILDREN"];
             $age_from = $arr_group_children[$i]["AGFROM"];
@@ -1018,51 +934,45 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
 
             for ($idx = 1; $idx <= count($arr_children); $idx++) {
                 $flg_extra_people = true;
-                
+
                 $basis = _rates_calculator_lookup_rates_units_lookup_children_rates($arr_children_rules, "basis", $idx, $age_from, $age_to);
                 $value = _rates_calculator_lookup_rates_units_lookup_children_rates($arr_children_rules, "value", $idx, $age_from, $age_to);
 
-                
+
                 if ($basis == "%") {
                     $percentage = 0;
                     if ($value > 0) {
                         $percentage = round(($value / 100) * $normal_rates, 2);
                     }
-                    
+
                     $rates_children = $percentage;
                     $workings_children = "<b>EXTRA</b>: Ch #$idx (<b>$age_from-$age_to yrs</b>) = <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
-                    
+
                     _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
-                    
-                    $arr[] = array("MSG"=>$workings_children,"COSTINGS"=>$rates_children);
-                    
+
+                    $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children);
                 } else if ($basis == "FLAT") {
                     $rates_children = $value;
                     $workings_children = "<b>EXTRA</b>: Ch #$idx (<b>$age_from-$age_to yrs</b>) = $currency_buy $value";
-                    
+
                     _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
-                    
-                    $arr[] = array("MSG"=>$workings_children,"COSTINGS"=>$rates_children);
+
+                    $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children);
                 }
             }
         }
-        
+
         //finally get the normal standard unit price and split it per person
         $num_persons = 0;
-        if($flg_extra_people)
-        {
+        if ($flg_extra_people) {
             $num_persons = $arr_std_occup[0]["MAX"];
-        }
-        else
-        {
+        } else {
             $num_persons = count($arr_params["adults"]) + count($arr_params["children"]);
         }
-        
-        $arr_normal = _rates_calculator_lookup_rates_units_standard($rules, $arr_params);
-        $normal_rates = $arr_normal["RATES_STANDARD"];
-        $normal_workings = $arr_normal["WORKINGS_STANDARD"];
-        
-        $per_person_buyprice = round($normal_rates / $num_persons); 
+
+
+
+        $per_person_buyprice = round($normal_rates / $num_persons);
         $cumul_buyprice = 0;
 
         for ($adinx = 1; $adinx <= $num_persons; $adinx++) {
@@ -1078,10 +988,9 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
             _rates_calculator_apply_rates_eci_percentage($per_person_buyprice, $arr_eci, $_workings, $currency_buy);
             $arr[] = array("MSG" => $_workings, "COSTINGS" => $per_person_buyprice);
         }
-
     }
-    
-    
+
+
 
 
     return $arr;
@@ -1130,8 +1039,8 @@ function _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $
             $rates = $value;
             $workings = "<b>EXTRA</b>: Ad #$i: $currency_buy $value";
         }
-        
-        $arr[] = array("MSG"=>$workings,"COSTINGS"=>$rates);
+
+        $arr[] = array("MSG" => $workings, "COSTINGS" => $rates);
     }
 
     return $arr;
@@ -1314,10 +1223,10 @@ function _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params
 
         //for each age_range in arr_age_ranges, check if children ages match        
         //first check for exact match
-        $the_age_range = _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $children, $arr_params, $arr_group_children);
+        $the_age_range = _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $arr_group_children);
         if ($the_age_range == "") {
             //if no exact match found, look for next best match
-            $the_age_range = _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $children, $arr_params, $arr_group_children);
+            $the_age_range = _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $arr_group_children);
         }
 
 
@@ -1331,7 +1240,7 @@ function _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params
             $rules_age_range = _rates_calculator_single_parent_get_rules_by_agerange($arr_singleparent_rules, $the_age_range);
 
             //calculate children rates
-            $arr_children_rates = _rates_calculator_lookup_single_parent_children_rates($arr_group_children, $rules_age_range, $arr_params, $arr_adultpolicies_rules, $con, $arr_eci);
+            $arr_children_rates = _rates_calculator_lookup_single_parent_children_rates($arr_group_children, $rules_age_range, $arr_params, $arr_adultpolicies_rules, $arr_eci);
             $arr = array_merge($arr, $arr_children_rates);
 
             //calculate adult rates
@@ -1411,8 +1320,6 @@ function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this
 function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci) {
 
     //regroup each child in $children by age groups defined in the contract
-    $rates_children = 0;
-    $workings = "";
     $arr = array();
 
     $current_contract_id = $arr_params["current_contract_id"];
@@ -1544,7 +1451,6 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
                 $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
                 $arr_adult_workings = _rates_calculator_calc_adult_recur($child_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
                 $rates_adult = $arr_adult_workings["RATES_ADULT"];
-                $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
                 $child_rate_value = 0;
                 if ($value > 0) {
@@ -1610,7 +1516,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
 
                 $msg = "$work => Ch #$childindex => $currency_buy $ch_buyprice";
 
-                
+
                 _rates_calculator_apply_rates_eci_percentage($ch_buyprice, $arr_eci, $msg, $currency_buy);
                 $temp_arr[] = array("MSG" => $msg, "COSTINGS" => $ch_buyprice);
 
@@ -1762,8 +1668,6 @@ function _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_dat
     $this_date = date("Y-m-d", strtotime($this_date)); //convert into yyyy-mm-dd
 
     $arr = array();
-    $adult_fees = 0;
-    $children_fees = 0;
     $workings = "";
 
     $adult = count($arr_params["adults"]);
@@ -1823,8 +1727,7 @@ function _rates_calculator_get_meal_name($supp_mealplan, $con) {
 
 function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $hotelroom, $con) {
 
-    $adult_fees = 0;
-    $children_fees = 0;
+
     $workings = "";
 
     $arr = array();
@@ -1875,7 +1778,6 @@ function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $ho
 
 function _rates_calculator_extra_meal_supplement_children($children_rules, $children, $con, $arr_params, $extra_extra_name) {
     $workings = "";
-    $children_fees = 0;
     $arr = array();
 
     $workings = "<font color='blue'>EXTRA MANDATORY MEAL: $extra_extra_name : </font>";
@@ -1921,7 +1823,6 @@ function _rates_calculator_extra_meal_supplement_children($children_rules, $chil
 
 function _rates_calculator_meal_supplement_children($children_rules, $children, $con, $arr_params, $meal_supplement_caption) {
     $workings = "";
-    $children_fees = 0;
     $arr = array();
 
     $currency_buy = $arr_params["currency_buy_code"];
@@ -2027,7 +1928,7 @@ function _rates_calculator_regroup_children_by_age($arr_params, $children, $con)
     return $arr_group_children;
 }
 
-function _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $children, $arr_params, $arr_group_children) {
+function _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $arr_group_children) {
 
     for ($i = 0; $i < count($arr_age_ranges); $i++) {
 
@@ -2051,7 +1952,7 @@ function _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $
     return "";
 }
 
-function _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $children, $arr_params, $arr_group_children) {
+function _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $arr_group_children) {
     for ($i = 0; $i < count($arr_age_ranges); $i++) {
 
         $this_age_range = $arr_age_ranges[$i];
@@ -2105,8 +2006,6 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
     $arr = array();
     $rates = 0;
     $workings = "SINGLE PRNT: ";
-
-    $arr_items = array("ROOM");
 
     $currency_buy = $arr_params["currency_buy_code"];
 
@@ -2196,7 +2095,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
     return $arr;
 }
 
-function _rates_calculator_lookup_single_parent_children_rates($arr_group_children, $rules, $arr_params, $arr_adultpolicies_rules, $con, $arr_eci) {
+function _rates_calculator_lookup_single_parent_children_rates($arr_group_children, $rules, $arr_params, $arr_adultpolicies_rules, $arr_eci) {
 
     $arr_final = array();
     $rates = 0;
@@ -2521,20 +2420,21 @@ function _rates_calculator_getTaxCommi_AddOn_Basis($hotelroom, $arr_taxcomm) {
 function _rates_calculator_lookup_spo($arr_params, $con) {
     //returns an array of spos for that hotel 
     //that match the conditions of the contract
-
-    $adult = count($arr_params["adults"]);
-    $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
-    $checkin_time = $arr_params["checkin_time"];
-    $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
-    $checkout_time = $arr_params["checkout_time"];
-    $children = $arr_params["children"];
-    $country = $arr_params["country"];
-    $hotel = $arr_params["hotel"];
-    $hotelroom = $arr_params["hotelroom"];
-    $mealplan = $arr_params["mealplan"];
-    $rate = $arr_params["rate"];
-    $touroperator = $arr_params["touroperator"];
-    $contractid = $arr_params["contractids"];
+    /*
+      $adult = count($arr_params["adults"]);
+      $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
+      $checkin_time = $arr_params["checkin_time"];
+      $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
+      $checkout_time = $arr_params["checkout_time"];
+      $children = $arr_params["children"];
+      $country = $arr_params["country"];
+      $hotel = $arr_params["hotel"];
+      $hotelroom = $arr_params["hotelroom"];
+      $mealplan = $arr_params["mealplan"];
+      $rate = $arr_params["rate"];
+      $touroperator = $arr_params["touroperator"];
+      $contractid = $arr_params["contractids"];
+     */
 }
 
 function _rates_calculator_prepare_costings_array($con, $arr_taxcomm, $arr_params, $buyprice, $arr_items, $isPN_PPPN) {
@@ -2588,7 +2488,6 @@ function _rates_calculator_prepare_costings_array($con, $arr_taxcomm, $arr_param
 
 function _rates_calculator_apply_rates_lco_flat_pni($arr, $arr_lco, $currency_buy, &$lco_applied) {
     //$lco_applied = false;
-
     //this will only apply if late check out FLAT PNI, then:
     //share the lco costs between non FOC pax
 
@@ -2829,12 +2728,14 @@ function _rates_calculator_sum_daily_total($arr, $arr_columns, $category, $arr_p
     //======== sum up values for the night ================
     for ($i = 0; $i < count($arr); $i++) {
         //for that specific day
-        if ($arr[$i]["CATEGORY"] == $category) {
-            $arr_lines = $arr[$i]["COSTINGS"];
+        if (isset($arr[$i]["CATEGORY"])) {
+            if ($arr[$i]["CATEGORY"] == $category) {
+                $arr_lines = $arr[$i]["COSTINGS"];
 
-            for ($c = 0; $c < count($arr_lines); $c++) {
+                for ($c = 0; $c < count($arr_lines); $c++) {
 
-                $arr_total[$c]["VALUE"] += $arr_lines[$c]["VALUE"];
+                    $arr_total[$c]["VALUE"] += $arr_lines[$c]["VALUE"];
+                }
             }
         }
     }

@@ -8897,6 +8897,7 @@ function hotelcontracts()
                 }
                 if (json_obj.OUTCOME == "OK")
                 {
+                    console.log(json_obj.COMBINATIONS);
                     displayCombinations(json_obj.COMBINATIONS);
                 } else
                 {
@@ -10700,7 +10701,7 @@ function hotelcontracts()
 
     function displayCombinationsColumn(combinations_array, from, to)
     {
-        var aico = "<img src='images/adult_24.png' />";
+        var aico = "<img src='images/adult_24.png'  />";
         var cico = "<img src='images/child_24.png' height='20px' />";
 
         var combii = "<p class='big'>";
@@ -10717,6 +10718,7 @@ function hotelcontracts()
                 var agefrom = arr_combii_nodes[l].AGEFROM;
                 var ageto = arr_combii_nodes[l].AGETO;
                 var no = arr_combii_nodes[l].No;
+                
 
                 if (no > 0)
                 {
@@ -10750,10 +10752,6 @@ function hotelcontracts()
 
                             first = false;
                         }
-
-
-
-
                     }
                 }
 

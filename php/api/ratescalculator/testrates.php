@@ -35,7 +35,9 @@ try {
     require_once("../hotelcontracts/_contract_exchangerates.php");
     require_once("../hotelcontracts/_contract_calculatesp.php");
     require_once("../hotelcontracts/_contract_taxcommi.php");
+    require_once("../hotelcontracts/_contract_combinations_rooms.php");
     require_once("../../globalvars/globalvars.php");
+    
     
     $con = pdo_con();
     $arr_params = json_decode($_POST["params"],true);
