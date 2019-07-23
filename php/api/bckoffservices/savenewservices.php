@@ -18,10 +18,10 @@ try {
         throw new Exception("NO LOG IN!");
     }
     
-    if (!isset($_POST["token"])) {
+    if (!isset($_GET["token"])) {
         throw new Exception("INVALID TOKEN");
     }
-    if ($_POST["token"] != $_SESSION["token"]) {
+    if ($_GET["token"] != $_SESSION["token"]) {
         throw new Exception("INVALID TOKEN");
     }
     
