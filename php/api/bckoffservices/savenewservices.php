@@ -18,10 +18,10 @@ try {
         throw new Exception("NO LOG IN!");
     }
     
-    if (!isset($_GET["t"])) {
+    if (!isset($_GET["token"])) {
         throw new Exception("INVALID TOKEN");
     }
-    if ($_GET["t"] != $_SESSION["t"]) {
+    if ($_GET["token"] != $_SESSION["token"]) {
         throw new Exception("INVALID TOKEN");
     }
     
@@ -47,7 +47,7 @@ try {
 
     if ($id == "-1") {
         $sql = "INSERT INTO tblnewservices (locationservice, servicetype, supplier, optioncode, descriptionservice, comments) 
-                VALUES (:locationservice, :servicetype, :supplier, :optioncode, : descriptionservice, :comments)";
+                VALUES (:locationservice, :servicetype, :supplier, :optioncode, :descriptionservice, :comments)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(

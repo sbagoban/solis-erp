@@ -1,9 +1,11 @@
-CREATE TABLE tblnewservices (
-    id int,
-    locationservice varchar(255),
-    servicetype varchar(255),
-    supplier varchar(255),
-    optioncode varchar(255),
-    descriptionservice varchar(255),
-    comments varchar(255)
-);
+CREATE TABLE  `tblnewservices` 
+(    
+   `id` INTEGER NOT NULL AUTO_INCREMENT ,
+   `locationservice` VARCHAR( 255 ) ,
+   `servicetype` VARCHAR( 255 ) ,
+   `supplier` VARCHAR( 255 ) ,
+   `optioncode` VARCHAR( 255 ) ,
+   `descriptionservice` VARCHAR( 255 ) ,
+    `comments` VARCHAR( 255 ) ,
+   PRIMARY KEY `id`(`id`)
+)

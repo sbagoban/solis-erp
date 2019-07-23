@@ -7,9 +7,9 @@ $(document).ready(function(){
     /////////////////////////////////////////////
     // model --> fetch Api Select Service Type //
     /////////////////////////////////////////////
-    const URL = "php/api/combos/servicetype_combo.php?t=" + encodeURIComponent(global_token); 
+    const url = "php/api/combos/servicetype_combo.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
-        url : URL,
+        url : url,
         type : "GET",
         success : function(data) {
             helpersDropdown.buildDropdown(
@@ -41,9 +41,9 @@ $(document).ready(function(){
     /////////////////////////////////////////
     // model --> fetch Api Select Location //
     /////////////////////////////////////////
-    const URL_CountryCombo = "php/api/combos/countryexcursions_combo.php?t=" + encodeURIComponent(global_token); 
+    const url_countrycombo = "php/api/combos/countryexcursions_combo.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
-        url : URL_CountryCombo,
+        url : url_countrycombo,
         type : "GET",
         success : function(data) {
             helpersDropdownLocation.buildDropdown(
@@ -84,11 +84,6 @@ $(document).ready(function(){
     // model --> save form value to dB //////
     /////////////////////////////////////////
     $("#createNewService").click(function () {
-        // TO ADD THIS IN SUCCESS //
-        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
-        $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
-        // TO ADD THIS IN SUCCESS //
-
         var ddlLocationSelected = $('#ddlChooseLocation').val();
         var ddlServiceTypeSelected = $('#ddlSelectServiceType').val();
         var ddlSupplierSelected = $('#ddlChooseSupplier').val();
@@ -99,23 +94,26 @@ $(document).ready(function(){
 
         var objService = {
             id:-1, //for new items, id is always -1
-            Location: ddlLocationSelected, //please make sure the names match in JS and PHP
-            ServiceType: ddlServiceTypeSelected,
+            locationservice: ddlLocationSelected, //please make sure the names match in JS and PHP
+            servicetype: ddlServiceTypeSelected,
             supplier: ddlSupplierSelected,
-            optionCode: ddlOptionCodeSelected+generatedCode,
-            description: descriptionValue,
+            optioncode: ddlOptionCodeSelected+generatedCode,
+            descriptionservice: descriptionValue,
             comments: commentValue
         };
 
         
-        var params = "?t=" + encodeURIComponent(global_token);
-        const URL_SAVE_SERVICE = "php/api/bckoffservices/savenewservices.php"+ params;
+        const url_save_service = "php/api/bckoffservices/savenewservices.php?token=" + encodeURIComponent(global_token);
         $.ajax({
-            url : URL_SAVE_SERVICE,
+            url : url_save_service,
             method : "POST",
             data : objService,                                                                                                                                                                                                                                                                                                                                                                                                                                              
             success : function(data){
                 console.log('value', data);
+                // TO ADD THIS IN SUCCESS //
+                document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
+                $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
+                // TO ADD THIS IN SUCCESS //
             },
             error: function(error) {
                 console.log('Error ${error}');
