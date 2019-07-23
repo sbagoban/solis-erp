@@ -11,26 +11,26 @@
 
                     <div class="panel-body">
                         <form class="form-horizontal row-border" action="#" onsubmit="return false">
-                            <div class="form-group has-warning">
+                            <div class="form-group" id="chooseLocation">
                                 <label class="col-md-2 control-label">Location</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
+                                    <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
                                         <option value="selectedCountry" selected disabled hidden>Choose Location</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group has-warning">
+                            <div class="form-group" id="serviceType">
                                 <label class="col-md-2 control-label">Service Type</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                    <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group has-warning">
+                            <div class="form-group" id="supplier">
                                 <label class="col-md-2 control-label">Supplier</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
+                                    <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
                                         <option selected disabled hidden>Choose Supplier</option>
                                         <option value="1">CR</option>
                                         <option value="2">CT</option>
@@ -40,10 +40,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="optionCode">
                                 <label class="col-md-2 control-label">Option Code</label>
                                 <div class="col-md-3">
-                                    <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
+                                    <select class="custom-select form-control form-control-sm inputValidation" name="regular" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
                                         <option selected disabled hidden>Choose Dept</option>
                                         <option value="1">DS</option>
                                         <option value="2">CT</option>
@@ -86,6 +86,10 @@
                 </div>
             </div>
         </div>
+            <div class="toast jam" aria-hidden="true" style="display:none;">
+            <span class="close" aria-role="button" tabindex="0">&times;</span>
+                Service Added.
+            </div>
         <!-- Row end -->
 
         <!-- Row start - Service Details  -->
@@ -118,15 +122,13 @@
             </div> -->
             <!-- Row end - Service Details -->
             <!-- Row Search Service Details -->
-            <div class="row">
+            <div class="row" id="searchServiceDetails">
                 <div class="col-md-12">
-                    <div class="col-md-12">
-                        <div class="searchFilter">
-                            <input type="search" id="search" class="form-control" placeholder="&#xf0e0;  Search Service Details ..." data-toggle="tooltip" title="Search Service Details ...">
-                        </div>
-                        <div id="root"></div>
-                        <div class="pages"></div>
+                    <div class="searchFilter">
+                        <input type="search" id="search" class="form-control" placeholder="&#xf0e0;  Search Service Details ..." data-toggle="tooltip" title="Search Service Details ...">
                     </div>
+                    <div id="root"></div>
+                    <div class="pages"></div>
                 </div>
             </div>
             &nbsp; &nbsp;

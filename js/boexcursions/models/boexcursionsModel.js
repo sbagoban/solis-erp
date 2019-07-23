@@ -1,4 +1,9 @@
 $(document).ready(function(){
+    ////////////////////////////////////////////////////
+    // model --> Search Block Display None By Deafult //
+    ////////////////////////////////////////////////////
+    document.getElementById('searchServiceDetails').setAttribute('style', 'display: none');
+
     /////////////////////////////////////////////
     // model --> fetch Api Select Service Type //
     /////////////////////////////////////////////
@@ -75,7 +80,15 @@ $(document).ready(function(){
         document.getElementById('generateNone').setAttribute('style', 'display: none');
     });
 
+    /////////////////////////////////////////
+    // model --> save form value to dB //////
+    /////////////////////////////////////////
     $("#createNewService").click(function () {
+        // TO ADD THIS IN SUCCESS //
+        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
+        $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
+        // TO ADD THIS IN SUCCESS //
+
         var ddlLocationSelected = $('#ddlChooseLocation').val();
         var ddlServiceTypeSelected = $('#ddlSelectServiceType').val();
         var ddlSupplierSelected = $('#ddlChooseSupplier').val();
@@ -84,9 +97,30 @@ $(document).ready(function(){
         var descriptionValue = document.getElementById('addedDescription').value;
         var commentValue = document.getElementById('addedComment').value;
 
-        console.log('Location', ddlLocationSelected, 'ServiceType', ddlServiceTypeSelected, 'Supplier Selected', ddlSupplierSelected, 'Option Code', ddlOptionCodeSelected, 'Generated code',generatedCode, 'desciption', descriptionValue);
+        var objService = {
+            Location: ddlLocationSelected,
+            ServiceType: ddlServiceTypeSelected,
+            supplier: ddlSupplierSelected,
+            optionCode: ddlOptionCodeSelected+generatedCode,
+            description: descriptionValue,
+            comments: commentValue
+        };
+
+        var params = "?t=" + encodeURIComponent(global_token);
+        const URL_SAVE_SERVICE = "PHP/api/bckoffservices/savenewservices.php"+ params;
+        $.ajax({
+            url : URL_SAVE_SERVICE,
+            method : "POST",
+            data : objService,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+            success : function(data){
+                console.log('value', data);
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        });
     });
-    
+    // End click
 });
 
 

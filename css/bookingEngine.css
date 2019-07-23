@@ -480,6 +480,125 @@ a#generateNone i.fa.fa-refresh.fa-lg {
 button.btn.btn-success.pull-right.searchServices {
   margin-right: 11px;
 }
+.form-control {
+  border-radius: 0px;
+ font: 12px/21px arial,sans-serif;
+   color: #08107B;
+}
+
+.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:first-child>.btn-group:not(:first-child)>.btn, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle {
+ border-radius: 0px;
+}
+
+div.idmsMainbox {
+ padding-top: 30px;
+}
+
+div.idmsForm {
+   background: #F0F0F0;
+   padding-bottom: 10px;
+   font: 16px/20px arial,sans-serif;
+   color: #08107B;
+}
+
+div.idmsForm label {
+   font: 16px/20px arial,sans-serif;
+}
+
+div.idmsForm .btnBar {
+   float: right;
+   padding-bottom: 10px;
+
+}
+
+div.idmsForm .btn.btn-default {
+   background: #E49900;
+   color: #fff;
+   border-style:none;
+   font: bold 14px/28px arial,sans-serif
+   white-space: nowrap;
+   height: 28px;
+   width: auto;
+   padding: 0px 25px 0px 15px;
+   font-weight: 700;
+   border-radius: 0px;
+}
+
+div.idmsForm .btn.btn-success {
+   background: #08107B;
+   color: #fff;
+   border-style:none;
+   font: bold 14px/28px arial,sans-serif
+   white-space: nowrap;
+   height: 28px;
+   width: auto;
+   padding: 0px 25px 0px 15px;
+   font-weight: 700;
+   border-radius: 0px;
+}
+
+div.idmsForm input,div.idmsForm textarea{
+   border-radius: 0px;
+}
+
+input[type="text"]
+{
+   font: 12px/21px arial,sans-serif;
+   color: #08107B;    
+}
+
+
+/* Select default font color */
+ select:invalid { color:  #999999;
+}
+
+ /*
+.form-control::-webkit-input-placeholder { color: white; }
+.form-control:-moz-placeholder { color: white; }
+.form-control::-moz-placeholder { color: white; }
+.form-control:-ms-input-placeholder { color: white; }
+ */
+
+form select.not_chosen {
+   color: #999999;
+}
+
+option[value=""][disabled] {
+   display: none;
+}
+
+option {
+   color: #08107B;
+}
+
+.inputError{
+ background-color: #f4bfbf;
+ border: 1px solid #d03e3e;
+ color: #d03e3e;
+}
+.inputError::-webkit-input-placeholder{
+ color: #d03e3e;
+}
+
+.on {
+    display: none;
+    position: absolute;
+}
+.toast {
+  width: 200px;
+  height: 20px;
+  height: auto;
+  position: fixed;
+  margin-left: 0;
+  background-color: #00a65a;
+  color: #ffffff;
+  font-size: 20px;
+  top: 54px;
+  padding: 11px;
+  text-align: center;
+  box-shadow: 1px 2px 10px 3px #999999;
+  right: 0;
+}
 
 @keyframes spin {
   from {
