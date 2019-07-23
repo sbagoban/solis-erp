@@ -1,1 +1,0 @@
-INSERT INTO `dbsolis`.`tblmenu` (`menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `menusysid`, `description`, `inout`) VALUES ('Excursions', '13', 'Y', '25', 'fa-tree', 'backoff_excursions', 'Back Office Excursions', 'O');
