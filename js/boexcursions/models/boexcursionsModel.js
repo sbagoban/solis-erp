@@ -98,7 +98,8 @@ $(document).ready(function(){
         var commentValue = document.getElementById('addedComment').value;
 
         var objService = {
-            Location: ddlLocationSelected,
+            id:-1, //for new items, id is always -1
+            Location: ddlLocationSelected, //please make sure the names match in JS and PHP
             ServiceType: ddlServiceTypeSelected,
             supplier: ddlSupplierSelected,
             optionCode: ddlOptionCodeSelected+generatedCode,
@@ -107,7 +108,7 @@ $(document).ready(function(){
         };
 
         var params = "?t=" + encodeURIComponent(global_token);
-        const URL_SAVE_SERVICE = "PHP/api/bckoffservices/savenewservices.php"+ params;
+        const URL_SAVE_SERVICE = "php/api/bckoffservices/savenewservices.php"+ params;
         $.ajax({
             url : URL_SAVE_SERVICE,
             method : "POST",
