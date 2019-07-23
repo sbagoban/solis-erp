@@ -106,6 +106,7 @@ $(document).ready(function(){
             comments: commentValue
         };
 
+        
         var params = "?t=" + encodeURIComponent(global_token);
         const URL_SAVE_SERVICE = "PHP/api/bckoffservices/savenewservices.php"+ params;
         $.ajax({
@@ -119,6 +120,8 @@ $(document).ready(function(){
                 console.log('Error ${error}');
             }
         });
+
+        
     });
     // End click
 });
