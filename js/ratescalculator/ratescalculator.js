@@ -11,12 +11,7 @@ function ratescalculator() {
     main_layout.cells("a").hideHeader();
     main_layout.cells("b").hideHeader();
 
-    main_layout.cells("a").setHeight(1000);
-    main_layout.cells("b").setHeight(50);
-    main_layout.cells("b").fixSize(true, true);
-
-
-    resizeLayout();
+    
     var tabViews = main_layout.cells("a").attachTabbar();
     tabViews.addTab("params", "Contract and SPO Parameters", "200px", '');
     tabViews.addTab("results", "Calculator Results", "180px", '');
@@ -45,7 +40,7 @@ function ratescalculator() {
     grid_adult.init();
 
     var cbo_bride_groom = grid_adult.getColumnCombo(grid_adult.getColIndexById("bride_groom"));
-    cbo_bride_groom.addOption([{value: "---", text: "---"}, {value: "BRIDE", text: "BRIDE"}, {value: "GROOM", text: "GROOM"}]);
+    cbo_bride_groom.addOption([{value: "", text: "---"}, {value: "BRIDE", text: "BRIDE"}, {value: "GROOM", text: "GROOM"}]);
     cbo_bride_groom.readonly(true);
 
     var toolbar_adult = param_layout.cells("b").attachToolbar();
@@ -318,52 +313,70 @@ function ratescalculator() {
         $("[name='checkin_time']").mask("99:99");
         $("[name='checkout_time']").mask("99:99");
     });
+    
+    main_layout.cells("a").setHeight(900);
+    main_layout.cells("b").setHeight(50);
+    main_layout.cells("a").fixSize(true, true);
+    resizeLayout();
     //=======================================================================
 
 
     var str_frm_spo = [
         {type: "settings", position: "label-left", id: "form_spo"},
 
-        {type: "combo", name: "type", label: "SPO Type:", labelWidth: "150",
+        {type: "combo", name: "spo_type", label: "SPO Type:", labelWidth: "170",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", required: true
         },
 
-        {type: "calendar", name: "booking_date", label: "Booking Date:",
+        {type: "calendar", name: "spo_booking_date", label: "Booking Date:",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "150",
-            dateFormat: "%d-%m-%Y", required: true,
+            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "170",
+            dateFormat: "%d-%m-%Y",
             note: {
                 text: "Format: dd-mm-yyyy"
             }
         },
-        {type: "calendar", name: "travel_date", label: "Trave Date:",
+        {type: "calendar", name: "spo_travel_date", label: "Trave Date:",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "150",
-            dateFormat: "%d-%m-%Y", required: true,
+            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "170",
+            dateFormat: "%d-%m-%Y",
             note: {
                 text: "Format: dd-mm-yyyy"
             }
         },
 
-        {type: "input", name: "party_pax", label: "Num of Pax in all:", labelWidth: "150",
+        {type: "input", name: "spo_party_pax", label: "Additional of Pax in Party:", labelWidth: "170",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10"
+            labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
         },
+        {type: "checkbox", name: "spo_discount", label: "Apply Test Discount", width: 800, list: [
+                {type: "input", name: "spo_discount_room_percentage", label: "Room Only (%)", labelWidth: "150",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
+                },
+                {type: "input", name: "spo_discount_all_percentage", label: "All (%)", labelWidth: "150",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
+                },
+                {type: "input", name: "spo_discount_flat", label: "Flat", labelWidth: "150",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
+                }]},
         {type: "block", width: 800, list: [
-                {type: "checkbox", name: "ishoneymoon", label: "Is Honey Moon"},
+                {type: "checkbox", name: "spo_ishoneymoon", label: "Is Honey Moon"},
                 {type: "newcolumn"},
-                {type: "checkbox", name: "isweddingparty", label: "Is Wedding Party"},
+                {type: "checkbox", name: "spo_isweddingparty", label: "Is Wedding Party"},
                 {type: "newcolumn"},
-                {type: "checkbox", name: "isweddinganniv", label: "Is Wedding Anniversary"}
+                {type: "checkbox", name: "spo_isweddinganniv", label: "Is Wedding Anniversary"}
             ]}
     ];
 
     var form_spo = accordConSPO.cells("spo").attachForm(str_frm_spo);
-
-    form_spo.getCombo("type").addOption([{value: "contractual", text: "CONTRACTUAL"}, {value: "tactical", text: "TACTICAL"}, {value: "BOTH", text: "BOTH"}]);
-    form_spo.getCombo("type").readonly(true);
-    form_spo.getCombo("type").setComboValue("BOTH");
+    
+    form_spo.getCombo("spo_type").addOption([{value: "contractual", text: "CONTRACTUAL"}, {value: "tactical", text: "TACTICAL"}, {value: "BOTH", text: "BOTH"}]);
+    form_spo.getCombo("spo_type").readonly(true);
+    form_spo.getCombo("spo_type").setComboValue("BOTH");
 
     //======================================================================
     var results_layout = tabViews.cells("results").attachLayout("1C");
@@ -532,6 +545,8 @@ function ratescalculator() {
             return;
         }
 
+
+
         if (grid_adult.getRowsNum() == 0 && grid_children.getRowsNum() == 0)
         {
             tabViews.setTabActive("params");
@@ -562,12 +577,19 @@ function ratescalculator() {
             return;
         }
 
+        if (!validate_spos())
+        {
+            spo_discount
+        }
+
         //=================================
         //collect values
         var main_details = form_calc.getFormData();
+
         main_details.checkin_date = utils_date_to_str(utils_createDateObjFromString(form_calc.getItemValue("checkin_date", true), "dd-mm-yyyy"));
         main_details.checkout_date = utils_date_to_str(utils_createDateObjFromString(form_calc.getItemValue("checkout_date", true), "dd-mm-yyyy"));
 
+        var spo_details = form_spo.getFormData();
         //=================================
         var arradults = [];
         for (var i = 0; i < grid_adult.getRowsNum(); i++)
@@ -601,7 +623,9 @@ function ratescalculator() {
 
 
         param_layout.progressOn();
-        var params = "params=" + encodeURIComponent(JSON.stringify(main_details)) + "&t=" + encodeURIComponent(global_token);
+        var params = "params=" + encodeURIComponent(JSON.stringify(main_details)) +
+                "&spo_params=" + encodeURIComponent(JSON.stringify(spo_details)) +
+                "&t=" + encodeURIComponent(global_token);
         dhtmlxAjax.post("php/api/ratescalculator/testrates.php", params, function (loader) {
             param_layout.progressOff();
             if (loader)
@@ -672,7 +696,7 @@ function ratescalculator() {
             var currency_buy_code = "";
             var rwid = 1;
             var parent_rwid = 1;
-            
+
             //create the columns necessary in the results grid
             initialiseResultGrid(columns);
             var arr_grand_total = initialiseGrandTotal(columns);
@@ -684,7 +708,7 @@ function ratescalculator() {
                 currency_sell_code = arr[i].CURRENCY_SELL_CODE;
                 currency_buy_code = arr[i].CURRENCY_BUY_CODE;
                 var colspan = 1;
-                
+
                 var status = arr[i].STATUS;
                 var date = arr[i].DATE;
 
@@ -709,13 +733,13 @@ function ratescalculator() {
                     if (j > 0)
                     {
                         //add a new row
-                        colspan ++;
+                        colspan++;
                         rwid++;
                         grid_results.addRow(rwid, "");
                         grid_results.setRowTextStyle(rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;" + row_style);
 
                     }
-                    
+
                     grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue(message);
 
                     //now for each column
@@ -731,7 +755,7 @@ function ratescalculator() {
                         }
                     }
                 }
-                
+
                 grid_results.setRowspan(parent_rwid, 0, colspan);
                 grid_results.setRowspan(parent_rwid, 1, colspan);
 
@@ -889,4 +913,99 @@ function ratescalculator() {
 
         return;
     }
+
+    function validate_spos()
+    {   
+        if (!form_spo.validate())
+        {
+            tabViews.setTabActive("params");
+            accordConSPO.openItem("spo");
+            dhtmlx.alert({
+                text: "Please enter missing highligted fields!",
+                type: "alert-warning",
+                title: "Test Rates Calculator",
+                callback: function () {
+                }
+            });
+            return false;
+        }
+        
+
+        if (form_spo.isItemChecked("spo_discount"))
+        {         
+            
+            if(utils_trim(form_spo.getItemValue("spo_discount_room_percentage"), " ") == "")
+            {
+                form_spo.setItemValue("spo_discount_room_percentage","0");
+            }
+            if(utils_trim(form_spo.getItemValue("spo_discount_all_percentage"), " ") == "")
+            {
+                form_spo.setItemValue("spo_discount_all_percentage","0");
+            }
+            if(utils_trim(form_spo.getItemValue("spo_discount_flat"), " ") == "")
+            {
+                form_spo.setItemValue("spo_discount_flat","0");
+            }
+            
+            var room_percentage = parseFloat(form_spo.getItemValue("spo_discount_room_percentage"));
+            var all_percentage = parseFloat(form_spo.getItemValue("spo_discount_all_percentage"));
+            var flat = parseFloat(form_spo.getItemValue("spo_discount_flat"));
+            
+            if(room_percentage < 0 || room_percentage > 100)
+            {
+                tabViews.setTabActive("params");
+                accordConSPO.openItem("spo");
+                dhtmlx.alert({
+                    text: "SPO Room Percentage Discount MUST be between 0 and 100 inclusive",
+                    type: "alert-warning",
+                    title: "Test Rates Calculator",
+                    callback: function () {
+                        form_spo.setItemFocus("spo_discount_room_percentage");
+                    }
+                });
+                return false;
+            }
+            
+            if(all_percentage < 0 || all_percentage > 100)
+            {
+                tabViews.setTabActive("params");
+                accordConSPO.openItem("spo");
+                dhtmlx.alert({
+                    text: "SPO All Percentage Discount MUST be between 0 and 100 inclusive",
+                    type: "alert-warning",
+                    title: "Test Rates Calculator",
+                    callback: function () {
+                        form_spo.setItemFocus("spo_discount_all_percentage");
+                    }
+                });
+                return false;
+            }
+            
+            if(flat < 0)
+            {
+                tabViews.setTabActive("params");
+                accordConSPO.openItem("spo");
+                dhtmlx.alert({
+                    text: "SPO Flat Discount MUST cannot be less than ZERO",
+                    type: "alert-warning",
+                    title: "Test Rates Calculator",
+                    callback: function () {
+                        form_spo.setItemFocus("spo_discount_flat");
+                    }
+                });
+                return false;
+            }
+            
+        }
+
+
+
+        return true;
+    }
+
+
+
+
 }
+
+

@@ -5,6 +5,42 @@ function _rates_calculator($con, $arr_params) {
 
         $time_pre = microtime(true);
 
+        //================================================================
+        ////TEMP ========================================================
+        //temporarily create a discount array for testing
+        $arr_spo_discounts = array();
+
+        $discount_percnt_room = $arr_params["spo_discount_room_percentage"];
+        $discount_percnt_all = $arr_params["spo_discount_all_percentage"];
+        $discount_flat = $arr_params["spo_discount_flat"];
+
+
+        $arr_item = array(
+            "SPO_ID" => 1, "SPO_NAME" => "TESTING 1", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "%ALL", "VALUE" => $discount_percnt_all);
+        $arr_spo_discounts[] = $arr_item;
+
+        $arr_item = array(
+            "SPO_ID" => 2, "SPO_NAME" => "TESTING 2", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => $discount_percnt_room);
+        $arr_spo_discounts[] = $arr_item;
+
+        $arr_item = array(
+            "SPO_ID" => 3, "SPO_NAME" => "TESTING 3", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "FLAT", "VALUE" => $discount_flat);
+        $arr_spo_discounts[] = $arr_item;
+
+        $arr_params["spo_discounts_array"] = $arr_spo_discounts;
+
+        ////TEMP ========================================================
+        //=================================================================        
+
 
         $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
         $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
@@ -248,7 +284,7 @@ function _rates_calculator($con, $arr_params) {
                         //============= NOW GET DAILY RATES ===================================
                         $arr = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
 
-                        $arr = _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $currency_buy);
+                        $arr = _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params);
 
                         $arr = _rates_calculator_calc_rollover_percentage($arr_params, $arr, $roll_over_flg);
                         $arr = _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $roll_over_flg, "ROOM");
@@ -432,7 +468,7 @@ function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_d
                 if ($charge_type != "") {
 
                     //there is an early check in here!
-                    $workings = "<font color='blue'>EARLY CHECK IN</font>: before $limit_time ";
+                    $workings = "<b><font color='blue'>EARLY CHECK IN</font></b>: before $limit_time ";
                     return array("WORKINGS" => $workings, "CHARGE_TYPE" => $charge_type, "CHARGE_VALUE" => $charge_value);
                 }
             }
@@ -451,7 +487,7 @@ function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_d
                 if ($charge_type != "") {
 
                     //there is a late checkout here!
-                    $workings = "<BR><font color='blue'>LATE CHECK OUT</font>: after $limit_time";
+                    $workings = "<b><font color='blue'>LATE CHECK OUT</font></b>: after $limit_time";
                     return array("WORKINGS" => $workings, "CHARGE_TYPE" => $charge_type, "CHARGE_VALUE" => $charge_value);
                 }
             }
@@ -658,23 +694,22 @@ function _rates_calculator_test_capacity_adch_combii_combo($combo, $adult, $chil
     //====== now test children =======
     for ($j = 0; $j < count($children); $j++) {
         $found = false;
-        
+
         $age = $children[$j]["age"];
-        
+
         for ($i = 0; $i < count($combo); $i++) {
             $agfrom = $combo[$i]["AGEFROM"];
             $agto = $combo[$i]["AGETO"];
-            
+
             if ($agfrom <= $age && $age <= $agto) {
                 if ($combo[$i]["No"] > 0) {
                     $found = true;
                     $combo[$i]["No"] --; //decrement the children count
                 }
-            }            
+            }
         }
-        
-        if(!$found)
-        {
+
+        if (!$found) {
             return false;
         }
     }
@@ -906,7 +941,6 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
         $normal_workings = $arr_normal["WORKINGS_STANDARD"];
 
 
-
         //get extra adults and children
         _rates_calculator_test_capacity_rule_units_extra_adult($std_max, $adult);
         _rates_calculator_test_capacity_rule_units_extra_child($std_max, $arr_group_children);
@@ -915,85 +949,100 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
         $flg_extra_people = false;
 
         //for each extra adult and extra children, calculate the price
+        //===========================================================
         if ($adult > 0) {
             //there is extra adult
-            $arr_extra_adult = _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $adult, $normal_rates);
-            $extra_adult_rates = $arr_extra_adult["RATES_EXTRA_ADULT"];
-            $extra_adult_workings = $arr_extra_adult["WORKINGS_EXTRA_ADULT"];
+            $arr_extra_adult = _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $adult, $normal_rates, $arr_eci);
+            $arr = array_merge($arr, $arr_extra_adult);
             $flg_extra_people = true;
-            $arr[] = array("MSG" => $extra_adult_workings, "COSTINGS" => $extra_adult_rates);
         }
-
-        //for each extra children, calculate the price
-        $arr_children_rules = $rules["date_childpolicies_rules"];
-
-        for ($i = 0; $i < count($arr_group_children); $i++) {
-            $arr_children = $arr_group_children[$i]["CHILDREN"];
-            $age_from = $arr_group_children[$i]["AGFROM"];
-            $age_to = $arr_group_children[$i]["AGTO"];
-
-            for ($idx = 1; $idx <= count($arr_children); $idx++) {
-                $flg_extra_people = true;
-
-                $basis = _rates_calculator_lookup_rates_units_lookup_children_rates($arr_children_rules, "basis", $idx, $age_from, $age_to);
-                $value = _rates_calculator_lookup_rates_units_lookup_children_rates($arr_children_rules, "value", $idx, $age_from, $age_to);
-
-
-                if ($basis == "%") {
-                    $percentage = 0;
-                    if ($value > 0) {
-                        $percentage = round(($value / 100) * $normal_rates, 2);
-                    }
-
-                    $rates_children = $percentage;
-                    $workings_children = "<b>EXTRA</b>: Ch #$idx (<b>$age_from-$age_to yrs</b>) = <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
-
-                    _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
-
-                    $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children);
-                } else if ($basis == "FLAT") {
-                    $rates_children = $value;
-                    $workings_children = "<b>EXTRA</b>: Ch #$idx (<b>$age_from-$age_to yrs</b>) = $currency_buy $value";
-
-                    _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
-
-                    $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children);
-                }
-            }
-        }
-
+        //===========================================================
+        //===========================================================
+        //for each extra children, calculate the price                
+        $arr_extra_children = _rates_calculator_lookup_rates_units_extra_children($rules, $arr_params, $arr_group_children, $normal_rates, $arr_eci, $flg_extra_people);
+        $arr = array_merge($arr, $arr_extra_children);
+        
+        //===========================================================
         //finally get the normal standard unit price and split it per person
+        
+        //reload the $arr_group_children
+        $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con);
+        
+        
         $num_persons = 0;
         if ($flg_extra_people) {
             $num_persons = $arr_std_occup[0]["MAX"];
         } else {
             $num_persons = count($arr_params["adults"]) + count($arr_params["children"]);
         }
-
-
-
+        
+        
         $per_person_buyprice = round($normal_rates / $num_persons);
         $cumul_buyprice = 0;
 
         for ($adinx = 1; $adinx <= $num_persons; $adinx++) {
-            if ($adinx == $adult) {
+            if ($adinx == $num_persons) {
                 $per_person_buyprice = $normal_rates - $cumul_buyprice;
             } else {
                 $cumul_buyprice += $per_person_buyprice;
             }
+            
+            $pax = _rates_calculator_lookup_rates_units_get_pax_details($adinx, $arr_params, $arr_group_children);
 
-            $_workings = "$normal_workings => Pax #$adinx = $currency_buy $per_person_buyprice";
+            $_workings = "$normal_workings => Pax #$adinx " . $pax["adch"] . " <b>" . $pax["age"] . "yrs</b> = $currency_buy $per_person_buyprice";
 
-            //record adult rates for each adult
+            //record adult rates for each adult:
+            //apply eci for that pax if any
             _rates_calculator_apply_rates_eci_percentage($per_person_buyprice, $arr_eci, $_workings, $currency_buy);
-            $arr[] = array("MSG" => $_workings, "COSTINGS" => $per_person_buyprice);
+
+            //apply spo percent discount for that pax if any                    
+            _rates_calculator_apply_spo_discount_percentage($per_person_buyprice, $_workings, $arr_params, $pax["adch"], $pax["age"], $pax["bride_groom"], "ROOM");
+
+
+            $arr[] = array("MSG" => $_workings, "COSTINGS" => $per_person_buyprice,
+                "ADCH" => $pax["adch"],
+                "AGE" => $pax["age"],
+                "BRIDEGROOM" => $pax["bride_groom"]);
         }
     }
 
 
-
-
     return $arr;
+}
+
+function _rates_calculator_lookup_rates_units_get_pax_details($adinx, $arr_params, $arr_group_children)
+{
+    $arr_adults = $arr_params["adults"];
+    
+    if($adinx <= count($arr_adults))
+    {
+        $pax = $arr_adults[$adinx-1];
+        $pax["adch"] = "ADULT";
+        return $pax;
+    }
+    
+    $adinx -= count($arr_adults);
+    
+    //=============
+    $a = count($arr_group_children) - 1;
+    while($a >= 0)
+    {
+        $arr_temp_children = $arr_group_children[$a]["CHILDREN"];
+        
+        if($adinx <= count($arr_temp_children))
+        {
+            $pax = $arr_temp_children[$adinx-1];
+            $pax["adch"] = "CHILDREN";
+            $pax["bride_groom"] = "";
+            return $pax;
+        }
+        else
+        {
+            $adinx -= count($arr_temp_children);
+        }
+        
+        $a --;
+    }
 }
 
 function _rates_calculator_lookup_rates_units_standard($rules, $arr_params) {
@@ -1014,19 +1063,86 @@ function _rates_calculator_lookup_rates_units_standard($rules, $arr_params) {
     return array("RATES_STANDARD" => $rates, "WORKINGS_STANDARD" => $workings);
 }
 
-function _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $adult, $normal_rates) {
+function _rates_calculator_lookup_rates_units_extra_children($rules, $arr_params, $arr_group_children, $normal_rates, $arr_eci, &$flg_extra_people) {
+    $arr = array();
+    $currency_buy = $arr_params["currency_buy_code"];
+
+    $arr_children_rules = $rules["date_childpolicies_rules"];
+
+    for ($i = 0; $i < count($arr_group_children); $i++) {
+        $arr_children = $arr_group_children[$i]["CHILDREN"];
+        $age_from = $arr_group_children[$i]["AGFROM"];
+        $age_to = $arr_group_children[$i]["AGTO"];
+
+        for ($idx = 1; $idx <= count($arr_children); $idx++) {
+            $flg_extra_people = true;
+
+            $child_age = $arr_children[$idx - 1]["age"];
+
+            $basis = _rates_calculator_lookup_rates_units_lookup_children_rates($arr_children_rules, "basis", $idx, $age_from, $age_to);
+            $value = _rates_calculator_lookup_rates_units_lookup_children_rates($arr_children_rules, "value", $idx, $age_from, $age_to);
+
+
+            if ($basis == "%") {
+                $percentage = 0;
+                if ($value > 0) {
+                    $percentage = round(($value / 100) * $normal_rates, 2);
+                }
+
+                $rates_children = $percentage;
+                $workings_children = "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) = <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
+
+                //apply eci for that child if any
+                _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
+
+                //apply spo percent discount for that child if any                    
+                _rates_calculator_apply_spo_discount_percentage($rates_children, $workings_children, $arr_params, "CHILDREN", $child_age, "", "ROOM");
+
+
+                $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children,
+                    "ADCH" => "CHILD",
+                    "AGE" => $child_age,
+                    "BRIDEGROOM" => "");
+                
+            } else if ($basis == "FLAT") {
+
+                $rates_children = $value;
+                $workings_children = "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) = $currency_buy $value";
+
+                //apply eci for that child if any
+                _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
+
+                //apply spo percent discount for that child if any                    
+                _rates_calculator_apply_spo_discount_percentage($rates_children, $workings_children, $arr_params, "CHILDREN", $child_age, "", "ROOM");
+
+                $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children,
+                    "ADCH" => "CHILD",
+                    "AGE" => $child_age,
+                    "BRIDEGROOM" => "");
+            }
+        }
+    }
+
+    return $arr;
+}
+
+function _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $adult, $normal_rates, $arr_eci) {
     $arr = array();
     $rates = 0;
     $workings = "";
     $currency_buy = $arr_params["currency_buy_code"];
-
+    $arr_adults = $arr_params["adults"];
+    
     $arr_adult_rules = $rules["date_adultpolicies_rules"];
 
     //get the basis and value for each extra adult
     for ($i = 1; $i <= $adult; $i++) {
+
         $basis = _rates_calculator_lookup_rates_units_lookup_adult_rates($arr_adult_rules, "additional_adult_basis", $i);
         $value = _rates_calculator_lookup_rates_units_lookup_adult_rates($arr_adult_rules, "additional_adult_value", $i);
 
+        $adult_index = count($arr_adults);
+        $adult_pax = $arr_adults[$adult_index - 1];
 
         if ($basis == "%") {
             $percentage = 0;
@@ -1034,13 +1150,23 @@ function _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $
                 $percentage = round(($value / 100) * $normal_rates, 2);
             }
             $rates = $percentage;
-            $workings = "<b>EXTRA</b>: Ad #$i: <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
+            $workings = "<b>EXTRA PAX</b>: Ad #$adult_index: <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
         } else if ($basis == "FLAT") {
             $rates = $value;
-            $workings = "<b>EXTRA</b>: Ad #$i: $currency_buy $value";
+            $workings = "<b>EXTRA PAX</b>: Ad #$adult_index: $currency_buy $value";
         }
 
-        $arr[] = array("MSG" => $workings, "COSTINGS" => $rates);
+        //apply eci for that extra adult if any
+        _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
+
+        //apply spo percent discount for that extra adult if any                    
+        _rates_calculator_apply_spo_discount_percentage($rates, $workings, $arr_params, "ADULT", $adult_pax["age"], $adult_pax["bride_groom"], "ROOM");
+
+
+        $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
+            "ADCH" => "ADULT",
+            "AGE" => $adult_pax["age"],
+            "BRIDEGROOM" => $adult_pax["bride_groom"]);
     }
 
     return $arr;
@@ -1105,9 +1231,8 @@ function _rates_calculator_lookup_rates_persons($arr_capacity, $arr_params, $thi
 
     if ($count_adult == 1 && count($children) > 0) {
         //single parent policy exists?
-        $arr = _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params, $this_date, $con, $flg_got_rates, $con, $arr_eci);
+        $arr = _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params, $this_date, $con, $flg_got_rates, $arr_eci);
     }
-
     if (!$flg_got_rates) {
         //no single parent rates defined?! then lookup in normal rates
         $arr = _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
@@ -1263,8 +1388,6 @@ function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this
     $hotelroom = $arr_params["hotelroom"];
     $currency_buy = $arr_params["currency_buy_code"];
 
-
-
     $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
 
     if (!is_null($rules)) {
@@ -1293,9 +1416,19 @@ function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this
 
             $_workings = "$workings => Ad #$adinx = $currency_buy $adult_buyprice";
 
-            //record adult rates for each adult
+            //apply eci for that adult if any
             _rates_calculator_apply_rates_eci_percentage($adult_buyprice, $arr_eci, $_workings, $currency_buy);
-            $arr[] = array("MSG" => $_workings, "COSTINGS" => $adult_buyprice);
+
+            //apply spo percent discount for that adult if any
+            $pax = $arr_params["adults"][($adinx - 1)];
+            _rates_calculator_apply_spo_discount_percentage($adult_buyprice, $_workings, $arr_params, "ADULT", $pax["age"], $pax["bride_groom"], "ROOM");
+
+            //record adult rates for each adult
+            $arr[] = array("MSG" => $_workings,
+                "COSTINGS" => $adult_buyprice,
+                "ADCH" => "ADULT",
+                "AGE" => $pax["age"],
+                "BRIDEGROOM" => $pax["bride_groom"]);
         }
 
 
@@ -1499,9 +1632,21 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
         $rates = $arr[$i]["RATES"];
         $childindex = $arr[$i]["CHILDINDEX"];
         $split_between = $arr[$i]["TO_SPLIT_BETWEEN"];
+        $child_age = $arr_children[$child_index - 1]["age"];
 
         if ($split_between == 0) {
-            $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates);
+
+            //apply eci for that child if any
+            _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $work, $currency_buy);
+
+            //apply spo percent discount for that child if any
+            _rates_calculator_apply_spo_discount_percentage($rates, $work, $arr_params, "CHILDREN", $child_age, "", "ROOM");
+
+
+            $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates,
+                "ADCH" => "CHILDREN",
+                "AGE" => $child_age,
+                "BRIDEGROOM" => "");
         } else {
             //need to split
             $ch_buyprice = round($rates / $split_between);
@@ -1516,9 +1661,17 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
 
                 $msg = "$work => Ch #$childindex => $currency_buy $ch_buyprice";
 
-
+                //apply eci percentage for that child if any
                 _rates_calculator_apply_rates_eci_percentage($ch_buyprice, $arr_eci, $msg, $currency_buy);
-                $temp_arr[] = array("MSG" => $msg, "COSTINGS" => $ch_buyprice);
+
+                //apply spo percent discount for that child if any
+                _rates_calculator_apply_spo_discount_percentage($ch_buyprice, $msg, $arr_params, "CHILDREN", $child_age, "", "ROOM");
+
+                $temp_arr[] = array("MSG" => $msg,
+                    "COSTINGS" => $ch_buyprice,
+                    "ADCH" => "CHILDREN",
+                    "AGE" => $child_age,
+                    "BRIDEGROOM" => "");
 
                 $childindex --;
             }
@@ -1547,7 +1700,13 @@ function _rates_calculator_lookup_child_basis_value($sharing_single, $child_inde
                     for ($k = 0; $k < count($arr_policy_values); $k++) {
                         $value_value = $arr_policy_values[$k]["value_value"];
                         $arr[$policy_category] = $value_value;
-                        $arr["STATUS"] = "OK";
+
+                        $basis = trim($arr["BASIS"]);
+                        $basis = str_replace(chr(194) . chr(160), "", $basis);
+                        if ($basis != "") {
+                            $arr["STATUS"] = "OK";
+                        }
+
                         //return $arr;
                     }
                 }
@@ -2019,6 +2178,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
         $num_children --;
     }
 
+    $single_pax = $arr_params["adults"][0];
 
     if ($category == "SINGLE") {
         if ($basis == "FLAT") {
@@ -2027,8 +2187,17 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             //take price as it is
             $rates = $value;
+
+            //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
-            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates);
+
+            //apply spo percent discount for that single parent if any            
+            _rates_calculator_apply_spo_discount_percentage($rates, $workings, $arr_params, "ADULT", $single_pax["age"], $single_pax["bride_groom"], "ROOM");
+
+            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
+                "ADCH" => "ADULT",
+                "AGE" => $single_pax["age"],
+                "BRIDEGROOM" => $single_pax["bride_groom"]);
         } else if ($basis == "%") {
             //calculate as a percentage of adult single
 
@@ -2051,8 +2220,17 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             $workings .= " = $currency_buy $fees";
 
+            //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
-            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates);
+
+            //apply spo percent discount for that single parent if any
+            _rates_calculator_apply_spo_discount_percentage($rates, $workings, $arr_params, "ADULT", $single_pax["age"], $single_pax["bride_groom"], "ROOM");
+
+
+            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
+                "ADCH" => "ADULT",
+                "AGE" => $single_pax["age"],
+                "BRIDEGROOM" => $single_pax["bride_groom"]);
         }
     } else if ($category == "1/2 DBL") {
         if ($basis == "FLAT") {
@@ -2061,8 +2239,19 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             //take price as it is
             $rates = $value;
+
+
+            //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
-            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates);
+
+            //apply spo percent discount for that single parent if any
+            _rates_calculator_apply_spo_discount_percentage($rates, $workings, $arr_params, "ADULT", $single_pax["age"], $single_pax["bride_groom"], "ROOM");
+
+
+            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
+                "ADCH" => "ADULT",
+                "AGE" => $single_pax["age"],
+                "BRIDEGROOM" => $single_pax["bride_groom"]);
         } else if ($basis == "%") {
             //calculate as a percentage of adult 1/2 DBL
             //if there is no adult 1/2 DBL, take adult DOUBLE and divide by 2
@@ -2087,8 +2276,16 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             $workings .= " = $currency_buy $fees";
 
+            //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
-            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates);
+
+            //apply spo percent discount for that single parent if any
+            _rates_calculator_apply_spo_discount_percentage($rates, $workings, $arr_params, "ADULT", $single_pax["age"], $single_pax["bride_groom"], "ROOM");
+
+            $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
+                "ADCH" => "ADULT",
+                "AGE" => $single_pax["age"],
+                "BRIDEGROOM" => $single_pax["bride_groom"]);
         }
     }
 
@@ -2239,10 +2436,20 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
             $rates = $_arr[$i]["RATES"];
             $childindex = $_arr[$i]["CHILDINDEX"];
             $split_between = $_arr[$i]["TO_SPLIT_BETWEEN"];
+            $child_age = $arr_children[$childindex - 1]["age"];
 
             if ($split_between == 0) {
+                //apply eci percentage if any for that kiddo
                 _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $work, $currency_buy);
-                $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates);
+
+                //apply spo percent discount for that kiddo if any
+                _rates_calculator_apply_spo_discount_percentage($rates, $work, $arr_params, "CHILDREN", $child_age, "", "ROOM");
+
+
+                $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates,
+                    "ADCH" => "CHILDREN",
+                    "AGE" => $child_age,
+                    "BRIDEGROOM" => "");
             } else {
                 //need to split
                 $ch_buyprice = round($rates / $split_between);
@@ -2257,8 +2464,17 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
 
                     $msg = "$work => Ch #$childindex => $currency_buy $ch_buyprice";
 
+                    //apply eci percentage if any for that kiddo
                     _rates_calculator_apply_rates_eci_percentage($ch_buyprice, $arr_eci, $msg, $currency_buy);
-                    $temp_arr[] = array("MSG" => $msg, "COSTINGS" => $ch_buyprice);
+
+                    //apply spo percent discount for that kiddo if any
+                    _rates_calculator_apply_spo_discount_percentage($ch_buyprice, $msg, $arr_params, "CHILDREN", $child_age, "", "ROOM");
+
+
+                    $temp_arr[] = array("MSG" => $msg, "COSTINGS" => $ch_buyprice,
+                        "ADCH" => "CHILDREN",
+                        "AGE" => $child_age,
+                        "BRIDEGROOM" => "");
 
                     $childindex --;
                 }
@@ -2268,7 +2484,6 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
         //finally merge into final array
         $arr_final = array_merge($arr_final, $temp_arr);
     }
-
 
     return $arr_final;
 }
@@ -2543,9 +2758,11 @@ function _rates_calculator_apply_rates_lco_flat_pni($arr, $arr_lco, $currency_bu
     return $arr;
 }
 
-function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $currency_buy) {
+function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params) {
     //this will only apply if early check in FLAT PNI, then:
     //share the eci costs between non FOC pax
+    $currency_buy = $arr_params["currency_buy_code"];
+
     $workings = $arr_eci["WORKINGS"];
     $charge_type = $arr_eci["CHARGE_TYPE"];
     $charge_value = $arr_eci["CHARGE_VALUE"];
@@ -2574,6 +2791,10 @@ function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $currency_bu
     $applied_to = 1;
     for ($i = 0; $i < count($arr); $i++) {
         $costings = $arr[$i]["COSTINGS"];
+        $pax_adch = $arr[$i]["ADCH"];
+        $pax_age = $arr[$i]["AGE"];
+        $pax_bridegroom = $arr[$i]["BRIDEGROOM"];
+
         if ($costings > 0) {
             $msg = $arr[$i]["MSG"];
             if ($applied_to < $num_non_foc_pax) {
@@ -2584,8 +2805,12 @@ function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $currency_bu
 
             $applied_to ++;
 
-            $costings += $pax_eci;
             $msg .= "<br> + ($workings =  FLAT PNI : $currency_buy $charge_value &#247; $num_non_foc_pax = $currency_buy $pax_eci per non FOC pax) ";
+
+            //apply spo percent discount if any for that pax
+            _rates_calculator_apply_spo_discount_percentage($pax_eci, $msg, $arr_params, $pax_adch, $pax_age, $pax_bridegroom, "ROOM");
+
+            $costings += $pax_eci;
 
             $arr[$i]["MSG"] = $msg;
             $arr[$i]["COSTINGS"] = $costings;
@@ -2596,7 +2821,115 @@ function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $currency_bu
     return $arr;
 }
 
+function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_params, $adult_children, $pax_age, $pax_bridegroom, $room_nonroom) {
+    // $adult_child = {ADULT, CHILDREN}
+    // $pax_age is the age of the pax in question
+    // $pax_bridegroom is the marital status of the pax in question
+    // $room_nonroom = {ROOM, NONROOM}
+
+    $arr_spo_discounts = $arr_params["spo_discounts_array"];
+    $currency_buy = $arr_params["currency_buy_code"];
+
+    for ($i = 0; $i < count($arr_spo_discounts); $i++) {
+        $discount_item = $arr_spo_discounts[$i];
+
+        $spo_id = $discount_item["SPO_ID"];
+        $spo_name = $discount_item["SPO_NAME"];
+        $spo_type = $discount_item["SPO_TYPE"];
+        $disc_ad_ch = $discount_item["AD_CH"]; //is discount for children or adults or both
+        $disc_bd_gm = $discount_item["BRIDE_GROOM"]; //is discount for bride, groom or both
+        $disc_ag_frm = $discount_item["AGE_FROM"]; //is discount for a specific age group
+        $disc_ag_to = $discount_item["AGE_TO"]; //is discount for a specific age group
+        $disc_type = $discount_item["ROOM_ALL_FLAT"]; //is discount percentage_room, percentage_all or FLAT
+        $disc_value = $discount_item["VALUE"]; //value of discount
+
+
+
+        if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
+                $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
+            //passed check for adult or children applicable discounts
+
+            if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
+                //passed age limits check
+
+                if (_rates_calculator_apply_spo_discount_test_bride_groom($pax_bridegroom, $disc_bd_gm, $adult_children)) {
+
+                    //passed bride groom checks
+                    //finally apply the discount when it is percetage only
+                    if ($disc_value > 0) {
+
+                        if (($disc_type == "%ROOM" && $room_nonroom == "ROOM") ||
+                                ($disc_type == "%ALL")) {
+
+                            $disc_amt = round(($disc_value / 100) * $rates, 2);
+                            $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] = $disc_value% of $currency_buy $rates = $currency_buy $disc_amt)</font>";
+                            $rates -= $disc_amt;
+                        }
+                        /*
+                          else if ($disc_type == "FLAT") {
+
+                          $msg .= "<br><font color='blue'> - (<b>SPO</b> => [ID:$spo_id <b>$spo_type</b> - $spo_name] = $currency_buy $disc_value)</font> = ";
+                          $rates -= $disc_value;
+                          if ($rates < 0) {
+                          $rates = 0;
+                          }
+                          $msg .= "$currency_buy $rates";
+                          }
+                         *
+                         */
+                    }
+                }
+            }
+        }
+    }
+
+    return;
+}
+
+function _rates_calculator_apply_spo_discount_test_bride_groom($pax_bride_groom, $disc_bd_gm, $adult_children) {
+
+    $disc_bd_gm = strtoupper(trim($disc_bd_gm));
+    $pax_bride_groom = strtoupper($pax_bride_groom);
+
+    if ($disc_bd_gm == "") {
+        return true; //no bride groom filter check
+    } else if ($adult_children == "CHILDREN" && $disc_bd_gm != "") {
+        return false; //interested in adults only
+    }
+
+    if ($adult_children == "ADULT" && ($disc_bd_gm == "BOTH")) {
+        return true;
+    }
+
+    if ($adult_children == "ADULT" && $pax_bride_groom == $disc_bd_gm) {
+        return true;
+    }
+
+    return false;
+}
+
+function _rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to) {
+    if ($disc_ag_frm == -1 && $disc_ag_to == -1) {
+        return true; //no age checks needed
+    } else if ($disc_ag_frm != -1 && $disc_ag_to != -1) {
+        if ($disc_ag_frm <= $pax_age && $pax_age <= $disc_ag_to) {
+            return true;
+        }
+    } else if ($disc_ag_frm != -1 && $disc_ag_to == -1) {
+        if ($disc_ag_frm <= $pax_age) {
+            return true;
+        }
+    } else if ($disc_ag_frm == -1 && $disc_ag_to != -1) {
+        if ($pax_age <= $disc_ag_to) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function _rates_calculator_apply_rates_eci_percentage(&$rates, $arr_eci, &$msg, $currency_buy) {
+
     //this will only apply if early check in is a percentage, then apply it to rates
     $workings = $arr_eci["WORKINGS"];
     $charge_type = $arr_eci["CHARGE_TYPE"];
@@ -2615,7 +2948,7 @@ function _rates_calculator_apply_rates_eci_percentage(&$rates, $arr_eci, &$msg, 
         if ($charge_value > 0) {
             $fees = round(($charge_value / 100) * $rates, 2);
         }
-        $msg .= "- ($workings Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
+        $msg .= "<br> - ($workings Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
         $rates -= $fees;
     } else if ($charge_type == "%C") {
         $fees = 0;
@@ -2623,7 +2956,7 @@ function _rates_calculator_apply_rates_eci_percentage(&$rates, $arr_eci, &$msg, 
             $fees = round(($charge_value / 100) * $rates, 2);
         }
 
-        $msg .= " + ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
+        $msg .= "<br> + ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
         $rates += $fees;
     }
 }
@@ -2654,7 +2987,7 @@ function _rates_calculator_apply_rates_lco($arr_rates, $arr_lco, &$lco_applied, 
             if ($charge_value > 0) {
                 $fees = round(($charge_value / 100) * $rates, 2);
             }
-            $msg .= "- ($workings Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
+            $msg .= "<br> - ($workings Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
             $rates -= $fees;
         } else if ($charge_type == "%C") {
             $fees = 0;
@@ -2662,7 +2995,7 @@ function _rates_calculator_apply_rates_lco($arr_rates, $arr_lco, &$lco_applied, 
                 $fees = round(($charge_value / 100) * $rates, 2);
             }
 
-            $msg .= " => ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
+            $msg .= "<br> => ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
             $rates = $fees;
         }
 
