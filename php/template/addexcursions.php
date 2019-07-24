@@ -11,52 +11,42 @@
 
                     <div class="panel-body">
                         <form class="form-horizontal row-border" action="#" onsubmit="return false">
-                            <div class="form-group" id="chooseLocation">
+                            <div class="form-group selectValidation" id="chooseLocation">
                                 <label class="col-md-2 control-label">Location</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
+                                    <select class="custom-select form-control form-control-sm inputValidation" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
                                         <option value="selectedCountry" selected disabled hidden>Choose Location</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group" id="serviceType">
+                            <div class="form-group selectValidation" id="serviceType">
                                 <label class="col-md-2 control-label">Service Type</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                    <select class="custom-select form-control form-control-sm inputValidation" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group" id="supplier">
+                            <div class="form-group selectValidation" id="supplier">
                                 <label class="col-md-2 control-label">Supplier</label>
                                 <div class="col-md-10">
-                                    <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
-                                        <option selected disabled hidden>Choose Supplier</option>
-                                        <option value="1">CR</option>
-                                        <option value="2">CT</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
+                                    <select class="custom-select form-control form-control-sm inputValidation" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
+                                        <option selected disabled hidden>Select Option</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group" id="optionCode">
+                            <div class="form-group selectValidation" id="optionCode">
                                 <label class="col-md-2 control-label">Option Code</label>
                                 <div class="col-md-3">
-                                    <select class="custom-select form-control form-control-sm inputValidation" name="regular" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
-                                        <option selected disabled hidden>Choose Dept</option>
-                                        <option value="1">DS</option>
-                                        <option value="2">CT</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
+                                    <select class="custom-select form-control form-control-sm inputValidation" name="regular" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
+                                        <option value="00" selected disabled hidden>Select Option</option>
                                     </select>
                                 </div>
                                 <div class="col-md-1">
                                     <h3><code id="output">0000</code></h3>
                                 </div>
                                 
-                                <div class="col-md-5">
+                                <div class="col-xs-1">
                                     <a id="generateNone" style="display: block;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-lg" aria-hidden="true"></i></a>
                                     <a id="generate" style="display: none;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
                                 </div>
@@ -86,10 +76,10 @@
                 </div>
             </div>
         </div>
-            <div class="toast jam" aria-hidden="true" style="display:none;">
+        <div class="toast jam" aria-hidden="true" style="display:none;">
             <span class="close" aria-role="button" tabindex="0">&times;</span>
-                Service Added.
-            </div>
+            Service Added.
+        </div>
         <!-- Row end -->
 
         <!-- Row start - Service Details  -->
@@ -134,7 +124,7 @@
             &nbsp; &nbsp;
             <!-- Row Search Service Details -->
 
-            <div class="col-lg-12">
+            <div class="col-lg-12" style="display: none;">
                 <div class="row">
                     <div class="board">
                         <div class="board-inner">

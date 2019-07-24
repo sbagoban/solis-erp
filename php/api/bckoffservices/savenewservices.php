@@ -28,9 +28,9 @@ try {
     require_once("../../connector/pdo_connect_main.php");
     
     $id = $_POST["id"];
-    $locationservice = trim($_POST["locationservice"]);
-    $servicetype = trim($_POST["servicetype"]);
-    $supplier = trim($_POST["supplier"]);
+    $countryfk = trim($_POST["countryfk"]);
+    $servicetypefk = trim($_POST["servicetypefk"]);
+    $supplierfk = trim($_POST["supplierfk"]);
     $optioncode = trim($_POST["optioncode"]);
     $descriptionservice = trim($_POST["descriptionservice"]);
     $comments = trim($_POST["comments"]);
@@ -38,7 +38,7 @@ try {
     $con = pdo_con();
 
     //check duplicates for services
-    $sql = "SELECT * FROM tblnewservices WHERE optioncode = :optioncode AND id <> :id ";
+    $sql = "SELECT * FROM tblexcursion_services WHERE optioncode = :optioncode AND id <> :id ";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":optioncode" => $optioncode, ":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -46,24 +46,24 @@ try {
     }
 
     if ($id == "-1") {
-        $sql = "INSERT INTO tblnewservices (locationservice, servicetype, supplier, optioncode, descriptionservice, comments) 
-                VALUES (:locationservice, :servicetype, :supplier, :optioncode, :descriptionservice, :comments)";
+        $sql = "INSERT INTO tblexcursion_services (countryfk, servicetypefk, supplierfk, optioncode, descriptionservice, comments) 
+                VALUES (:countryfk, :servicetypefk, :supplierfk, :optioncode, :descriptionservice, :comments)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":locationservice" => $locationservice, 
-            ":servicetype" => $servicetype,
-            ":supplier" => $supplier,
+            ":countryfk" => $countryfk, 
+            ":servicetypefk" => $servicetypefk,
+            ":supplierfk" => $supplierfk,
             ":optioncode" => $optioncode,
             ":descriptionservice" => $descriptionservice,
             ":comments" => $comments));
         
         $id = $con->lastInsertId();
     } else {
-        $sql = "UPDATE tblnewservices SET 
-                locationservice=:locationservice, 
-                servicetype=:servicetype, 
-                supplier=:supplier, 
+        $sql = "UPDATE tblexcursion_services SET 
+                countryfk=:countryfk, 
+                servicetypefk=:servicetypefk, 
+                supplierfk=:supplierfk, 
                 optioncode=:optioncode, 
                 descriptionservice=:descriptionservice, 
                 comments=:comments,
@@ -72,9 +72,9 @@ try {
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":id" => $id,
-            ":locationservice" => $locationservice, 
-            ":servicetype" => $servicetype,
-            ":supplier" => $supplier,
+            ":countryfk" => $countryfk, 
+            ":servicetypefk" => $servicetypefk,
+            ":supplierfk" => $supplierfk,
             ":optioncode" => $optioncode,
             ":descriptionservice" => $descriptionservice,
             ":comments" => $comments));
