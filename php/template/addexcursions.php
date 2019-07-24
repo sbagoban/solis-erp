@@ -11,7 +11,7 @@
 
                     <div class="panel-body">
                         <form class="form-horizontal row-border" action="#" onsubmit="return false">
-                            <div class="form-group" id="chooseLocation">
+                            <div class="form-group selectValidation" id="chooseLocation">
                                 <label class="col-md-2 control-label">Location</label>
                                 <div class="col-md-10">
                                     <select class="custom-select form-control form-control-sm inputValidation" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
@@ -19,7 +19,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group" id="serviceType">
+                            <div class="form-group selectValidation" id="serviceType">
                                 <label class="col-md-2 control-label">Service Type</label>
                                 <div class="col-md-10">
                                     <select class="custom-select form-control form-control-sm inputValidation" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
@@ -27,7 +27,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group" id="supplier">
+                            <div class="form-group selectValidation" id="supplier">
                                 <label class="col-md-2 control-label">Supplier</label>
                                 <div class="col-md-10">
                                     <select class="custom-select form-control form-control-sm inputValidation" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
@@ -35,7 +35,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group" id="optionCode">
+                            <div class="form-group selectValidation" id="optionCode">
                                 <label class="col-md-2 control-label">Option Code</label>
                                 <div class="col-md-3">
                                     <select class="custom-select form-control form-control-sm inputValidation" name="regular" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
@@ -46,7 +46,7 @@
                                     <h3><code id="output">0000</code></h3>
                                 </div>
                                 
-                                <div class="col-md-5">
+                                <div class="col-xs-1">
                                     <a id="generateNone" style="display: block;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-lg" aria-hidden="true"></i></a>
                                     <a id="generate" style="display: none;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
                                 </div>

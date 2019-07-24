@@ -105,7 +105,6 @@ $(document).ready(function(){
             }
         }
     }
-
     
     /////////////////////////////////////////
     // model --> fetch Api Select Location //
@@ -183,6 +182,7 @@ $(document).ready(function(){
             data : objService,                                                                                                                                                                                                                                                                                                                                                                                                                                              
             success : function(data){
                 console.log('value', data);
+                callDataNewServiceGrid();
                 resetFormAddNewService();
             },
             error: function(error) {
@@ -205,6 +205,7 @@ $(document).ready(function(){
         document.getElementById('generate').setAttribute('style', 'display: none');
         document.getElementById('generateNone').setAttribute('style', 'display: block');
     }
+    
 });
 
 
