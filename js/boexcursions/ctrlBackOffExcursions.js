@@ -19,7 +19,7 @@ $(document).ready(function(){
                 if ($(this).val() == '') {
                     // set empty to true if ddl is empty
                     empty = true;
-                    console.log($(this));
+                    console.log($(this).val());
                 }
                 // if (empty == false) {
                 //     var check = document.getElementById("chooseLocation");

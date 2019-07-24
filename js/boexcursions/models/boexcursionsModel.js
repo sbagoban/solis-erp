@@ -32,7 +32,7 @@ $(document).ready(function(){
             if(result != '') {
                 // Loop through each of the results and append the option to the dropdown
                 $.each(result, function(data, result) {
-                    dropdown.append('<option value="' + result.servicetype + '">' + result.servicetype + '</option>');
+                    dropdown.append('<option value="' + result.id + '">' + result.servicetype + '</option>');
                 });
             }
         }
@@ -66,7 +66,76 @@ $(document).ready(function(){
             if(result != '') {
                 // Loop through each of the results and append the option to the dropdown
                 $.each(result, function(data, result) {
-                    dropdown.append('<option value="' + result.text + '">' + result.text + '</option>');
+                    dropdown.append('<option value="' + result.value + '">' + result.text + '</option>');
+                });
+            }
+        }
+    }
+
+    /////////////////////////////////////////
+    // model --> fetch Api Select Location //
+    /////////////////////////////////////////
+    const url_optioncode = "php/api/combos/contactdepartment_combo.php?t=" + encodeURIComponent(global_token); 
+    $.ajax({
+        url : url_optioncode,
+        type : "GET",
+        success : function(data) {
+            helpersDropdownDepartment.buildDropdown(
+                jQuery.parseJSON(data),
+                $('#ddlOptionCode'),
+                'Select an option'
+            );
+        }, 
+        error:function(error) {
+            console.log('Error ${error}');
+        }
+    });
+    var helpersDropdownDepartment = {
+        buildDropdown: function(result, dropdown, emptyMessage) {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '') {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(data, result) {
+                    dropdown.append('<option value="' + result.text + '">' + result.description + '</option>');
+                });
+            }
+        }
+    }
+
+    
+    /////////////////////////////////////////
+    // model --> fetch Api Select Location //
+    /////////////////////////////////////////
+    const url_supplier = "php/api/combos/supplier_combo.php?t=" + encodeURIComponent(global_token); 
+    $.ajax({
+        url : url_supplier,
+        type : "GET",
+        success : function(data) {
+            helpersDropdownSupplier.buildDropdown(
+                jQuery.parseJSON(data),
+                $('#ddlChooseSupplier'),
+                'Select an option'
+            );
+        }, 
+        error:function(error) {
+            console.log('Error ${error}');
+        }
+    });
+    var helpersDropdownSupplier = {
+        buildDropdown: function(result, dropdown, emptyMessage) {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '') {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(data, result) {
+                    dropdown.append('<option value="' + result.value + '">' + result.suppliername + '</option>');
                 });
             }
         }
@@ -76,8 +145,14 @@ $(document).ready(function(){
     // model --> Selected Option Code1///////
     /////////////////////////////////////////
     $("#ddlOptionCode").change(function () {
-        document.getElementById('generate').setAttribute('style', 'display: block');
-        document.getElementById('generateNone').setAttribute('style', 'display: none');
+        if ($('#ddlOptionCode').val() == '') {
+            console.log('sasdg');
+            document.getElementById('generate').setAttribute('style', 'display: none');
+            document.getElementById('generateNone').setAttribute('style', 'display: block');
+        } else { 
+            document.getElementById('generate').setAttribute('style', 'display: block');
+            document.getElementById('generateNone').setAttribute('style', 'display: none');
+        }
     });
 
     /////////////////////////////////////////
@@ -91,18 +166,16 @@ $(document).ready(function(){
         var generatedCode = document.getElementsByTagName('code')[0].innerHTML;
         var descriptionValue = document.getElementById('addedDescription').value;
         var commentValue = document.getElementById('addedComment').value;
-
         var objService = {
             id:-1, //for new items, id is always -1
-            locationservice: ddlLocationSelected, //please make sure the names match in JS and PHP
-            servicetype: ddlServiceTypeSelected,
-            supplier: ddlSupplierSelected,
-            optioncode: ddlOptionCodeSelected+generatedCode,
+            countryfk: ddlLocationSelected, //please make sure the names match in JS and PHP
+            servicetypefk: ddlServiceTypeSelected,
+            supplierfk: ddlSupplierSelected,
+            optioncode: ddlOptionCodeSelected + generatedCode,
             descriptionservice: descriptionValue,
             comments: commentValue
         };
 
-        
         const url_save_service = "php/api/bckoffservices/savenewservices.php?token=" + encodeURIComponent(global_token);
         $.ajax({
             url : url_save_service,
@@ -110,19 +183,28 @@ $(document).ready(function(){
             data : objService,                                                                                                                                                                                                                                                                                                                                                                                                                                              
             success : function(data){
                 console.log('value', data);
-                // TO ADD THIS IN SUCCESS //
-                document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
-                $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
-                // TO ADD THIS IN SUCCESS //
+                resetFormAddNewService();
             },
             error: function(error) {
                 console.log('Error ${error}');
             }
         });
 
-        
     });
     // End click
+
+    // Function Reset Form Add New Service
+    function resetFormAddNewService() {
+        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
+        $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
+        $('#createNewService').attr('disabled', 'disabled');
+        $('select option:contains("Select an option")').prop('selected',true);
+        $('#addedDescription').val('');
+        $('#addedComment').val('');
+        $("#output").html("0000");
+        document.getElementById('generate').setAttribute('style', 'display: none');
+        document.getElementById('generateNone').setAttribute('style', 'display: block');
+    }
 });
 
 
