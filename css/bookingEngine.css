@@ -515,7 +515,7 @@ div.idmsForm .btn.btn-default {
    background: #E49900;
    color: #fff;
    border-style:none;
-   font: bold 14px/28px arial,sans-serif
+   font: bold 14px/28px arial,sans-serif;
    white-space: nowrap;
    height: 28px;
    width: auto;
@@ -528,7 +528,7 @@ div.idmsForm .btn.btn-success {
    background: #08107B;
    color: #fff;
    border-style:none;
-   font: bold 14px/28px arial,sans-serif
+   font: bold 14px/28px arial,sans-serif;
    white-space: nowrap;
    height: 28px;
    width: auto;

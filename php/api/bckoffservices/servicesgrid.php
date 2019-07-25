@@ -25,7 +25,14 @@ require_once("../../connector/data_connector.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT * FROM tblexcursion_services ORDER BY id ASC");
+$query_c = $con->prepare("
+select es.id, es.optioncode, es.descriptionservice, es.comments, c.country_name, s.suppliername, st.servicetype
+from tblexcursion_services es 
+join tblcountries c on es.countryfk = c.id
+join tblservicetype st on es.servicetypefk = st.id
+join tblsuppliesexcursions s on es.supplierfk = s.id
+order by es.id desc
+");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
@@ -33,12 +40,12 @@ if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
         $excursionservices[] = array(
             'id'                 => $row['id'],
-            'countryfk'          => $row['countryfk'],
-            'servicetypefk'      => $row['servicetypefk'],
-            'supplierfk'         => $row['supplierfk'],
+            'countryfk'          => $row['country_name'],
+            'servicetypefk'      => $row['servicetype'],
+            'supplierfk'         => $row['suppliername'],
             'optioncode'         => $row['optioncode'],
             'descriptionservice' => $row['descriptionservice'],
-            'comments' => $row['comments'],
+            'comments'           => $row['comments'],
 
         );
     }

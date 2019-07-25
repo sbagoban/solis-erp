@@ -54,8 +54,9 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="css/bookingEngine.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
-        <link rel="stylesheet" href="css/editor.css" type="text/css"/>
-        <link rel="stylesheet" href="css/gridStyle.css" type="text/css"/>
+        <link rel="stylesheet" href="css/editor.css">
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
+        <link rel="stylesheet" href="css/gridStyle.css">
         <!-- Sandeep End -->
 
         <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
@@ -654,6 +655,13 @@ else {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
+        <script src "https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
         <!-- Sandeep End -->
 
         <!-- Bootstrap 3.3.7 -->
@@ -814,7 +822,6 @@ else if($menu == "backoff_excursions")
 {
     echo '<script src="js/boexcursions/script_backOff_Excursions.js"></script>
         <script src="js/boexcursions/utils/editor.js"></script>
-        <script src="js/boexcursions/utils/table-sortable.js"></script>
         <script src="js/boexcursions/utils/generateOptionCode.js"></script>
         <script src="js/boexcursions/models/boexcursionsModel.js"></script>
         <script src="js/boexcursions/ctrlBackOffExcursions.js"></script>
