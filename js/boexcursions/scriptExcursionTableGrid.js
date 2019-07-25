@@ -1,82 +1,65 @@
-// Request call everything from database
 function callDataNewServiceGrid() {
-    const url_excursiongrid = "php/api/bckoffservices/servicesgrid.php?t=" + encodeURIComponent(global_token); 
-    $.ajax({
-        url : url_excursiongrid,
-        type : "GET",
-        dataType: "json",
-        success : function(data) {
-            populateServiceGrid(data);
-        }, 
-        error:function(error) {
-            console.log('Error ${error}');
-        }
-    });
-}
+    //$('#searchServiceDetails').load(document.URL +  ' #searchServiceDetails');
+    // Request call everything from database
+    $('#sort').DataTable({       
+        "processing" : true,
 
-function populateServiceGrid(objNewService) {
-    
-    columns = {
-        'location': 'Location',
-        'service': 'Service',
-        'supplierCode': 'Supplier Code',
-        'supplier': 'Supplier',
-        'option': 'Option',
-        'class': 'Class',
-        'locality': 'Location', 
-        'edit': 'Edit'
-    }
-    objNewService.forEach(element => {
-        var chk = element;
-        data = [
-            {
-                location: chk.id,
-                service: chk.countryfk,
-                supplierCode: chk.countryfk,
-                supplier: chk.countryfk,
-                option: chk.countryfk,
-                class: chk.countryfk,
-                locality: 'Port louis',
-                edit: '<a href="" href="" onclick="editservice(param)"><i data-toggle="tooltip" title="Edit Service Details" class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></a>'
-            }
-        ]
-        
-    console.log('data -->', data);
-    });
-
-    TestData = {
-        data: data,
-        columns: columns
-    }
-    var table = $('#root').tableSortable({
-        data: TestData.data,
-        columns: TestData.columns,
-        dateParsing: true,
-        columnsHtml: function(value, key) {
-            return value;
+        "ajax" : {
+            "url" : "php/api/bckoffservices/servicesgrid.php?t=" + encodeURIComponent(global_token),
+            dataSrc : ''
         },
-        pagination: 10,
-        showPaginationLabel: true,
-        prevText: 'Prev',
-        nextText: 'Next',
-        searchField: $('#search'),
-        responsive: [
+        "destroy": true,
+        "bProcessing": true,
+        "bAutoWidth": false,
+        "responsive": true,
+        "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
+        +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
+        +"<'row'<'col-sm-12'tr>>"
+        +"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+
+        "buttons":[
             {
-                maxWidth: 992,
-                minWidth: 769,
-                columns: TestData.col,
-                pagination: true,
-                paginationLength: 3
-            },
-            {
-                maxWidth: 768,
-                minWidth: 0,
-                columns: TestData.colXS,
-                pagination: true,
-                paginationLength: 2
+            "extend":    "csvHtml5",
+            "text":      "<i class='fa fa-file-text-o'> Excel</i>",
+            "titleAttr": "Download in Excel Format",
+            // "action":   function(){
+            //         addFunctionHere ();
+            //     }
             }
-        ]
+        ],
+        "columnDefs": [
+            { "width": "10px", "targets": 0 },
+            { "width": "40px", "targets": 1 },
+            { "width": "100px", "targets": 2 },
+            { "width": "70px", "targets": 3 },
+            { "width": "70px", "targets": 4 },
+            { "width": "70px", "targets": 5 },
+            { "width": "70px", "targets": 6 }
+        ],
+        "columns" : [ {
+            "data" : "countryfk"
+        }, {
+            "data" : "servicetypefk"
+        }, {
+            "data" : "supplierfk"
+        }, {
+            "data" : "optioncode"
+        }, {
+            "data" : "descriptionservice"
+        }, {
+            "data" : "comments"
+        },{
+            data: null,
+            render: function ( data, type, row ) {
+                // Add click function send data(passed as parameter) take id - send to edit tables - cost details etc --
+                return '<a class="btn btnEdit" id="edit"><i aria-hidden="true" class="fa fa-external-link"></i> Edit</a>';
+            }
+        }],
+        
+    });
+
+    $("#edit").click(function () {
+        console.log('chsdjkfhsjkdf');
     });
 
 }
-

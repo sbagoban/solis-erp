@@ -1,373 +1,77 @@
-.gs-table {
+div#sort_wrapper {
+  width: 98%;
+  margin: 0 auto;
+}
+
+table {
   width: 100%;
-  max-width: 100%;
-  margin-bottom: 1rem;
-  background-color: transparent
+  border-collapse: collapse;
 }
 
-.gs-table td,
-.gs-table th {
-  padding: .75rem;
-  vertical-align: top;
-  border-top: 1px solid #dee2e6
+/* Zebra striping */
+
+tr:nth-of-type(odd) {
+  background: #e2effe;
 }
 
-.gs-table thead th {
-  vertical-align: bottom;
-  border-bottom: 2px solid #dee2e6;
-  padding: 0.5rem 15px;
-  border-width: 0;
-  font-size: 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 400;
+tr:nth-of-type(even) {
+  background: #fff;
+}
+
+th {
+  background: #337ab7;
+  color: #ffffff;
+  font-weight: 300;
+}
+
+td,
+th {
+  padding: 10px;
+  border: 1px solid #ccc;
   text-align: left;
 }
 
-.gs-table tbody+tbody {
-  border-top: 2px solid #dee2e6
+td:nth-of-type(1) {
+  font-weight: 500 !important;
 }
 
-.gs-table tbody td,
-.gs-table tbody th {
-  padding: 15px 15px;
-  border-color: #e9ecef;
+td {
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 300;
+  line-height: 20px;
 }
 
-.gs-table-head-default tr th:first-child {
-  padding-left: 20px;
+span {
+  font-style: italic
 }
 
-.gs-table-head-default tr th:last-child {
-  padding-right: 20px;
+i.fa.fa-file-text-o {
+  font-size: 22px;
+  margin-bottom: 14px;
+  color: #333333;
+  transition: all .5s ease-in-out;
 }
 
-.gs-table-body-default {
-  background: #FFFFFF;
+i.fa.fa-file-text-o:hover {   
+  color: #337ab7;
+  transform: scale(1.1);
 }
 
-.gs-table-body-default td,
-.gs-table-body-default th {
-  font-size: 0.9rem;
+table#sort tbody tr > td {
+  text-align: center;
 }
 
-.gs-table-body-default tr:first-child th,
-.gs-table-body-default tr:first-child td {
-  border-top-width: 0;
+table#sort thead > tr > th {
+  text-align: center;
 }
 
-.gs-table-body-default tr:first-child td:first-child {
-  border-top-left-radius: 4px;
+a.btnEdit {
+  transition: all .5s ease-in-out;
+  font-size: 1.6rem;  
+  color: #333333;
 }
 
-.gs-table-body-default tr:first-child td:last-child {
-  border-top-right-radius: 4px;
-}
-
-.gs-table-body-default tr:last-child td:first-child {
-  border-bottom-left-radius: 4px;
-}
-
-.gs-table-body-default tr:last-child td:last-child {
-  border-bottom-right-radius: 4px;
-}
-
-.gs-table-body-default tr td:first-child {
-  padding-left: 20px;
-}
-
-.gs-table-body-default tr td:last-child {
-  padding-right: 20px;
-}
-
-.gs-table .gs-table {
-  background-color: #fff
-}
-
-.gs-table-sm td,
-.gs-table-sm th {
-  padding: .3rem
-}
-
-.gs-table-bordered {
-  border: 1px solid #dee2e6
-}
-
-.gs-table-bordered td,
-.gs-table-bordered th {
-  border: 1px solid #dee2e6
-}
-
-.gs-table-bordered thead td,
-.gs-table-bordered thead th {
-  border-bottom-width: 2px
-}
-
-.gs-table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, .05)
-}
-
-.gs-table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 0, .075)
-}
-
-.gs-table-primary,
-.gs-table-primary>td,
-.gs-table-primary>th {
-  background-color: #b8daff
-}
-
-.gs-table-hover .gs-table-primary:hover {
-  background-color: #9fcdff
-}
-
-.gs-table-hover .gs-table-primary:hover>td,
-.gs-table-hover .gs-table-primary:hover>th {
-  background-color: #9fcdff
-}
-
-.gs-table-secondary,
-.gs-table-secondary>td,
-.gs-table-secondary>th {
-  background-color: #d6d8db
-}
-
-.gs-table-hover .gs-table-secondary:hover {
-  background-color: #c8cbcf
-}
-
-.gs-table-hover .gs-table-secondary:hover>td,
-.gs-table-hover .gs-table-secondary:hover>th {
-  background-color: #c8cbcf
-}
-
-.gs-table-success,
-.gs-table-success>td,
-.gs-table-success>th {
-  background-color: #c3e6cb
-}
-
-.gs-table-hover .gs-table-success:hover {
-  background-color: #b1dfbb
-}
-
-.gs-table-hover .gs-table-success:hover>td,
-.gs-table-hover .gs-table-success:hover>th {
-  background-color: #b1dfbb
-}
-
-.gs-table-info,
-.gs-table-info>td,
-.gs-table-info>th {
-  background-color: #bee5eb
-}
-
-.gs-table-hover .gs-table-info:hover {
-  background-color: #abdde5
-}
-
-.gs-table-hover .gs-table-info:hover>td,
-.gs-table-hover .gs-table-info:hover>th {
-  background-color: #abdde5
-}
-
-.gs-table-warning,
-.gs-table-warning>td,
-.gs-table-warning>th {
-  background-color: #ffeeba
-}
-
-.gs-table-hover .gs-table-warning:hover {
-  background-color: #ffe8a1
-}
-
-.gs-table-hover .gs-table-warning:hover>td,
-.gs-table-hover .gs-table-warning:hover>th {
-  background-color: #ffe8a1
-}
-
-.gs-table-danger,
-.gs-table-danger>td,
-.gs-table-danger>th {
-  background-color: #f5c6cb
-}
-
-.gs-table-hover .gs-table-danger:hover {
-  background-color: #f1b0b7
-}
-
-.gs-table-hover .gs-table-danger:hover>td,
-.gs-table-hover .gs-table-danger:hover>th {
-  background-color: #f1b0b7
-}
-
-.gs-table-light,
-.gs-table-light>td,
-.gs-table-light>th {
-  background-color: #fdfdfe
-}
-
-.gs-table-hover .gs-table-light:hover {
-  background-color: #ececf6
-}
-
-.gs-table-hover .gs-table-light:hover>td,
-.gs-table-hover .gs-table-light:hover>th {
-  background-color: #ececf6
-}
-
-.gs-table-dark,
-.gs-table-dark>td,
-.gs-table-dark>th {
-  background-color: #c6c8ca
-}
-
-.gs-table-hover .gs-table-dark:hover {
-  background-color: #b9bbbe
-}
-
-.gs-table-hover .gs-table-dark:hover>td,
-.gs-table-hover .gs-table-dark:hover>th {
-  background-color: #b9bbbe
-}
-
-.gs-table-active,
-.gs-table-active>td,
-.gs-table-active>th {
-  background-color: rgba(0, 0, 0, .075)
-}
-
-.gs-table-hover .gs-table-active:hover {
-  background-color: rgba(0, 0, 0, .075)
-}
-
-.gs-table-hover .gs-table-active:hover>td,
-.gs-table-hover .gs-table-active:hover>th {
-  background-color: rgba(0, 0, 0, .075)
-}
-
-.gs-table .thead-dark th {
-  color: #fff;
-  background-color: #212529;
-  border-color: #32383e
-}
-
-.gs-table .thead-light th {
-  color: #495057;
-  background-color: #e9ecef;
-  border-color: #dee2e6
-}
-
-.gs-table-dark {
-  color: #fff;
-  background-color: #212529
-}
-
-.gs-table-dark td,
-.gs-table-dark th,
-.gs-table-dark thead th {
-  border-color: #32383e
-}
-
-.gs-table-dark.gs-table-bordered {
-  border: 0
-}
-
-.gs-table-dark.gs-table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, .05)
-}
-
-.gs-table-dark.gs-table-hover tbody tr:hover {
-  background-color: rgba(255, 255, 255, .075)
-}
-
-@media (max-width:575.98px) {
-  .gs-table-responsive-sm {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar
-  }
-  .gs-table-responsive-sm>.gs-table-bordered {
-    border: 0
-  }
-}
-
-@media (max-width:767.98px) {
-  .gs-table-responsive-md {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar
-  }
-  .gs-table-responsive-md>.gs-table-bordered {
-    border: 0
-  }
-}
-
-@media (max-width:991.98px) {
-  .gs-table-responsive-lg {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar
-  }
-  .gs-table-responsive-lg>.gs-table-bordered {
-    border: 0
-  }
-}
-
-@media (max-width:1199.98px) {
-  .gs-table-responsive-xl {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar
-  }
-  .gs-table-responsive-xl>.gs-table-bordered {
-    border: 0
-  }
-}
-
-.gs-table-responsive {
-  display: block;
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: -ms-autohiding-scrollbar
-}
-
-.gs-table-responsive>.gs-table-bordered {
-  border: 0
-}
-
-td.tableDetailsGrid {
-  font-size: 14px;
-}
-
-.searchFilter input#search {
-  border: 0px solid;
-  border-radius: 0px;
-  padding: 16px;
-  background: white;
-}
-
-.searchFilter {
-  background: #3c8dbc;
-  padding: 32px;
-  margin-bottom: 21px;
-  box-shadow: 2px 0 7px 7px #ffffff;
-}
-/* Addons */
-i.fa.fa-pencil-square-o.fa-lg {
-  padding: 0px 8px;
-}
-
-table.gs-table tr:hover {
-  background: #d9f1ff;
-  transition: 0.3s;
+a.btnEdit:hover {  
+  color: #337ab7;
+  transform: scale(1.1);
 }

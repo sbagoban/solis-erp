@@ -1,5 +1,4 @@
 <?php
-
 try {
 
 //=-================== CATCH ALL WARNINGS INTO ERROR TRAP =======================
