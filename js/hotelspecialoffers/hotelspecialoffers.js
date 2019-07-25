@@ -1515,9 +1515,10 @@ function hotelspecialoffers()
     });
 
     var cboRollOverBasis = form_discounts.getCombo("discount_basis");
-    cboRollOverBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboRollOverBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboRollOverBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboRollOverBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboRollOverBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboRollOverBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboRollOverBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboRollOverBasis.readonly(true);
 
     //=====================================================================================
@@ -1668,21 +1669,24 @@ function hotelspecialoffers()
     cboWeddingCertBasis.readonly(true);
 
     var cboWeddingDiscountBothBasis = form_wedding_discounts.getCombo("wedding_apply_discount_both_basis");
-    cboWeddingDiscountBothBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBothBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBothBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingDiscountBothBasis.readonly(true);
 
     var cboWeddingDiscountGroomBasis = form_wedding_discounts.getCombo("wedding_apply_discount_groom_basis");
-    cboWeddingDiscountGroomBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountGroomBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountGroomBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingDiscountGroomBasis.readonly(true);
 
     var cboWeddingDiscountBrideBasis = form_wedding_discounts.getCombo("wedding_apply_discount_bride_basis");
-    cboWeddingDiscountBrideBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBrideBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBrideBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingDiscountBrideBasis.readonly(true);
 
 
@@ -2121,21 +2125,24 @@ function hotelspecialoffers()
     });
 
     var cboWeddingPartyDiscountBothBasis = form_wedding_party_discounts.getCombo("wedding_apply_discount_both_basis");
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingPartyDiscountBothBasis.readonly(true);
 
     var cboWeddingPartyDiscountGroomBasis = form_wedding_party_discounts.getCombo("wedding_apply_discount_groom_basis");
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingPartyDiscountGroomBasis.readonly(true);
 
     var cboWeddingPartyDiscountBrideBasis = form_wedding_party_discounts.getCombo("wedding_apply_discount_bride_basis");
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingPartyDiscountBrideBasis.readonly(true);
 
 
@@ -2331,21 +2338,24 @@ function hotelspecialoffers()
 
 
     var cboWeddingAnniversaryDiscountBothBasis = form_wedding_anniversary_discounts.getCombo("wedding_apply_discount_both_basis");
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingAnniversaryDiscountBothBasis.readonly(true);
 
     var cboWeddingAnniversaryDiscountGroomBasis = form_wedding_anniversary_discounts.getCombo("wedding_apply_discount_groom_basis");
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingAnniversaryDiscountGroomBasis.readonly(true);
 
     var cboWeddingAnniversaryDiscountBrideBasis = form_wedding_anniversary_discounts.getCombo("wedding_apply_discount_bride_basis");
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboWeddingAnniversaryDiscountBrideBasis.readonly(true);
 
 
@@ -2444,9 +2454,10 @@ function hotelspecialoffers()
     });
 
     var cboSeniorBasis = form_senior_discounts.getCombo("senior_discount_basis");
-    cboSeniorBasis.addOption([{value: "percentage_room", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboSeniorBasis.addOption([{value: "percentage_all", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboSeniorBasis.addOption([{value: "value", text: "Value", img_src: "images/rollover.png"}]);
+    cboSeniorBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
+    cboSeniorBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
+    cboSeniorBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
+    cboSeniorBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
     cboSeniorBasis.readonly(true);
 
     //===========================================================

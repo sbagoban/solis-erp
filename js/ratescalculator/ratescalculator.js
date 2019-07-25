@@ -359,7 +359,11 @@ function ratescalculator() {
                     labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
                 },
-                {type: "input", name: "spo_discount_flat", label: "Flat", labelWidth: "150",
+                {type: "input", name: "spo_discount_PPPN", label: "Flat PPPN", labelWidth: "150",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
+                },
+                {type: "input", name: "spo_discount_PNI", label: "Flat PNI", labelWidth: "150",
                     labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
                 }]},
@@ -946,10 +950,20 @@ function ratescalculator() {
             {
                 form_spo.setItemValue("spo_discount_flat","0");
             }
+            if(utils_trim(form_spo.getItemValue("spo_discount_PPPN"), " ") == "")
+            {
+                form_spo.setItemValue("spo_discount_PPPN","0");
+            }
+            
+            if(utils_trim(form_spo.getItemValue("spo_discount_PNI"), " ") == "")
+            {
+                form_spo.setItemValue("spo_discount_PNI","0");
+            }
             
             var room_percentage = parseFloat(form_spo.getItemValue("spo_discount_room_percentage"));
             var all_percentage = parseFloat(form_spo.getItemValue("spo_discount_all_percentage"));
-            var flat = parseFloat(form_spo.getItemValue("spo_discount_flat"));
+            var flat_pppn = parseFloat(form_spo.getItemValue("spo_discount_PPPN"));
+            var flat_pni = parseFloat(form_spo.getItemValue("spo_discount_PNI"));
             
             if(room_percentage < 0 || room_percentage > 100)
             {
@@ -981,7 +995,7 @@ function ratescalculator() {
                 return false;
             }
             
-            if(flat < 0)
+            if(flat_pppn < 0)
             {
                 tabViews.setTabActive("params");
                 accordConSPO.openItem("spo");
@@ -990,15 +1004,28 @@ function ratescalculator() {
                     type: "alert-warning",
                     title: "Test Rates Calculator",
                     callback: function () {
-                        form_spo.setItemFocus("spo_discount_flat");
+                        form_spo.setItemFocus("spo_discount_PPPN");
+                    }
+                });
+                return false;
+            }
+            
+            if(flat_pni < 0)
+            {
+                tabViews.setTabActive("params");
+                accordConSPO.openItem("spo");
+                dhtmlx.alert({
+                    text: "SPO Flat Discount MUST cannot be less than ZERO",
+                    type: "alert-warning",
+                    title: "Test Rates Calculator",
+                    callback: function () {
+                        form_spo.setItemFocus("spo_discount_PNI");
                     }
                 });
                 return false;
             }
             
         }
-
-
 
         return true;
     }
