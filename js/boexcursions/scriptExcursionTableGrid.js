@@ -52,14 +52,22 @@ function callDataNewServiceGrid() {
             data: null,
             render: function ( data, type, row ) {
                 // Add click function send data(passed as parameter) take id - send to edit tables - cost details etc --
-                return '<a class="btn btnEdit" id="edit"><i aria-hidden="true" class="fa fa-external-link"></i> Edit</a>';
+                checker = row;
+                return '<a class="btn btnEdit" onclick="check1()"><i aria-hidden="true" class="fa fa-external-link"></i> Edit</a>';
             }
         }],
         
     });
+}
 
-    $("#edit").click(function () {
-        console.log('chsdjkfhsjkdf');
-    });
+function check1 () {
+    
+    ////////////////////////////////////////////////////
+    // model --> Search Block Display None By Deafult //
+    ////////////////////////////////////////////////////
+    document.getElementById('editServiceBlock').setAttribute('style', 'display: block');
+    document.getElementById('serviceDetails').setAttribute('style', 'display: block');
+    console.log('Data Check -->', checker);
 
+    document.getElementById("OptionCodeDisplay").innerHTML = checker.optioncode;
 }

@@ -175,7 +175,7 @@ $(document).ready(function(){
             comments: commentValue
         };
 
-        const url_save_service = "php/api/bckoffservices/savenewservices.php?token=" + encodeURIComponent(global_token);
+        const url_save_service = "php/api/bckoffservices/savenewservices.php?t=" + encodeURIComponent(global_token);
         $.ajax({
             url : url_save_service,
             method : "POST",
