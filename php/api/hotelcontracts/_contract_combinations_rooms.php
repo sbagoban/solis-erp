@@ -104,8 +104,10 @@ function _contract_combinationscapacitydates_units_combinations($arr_rules) {
                 $arr_extra_min_max[] = array("AGEFROM" => $age_from, "AGETO" => $age_to, "MIN" => $arr_add_ch_min_max["MIN"], "MAX" => $arr_add_ch_min_max["MAX"]);
             }
 
+            //generate extra combinations 
             $arr_extra_occup = _contract_combinationscapacitydates_units_combinations_add($arr_extra_min_max);
             
+                
             //========================================================================
             //========================================================================
             //mix std occupancy with extra occupancy
@@ -114,14 +116,20 @@ function _contract_combinationscapacitydates_units_combinations($arr_rules) {
             for($i = 0; $i < count($arr_occup); $i++)
             {
                 $mycombinations_arr[] = $arr_occup[$i]; //push std occupation first
+                                
                 
                 for($j = 0; $j < count($arr_extra_occup); $j++)
                 {
                     $arr_item = _contract_combinationscapacitydates_units_combine_stdextra($arr_occup[$i],$arr_extra_occup[$j]);
-                    $mycombinations_arr[] = $arr_item;
                     
+                    //validate the $arr_item to make sure it does not exceed allowable capacity
+                    if(_contract_combinationscapacitydates_units_validate_combi_item($arr_item,$arr_extra_min_max,$arr_std_min_max))
+                    {
+                        $mycombinations_arr[] = $arr_item;
+                    }
                 }
-            }
+            }           
+            
             
             //========================================================================
             //========================================================================
@@ -132,6 +140,80 @@ function _contract_combinationscapacitydates_units_combinations($arr_rules) {
     }
 
     return $mycombinations_arr;
+}
+
+function _contract_combinationscapacitydates_units_validate_combi_item($arr_item,$arr_extra_min_max,$arr_std_min_max)
+{
+    //return true of this combination in $arr_item is permissible
+    //false otherwise
+    
+    $std_max = $arr_std_min_max["MAX"];
+    
+    for($i = 0; $i < count($arr_item); $i++)
+    {
+        $agefrom = $arr_item[$i]["AGEFROM"];
+        $ageto = $arr_item[$i]["AGETO"];
+        $no = $arr_item[$i]["No"];
+        
+        if($std_max > 0)
+        {
+            _contract_combinationscapacitydates_deduct($std_max, $no);
+            $arr_item[$i]["No"] = $no;
+        }
+        
+        if($arr_item[$i]["No"] > 0)
+        {
+            for($j = 0; $j < count($arr_extra_min_max); $j++)
+            {
+                $_agfrom = $arr_extra_min_max[$j]["AGEFROM"];
+                $_agto = $arr_extra_min_max[$j]["AGETO"];
+                $_max = $arr_extra_min_max[$j]["MAX"];
+                if($agefrom == $_agfrom && $ageto == $_agto)
+                {
+                    _contract_combinationscapacitydates_deduct($_max, $no);
+                    $arr_item[$i]["No"] = $no;
+                    $arr_extra_min_max[$j]["MAX"] = $_max;
+                }
+            }
+        }
+    }
+    
+    //count total pax left in $arr_item 
+    //must be <= 0
+    $sum = 0;
+    for($i = 0; $i < count($arr_item); $i++)
+    {
+        $sum += $arr_item[$i]["No"];
+    }
+    
+    if($sum > 0)
+    {
+        return false;
+    }
+    
+    
+    return true;
+}
+
+function _contract_combinationscapacitydates_deduct(&$x1, &$x2)
+{
+    if($x1 == $x2)
+    {
+        $x1 = 0;
+        $x2 = 0;
+    }
+    else if($x1 > $x2)
+    {
+        $x1 -= $x2;
+        $x2 = 0;
+    }
+    else 
+    {
+        $x2 -= $x1;
+        $x1 = 0;
+    }
+    
+    return;
 }
 
 function _contract_combinationscapacitydates_units_combine_stdextra($std_item,$extra_item)
@@ -164,6 +246,7 @@ function _contract_combinationscapacitydates_units_combine_stdextra($std_item,$e
     
     return $std_item;
 }
+
 
 function _contract_combinationscapacitydates_units_combinations_add($arr_extra_min_max) {
     $x = 0;

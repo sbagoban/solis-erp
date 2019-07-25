@@ -23,6 +23,10 @@ try {
     if (!isset($_POST["params"])) {
         die("INVALID PARAMETERS");
     }
+    
+    if (!isset($_POST["spo_params"])) {
+        die("INVALID SPO PARAMETERS");
+    }
 
     if ($_POST["t"] != $_SESSION["token"]) {
         //die("INVALID TOKEN");
@@ -40,8 +44,11 @@ try {
     
     
     $con = pdo_con();
-    $arr_params = json_decode($_POST["params"],true);
-
+    $arr_main_params = json_decode($_POST["params"],true);
+    $arr_spo_params = json_decode($_POST["spo_params"],true);
+    $arr_params = array_merge($arr_main_params,$arr_spo_params);
+    
+    
     $outcome = _rates_calculator($con, $arr_params);
 
 
