@@ -3141,20 +3141,28 @@ function _rates_calculator_apply_rates_eci_percentage(&$rates, $arr_eci, &$msg, 
 
     if ($charge_type == "%D") {
 
-        $fees = 0;
+        $discount_fees = 0;
 
         if ($charge_value > 0) {
-            $fees = round(($charge_value / 100) * $rates, 2);
+            $discount_fees = round(($charge_value / 100) * $rates, 2);
         }
-        $msg .= "<br> - ($workings Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
-        $rates -= $fees;
+        
+        $eci_fees = $rates - $discount_fees;
+        if($eci_fees < 0)
+        {
+            $eci_fees = 0;
+        }
+        
+        $msg .= "<br> + <b>(</b>$workings:$currency_buy $rates - Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees => $currency_buy $eci_fees<b>)</b>";
+        $rates += $eci_fees;
+        
     } else if ($charge_type == "%C") {
         $fees = 0;
         if ($charge_value > 0) {
             $fees = round(($charge_value / 100) * $rates, 2);
         }
 
-        $msg .= "<br> + ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
+        $msg .= "<br> + <b>(</b>$workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees<b>)</b> ";
         $rates += $fees;
     }
 }
@@ -3180,19 +3188,28 @@ function _rates_calculator_apply_rates_lco_percentage($arr_rates, $arr_lco, &$lc
 
         if ($charge_type == "%D") {
 
-            $fees = 0;
+            $discount_fees = 0;
 
             if ($charge_value > 0) {
-                $fees = round(($charge_value / 100) * $rates, 2);
+                $discount_fees = round(($charge_value / 100) * $rates, 2);
             }
-            $msg .= "<br> - ($workings Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
-            $rates -= $fees;
+            
+            $lco_fees = $rates - $discount_fees;
+            
+            if($lco_fees < 0)
+            {
+                $lco_fees = 0;
+            }
+        
+            $msg .= "<br> => ($workings: $currency_buy $rates - Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees) = $currency_buy $lco_fees";
+            $rates = $lco_fees;
+            
         } else if ($charge_type == "%C") {
             $fees = 0;
             if ($charge_value > 0) {
                 $fees = round(($charge_value / 100) * $rates, 2);
             }
-
+            
             $msg .= "<br> => ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
             $rates = $fees;
         }
