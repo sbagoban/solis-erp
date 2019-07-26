@@ -80,37 +80,7 @@
             <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
         </div>
         <!-- Row end -->
-
-        <!-- Row start - Service Details  -->
-        <!-- <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading clearfix">
-                        <i class="icon-calendar"></i>
-                        <h3 class="panel-title">Service Details <strong> MURCR7SOUTHDS0000</strong></h3>
-                    </div>
-                    <ul class="list-group list-group-flush text-justify">
-                        <li class="list-group-item">
-                            Location : <strong>Mauritius</strong>
-                            <span class="glyphicon glyphicon-ok pull-right"></span>
-                        </li>
-                        <li class="list-group-item">
-                            Service Type <strong>Care Rental</strong>
-                            <span class="glyphicon glyphicon-ok pull-right"></span>
-                        </li>
-                        <li class="list-group-item">
-                            Supplier <strong>7 South Ltd</strong>
-                            <span class="glyphicon glyphicon-ok pull-right"></span>
-                        </li>
-                        <li class="list-group-item">
-                            Option Code <strong>DS0000 - TEST EXCURSION</strong>
-                            <span class="glyphicon glyphicon-ok pull-right"></span>
-                        </li>
-                    </ul>
-                </div>
-            </div> -->
-
-        <!-- Row end - Service Details -->
+        
         <!-- Row Search Service Details -->
         <!-- <div class="row" id="searchServiceDetails">
                 <div class="col-md-12">
@@ -138,15 +108,6 @@
                                 <th scope="col">Edit</th>
                             </tr>
                         </thead>
-                        <!-- <tbody>
-                            <tr>
-                                <td data-table-header="Title">Parent Adolescent Relationship Factors and Adolescent Outcomes Among High-Risk Families.</td>
-                                <td data-table-header="Authors">Matthew Withers, Lenore McWey, Mallory Lucier-Greer</td>
-                                <td data-table-header="Journal">Family Relations</td>
-                                <td data-table-header="Date">Jan. 2017</td>
-                                <td data-table-header="Link"><a href="http://onlinelibrary.wiley.com/doi/10.1111/fare.12220/abstract;jsessionid=D46252981BC2D32EB8FF085F9B1E7071.f02t01" target="_blank" title="FSU Human Sciences Research"><i aria-hidden="true" class="fa fa-external-link">&nbsp;</i></a></td>
-                            </tr>
-                        </tbody> -->
                     </table>
                 </div>
             </div>
@@ -154,15 +115,43 @@
 
         &nbsp; &nbsp;
         <!-- Row Search Service Details -->
+        <!-- Row start - Service Details  -->
+        <div class="row" id="serviceDetails" style="display: none;">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading clearfix">
+                    <i class="icon-calendar"></i>
+                    <h3 class="panel-title">Service Details <strong> Option Code : <div id="OptionCodeDisplay"></div></strong></h3>
+                </div>
+                <!-- <ul class="list-group list-group-flush text-justify">
+                    <li class="list-group-item">
+                        Location : <strong>Mauritius</strong>
+                        <span class="glyphicon glyphicon-ok pull-right"></span>
+                    </li>
+                    <li class="list-group-item">
+                        Service Type <strong>Care Rental</strong>
+                        <span class="glyphicon glyphicon-ok pull-right"></span>
+                    </li>
+                    <li class="list-group-item">
+                        Supplier <strong>7 South Ltd</strong>
+                        <span class="glyphicon glyphicon-ok pull-right"></span>
+                    </li>
+                    <li class="list-group-item">
+                        Option Code <strong>DS0000 - TEST EXCURSION</strong>
+                        <span class="glyphicon glyphicon-ok pull-right"></span>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
 
-        <div class="col-lg-12" style="display: none;">
+        <div class="col-lg-12" id="editServiceBlock" style="display: none;">
             <div class="row">
                 <div class="board">
                     <div class="board-inner">
                         <ul class="nav nav-tabs nav-underline" id="myTab">
                             <div class="liner"></div>
                             <!-- First Tab -->
-                            <li class="">
+                            <li class="active">
                                 <a href="#costDetails" data-toggle="tab" title="Cost Details" aria-expanded="true">
                                     <span class="round-tabs one">
                                         <i class="fa fa-money fa-lg"></i><br>Cost Details                                    
@@ -171,7 +160,7 @@
                             </li>
 
                             <!-- Second Tab -->
-                            <li class="active">
+                            <li class="">
                                 <a href="#quoteDetails" data-toggle="tab" title="Quote Details" aria-expanded="true">
                                     <span class="round-tabs one">
                                         <i class="fa fa-quote-left fa-lg"></i><br>Quote Details                                    
@@ -216,7 +205,7 @@
 
                     <!-- Start First Tab -->
                     <div class="tab-content">
-                        <div class="tab-pane fade" id="costDetails">
+                        <div class="tab-pane active in fade" id="costDetails">
                             <form>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -414,7 +403,7 @@
                         <!-- End First Tab -->
 
                         <!-- Start Second Tab -->
-                        <div class="tab-pane active in fade" id="quoteDetails">
+                        <div class="tab-pane fade" id="quoteDetails">
                             <form>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -577,7 +566,7 @@
                         <!-- Start Third Tab -->
 
                         <!-- Start Fifth Tab -->
-                        <div class="tab-pane active in fade" id="policies">
+                        <div class="tab-pane fade" id="policies">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-12">

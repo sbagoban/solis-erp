@@ -75,3 +75,11 @@ a.btnEdit:hover {
   color: #337ab7;
   transform: scale(1.1);
 }
+
+tr td {
+  font-size: 12px;
+}
+
+div#OptionCodeDisplay {
+  display: inline-block;
+}
