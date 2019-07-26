@@ -48,26 +48,34 @@ function callDataNewServiceGrid() {
             "data" : "descriptionservice"
         }, {
             "data" : "comments"
-        },{
-            data: null,
-            render: function ( data, type, row ) {
-                // Add click function send data(passed as parameter) take id - send to edit tables - cost details etc --
-                checker = row;
-                return '<a class="btn btnEdit" onclick="check1()"><i aria-hidden="true" class="fa fa-external-link"></i> Edit</a>';
-            }
-        }],
-        
+        },
+            {
+                "targets": -1,
+                "data": null,
+                "defaultContent": "<a class='btn btnEdit'><i aria-hidden='true' class='fa fa-external-link'></i> Edit</a>"
+            } 
+        ]
     });
+    $('#sort tbody').on( 'click', 'a', function () {
+        var table = $('#sort').DataTable();
+        var data = table.row( $(this).parents('tr') ).data();
+        editRowService(data);
+    } );
 }
 
-function check1 () {
-    
+function editRowService (data) {
+    console.log('test->>', data);
     ////////////////////////////////////////////////////
     // model --> Search Block Display None By Deafult //
     ////////////////////////////////////////////////////
-    document.getElementById('editServiceBlock').setAttribute('style', 'display: block');
+   // document.getElementById('editServiceBlock').setAttribute('style', 'display: block');
     document.getElementById('serviceDetails').setAttribute('style', 'display: block');
-    console.log('Data Check -->', checker);
 
-    document.getElementById("OptionCodeDisplay").innerHTML = checker.optioncode;
+    document.getElementById("OptionCodeDisplay").innerHTML = data.optioncode;
+    document.getElementById("descriptionDisplay").innerHTML = data.descriptionservice;
+    document.getElementById("commentsDisplay").innerHTML =  data.comments;
+
+    $('html, body').animate({
+        scrollTop: $("#OptionCodeDisplay").offset().top
+    }, 2000);
 }

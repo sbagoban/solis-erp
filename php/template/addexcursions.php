@@ -116,36 +116,27 @@
         &nbsp; &nbsp;
         <!-- Row Search Service Details -->
         <!-- Row start - Service Details  -->
-        <div class="row" id="serviceDetails" style="display: none;">
+        <div class="row" id="serviceDetails" style="display: block;">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <i class="icon-calendar"></i>
                     <h3 class="panel-title">Service Details <strong> Option Code : <div id="OptionCodeDisplay"></div></strong></h3>
                 </div>
-                <!-- <ul class="list-group list-group-flush text-justify">
+                <ul class="list-group list-group-flush text-justify">
                     <li class="list-group-item">
-                        Location : <strong>Mauritius</strong>
-                        <span class="glyphicon glyphicon-ok pull-right"></span>
+                        Description : <strong><div id="descriptionDisplay"></div></strong>
                     </li>
                     <li class="list-group-item">
-                        Service Type <strong>Care Rental</strong>
-                        <span class="glyphicon glyphicon-ok pull-right"></span>
+                        Comments : <strong><div id="commentsDisplay"></div></strong>
                     </li>
-                    <li class="list-group-item">
-                        Supplier <strong>7 South Ltd</strong>
-                        <span class="glyphicon glyphicon-ok pull-right"></span>
-                    </li>
-                    <li class="list-group-item">
-                        Option Code <strong>DS0000 - TEST EXCURSION</strong>
-                        <span class="glyphicon glyphicon-ok pull-right"></span>
-                    </li> -->
                 </ul>
             </div>
         </div>
 
-        <div class="col-lg-12" id="editServiceBlock" style="display: none;">
+        <div class="col-lg-12" id="editServiceBlock" style="display: block;">
             <div class="row">
+            <div class="col-md-12">
                 <div class="board">
                     <div class="board-inner">
                         <ul class="nav nav-tabs nav-underline" id="myTab">
@@ -228,11 +219,11 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <h5>Cost charged - Person / Unit</h5>
+                                                    <h5>Cost charged - Adults / Unit</h5>
                                                     <div class="costPerRadio">
                                                         <p>
-                                                            <input type="radio" id="person" name="radio-group" checked>
-                                                            <label for="person">Person</label>
+                                                            <input type="radio" id="adults" name="radio-group" checked>
+                                                            <label for="adults">Adults</label>
                                                         </p>
                                                         <p>
                                                             <input type="radio" id="unit" name="radio-group">
@@ -241,7 +232,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <h5>Min Person</h5>
+                                                    <h5>Min Adults</h5>
                                                     <input type="number" min='1' max='100' class="form-control">
                                                     <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
                                                         <option selected disabled hidden>Minimum Persons</option>
@@ -253,7 +244,48 @@
                                                     </select>   -->
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <h5>Max Person</h5>
+                                                    <h5>Max Adults</h5>
+                                                    <input type="number" min='1' max='9999' class="form-control">
+                                                    <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
+                                                        <option selected disabled hidden>Maximum Persons</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>                                                                                                -->
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <h5>Cost charged - Children / Unit</h5>
+                                                    <div class="costPerRadio">
+                                                        <p>
+                                                            <input type="radio" id="children" name="radio-group" checked>
+                                                            <label for="children">Children</label>
+                                                        </p>
+                                                        <p>
+                                                            <input type="radio" id="unit" name="radio-group">
+                                                            <label for="unit">Unit</label>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>Min Children</h5>
+                                                    <input type="number" min='1' max='100' class="form-control">
+                                                    <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
+                                                        <option selected disabled hidden>Minimum Persons</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>   -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>Max Children</h5>
                                                     <input type="number" min='1' max='9999' class="form-control">
                                                     <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
                                                         <option selected disabled hidden>Maximum Persons</option>
@@ -362,7 +394,7 @@
                                                     <span>Flag Service As Deleted</span>
                                                 </label>
                                             </li>
-                                        </div>
+                                        </div>                                        
                                     </div>
                                 </div>
                                 <!-- Alert Modal when Flag -->
@@ -396,9 +428,6 @@
                                     </div>
                                 </div>
                             </form>
-                            <div class="alert alert-danger">
-                                Please complete required fields marked in red.
-                            </div>
                         </div>
                         <!-- End First Tab -->
 
@@ -905,6 +934,7 @@
                         </div>
                         <!-- Start Six Tab -->
                     </div>
+                </div>
                 </div>
             </div>
         </div>

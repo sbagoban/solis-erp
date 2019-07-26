@@ -190,12 +190,16 @@ $(document).ready(function(){
             }
         });
 
+        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
+        $('html, body').animate({
+            scrollTop: $("#searchServiceDetails").offset().top
+        }, 2000);
+
     });
     // End click
 
     // Function Reset Form Add New Service
     function resetFormAddNewService() {
-        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
         $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
         $('#createNewService').attr('disabled', 'disabled');
         $('select option:contains("Select an option")').prop('selected',true);
