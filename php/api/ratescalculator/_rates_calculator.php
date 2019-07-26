@@ -1642,7 +1642,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
         $rates = $arr[$i]["RATES"];
         $childindex = $arr[$i]["CHILDINDEX"];
         $split_between = $arr[$i]["TO_SPLIT_BETWEEN"];
-        $child_age = $arr_children[$child_index - 1]["age"];
+        $child_age = $arr_children[$childindex - 1]["age"];
 
         if ($split_between == 0) {
 
