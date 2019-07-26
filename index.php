@@ -56,7 +56,16 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
         <link rel="stylesheet" href="css/editor.css">
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
-        <link rel="stylesheet" href="css/gridStyle.css">
+        <?php
+        $menu = "";
+        if (isset($_GET["m"])) {
+            $menu = $_GET["m"];
+        }
+        if ($menu == "backoff_excursions") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        }
+        ?>
+
         <!-- Sandeep End -->
 
         <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
@@ -324,7 +333,7 @@ if (isset($_GET["m"])) {
                                         <img src="<?php echo $relative_server_path . $_SESSION["solis_userimage"]; ?>" class="img-circle" alt="User Image">
 
                                         <p>
-<?php echo $_SESSION["solis_username"]; ?> - <?php echo $_SESSION["solis_grpname"]; ?>
+                                            <?php echo $_SESSION["solis_username"]; ?> - <?php echo $_SESSION["solis_grpname"]; ?>
                                             <small>Created on <?php echo date_format(date_create($_SESSION["solis_usercreated"]), "M Y"); ?></small>
                                         </p>
                                     </li>
@@ -378,18 +387,18 @@ if (isset($_GET["m"])) {
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
-<?php
-$menu = "";
-if (isset($_GET["m"])) {
-    $menu = $_GET["m"];
-}
+                        <?php
+                        $menu = "";
+                        if (isset($_GET["m"])) {
+                            $menu = $_GET["m"];
+                        }
 
-$userid = $_SESSION["solis_userid"];
-$grpid = $_SESSION["solis_grpid"];
+                        $userid = $_SESSION["solis_userid"];
+                        $grpid = $_SESSION["solis_grpid"];
 
 
-menu_buildmenu($con, $grpid, $menu);
-?>
+                        menu_buildmenu($con, $grpid, $menu);
+                        ?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
@@ -410,29 +419,26 @@ menu_buildmenu($con, $grpid, $menu);
                 <!-- Main content -->
                 <section class="content">
 
-<?php
-$menu = "";
-if (isset($_GET["m"])) {
-    $menu = $_GET["m"];
-}
+                    <?php
+                    $menu = "";
+                    if (isset($_GET["m"])) {
+                        $menu = $_GET["m"];
+                    }
 
-if ($menu == "newsroom" || $menu == "") {
-    include 'php/template/newsroom.php';
-} else if ($menu == "userprofile") {
-    include 'php/template/userprofile.php';
-} else if ($menu == "norights") {
-    include 'php/template/norights.php';
-} 
-else if ($menu == "managebookings") {
-    include 'php/template/booking_engine.php';
-} 
-else if ($menu == "backoff_excursions") {
-    include 'php/template/addexcursions.php';
-}
-else {
-    echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
-}
-?>
+                    if ($menu == "newsroom" || $menu == "") {
+                        include 'php/template/newsroom.php';
+                    } else if ($menu == "userprofile") {
+                        include 'php/template/userprofile.php';
+                    } else if ($menu == "norights") {
+                        include 'php/template/norights.php';
+                    } else if ($menu == "managebookings") {
+                        include 'php/template/booking_engine.php';
+                    } else if ($menu == "backoff_excursions") {
+                        include 'php/template/addexcursions.php';
+                    } else {
+                        echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
+                    }
+                    ?>
                 </section>
                 <!-- /.content -->
 
@@ -647,7 +653,7 @@ else {
         <!-- jQuery 3 -->
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="libraries/jquery/jquery.maskedinput.min.js"></script>
-                
+
         <!-- Sandeep Start -->
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
@@ -684,7 +690,7 @@ else {
         <script src="dist/js/demo.js?<?php echo time(); ?>"></script>
 
         <script>
-                $('[data-toggle="push-menu"]').pushMenu('toggle');
+                                                $('[data-toggle="push-menu"]').pushMenu('toggle');
         </script>
 
 <?php
@@ -784,8 +790,7 @@ if ($menu == "usergroups") {
     echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
 
     echo '<script src="js/hotelspecialoffers/hotelspecialoffers.js?' . time() . '"></script>';
-} 
-else if ($menu == "inventory") {
+} else if ($menu == "inventory") {
     if (!isset($_GET["hid"])) {
         header("Location: index.php?m=norights");
         exit();
@@ -793,8 +798,7 @@ else if ($menu == "inventory") {
     echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
 
     echo '<script src="js/hotelinventory/hotelinventory.js?' . time() . '"></script>';
-} 
-else if ($menu == "dateperiods") {
+} else if ($menu == "dateperiods") {
 
     if (!isset($_GET["hid"])) {
         header("Location: index.php?m=norights");
@@ -805,21 +809,16 @@ else if ($menu == "dateperiods") {
     echo '<script type="text/javascript" src="js/dateperiods/dateperiods.js?' . time() . '"></script>';
 } else if ($menu == "sysparams") {
     echo '<script src="js/sysparams/sysparams.js?' . time() . '"></script>';
-}
-else if ($menu == "ratescalc") {
+} else if ($menu == "ratescalc") {
     echo '<script src="js/ratescalculator/ratescalculator.js?' . time() . '"></script>';
-} 
-else if($menu == "managebookings")
-{
+} else if ($menu == "managebookings") {
     echo '<script src="js/booking_engine/control/accomodationsCtrl.js"></script>
         <script src="js/booking_engine/control/excursionsCtrl.js"></script>
         <script src="js/booking_engine/control/transfersCtrl.js"></script>
         <script src="js/booking_engine/utils/rangeSlider.js"></script>
         <script src="js/booking_engine/script.js"></script>
         <script src="js/booking_engine/models/excursionsModel.js"></script>';
-}
-else if($menu == "backoff_excursions")
-{
+} else if ($menu == "backoff_excursions") {
     echo '<script src="js/boexcursions/script_backOff_Excursions.js"></script>
         <script src="js/boexcursions/utils/editor.js"></script>
         <script src="js/boexcursions/utils/generateOptionCode.js"></script>
