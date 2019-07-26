@@ -62,6 +62,7 @@ if (isset($_GET["m"])) {
             $menu = $_GET["m"];
         }
         if ($menu == "backoff_excursions") {
+            //load "css/gridStyle.css" only for "backoff_excursions" interface
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         }
         ?>
