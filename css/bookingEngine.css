@@ -345,9 +345,8 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
 .panel-default {
-  box-shadow: 2px 0 7px 7px #337ab71f;
+  box-shadow: 0 4px 8px rgba(59,64,69,0.2) !important; 
 }
-
 
 [type="radio"]:checked,
 [type="radio"]:not(:checked) {

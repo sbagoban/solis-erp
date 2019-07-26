@@ -13,6 +13,10 @@ $(document).ready(function(){
     element.classList.add("has-warning");
 
     $('#createNewService').attr('disabled', 'disabled');
+    if (!$.trim($("#addedDescription").val())) {
+        // textarea is empty or contains only white-space
+        console.log('test');
+    }
         $('.inputValidation').click(function() {
             var empty = false;
             $('.inputValidation').each(function() {

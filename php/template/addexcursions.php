@@ -1,5 +1,49 @@
 <div class="container">
     <div class="col-lg-12">
+        <!-- Row Search Start -->
+        <!-- <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                
+                    <div class="panel-heading clearfix">
+                        <i class="icon-calendar"></i>
+                        <h3 class="panel-title">Search Service</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form class="row-border" action="#" onsubmit="return false">
+                                <div class=" selectValidation has-success">
+                                    <div class="col-md-4">
+                                        <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="location[location]" id="ddlChooseLocation">
+                                            <option value="selectedCountry" selected disabled hidden>Choose Location</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="selectValidation has-success">
+                                    <div class="col-md-4">
+                                        <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="selectValidation has-success">
+                                    <div class="col-md-4">
+                                        <select class="custom-select form-control form-control-sm inputValidation" style="width: 100%;" name="supplier[supplier]" id="ddlChooseSupplier">
+                                            <option selected disabled hidden>Select Option</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button id="searchService"  class="btn btn-success pull-right searchServices">
+                                        <span class="glyphicon glyphicon-search"></span> Search Services
+                                    </button>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- Row Search End -->
+        
         <!-- Row start -->
         <div class="row">
             <div class="col-md-12">
@@ -51,10 +95,10 @@
                                     <a id="generate" style="display: none;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group has-warning">
                                 <label class="col-md-2 control-label">Desctription</label>
                                 <div class="col-md-10">
-                                    <textarea class="form-control" rows="5" id="addedDescription"></textarea>
+                                    <textarea class="form-control inputValidation" rows="5" id="addedDescription"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -66,7 +110,7 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button id="createNewService" class="btn btn-primary pull-right">Create New Service &raquo;</button>
-                                    <button type="button" class="btn btn-success pull-right searchServices">
+                                    <button id="searchService"  class="btn btn-success pull-right searchServices">
                                         <span class="glyphicon glyphicon-search"></span> Search Services
                                     </button>
                                 </div>
@@ -116,7 +160,7 @@
         &nbsp; &nbsp;
         <!-- Row Search Service Details -->
         <!-- Row start - Service Details  -->
-        <div class="row" id="serviceDetails" style="display: block;">
+        <div class="row" id="serviceDetails" style="display: none;">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
@@ -134,7 +178,7 @@
             </div>
         </div>
 
-        <div class="col-lg-12" id="editServiceBlock" style="display: block;">
+        <div class="col-lg-12" id="editServiceBlock" style="display: none;">
             <div class="row">
             <div class="col-md-12">
                 <div class="board">
@@ -207,9 +251,9 @@
                                     <div class="col-md-12">
                                         <div class="col-md-6">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-12 has-success">
                                                     <h5>Description</h5>
-                                                    <input type="text" class="form-control">
+                                                    <input type="text" class="form-control" id="textFieldDescriptionCostDetails">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -299,9 +343,9 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 has-success">
                                             <h5>Comments</h5>
-                                            <textarea class="form-control" rows="5" id="comment"></textarea>
+                                            <textarea class="form-control" rows="5" id="textFieldCommentsCostDetails"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +354,7 @@
                                     <div class="col-md-12">
                                         <div class="col-md-3">
                                             <h5>Invoice Text</h5>
-                                            <input type="text" class="form-control" disabled>&nbsp;
+                                            <input type="text" class="form-control" id="textFieldInvoiceCostDetails" disabled>&nbsp;
                                             <input type="text" class="form-control" placeholder="Invoice Text Description">
                                         </div>
                                         <div class="col-md-3">
@@ -366,7 +410,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="col-md-12">
+                                        <div class="col-md-12 form-group has-warning">
                                             <h5>Department</h5>
                                             <div class="input-group">
                                                 <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">

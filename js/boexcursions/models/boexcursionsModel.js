@@ -209,6 +209,43 @@ $(document).ready(function(){
         document.getElementById('generate').setAttribute('style', 'display: none');
         document.getElementById('generateNone').setAttribute('style', 'display: block');
     }
+
+     /////////////////////////////////////////
+    // model --> save form value to dB //////
+    /////////////////////////////////////////
+    $("#searchService").click(function () {
+        var ddlLocationSelected = $('#ddlChooseLocation').val();
+        var ddlServiceTypeSelected = $('#ddlSelectServiceType').val();
+        var ddlSupplierSelected = $('#ddlChooseSupplier').val();
+
+        var objSearchService = {
+            id:-1, //for new items, id is always -1
+            countryfk: ddlLocationSelected, //please make sure the names match in JS and PHP
+            servicetypefk: ddlServiceTypeSelected,
+            supplierfk: ddlSupplierSelected
+        };
+
+        const url_save_service = "php/api/bckoffservices/savenewservices.php?t=" + encodeURIComponent(global_token);
+        $.ajax({
+            url : url_save_service,
+            method : "POST",
+            data : objSearchService,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+            success : function(data){
+                console.log('value', data);
+                callDataSearchServiceGrid();
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        });
+
+        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
+        $('html, body').animate({
+            scrollTop: $("#searchServiceDetails").offset().top
+        }, 2000);
+
+    });
+    // End click
     
 });
 

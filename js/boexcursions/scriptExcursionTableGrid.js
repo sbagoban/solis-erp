@@ -68,12 +68,17 @@ function editRowService (data) {
     ////////////////////////////////////////////////////
     // model --> Search Block Display None By Deafult //
     ////////////////////////////////////////////////////
-   // document.getElementById('editServiceBlock').setAttribute('style', 'display: block');
+    document.getElementById('editServiceBlock').setAttribute('style', 'display: block');
     document.getElementById('serviceDetails').setAttribute('style', 'display: block');
-
+ 
+    // Set Value - From Selected Line
     document.getElementById("OptionCodeDisplay").innerHTML = data.optioncode;
     document.getElementById("descriptionDisplay").innerHTML = data.descriptionservice;
     document.getElementById("commentsDisplay").innerHTML =  data.comments;
+    // Set Value to textfield - From selected line
+    document.getElementById("textFieldDescriptionCostDetails").value = data.descriptionservice;
+    document.getElementById("textFieldCommentsCostDetails").value = data.comments;
+    document.getElementById("textFieldInvoiceCostDetails").value = data.supplierfk;
 
     $('html, body').animate({
         scrollTop: $("#OptionCodeDisplay").offset().top
