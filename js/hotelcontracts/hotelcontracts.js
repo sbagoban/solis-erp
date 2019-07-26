@@ -7834,18 +7834,41 @@ function hotelcontracts()
         var daterwid = tree_roomdates.getUserData(nodeid, "DATE_RWID");
         var colid = grid_checkinouts.getColumnId(cInd);
 
-
-        if (stage == 1)
+        if (stage == 0)
+        {
+            if (colid == "checkinout_time_beforeafter")
+            {
+                return false; //do not allow editing
+            }
+            return true;
+        }
+        else if (stage == 1)
         {
             if (grid_checkinouts.editor && grid_checkinouts.editor.obj)
             {
                 grid_checkinouts.editor.obj.select(); /* grid.editor.obj is the input object*/
             }
+            
         } else if (stage == 2)
         {
             if (nValue != oValue)
-            {
-                if (colid == "checkinout_charge_value")
+            {                
+                if (colid == "checkinout_policytype")
+                {
+                    if (nValue == "ECI")
+                    {
+                        //set beforeafter to before
+                        grid_checkinouts.cells(rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter")).setValue("BEFORE");
+                        onGridCheckInOutEdit(2, rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter"), "BEFORE", "");
+                    }
+                    else if (nValue == "LCO")
+                    {
+                        //set beforeafter to before
+                        grid_checkinouts.cells(rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter")).setValue("AFTER");
+                        onGridCheckInOutEdit(2, rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter"), "AFTER", "");
+                    }
+                }
+                else if (colid == "checkinout_charge_value")
                 {
                     if (nValue != "")
                     {
