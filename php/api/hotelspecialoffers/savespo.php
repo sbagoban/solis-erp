@@ -277,19 +277,16 @@ try {
     if ($template == "free_nights") {
         $free_nights = json_decode($_POST["free_nights"], true);
         $free_nights_cumulative = $free_nights["free_nights_cumulative"];
-        $free_nights_deducted_lowest_rate = $free_nights["free_nights_deducted_lowest_rate"];
         $free_nights_placed_at = $free_nights["free_nights_placed_at"];
 
         $sql = "UPDATE tblspecial_offer SET 
             free_nights_cumulative=:free_nights_cumulative, 
-            free_nights_deducted_lowest_rate=:free_nights_deducted_lowest_rate,
             free_nights_placed_at=:free_nights_placed_at
             WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":id" => $id,
             ":free_nights_cumulative" => $free_nights_cumulative,
-            ":free_nights_deducted_lowest_rate" => $free_nights_deducted_lowest_rate,
             ":free_nights_placed_at" => $free_nights_placed_at));
 
 
@@ -871,16 +868,16 @@ function savefreenights($free_nights_grid) {
 
         for ($i = 0; $i < count($free_nights_grid); $i++) {
 
-            $free_nights = $free_nights_grid[$i]["cells"]["free_nights"];
+            $pay_nights = $free_nights_grid[$i]["cells"]["pay_nights"];
             $stay_nights = $free_nights_grid[$i]["cells"]["stay_nights"];
 
 
             //check if exists
             $sql = "SELECT * FROM tblspecial_offer_freenights
                         WHERE spo_fk=:spo_fk AND 
-                        free_nights=:free_nights AND stay_nights=:stay_nights";
+                        pay_nights=:pay_nights AND stay_nights=:stay_nights";
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id, ":free_nights" => $free_nights,
+            $stmt->execute(array(":spo_fk" => $id, ":pay_nights" => $pay_nights,
                 ":stay_nights" => $stay_nights));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -888,12 +885,12 @@ function savefreenights($free_nights_grid) {
             } else {
                 //insert
                 $sql = "INSERT INTO tblspecial_offer_freenights 
-                            (spo_fk, free_nights, stay_nights) 
+                            (spo_fk, pay_nights, stay_nights) 
                             VALUES 
-                            (:spo_fk, :free_nights, :stay_nights)";
+                            (:spo_fk, :pay_nights, :stay_nights)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":spo_fk" => $id,
-                    ":free_nights" => $free_nights,
+                    ":pay_nights" => $pay_nights,
                     ":stay_nights" => $stay_nights));
                 $arr_needed_ids[] = $con->lastInsertId();
             }

@@ -14,39 +14,53 @@ function _rates_calculator($con, $arr_params) {
         $discount_percnt_all = $arr_params["spo_discount_all_percentage"];
         $discount_flat_pppn = $arr_params["spo_discount_PPPN"];
         $discount_flat_pni = $arr_params["spo_discount_PNI"];
+        
+        $free_nights_num_nights = $arr_params["spo_free_nights_num_nights"];
+        $spo_free_nights_cumul = $arr_params["spo_free_nights_cumul"];
+        $spo_free_nights_start_end = $arr_params["spo_free_nights_start_end"];
+        $spo_free_nights_deduct_lowest = $arr_params["spo_free_nights_deduct_lowest"];
 
 
         $arr_item = array(
             "SPO_ID" => 1, "SPO_NAME" => "TESTING 1", "SPO_TYPE" => "DISCOUNT",
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
-            "ROOM_ALL_FLAT" => "%ALL", "VALUE" => $discount_percnt_all);
+            "ROOM_ALL_FLAT" => "%ALL", "VALUE" => $discount_percnt_all,
+            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
+            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
             "SPO_ID" => 2, "SPO_NAME" => "TESTING 2", "SPO_TYPE" => "DISCOUNT",
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
-            "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => $discount_percnt_room);
+            "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => $discount_percnt_room,
+            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
+            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
             "SPO_ID" => 3, "SPO_NAME" => "TESTING 3", "SPO_TYPE" => "DISCOUNT",
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
-            "ROOM_ALL_FLAT" => "FLAT_PPPN", "VALUE" => $discount_flat_pppn);
+            "ROOM_ALL_FLAT" => "FLAT_PPPN", "VALUE" => $discount_flat_pppn,
+            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
+            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
-            "SPO_ID" => 3, "SPO_NAME" => "TESTING 3", "SPO_TYPE" => "DISCOUNT",
+            "SPO_ID" => 4, "SPO_NAME" => "TESTING 4", "SPO_TYPE" => "DISCOUNT",
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
-            "ROOM_ALL_FLAT" => "FLAT_PNI", "VALUE" => $discount_flat_pni);
+            "ROOM_ALL_FLAT" => "FLAT_PNI", "VALUE" => $discount_flat_pni,
+            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
+            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
+        
         $arr_spo_discounts[] = $arr_item;
 
         $arr_params["spo_discounts_array"] = $arr_spo_discounts;
 
-        ////TEMP ========================================================
+        ////TEMP END ======================================================
         //=================================================================        
 
 
@@ -3301,6 +3315,97 @@ function _rates_calculator_sum_daily_total($arr, $arr_columns, $category, $arr_p
         //PNI
         return array("MSG" => "$category TOTAL", "COSTINGS" => $_arr_total, "CATEGORY" => "$category TOTAL");
     }
+}
+
+function _rates_calculator_calc_free_nights($num_nights, $arr_stays, $is_cumulative)
+{
+    //calculates the number of free nights based on params $arr_stays and $is_cumulative
+    //$arr_stays is an array of free nights rules [0]["STAYS"]
+    //                                               ["PAYS]
+    //$num_nights is the number of nights in the reservation
+    
+    if(count($arr_stays) == 0)
+    {
+        return 0;
+    }
+    
+    //==========================================================================
+    //NON CUMULATIVE
+    if($is_cumulative == 0)
+    {
+        $idx = 1;
+        $stay = 0;
+        $pay = 0;
+        while(true)
+        {
+            $arr_stays_pays = _rates_calculator_calc_free_nights_lookup_night($arr_stays,$idx);
+            if($arr_stays_pays["STAYS"] == -1 && $arr_stays_pays["PAYS"] == -1)
+            {
+                //not found
+                $stay ++;
+                $pay ++;
+            }
+            else
+            {
+                $stay = $arr_stays_pays["STAYS"];
+                $pay = $arr_stays_pays["PAYS"];
+            }
+            
+            if($idx == $num_nights)
+            {
+                return array("STAYS"=>$stay,"PAYS"=>$pay,"FREE"=>($stay-$pay)); //free nights
+            }
+            
+            $idx ++;
+        }
+    }
+    //==========================================================================
+    //CUMULATIVE
+    else
+    {
+        $idx = count($arr_stays) -1;
+        while($idx >= 0)
+        {
+            $arr_stays_pays = $arr_stays[$idx];
+            if($arr_stays_pays["STAYS"] == $num_nights)
+            {
+                return array("STAYS"=>$arr_stays_pays["STAYS"],"PAYS"=>$arr_stays_pays["PAYS"],"FREE"=>($arr_stays_pays["STAYS"]-$arr_stays_pays["PAYS"])); //free nights
+            }
+            else if($arr_stays_pays["STAYS"] < $num_nights)
+            {
+                if($num_nights % $arr_stays_pays["STAYS"] == 0)
+                {
+                    //no remainder: multiple
+                    $factor = $num_nights / $arr_stays_pays["STAYS"];
+                    $pays = $arr_stays_pays["PAYS"] * $factor;
+                    return array("STAYS"=>$num_nights,"PAYS"=>$pays,"FREE"=>($num_nights-$pays)); //free nights
+                }
+            }
+            
+            $idx --;
+        } 
+        
+        //===============
+        //if we are here, means that no multiples found in cumulative version
+        //find free nights in non cumulative version now
+        return _rates_calculator_calc_free_nights($num_nights, $arr_stays, 0);        
+    }
+}
+
+function _rates_calculator_calc_free_nights_lookup_night($arr_stays,$x)
+{
+    $stays = -1;
+    $pays = -1;
+    
+    for($i = 0; $i < count($arr_stays); $i++)
+    {
+        if($x == $arr_stays[$i]["STAYS"])
+        {
+            return $arr_stays[$i];
+        }
+    }
+    
+    return array("STAYS"=>$stays,"PAYS"=>$pays);
 }
 ?>
 

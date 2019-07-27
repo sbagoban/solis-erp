@@ -367,6 +367,23 @@ function ratescalculator() {
                     labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
                 }]},
+        {type: "checkbox", name: "spo_free_nights", label: "Apply Free Nights", width: 800, list: [
+                {type: "input", name: "spo_free_nights_num_nights", label: "No Free Nights", labelWidth: "150",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10",validate: "ValidNumeric"
+                },
+                {type: "combo", name: "spo_free_nights_cumul", label: "Cumul:", labelWidth: "170",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                },
+                {type: "combo", name: "spo_free_nights_start_end", label: "Start/End:", labelWidth: "170",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                },
+                {type: "combo", name: "spo_free_nights_deduct_lowest", label: "Deduct Lowest:", labelWidth: "170",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                }]},
         {type: "block", width: 800, list: [
                 {type: "checkbox", name: "spo_ishoneymoon", label: "Is Honey Moon"},
                 {type: "newcolumn"},
@@ -381,7 +398,22 @@ function ratescalculator() {
     form_spo.getCombo("spo_type").addOption([{value: "contractual", text: "CONTRACTUAL"}, {value: "tactical", text: "TACTICAL"}, {value: "BOTH", text: "BOTH"}]);
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
-
+    
+    form_spo.getCombo("spo_free_nights_cumul").addOption([{value: "0", text: "NO"}, {value: "1", text: "YES"}]);
+    form_spo.getCombo("spo_free_nights_cumul").readonly(true);
+    form_spo.getCombo("spo_free_nights_cumul").setComboValue("0");
+    
+    form_spo.getCombo("spo_free_nights_deduct_lowest").addOption([{value: "0", text: "NO"}, {value: "1", text: "YES"}]);
+    form_spo.getCombo("spo_free_nights_deduct_lowest").readonly(true);
+    form_spo.getCombo("spo_free_nights_deduct_lowest").setComboValue("0");
+    
+    form_spo.getCombo("spo_free_nights_start_end").addOption([{value: "START", text: "START"}, {value: "END", text: "END"}]);
+    form_spo.getCombo("spo_free_nights_start_end").readonly(true);
+    form_spo.getCombo("spo_free_nights_start_end").setComboValue("START");
+    
+    
+       
+    
     //======================================================================
     var results_layout = tabViews.cells("results").attachLayout("1C");
     results_layout.cells("a").hideHeader();

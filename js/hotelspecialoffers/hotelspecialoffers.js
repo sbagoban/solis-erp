@@ -2488,16 +2488,13 @@ function hotelspecialoffers()
         {type: "block", width: 900, list: [
                 //===============
                 {type: "checkbox", name: "free_nights_cumulative",
-                    label: "<b>Option:</b> Cumulative"},
-                {type: "newcolumn"},
-                {type: "checkbox", name: "free_nights_deducted_lowest_rate",
-                    label: "<b>Option:</b> Deduct Nights at Lowest Rates"}
+                    label: "<b>Option:</b> Cumulative"}
             ]},
         {type: "block", width: 900, list: [
                 //===============
                 {type: "combo", name: "free_nights_placed_at",
                     label: "Place Free Nights at",
-                    labelHeight: "22", inputWidth: "150", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
                     comboImagePath: "../../images/"
@@ -2509,6 +2506,7 @@ function hotelspecialoffers()
     var cboFreeNightsPlaceAt = form_free_nights.getCombo("free_nights_placed_at");
     cboFreeNightsPlaceAt.addOption([{value: "end", text: "End", img_src: "images/rollover.png"}]);
     cboFreeNightsPlaceAt.addOption([{value: "start", text: "Start", img_src: "images/rollover.png"}]);
+    cboFreeNightsPlaceAt.addOption([{value: "lowest", text: "Nights with Lowest Rates", img_src: "images/rollover.png"}]);
     cboFreeNightsPlaceAt.readonly(true);
 
 
@@ -2543,6 +2541,10 @@ function hotelspecialoffers()
     toolbar_free_nights.setIconsPath("images/");
     toolbar_free_nights.addButton("new", 1, "Add New", "add.png", "add.png");
     toolbar_free_nights.addButton("delete", 2, "Delete", "delete.png", "delete.png");
+    toolbar_free_nights.addSpacer("delete");
+    toolbar_free_nights.addText("lbltest", 3, "Night Stays:");
+    toolbar_free_nights.addInput("txtstays", 4, "0", "100");
+    toolbar_free_nights.addButton("test", 5, "Test Me!", "exam_pass.png", "exam_pass.png");
     toolbar_free_nights.setIconSize(32);
     toolbar_free_nights.attachEvent("onClick", function (id) {
         if (id == "new")
@@ -2560,17 +2562,20 @@ function hotelspecialoffers()
                 return;
             }
             grid_free_nights.deleteRow(rid);
+        } else if (id == "test")
+        {
+            testFreeNights();
         }
     });
 
     var grid_free_nights = freenights_layout.cells("c").attachGrid();
     grid_free_nights.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_free_nights.setHeader("Free Nights,Stay Nights");
-    grid_free_nights.setColumnIds("free_nights,stay_nights");
-    grid_free_nights.setColTypes("edn,edn");
-    grid_free_nights.setInitWidths("200,200");
-    grid_free_nights.setColAlign("center,center");
-    grid_free_nights.setColSorting('int,int');
+    grid_free_nights.setHeader("Stay Nights,Pay Nights,Free Nights");
+    grid_free_nights.setColumnIds("stay_nights,pay_nights,free_nights");
+    grid_free_nights.setColTypes("edn,edn,ro");
+    grid_free_nights.setInitWidths("200,200,200");
+    grid_free_nights.setColAlign("center,center,center");
+    grid_free_nights.setColSorting('int,int,int');
     grid_free_nights.enableAlterCss("", "");
     grid_free_nights.enableEditTabOnly(true);
     grid_free_nights.enableEditEvents(true, true, true);
@@ -5113,14 +5118,14 @@ function hotelspecialoffers()
         {
             var rwid = grid_free_nights.getRowId(i);
 
-            var free_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("free_nights")).getValue();
+            var pay_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("pay_nights")).getValue();
             var stay_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("stay_nights")).getValue();
 
 
-            if (free_nights == "" || stay_nights == "")
+            if (pay_nights == "" || stay_nights == "")
             {
                 dhtmlx.alert({
-                    text: "Please specify Free Night and Stay Nights!",
+                    text: "Please specify Pay Nights and Stay Nights!",
                     type: "alert-warning",
                     title: "Special Offer",
                     callback: function () {
@@ -5130,6 +5135,25 @@ function hotelspecialoffers()
 
                 return;
             }
+
+            pay_nights = parseInt(pay_nights, 10);
+            stay_nights = parseInt(stay_nights, 10);
+
+            if (pay_nights >= stay_nights)
+            {
+                dhtmlx.alert({
+                    text: "Pay Nights cannnot be greater or equal to Stay Nights!",
+                    type: "alert-warning",
+                    title: "Special Offer",
+                    callback: function () {
+                        grid_free_nights.selectRowById(rwid, false, true, false);
+                    }
+                });
+
+                return;
+            }
+
+
         }
 
         //=============
@@ -5199,6 +5223,26 @@ function hotelspecialoffers()
                     return false;
                 }
             }
+
+            var paynights = parseInt(grid_free_nights.cells(rid, grid_free_nights.getColIndexById("pay_nights")).getValue(), 10);
+            var staynights = parseInt(grid_free_nights.cells(rid, grid_free_nights.getColIndexById("stay_nights")).getValue(), 10);
+            var free_nights = staynights - paynights;
+
+            if (free_nights <= 0)
+            {
+                dhtmlx.alert({
+                    text: "Pay Nights cannot be greater or equal to Stay Nights",
+                    type: "alert-warning",
+                    title: "Special Offer",
+                    callback: function () {
+                        grid_free_nights.selectRowById(rid, false, true, false);
+                    }
+                });
+                return false;
+            }
+
+            grid_free_nights.cells(rid, grid_free_nights.getColIndexById("free_nights")).setValue(free_nights);
+
         }
 
         return true;
@@ -5416,6 +5460,7 @@ function hotelspecialoffers()
 
         //now check if the existing rows in grid_upgrade have values that are in the room combo
         var arrids_to_delete = [];
+
         for (var i = 0; i < grid_upgrade.getRowsNum(); i++) {
             var rwid = grid_upgrade.getRowId(i);
 
@@ -5431,6 +5476,10 @@ function hotelspecialoffers()
             {
                 arrids_to_delete.push(rwid);
             }
+
+            grid_upgrade.cells(rwid, grid_upgrade.getColIndexById("room_from_fk")).setValue(room_from_fk);
+            grid_upgrade.cells(rwid, grid_upgrade.getColIndexById("room_to_fk")).setValue(room_to_fk);
+
         }
 
         for (var i = 0; i < arrids_to_delete.length; i++) {
@@ -5813,6 +5862,9 @@ function hotelspecialoffers()
             {
                 arrids_to_delete.push(rwid);
             }
+
+            grid_meal_upgrade.cells(rwid, grid_meal_upgrade.getColIndexById("meal_from_fk")).setValue(meal_from_fk);
+            grid_meal_upgrade.cells(rwid, grid_meal_upgrade.getColIndexById("meal_to_fk")).setValue(meal_to_fk);
         }
 
         for (var i = 0; i < arrids_to_delete.length; i++) {
@@ -6055,7 +6107,7 @@ function hotelspecialoffers()
 
                         //=========== CLEAN UPS ================
                         flat_rate_cleanJsonCapacityFromRoomsAndAges();
-                       
+
                         //============ DRASTIC! ================
                         for (var i = 0; i < _json_capacity.length; i++)
                         {
@@ -6068,7 +6120,7 @@ function hotelspecialoffers()
                                     var date_action = room_dates[d].date_action;
                                     var date_child_rules = room_dates[d].date_childpolicies_rules;
                                     var date_single_rules = room_dates[d].date_singleparentpolicies_rules;
-                                    
+
                                     if (date_action != "DELETE")
                                     {
                                         for (var ad = 0; ad < date_single_rules.length; ad++)
@@ -6076,13 +6128,13 @@ function hotelspecialoffers()
                                             date_single_rules[ad].rule_action = "DELETE";
 
                                         }
-                                        
+
                                         for (var ad = 0; ad < date_child_rules.length; ad++)
                                         {
                                             date_child_rules[ad].rule_action = "DELETE";
 
                                         }
-                                        
+
                                     }
                                 }
 
@@ -6099,9 +6151,9 @@ function hotelspecialoffers()
         }
 
     }
-    
-    
-        function flat_rate_cleanJsonCapacityFromRoomsAndAges()
+
+
+    function flat_rate_cleanJsonCapacityFromRoomsAndAges()
     {
         var roomids = form_name.getItemValue("rooms_ids");
         var arrroomids = roomids.split(",");
@@ -6126,7 +6178,7 @@ function hotelspecialoffers()
                     {
                         if (roomdates[d].date_action != "DELETE")
                         {
-                           
+
                             //=========== clean children sharing and single =============
                             var childpolicies_rules = roomdates[d].date_childpolicies_rules;
                             for (var cr = 0; cr < childpolicies_rules.length; cr++)
@@ -6168,7 +6220,7 @@ function hotelspecialoffers()
             }
         }
     }
-    
+
 
     function validate_flat_rate_supp()
     {
@@ -6827,9 +6879,19 @@ function hotelspecialoffers()
         for (var i = 0; i < json_arr.length; i++)
         {
             var id = json_arr[i].id;
-            var free_nights = json_arr[i].free_nights;
-            var stay_nights = json_arr[i].stay_nights;
-            grid_free_nights.addRow(id, [free_nights, stay_nights]);
+            var pay_nights = parseInt(json_arr[i].pay_nights, 10);
+            var stay_nights = parseInt(json_arr[i].stay_nights, 10);
+            var free_nights = stay_nights - pay_nights;
+
+            if (isNaN(free_nights))
+            {
+                free_nights = 0;
+            }
+
+            grid_free_nights.addRow(id, "");
+            grid_free_nights.cells(id, grid_free_nights.getColIndexById("pay_nights")).setValue(pay_nights);
+            grid_free_nights.cells(id, grid_free_nights.getColIndexById("stay_nights")).setValue(stay_nights);
+            grid_free_nights.cells(id, grid_free_nights.getColIndexById("free_nights")).setValue(free_nights);
             grid_free_nights.setRowTextStyle(id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
         }
     }
@@ -14316,6 +14378,110 @@ function hotelspecialoffers()
         }
     }
 
+    function testFreeNights()
+    {
+        var stays = utils_trim(toolbar_free_nights.getValue("txtstays"), " ");
+        if (isNaN(stays) || stays == "")
+        {
+            stays = 0;
+        }
+        stays = parseInt(stays, 10);
+
+        if (stays <= 0)
+        {
+            dhtmlx.alert({
+                text: "Number of Nights Stayed must be NUMERIC and GREATER than ZERO",
+                type: "alert-warning",
+                title: "Special Offer",
+                callback: function () {
+                }
+            });
+            return;
+        }
+
+        //go on test:
+
+        //get array of stays and pays
+
+        var arr_free_nights = [];
+        for (var i = 0; i < grid_free_nights.getRowsNum(); i++)
+        {
+            var rwid = grid_free_nights.getRowId(i);
+
+            var pay_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("pay_nights")).getValue();
+            var stay_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("stay_nights")).getValue();
+            arr_free_nights.push({"STAYS":stay_nights,"PAYS":pay_nights});
+        }
+        
+        var cumulative = form_free_nights.isItemChecked("free_nights_cumulative")
+        cumulative = (cumulative) ? 1 : 0;
+        
+        var params = "t=" + encodeURIComponent(global_token) +
+                "&arr_free_nights=" + encodeURIComponent(JSON.stringify(arr_free_nights)) +
+                "&stays=" + stays +
+                "&cumulative=" + cumulative;
+        
+        freenights_layout.progressOn();
+        dhtmlxAjax.post("php/api/hotelspecialoffers/test_free_nights.php", params, function (loader) {
+            freenights_layout.progressOff();
+
+            if (loader)
+            {
+                if (loader.xmlDoc.responseURL == "")
+                {
+                    dhtmlx.alert({
+                        text: "Connection Lost!",
+                        type: "alert-warning",
+                        title: "TEST FREE NIGHTS",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+
+                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+
+                if (!json_obj)
+                {
+                    dhtmlx.alert({
+                        text: loader.xmlDoc.responseText,
+                        type: "alert-warning",
+                        title: "TEST FREE NIGHTS",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+                if (json_obj.OUTCOME == "OK")
+                {
+                    var free = json_obj.FREE;
+                    var stay = json_obj.STAY;
+                    var pay = json_obj.PAY;
+                    
+                    dhtmlx.alert({
+                        text: "Stays:" + stay + " - Pays:" + pay + " = Free: <b>" + free + "</b> night(s)",
+                        type: "alert",
+                        title: "TEST FREE NIGHTS",
+                        callback: function () {
+                        }
+                    });
+
+                } else
+                {
+                    dhtmlx.alert({
+                        text: json_obj.OUTCOME,
+                        type: "alert-warning",
+                        title: "TEST FREE NIGHTS",
+                        callback: function () {
+                        }
+                    });
+                }
+            }
+        });
+    }
     //=======================================================
     popupwin_spo.hide();
     popupwin_link.hide();
