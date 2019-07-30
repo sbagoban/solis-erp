@@ -80,11 +80,9 @@ $(document).ready(function(){
         url : url_optioncode,
         type : "GET",
         success : function(data) {
-            helpersDropdownDepartment.buildDropdown(
-                jQuery.parseJSON(data),
-                $('#ddlOptionCode'),
-                'Select an option'
-            );
+                helpersDropdownDepartment.buildDropdown(
+                    jQuery.parseJSON(data), 
+                    $('#ddlOptionCode'), 'Select option');
         }, 
         error:function(error) {
             console.log('Error ${error}');
@@ -140,6 +138,38 @@ $(document).ready(function(){
         }
     }
     
+     /////////////////////////////////////////
+    // model --> fetch Api Select Location //
+    /////////////////////////////////////////
+    const url_department = "php/api/combos/contactdepartment_combo.php?t=" + encodeURIComponent(global_token); 
+    $.ajax({
+        url : url_department,
+        type : "GET",
+        success : function(data) {
+                helpersDropdownDepart.buildDropdown(
+                    jQuery.parseJSON(data), 
+                    $('#ddlChooseDept'), 'Select option');
+        }, 
+        error:function(error) {
+            console.log('Error ${error}');
+        }
+    });
+    var helpersDropdownDepart = {
+        buildDropdown: function(result, dropdown, emptyMessage) {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '') {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(data, result) {
+                    dropdown.append('<option value="' + result.text + '">' + result.description + '</option>');
+                });
+            }
+        }
+    }
+
     /////////////////////////////////////////
     // model --> Selected Option Code1///////
     /////////////////////////////////////////

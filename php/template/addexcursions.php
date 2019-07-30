@@ -82,7 +82,7 @@
                             <div class="form-group selectValidation" id="optionCode">
                                 <label class="col-md-2 control-label">Option Code</label>
                                 <div class="col-md-3">
-                                    <select class="custom-select form-control form-control-sm inputValidation" name="regular" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
+                                    <select class="custom-select form-control form-control-sm inputValidation opt1" name="regular" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
                                         <option value="00" selected disabled hidden>Select Option</option>
                                     </select>
                                 </div>
@@ -98,7 +98,7 @@
                             <div class="form-group has-warning">
                                 <label class="col-md-2 control-label">Desctription</label>
                                 <div class="col-md-10">
-                                    <textarea class="form-control inputValidation" rows="5" id="addedDescription"></textarea>
+                                    <textarea class="form-control textAreaDesc" rows="5" id="addedDescription"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -160,25 +160,25 @@
         &nbsp; &nbsp;
         <!-- Row Search Service Details -->
         <!-- Row start - Service Details  -->
-        <div class="row" id="serviceDetails" style="display: none;">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading clearfix">
-                    <i class="icon-calendar"></i>
-                    <h3 class="panel-title">Service Details <strong> Option Code : <div id="OptionCodeDisplay"></div></strong></h3>
+        <div class="row" id="serviceDetails" style="display: block;">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <i class="icon-calendar"></i>
+                        <h3 class="panel-title">Service Details <strong> Option Code : <div id="OptionCodeDisplay"></div></strong></h3>
+                    </div>
+                    <ul class="list-group list-group-flush text-justify">
+                        <li class="list-group-item">
+                            Description : <strong><div id="descriptionDisplay"></div></strong>
+                        </li>
+                        <li class="list-group-item">
+                            Comments : <strong><div id="commentsDisplay"></div></strong>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush text-justify">
-                    <li class="list-group-item">
-                        Description : <strong><div id="descriptionDisplay"></div></strong>
-                    </li>
-                    <li class="list-group-item">
-                        Comments : <strong><div id="commentsDisplay"></div></strong>
-                    </li>
-                </ul>
             </div>
-        </div>
 
-        <div class="col-lg-12" id="editServiceBlock" style="display: none;">
+            <div class="col-lg-12" id="editServiceBlock" style="display: block;">
             <div class="row">
             <div class="col-md-12">
                 <div class="board">
@@ -247,6 +247,38 @@
                                         &nbsp;
                                     </div>
                                 </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6 has-success">
+                                            <h5>Locality</h5>
+                                            <div class="form-group selectValidation">
+                                                <select class="custom-select form-control form-control-sm" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="location[location]" id="ddlChooseLocality">
+                                                    <option value="selectedLocality" selected disabled hidden>Choose Locality</option>
+                                                    <option value="North">North</option>
+                                                    <option value="East">East</option>
+                                                    <option value="South">South</option>
+                                                    <option value="West">West</option>
+                                                    <option value="South East">South East</option>
+                                                    <option value="South West">South West</option>
+                                                    <option value="North East">North East</option>
+                                                    <option value="North West">North West</option>
+                                                    <option value="Centre">Centre</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 has-warning">
+                                            <h5>Department</h5>
+                                            <div class="form-group selectValidation">
+                                                <select class="custom-select form-control form-control-sm inputValidationCostDetails" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="dept[deptn]" id="ddlChooseDept">
+                                                    <option value="selectedDepartment" selected disabled hidden>Choose Department</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-6">
@@ -307,12 +339,12 @@
                                                     <h5>Cost charged - Children / Unit</h5>
                                                     <div class="costPerRadio">
                                                         <p>
-                                                            <input type="radio" id="children" name="radio-group" checked>
+                                                            <input type="radio" id="children" name="radio-group-children" checked>
                                                             <label for="children">Children</label>
                                                         </p>
                                                         <p>
-                                                            <input type="radio" id="unit" name="radio-group">
-                                                            <label for="unit">Unit</label>
+                                                            <input type="radio" id="unitChildren" name="radio-group-children">
+                                                            <label for="unitChildren">Unit</label>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -355,7 +387,7 @@
                                         <div class="col-md-3">
                                             <h5>Invoice Text</h5>
                                             <input type="text" class="form-control" id="textFieldInvoiceCostDetails" disabled>&nbsp;
-                                            <input type="text" class="form-control" placeholder="Invoice Text Description">
+                                            <input type="text" class="form-control" id="descriptionInvoiceCostDetails"  placeholder="Invoice Text Description">
                                         </div>
                                         <div class="col-md-3">
                                             <h5>Duration</h5>
@@ -375,60 +407,6 @@
                                     </div>
                                 </div>
                                 <hr>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="col-md-12">
-                                            <h5>Service Class</h5>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                    <option selected disabled hidden>Service Class</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                </select>
-                                                <span class="input-group-addon">></span>
-                                                <input type="text" class="form-control" id="duration" placeholder="Not Applicable">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <h5>Locality</h5>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                    <option selected disabled hidden>Locality</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                </select>
-                                                <span class="input-group-addon">></span>
-                                                <input type="text" class="form-control" id="duration">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="col-md-12 form-group has-warning">
-                                            <h5>Department</h5>
-                                            <div class="input-group">
-                                                <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                    <option selected disabled hidden>Add Department</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                </select>
-                                                <span class="input-group-addon">></span>
-                                                <input type="text" class="form-control" id="duration">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <hr>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-6">
@@ -438,7 +416,10 @@
                                                     <span>Flag Service As Deleted</span>
                                                 </label>
                                             </li>
-                                        </div>                                        
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button id="updateService" class="btn btn-primary pull-right">Update Cost Details &raquo;</button>
+                                        </div>                                     
                                     </div>
                                 </div>
                                 <!-- Alert Modal when Flag -->
@@ -454,11 +435,11 @@
                                                 Flag Service As Deleted</h4>
                                             </div>
                                             <div class="modal-body">
-                                                <p id="error">
-                                                    Are you sure you want to delete ?</p>
+                                                <p id="error">Are you sure you want to delete ?</p>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal">Yes</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
                                             </div>
                                         </div>
 
