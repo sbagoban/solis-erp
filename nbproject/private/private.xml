@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="593">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="596">
         <file>
             <url>php/api/hotelcontracts/_contract_combinations_rooms.php</url>
             <bookmark id="544">
@@ -115,9 +115,14 @@
         </file>
         <file>
             <url>js/hotelspecialoffers/hotelspecialoffers.js</url>
-            <bookmark id="593">
+            <bookmark id="595">
                 <name/>
-                <line>5225</line>
+                <line>2566</line>
+                <key/>
+            </bookmark>
+            <bookmark id="596">
+                <name/>
+                <line>14415</line>
                 <key/>
             </bookmark>
         </file>
@@ -179,10 +184,7 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/loadspo.php</file>
-            <file>file:/var/www/html/soliserp/js/hotelspecialoffers/hotelspecialoffers.js</file>
-            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/_spo.php</file>
-            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/savespo.php</file>
+            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/test_free_nights.php</file>
             <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_calculator.php</file>
         </group>
     </open-files>

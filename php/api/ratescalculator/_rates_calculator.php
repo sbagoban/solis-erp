@@ -14,11 +14,9 @@ function _rates_calculator($con, $arr_params) {
         $discount_percnt_all = $arr_params["spo_discount_all_percentage"];
         $discount_flat_pppn = $arr_params["spo_discount_PPPN"];
         $discount_flat_pni = $arr_params["spo_discount_PNI"];
-        
+
         $free_nights_num_nights = $arr_params["spo_free_nights_num_nights"];
-        $spo_free_nights_cumul = $arr_params["spo_free_nights_cumul"];
         $spo_free_nights_start_end = $arr_params["spo_free_nights_start_end"];
-        $spo_free_nights_deduct_lowest = $arr_params["spo_free_nights_deduct_lowest"];
 
 
         $arr_item = array(
@@ -26,8 +24,7 @@ function _rates_calculator($con, $arr_params) {
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "%ALL", "VALUE" => $discount_percnt_all,
-            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
-            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
@@ -35,8 +32,7 @@ function _rates_calculator($con, $arr_params) {
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => $discount_percnt_room,
-            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
-            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
@@ -44,8 +40,7 @@ function _rates_calculator($con, $arr_params) {
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "FLAT_PPPN", "VALUE" => $discount_flat_pppn,
-            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
-            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
@@ -53,9 +48,8 @@ function _rates_calculator($con, $arr_params) {
             "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "FLAT_PNI", "VALUE" => $discount_flat_pni,
-            "FREE_NIGHTS"=>0,"FREE_NIGHTS_START_END"=>"","FREE_NIGHTS_CUMUL"=>0,
-            "FREE_NIGHTS_DEDUCT_LOWEST"=>0);
-        
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
+
         $arr_spo_discounts[] = $arr_item;
 
         $arr_params["spo_discounts_array"] = $arr_spo_discounts;
@@ -66,9 +60,6 @@ function _rates_calculator($con, $arr_params) {
 
         $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
         $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
-        $hotelroom = $arr_params["hotelroom"];
-        $supp_mealplan = $arr_params["supp_mealplan"];
-
         //cleanup:
         $arr_params["contractids"] = trim($arr_params["contractids"]);
 
@@ -77,16 +68,18 @@ function _rates_calculator($con, $arr_params) {
         $checkin_dMY = $checkin_dMY->format("d M Y");
         $checkout_dMY = new DateTime($arr_params["checkout_date"]);
         $checkout_dMY = $checkout_dMY->format("d M Y");
-
         $num_nights = _rates_calculator_get_numnights($checkin_date, $checkout_date);
 
+        $arr_params["checkin_dmy"] = $checkin_dMY;
+        $arr_params["checkout_dmy"] = $checkout_dMY;
+        $arr_params["num_nights"] = $num_nights;
 
-        $roll_over_flg = false;
-        $roll_over_basis = "";
-        $roll_over_value = "";
-        $checkin_rollover_dMY = "";
-        $checkout_rollover_dMY = "";
 
+        $arr_params["roll_over"] = false;
+        $arr_params["roll_over_basis"] = "";
+        $arr_params["roll_over_value"] = "";
+        $arr_params["checkin_rollover_dmy"] = "";
+        $arr_params["checkout_rollover_dmy"] = "";
 
         //=========================================================================
         //validate the contracts 
@@ -103,7 +96,7 @@ function _rates_calculator($con, $arr_params) {
 
                 return array("OUTCOME" => $arr_outcome["OUTCOME"],
                     "DAILY" => $arr_outcome["DETAILS"],
-                    "NUM NIGHTS" => $num_nights,
+                    "NUM NIGHTS" => $arr_params["num_nights"],
                     "EXEC_TIME" => $exec_time);
             } else if ($arr_outcome["OUTCOME"] == "FAIL_NO_CONTRACT") {
 
@@ -117,8 +110,8 @@ function _rates_calculator($con, $arr_params) {
                 $arr_params["checkin_date"] = $checkin_rollover->format("Y-m-d");
                 $arr_params["checkout_date"] = $checkout_rollover->format("Y-m-d");
 
-                $checkin_rollover_dMY = $checkin_rollover->format("d M Y");
-                $checkout_rollover_dMY = $checkout_rollover->format("d M Y");
+                $arr_params["checkin_rollover_dmy"] = $checkin_rollover->format("d M Y");
+                $arr_params["checkout_rollover_dmy"] = $checkout_rollover->format("d M Y");
 
                 //==================================================================
                 //retry now
@@ -134,34 +127,27 @@ function _rates_calculator($con, $arr_params) {
 
                         return array("OUTCOME" => $arr_outcome["OUTCOME"],
                             "DAILY" => $arr_outcome["DETAILS"],
-                            "NUM NIGHTS" => $num_nights,
+                            "NUM NIGHTS" => $arr_params["num_nights"],
                             "EXEC_TIME" => $exec_time);
                     }
                 } else {
-                    $roll_over_flg = true;
+                    $arr_params["roll_over"] = true;
                 }
                 //==================================================================
             }
         }
         //=========================================================================
-
+        //TEST 1: CONTRACT ID:
         $contractid = $arr_days["DAILY"][0]["CONTRACT_ID"][0]; //get the final contract id
         $arr_params["current_contract_id"] = $contractid;
-
-        $arr_params["roll_over"] = $roll_over_flg;
-        $arr_params["roll_over_basis"] = $roll_over_basis;
-        $arr_params["roll_over_value"] = $roll_over_value;
 
 
         //get the contract details
         $rw_contract_details = _rates_calculator_get_contract_details($con, $contractid);
-        if ($roll_over_flg) {
-            $roll_over_basis = $rw_contract_details["rollover_basis"];
-            $roll_over_value = $rw_contract_details["rollover_value"];
+        if ($arr_params["roll_over"]) {
 
-            $arr_params["roll_over"] = $roll_over_flg;
-            $arr_params["roll_over_basis"] = $roll_over_basis;
-            $arr_params["roll_over_value"] = $roll_over_value;
+            $arr_params["roll_over_basis"] = $rw_contract_details["rollover_basis"];
+            $arr_params["roll_over_value"] = $rw_contract_details["rollover_value"];
         }
 
         //======================================================================
@@ -183,227 +169,267 @@ function _rates_calculator($con, $arr_params) {
         $arr_params["currency_buy_id"] = $currency_buy_id;
         //======================================================================
 
-
-        $arr_daily = array();
-
-        for ($idx = 0; $idx < count($arr_days["DAILY"]); $idx++) {
-
-
-            $this_date = $arr_days["DAILY"][$idx]["DATE"];
-
-            //======================================================================
-            $arr_daily[$idx]["DATE"] = $this_date;
-            $arr_daily[$idx]["ROLLOVER"] = $roll_over_flg;
-            $arr_daily[$idx]["ROLLOVER_BASIS"] = $roll_over_basis;
-            $arr_daily[$idx]["ROLLOVER_VALUE"] = $roll_over_value;
-            $arr_daily[$idx]["TAX_COMMI_BASIS"] = "";
-            $arr_daily[$idx]["CONTRACT_ID"] = $arr_days["DAILY"][$idx]["CONTRACT_ID"];
-            $arr_daily[$idx]["COSTINGS_WORKINGS"] = array();
-            $arr_daily[$idx]["STATUS"] = "OK"; //to be used for further checks below
-            //========================================================================
-
-            $arr_daily[$idx]["CURRENCY_SELL_CODE"] = $currency_sell;
-            $arr_daily[$idx]["CURRENCY_BUY_CODE"] = $currency_buy;
-
-
-            //=============================================================================
-            //if rollover to last year, notify the user
-            if ($roll_over_flg) {
-
-                $msg = "<font color='red'>NO CONTRACTS FOUND FOR <b>$checkin_dMY - $checkout_dMY</b></font>";
-                $msg .= "<br>ROLLING OVER TO: <b>$checkin_rollover_dMY - $checkout_rollover_dMY</b>";
-
-                $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => $msg, "COSTINGS" => array());
-            }
-            //=============================================================================
-
-
-            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 1</font>: FOUND CONTRACT ID: $contractid",
-                "COSTINGS" => array());
-
-            //========================================================================
-            //load contract rules, tax and commission into array
-            $arr_capacity = _contract_capacityarr($con, $contractid);
-            $arr_taxcomm = _contract_taxcommi($con, $contractid);
-            //========================================================================
-
-            $PN_PPN = _rates_calculator_getTaxCommi_AddOn_Basis($hotelroom, $arr_taxcomm);
-            $arr_daily[$idx]["TAX_COMMI_BASIS"] = $PN_PPN;
-            $arr_params["TAX_COMMI_BASIS"] = $PN_PPN;
-            //========================================================================
-            //================================================================
-            //create dummy columns needed for MARKUP and COMMISSION
-            $arr_columns = _rates_calculator_prepare_costings_array($con, $arr_taxcomm, $arr_params, 0, array("ROOM"), $arr_params["TAX_COMMI_BASIS"]);
-            //==========================================================
-            //TEST 2: MINIMUM STAY 
-            $min_test = _rates_calculator_min_stay_nights($arr_capacity, $arr_params, $this_date, $num_nights);
-            if ($min_test != "OK") {
-                $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 2</font>: MIN STAY $min_test NIGHTS",
-                    "COSTINGS" => array());
-
-                $arr_daily[$idx]["STATUS"] = "MIN_STAY_FAIL";
-            } else {
-
-                $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 2</font>: MIN STAY",
-                    "COSTINGS" => array());
-
-
-                //TEST 3: CHILDREN AGES
-                $children_age_test = _rates_calculator_test_children_ages($arr_params, $con);
-                if ($children_age_test != "OK") {
-                    $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 3</font>: CHILDREN AGES: $children_age_test",
-                        "COSTINGS" => array());
-                    $arr_daily[$idx]["STATUS"] = "CHILDREN_AGE_FAIL";
-                } else {
-
-                    $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 3</font>: CHILDREN AGES",
-                        "COSTINGS" => array());
-
-                    //TEST 4: ADULT AND CHILDREN CAPACITY
-                    $capacity_test_adch = _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date);
-                    if ($capacity_test_adch["MSG"] != "OK") {
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 4</font>: CAPACITY TEST ADULT + CHILDREN SHARING: " . $capacity_test_adch["MSG"],
-                            "COSTINGS" => array());
-
-                        $arr_daily[$idx]["STATUS"] = "CAPACITY_FAIL";
-                    } else {
-
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: " . ($capacity_test_adch["INDEX"]),
-                            "COSTINGS" => array());
-
-                        //TEST 5: CHILDREN IN OWN ROOM
-                        $capacity_test_ch_ownroom = _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_date);
-                        if ($capacity_test_ch_ownroom["MSG"] != "OK") {
-                            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 5</font>: CAPACITY TEST CHILDREN OWN ROOM: " . $capacity_test_ch_ownroom["MSG"],
-                                "COSTINGS" => array());
-
-                            $arr_daily[$idx]["STATUS"] = "CHILDREN_OWN_ROOM_FAIL";
-                        } else {
-                            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM. COMBINATION INDEX:" . ($capacity_test_adch["INDEX"]),
-                                "COSTINGS" => array());
-                        }
-
-                        //=====================================================================
-                        //HERE WE GO:
-                        //
-                        //
-                        //
-                        //=====================================================================
-                        //================== EARLY CHECKIN ====================================
-                        $arr_eci = array("CHARGE_TYPE" => "", "WORKINGS" => "", "CHARGE_VALUE" => "");
-                        if ($idx == 0) {
-                            //CHECK IF THERE IS EARLY CHECK IN
-                            $arr_eci = _rates_calculator_eci_lco("ECI", $arr_capacity, $arr_params, $this_date, $hotelroom);
-                        }
-                        //=====================================================================
-                        //
-                        //
-                        //                        
-                        //=====================================================================
-                        //============= NOW GET DAILY RATES ===================================
-                        $arr = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
-
-                        $arr = _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params);
-
-                        $arr = _rates_calculator_calc_rollover_percentage($arr_params, $arr, $roll_over_flg);
-                        $arr = _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $roll_over_flg, "ROOM");
-
-                        $arr = _rates_calculator_calc_discount_PPPN($arr_params, $arr, "ROOM");
-                        $arr = _rates_calculator_calc_discount_PNI($arr_params, $arr);
-
-                        $arr = _rates_calculator_lookup_rates_calc_PPPN($arr, $arr_params, $arr_taxcomm, $con, "ROOM");
-
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr);
-
-                        //$arr[n][MSG]
-                        //       [COSTINGS]
-                        //=====================================================================
-                        //
-                        //
-                        //
-                        //=====================================================================
-                        //================== LATE CHECKOUT ====================================
-                        $arr_lco = array("CHARGE_TYPE" => "", "WORKINGS" => "", "CHARGE_VALUE" => "");
-                        if ($idx == $num_nights - 1) {
-                            //CALCULATE LATE CHECK OUT ON THE DATE OF CHECKOUT
-
-                            $lco_applied = false; //flag to determine of LCO has been applied or not
-                            $checkout_date = new DateTime($this_date);
-                            $checkout_date = $checkout_date->modify('+1 day');
-                            $checkout_date = $checkout_date->format("Y-m-d");
-
-                            $arr_lco = _rates_calculator_eci_lco("LCO", $arr_capacity, $arr_params, $checkout_date, $hotelroom);
-
-                            //get the rates for the date of checkout
-                            $arr_rates = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $checkout_date, $con, $arr_eci);
-                            $arr_rates = _rates_calculator_apply_rates_lco_percentage($arr_rates, $arr_lco, $lco_applied, $currency_buy);
-                            $arr_rates = _rates_calculator_apply_rates_lco_flat_pni($arr_rates, $arr_lco, $arr_params, $lco_applied);
-                            $arr_rates = _rates_calculator_calc_rollover_percentage($arr_params, $arr_rates, $roll_over_flg);
-
-                            if ($lco_applied) {
-                                //create another index for LCO
-                                $arr_daily[$idx + 1] = $arr_daily[$idx]; //copy previous night values to new checkout date
-                                $arr_daily[$idx + 1]["DATE"] = $checkout_date;
-                                $arr_rates = _rates_calculator_lookup_rates_calc_PPPN($arr_rates, $arr_params, $arr_taxcomm, $con, "ROOM");
-                                $arr_daily[$idx + 1]["COSTINGS_WORKINGS"] = $arr_rates;
-                                $arr_daily[$idx + 1]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx + 1]["COSTINGS_WORKINGS"], $arr_columns, "ROOM", $arr_params, $arr_taxcomm, $con);
-                                $arr_daily[$idx + 1]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx + 1]["COSTINGS_WORKINGS"], $arr_columns, "NON_ROOM", $arr_params, $arr_taxcomm, $con);
-                            }
-                        }
-                        //=====================================================================
-                        //=====================================================================
-                        //ROOM TOTAL
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_columns, "ROOM", $arr_params, $arr_taxcomm, $con);
-
-
-                        //
-                        //=====================================================================
-                        //================================================================
-                        //MEAL SUPPLEMENTS
-                        if ($supp_mealplan != "") {
-                            //there is a meal supplement
-                            $arr_meal_supp = _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $hotelroom, $con);
-
-                            $arr_meal_supp = _rates_calculator_calc_rollover_percentage($arr_params, $arr_meal_supp, $roll_over_flg);
-                            $arr_meal_supp = _rates_calculator_meal_supp_PPPN($arr_meal_supp, $arr_params, $arr_taxcomm, $con);
-                            $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_meal_supp);
-                        }
-
-
-                        //=====================================================================
-                        //
-                        //
-                        //
-                        //=====================================================================
-                        //EXTRA MEAL SUPPLEMENTS
-                        //CHECK FOR COMPULSORY MEALS
-                        $arr_extra_meal_supp = _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_date, $hotelroom, $con);
-                        $arr_extra_meal_supp = _rates_calculator_calc_rollover_percentage($arr_params, $arr_extra_meal_supp, $roll_over_flg);
-                        $arr_extra_meal_supp = _rates_calculator_extra_meal_supp_PPPN($arr_extra_meal_supp, $arr_params, $arr_taxcomm, $con);
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_extra_meal_supp);
-
-                        //================================================================
-                        //===============================================================
-                        //NON ROOM TOTAL
-                        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_columns, "NON_ROOM", $arr_params, $arr_taxcomm, $con);
-                    }
+        //========================================================================
+        //load contract rules, tax and commission into arrays
+        $arr_capacity = _contract_capacityarr($con, $arr_params["current_contract_id"]);
+        $arr_taxcomm = _contract_taxcommi($con, $arr_params["current_contract_id"]);
+        
+        $arr_params["arr_capacity"] = $arr_capacity;
+        $arr_params["arr_taxcomm"] = $arr_taxcomm;
+        //========================================================================
+        //determine the markup basis: is it PPPN or PNI
+        $PN_PPN = _rates_calculator_getTaxCommi_AddOn_Basis($arr_params["hotelroom"], $arr_taxcomm);
+        $arr_params["TAX_COMMI_BASIS"] = $PN_PPN;
+        //========================================================================
+        //================================================================
+        //create dummy columns needed for MARKUP and COMMISSION
+        $arr_columns = _rates_calculator_prepare_costings_array($con, $arr_taxcomm, $arr_params, 0, array("ROOM"), $arr_params["TAX_COMMI_BASIS"]);
+        $arr_params["arr_columns"] = $arr_columns;
+        //==========================================================
+        
+        //=========================================================================
+        //HAVE WE GOT FREE NIGHTS WITH LOWEST ROOM RATES?
+        $arr_index_free_nights = array();
+        $arr_params["arr_free_nights_index"] = array(); //just to start
+        
+        if($free_nights_num_nights > 0)
+        {
+            if($spo_free_nights_start_end == "START")
+            {
+                for($idx = 0; $idx < $free_nights_num_nights; $idx++)
+                {
+                    $arr_index_free_nights[] = $idx;
                 }
             }
-            //========================================================================
+            else if($spo_free_nights_start_end == "END")
+            {
+                $idx = $free_nights_num_nights - 1;
+                while($idx >= 0)
+                {
+                    $arr_index_free_nights[] = $idx;
+                    $idx --;
+                }
+            }
+            else if($spo_free_nights_start_end == "LOWEST")
+            {
+                //run the rates_calculator_CORE_lookup with ROOM only to get 
+                //the night with the lowest rate
+                $arr_daily_free_nights = array();
+                
+                for ($idx = 0; $idx < count($arr_days["DAILY"]); $idx++) {
+                    $this_date = $arr_days["DAILY"][$idx]["DATE"];
+                    $arr_contract_ids = $arr_days["DAILY"][$idx]["CONTRACT_ID"];
+                    $arr_lookup_mode = array("TOTAL" => false, "ROOM_ONLY" => true);
+                    
+                    rates_calculator_CORE_lookup($arr_daily_free_nights, $idx, $this_date, $arr_contract_ids, $arr_params, $con, $arr_lookup_mode);
+                }
+                
+                //get the nights index with the lowest rates
+                $arr_index_free_nights = rates_calculator_get_nights_with_lowest_rates($arr_daily_free_nights,$free_nights_num_nights,$arr_params);
+            }
+        }
+        
+        $arr_params["arr_free_nights_index"] = $arr_index_free_nights; //recall nights Free
+        //=========================================================================
+        
+        
+        $arr_daily = array();
+        for ($idx = 0; $idx < count($arr_days["DAILY"]); $idx++) {
+            $this_date = $arr_days["DAILY"][$idx]["DATE"];
+            $arr_contract_ids = $arr_days["DAILY"][$idx]["CONTRACT_ID"];
+            $arr_lookup_mode = array("TOTAL" => true, "ROOM_ONLY" => false);
+
+            rates_calculator_CORE_lookup($arr_daily, $idx, $this_date, $arr_contract_ids, $arr_params, $con, $arr_lookup_mode);
         }
 
-
+        //done: record time
 
         $time_post = microtime(true);
         $exec_time = round(($time_post - $time_pre), 2);
-
-
 
 
         return array("OUTCOME" => "OK", "NUM NIGHTS" => $num_nights, "DAILY" => $arr_daily,
             "EXEC_TIME" => $exec_time, "COLUMNS" => $arr_columns);
     } catch (Exception $ex) {
         return array("OUTCOME" => "_RATES_CALCULATOR: " . $ex->getMessage());
+    }
+}
+
+function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contract_ids,
+        $arr_params, $con, $arr_lookup_mode) {
+    
+    
+                
+    //this is the core daily lookups for the contract
+    //all changes are done to $arr_daily
+    //
+    //$arr_lookup_mode[TOTAL] = true/false => create total rows or not
+    //$arr_lookup_mode[ROOM_ONLY] = true/false => lookup room only or not
+    
+    
+    //======================================================================
+    //is this night 100% free?
+    $arr_night_index_free = $arr_params["arr_free_nights_index"];
+    $night_is_free = false;
+    if (in_array($idx, $arr_night_index_free))
+    {
+        $night_is_free = true;
+    }
+    $arr_params["night_is_free"] = $night_is_free;
+    //======================================================================
+    
+    //======================================================================
+    $arr_daily[$idx]["DATE"] = $this_date;
+    $arr_daily[$idx]["CONTRACT_ID"] = $arr_contract_ids;
+    $arr_daily[$idx]["TAX_COMMI_BASIS"] = $arr_params["TAX_COMMI_BASIS"];
+        
+    $arr_daily[$idx]["CURRENCY_SELL_CODE"] = $arr_params["currency_sell_code"];
+    $arr_daily[$idx]["CURRENCY_BUY_CODE"] = $arr_params["currency_buy_code"];
+    $arr_daily[$idx]["CURRENCY_SELL_ID"] = $arr_params["currency_sell_id"];
+    $arr_daily[$idx]["CURRENCY_BUY_ID"] = $arr_params["currency_buy_id"];
+
+    $arr_daily[$idx]["ROLLOVER"] = $arr_params["roll_over"];
+    $arr_daily[$idx]["ROLLOVER_BASIS"] = $arr_params["roll_over_basis"];
+    $arr_daily[$idx]["ROLLOVER_VALUE"] = $arr_params["roll_over_value"];
+
+    $arr_daily[$idx]["COSTINGS_WORKINGS"] = array();
+    $arr_daily[$idx]["STATUS"] = "OK"; //to be used for further checks below
+    
+    $arr_capacity = $arr_params["arr_capacity"];
+    $arr_taxcomm = $arr_params["arr_taxcomm"];
+    $arr_columns = $arr_params["arr_columns"];
+    
+    //========================================================================
+    //=============================================================================
+    //if need to rollover to last year, notify the user
+    if ($arr_params["roll_over"]) {
+
+        $msg = "<font color='red'>NO CONTRACTS FOUND FOR <b>" . $arr_params["checkin_dmy"] . " - " . $arr_params["checkout_dmy"] . "</b></font>";
+        $msg .= "<br>ROLLING OVER TO: <b>" . $arr_params["checkin_rollover_dmy"] . " - " . $arr_params["checkout_rollover_dmy"] . "</b>";
+
+        $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => $msg, "COSTINGS" => array());
+    }
+    //=============================================================================
+
+
+    $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 1</font>: FOUND CONTRACT ID: <b>" . $arr_params["current_contract_id"] . "</b>",
+        "COSTINGS" => array());
+       
+    //perform validations now
+    _rates_calculator_validate_reservation($arr_capacity, $arr_params, $this_date, $con, $arr_daily[$idx]);
+
+    if ($arr_daily[$idx]["STATUS"] == "OK") { //all ok after all validation checks
+        //=====================================================================
+        //HERE WE GO:
+        //
+        //
+        //
+        //=====================================================================
+        //================== EARLY CHECKIN ====================================
+        $arr_eci = array("CHARGE_TYPE" => "", "WORKINGS" => "", "CHARGE_VALUE" => "");
+        if ($idx == 0) {
+            //CHECK IF THERE IS EARLY CHECK IN ON FIRST NIGHT
+            $arr_eci = _rates_calculator_eci_lco("ECI", $arr_capacity, $arr_params, $this_date);
+        }
+        //=====================================================================
+        //
+        //
+        //                        
+        //=====================================================================
+        //=============  GET DAILY ROOM RATES =================================
+
+        $arr = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
+        $arr = _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params);
+
+        $arr = _rates_calculator_calc_rollover_percentage($arr_params, $arr);
+        $arr = _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, "ROOM");
+
+        $arr = _rates_calculator_calc_discount_PPPN($arr_params, $arr, "ROOM");
+        $arr = _rates_calculator_calc_discount_PNI($arr_params, $arr);
+
+        $arr = _rates_calculator_lookup_rates_calc_PPPN($arr, $arr_params, $arr_taxcomm, $con, "ROOM");
+
+        $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr);
+
+        //=====================================================================
+        //
+        //
+        //
+        //=====================================================================
+        //================== LATE CHECKOUT ====================================
+        $arr_lco = array("CHARGE_TYPE" => "", "WORKINGS" => "", "CHARGE_VALUE" => "");
+        if ($idx == $arr_params["num_nights"] - 1) {
+            //CALCULATE LATE CHECK OUT ON THE DATE OF CHECKOUT
+
+            $lco_applied = false; //flag to determine of LCO has been applied or not
+            $checkout_date = new DateTime($this_date);
+            $checkout_date = $checkout_date->modify('+1 day');
+            $checkout_date = $checkout_date->format("Y-m-d");
+
+            $arr_lco = _rates_calculator_eci_lco("LCO", $arr_capacity, $arr_params, $checkout_date);
+
+            //get the rates for the date of checkout
+            $arr_rates = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $checkout_date, $con, $arr_eci);
+            $arr_rates = _rates_calculator_apply_rates_lco_percentage($arr_rates, $arr_lco, $lco_applied, $arr_params["currency_buy_code"]);
+            $arr_rates = _rates_calculator_apply_rates_lco_flat_pni($arr_rates, $arr_lco, $arr_params, $lco_applied);
+            $arr_rates = _rates_calculator_calc_rollover_percentage($arr_params, $arr_rates);
+
+            if ($lco_applied) {
+                //create another index for LCO
+                $arr_daily[$idx + 1] = $arr_daily[$idx]; //copy previous night values to new checkout date
+                $arr_daily[$idx + 1]["DATE"] = $checkout_date;
+                $arr_rates = _rates_calculator_lookup_rates_calc_PPPN($arr_rates, $arr_params, $arr_taxcomm, $con, "ROOM");
+                $arr_daily[$idx + 1]["COSTINGS_WORKINGS"] = $arr_rates;
+                
+                if ($arr_lookup_mode["TOTAL"]) {
+                    $arr_daily[$idx + 1]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx + 1]["COSTINGS_WORKINGS"], $arr_columns, "ROOM", $arr_params, $arr_taxcomm, $con);
+                    $arr_daily[$idx + 1]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx + 1]["COSTINGS_WORKINGS"], $arr_columns, "NON_ROOM", $arr_params, $arr_taxcomm, $con);
+                }
+            }
+        }
+        //=====================================================================
+        //=====================================================================
+        //ROOM TOTAL
+        if ($arr_lookup_mode["TOTAL"]) {
+            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_columns, "ROOM", $arr_params, $arr_taxcomm, $con);
+        }
+
+
+        //=====================================================================
+        //================================================================
+        //MEAL SUPPLEMENTS
+        if (!$arr_lookup_mode["ROOM_ONLY"]) {
+            if ($arr_params["supp_mealplan"] != "") {
+                //there is a meal supplement
+                $arr_meal_supp = _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $con);
+
+                $arr_meal_supp = _rates_calculator_calc_rollover_percentage($arr_params, $arr_meal_supp);
+                $arr_meal_supp = _rates_calculator_meal_supp_PPPN($arr_meal_supp, $arr_params, $arr_taxcomm, $con);
+                $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_meal_supp);
+            }
+        }
+        //=====================================================================
+        //
+        //
+        //
+        //=====================================================================
+        //EXTRA MEAL SUPPLEMENTS
+        //CHECK FOR COMPULSORY MEALS
+        if (!$arr_lookup_mode["ROOM_ONLY"]) {
+            $arr_extra_meal_supp = _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_date, $con);
+            $arr_extra_meal_supp = _rates_calculator_calc_rollover_percentage($arr_params, $arr_extra_meal_supp);
+            $arr_extra_meal_supp = _rates_calculator_extra_meal_supp_PPPN($arr_extra_meal_supp, $arr_params, $arr_taxcomm, $con);
+            $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_extra_meal_supp);
+        }
+
+        //================================================================
+        //===============================================================
+        //NON ROOM TOTAL
+        if ($arr_lookup_mode["TOTAL"]) {
+            $arr_daily[$idx]["COSTINGS_WORKINGS"][] = _rates_calculator_sum_daily_total($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_columns, "NON_ROOM", $arr_params, $arr_taxcomm, $con);
+        }
+
+        //========================================================================
     }
 }
 
@@ -467,8 +493,10 @@ function _rates_calculator_eci_lco_lookup_charge($checkinout_time_dt, $arr_polic
     return array("CHARGE_TYPE" => "", "LIMIT_TIME" => "", "CHARGE_VALUE" => "");
 }
 
-function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_date, $hotelroom) {
+function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_date) {
     $workings = "";
+
+    $hotelroom = $arr_params["hotelroom"];
 
     $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
     if (!is_null($rules)) {
@@ -1256,7 +1284,9 @@ function _rates_calculator_lookup_rates_persons($arr_capacity, $arr_params, $thi
     return $arr;
 }
 
-function _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $roll_over_flg) {
+function _rates_calculator_calc_rollover_flat_pni($arr_params, $arr) {
+
+    $roll_over_flg = $arr_params["roll_over"];
 
     if (!$roll_over_flg) {
         return $arr;
@@ -1321,7 +1351,9 @@ function _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $roll_over_
     return $arr;
 }
 
-function _rates_calculator_calc_rollover_percentage($arr_params, $arr, $roll_over_flg) {
+function _rates_calculator_calc_rollover_percentage($arr_params, $arr) {
+
+    $roll_over_flg = $arr_params["roll_over"];
 
     if (!$roll_over_flg) {
         return $arr;
@@ -1847,7 +1879,10 @@ function _rates_calculator_get_contract_currency_buy_sell($con, $contractid, $bu
     return array("ID" => "-1", "CODE" => "");
 }
 
-function _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_date, $hotelroom, $con) {
+function _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_date, $con) {
+
+    $hotelroom = $arr_params["hotelroom"];
+
     $this_date = date("Y-m-d", strtotime($this_date)); //convert into yyyy-mm-dd
 
     $arr = array();
@@ -1921,10 +1956,11 @@ function _rates_calculator_get_meal_name($supp_mealplan, $con) {
     return "";
 }
 
-function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $hotelroom, $con) {
+function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $con) {
 
 
     $workings = "";
+    $hotelroom = $arr_params["hotelroom"];
 
     $arr = array();
 
@@ -2904,7 +2940,7 @@ function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params)
 }
 
 function _rates_calculator_calc_discount_PNI($arr_params, $arr) {
-    //this discount is split equally and is applicable for all pax irrespective of age, bridegroom
+    //this discount is split equally per pax and is applicable for all pax irrespective of age, bridegroom
 
     $arr_spo_discounts = $arr_params["spo_discounts_array"];
     $currency_buy = $arr_params["currency_buy_code"];
@@ -2918,7 +2954,6 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr) {
         $spo_type = $discount_item["SPO_TYPE"];
         $disc_type = $discount_item["ROOM_ALL_FLAT"]; //is discount percentage_room, percentage_all or FLAT
         $disc_value = $discount_item["VALUE"]; //value of discount
-        
         //finally apply the discount when it flat PPPN
         if ($disc_value > 0) {
 
@@ -2932,13 +2967,13 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr) {
                 //now apply it to the discount to each pax
                 $cumul_applied = 0;
                 $applied_to = 1;
-                
+
                 for ($p = 0; $p < count($arr); $p++) {
                     $costings = $arr[$p]["COSTINGS"];
                     $msg = $arr[$p]["MSG"];
-                    
+
                     if ($costings > 0) {
-                        
+
                         if ($applied_to < $num_pax) {
                             $cumul_applied += $per_pax_discount;
                         } else {
@@ -2948,11 +2983,10 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr) {
 
 
                         $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : FLAT PNI : $currency_buy $disc_amt &#247; $num_pax = $currency_buy $per_pax_discount per pax)</font>";
-                        
+
                         $costings -= $per_pax_discount;
-                        
-                        if($costings < 0)
-                        {
+
+                        if ($costings < 0) {
                             $costings = 0;
                         }
 
@@ -3160,16 +3194,14 @@ function _rates_calculator_apply_rates_eci_percentage(&$rates, $arr_eci, &$msg, 
         if ($charge_value > 0) {
             $discount_fees = round(($charge_value / 100) * $rates, 2);
         }
-        
+
         $eci_fees = $rates - $discount_fees;
-        if($eci_fees < 0)
-        {
+        if ($eci_fees < 0) {
             $eci_fees = 0;
         }
-        
+
         $msg .= "<br> + <b>(</b>$workings:$currency_buy $rates - Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees => $currency_buy $eci_fees<b>)</b>";
         $rates += $eci_fees;
-        
     } else if ($charge_type == "%C") {
         $fees = 0;
         if ($charge_value > 0) {
@@ -3207,23 +3239,21 @@ function _rates_calculator_apply_rates_lco_percentage($arr_rates, $arr_lco, &$lc
             if ($charge_value > 0) {
                 $discount_fees = round(($charge_value / 100) * $rates, 2);
             }
-            
+
             $lco_fees = $rates - $discount_fees;
-            
-            if($lco_fees < 0)
-            {
+
+            if ($lco_fees < 0) {
                 $lco_fees = 0;
             }
-        
+
             $msg .= "<br> => ($workings: $currency_buy $rates - Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees) = $currency_buy $lco_fees";
             $rates = $lco_fees;
-            
         } else if ($charge_type == "%C") {
             $fees = 0;
             if ($charge_value > 0) {
                 $fees = round(($charge_value / 100) * $rates, 2);
             }
-            
+
             $msg .= "<br> => ($workings Charge <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $fees) ";
             $rates = $fees;
         }
@@ -3317,95 +3347,191 @@ function _rates_calculator_sum_daily_total($arr, $arr_columns, $category, $arr_p
     }
 }
 
-function _rates_calculator_calc_free_nights($num_nights, $arr_stays, $is_cumulative)
-{
+function _rates_calculator_calc_free_nights($num_nights, $arr_stays, $is_cumulative) {
     //calculates the number of free nights based on params $arr_stays and $is_cumulative
     //$arr_stays is an array of free nights rules [0]["STAYS"]
     //                                               ["PAYS]
     //$num_nights is the number of nights in the reservation
-    
-    if(count($arr_stays) == 0)
-    {
+
+    if (count($arr_stays) == 0) {
         return 0;
     }
-    
+
     //==========================================================================
     //NON CUMULATIVE
-    if($is_cumulative == 0)
-    {
+    if ($is_cumulative == 0) {
         $idx = 1;
         $stay = 0;
         $pay = 0;
-        while(true)
-        {
-            $arr_stays_pays = _rates_calculator_calc_free_nights_lookup_night($arr_stays,$idx);
-            if($arr_stays_pays["STAYS"] == -1 && $arr_stays_pays["PAYS"] == -1)
-            {
+        while (true) {
+            $arr_stays_pays = _rates_calculator_calc_free_nights_lookup_night($arr_stays, $idx);
+            if ($arr_stays_pays["STAYS"] == -1 && $arr_stays_pays["PAYS"] == -1) {
                 //not found
                 $stay ++;
                 $pay ++;
-            }
-            else
-            {
+            } else {
                 $stay = $arr_stays_pays["STAYS"];
                 $pay = $arr_stays_pays["PAYS"];
             }
-            
-            if($idx == $num_nights)
-            {
-                return array("STAYS"=>$stay,"PAYS"=>$pay,"FREE"=>($stay-$pay)); //free nights
+
+            if ($idx == $num_nights) {
+                return array("STAYS" => $stay, "PAYS" => $pay, "FREE" => ($stay - $pay)); //free nights
             }
-            
+
             $idx ++;
         }
     }
     //==========================================================================
     //CUMULATIVE
-    else
-    {
-        $idx = count($arr_stays) -1;
-        while($idx >= 0)
-        {
+    else {
+        $idx = count($arr_stays) - 1;
+        while ($idx >= 0) {
             $arr_stays_pays = $arr_stays[$idx];
-            if($arr_stays_pays["STAYS"] == $num_nights)
-            {
-                return array("STAYS"=>$arr_stays_pays["STAYS"],"PAYS"=>$arr_stays_pays["PAYS"],"FREE"=>($arr_stays_pays["STAYS"]-$arr_stays_pays["PAYS"])); //free nights
-            }
-            else if($arr_stays_pays["STAYS"] < $num_nights)
-            {
-                if($num_nights % $arr_stays_pays["STAYS"] == 0)
-                {
+            if ($arr_stays_pays["STAYS"] == $num_nights) {
+                return array("STAYS" => $arr_stays_pays["STAYS"], "PAYS" => $arr_stays_pays["PAYS"], "FREE" => ($arr_stays_pays["STAYS"] - $arr_stays_pays["PAYS"])); //free nights
+            } else if ($arr_stays_pays["STAYS"] < $num_nights) {
+                if ($num_nights % $arr_stays_pays["STAYS"] == 0) {
                     //no remainder: multiple
                     $factor = $num_nights / $arr_stays_pays["STAYS"];
                     $pays = $arr_stays_pays["PAYS"] * $factor;
-                    return array("STAYS"=>$num_nights,"PAYS"=>$pays,"FREE"=>($num_nights-$pays)); //free nights
+                    return array("STAYS" => $num_nights, "PAYS" => $pays, "FREE" => ($num_nights - $pays)); //free nights
                 }
             }
-            
+
             $idx --;
-        } 
-        
+        }
+
         //===============
         //if we are here, means that no multiples found in cumulative version
         //find free nights in non cumulative version now
-        return _rates_calculator_calc_free_nights($num_nights, $arr_stays, 0);        
+        return _rates_calculator_calc_free_nights($num_nights, $arr_stays, 0);
     }
 }
 
-function _rates_calculator_calc_free_nights_lookup_night($arr_stays,$x)
-{
+function _rates_calculator_calc_free_nights_lookup_night($arr_stays, $x) {
     $stays = -1;
     $pays = -1;
-    
-    for($i = 0; $i < count($arr_stays); $i++)
-    {
-        if($x == $arr_stays[$i]["STAYS"])
-        {
+
+    for ($i = 0; $i < count($arr_stays); $i++) {
+        if ($x == $arr_stays[$i]["STAYS"]) {
             return $arr_stays[$i];
         }
     }
+
+    return array("STAYS" => $stays, "PAYS" => $pays);
+}
+
+function _rates_calculator_validate_reservation($arr_capacity, $arr_params, $this_date, $con, &$arr_daily_idx) {
+
+    $num_nights = $arr_params["num_nights"];
+
+    //========================================================
+    //TEST 2: MINIMUM STAY 
+    $min_test = _rates_calculator_min_stay_nights($arr_capacity, $arr_params, $this_date, $num_nights);
+    if ($min_test != "OK") {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 2</font>: MIN STAY $min_test NIGHTS",
+            "COSTINGS" => array());
+        $arr_daily_idx["STATUS"] = "MIN_STAY_FAIL";
+        return;
+    }
+
+    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 2</font>: MIN STAY",
+        "COSTINGS" => array());
+
+    //========================================================
+    //========================================================
+    //TEST 3: CHILDREN AGES
+    $children_age_test = _rates_calculator_test_children_ages($arr_params, $con);
+    if ($children_age_test != "OK") {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 3</font>: CHILDREN AGES: $children_age_test",
+            "COSTINGS" => array());
+        $arr_daily_idx["STATUS"] = "CHILDREN_AGE_FAIL";
+        return;
+    }
+
+    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 3</font>: CHILDREN AGES",
+        "COSTINGS" => array());
+    //========================================================
+    //========================================================
+    //TEST 4: ADULT AND CHILDREN CAPACITY
+    $capacity_test_adch = _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date);
+    if ($capacity_test_adch["MSG"] != "OK") {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 4</font>: CAPACITY TEST ADULT + CHILDREN SHARING: " . $capacity_test_adch["MSG"],
+            "COSTINGS" => array());
+        $arr_daily_idx["STATUS"] = "CAPACITY_FAIL";
+
+        return;
+    }
+
+    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: " . ($capacity_test_adch["INDEX"]),
+        "COSTINGS" => array());
+    //========================================================
+    //========================================================
+    //TEST 5: CHILDREN IN OWN ROOM
+    $capacity_test_ch_ownroom = _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_date);
+    if ($capacity_test_ch_ownroom["MSG"] != "OK") {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 5</font>: CAPACITY TEST CHILDREN OWN ROOM: " . $capacity_test_ch_ownroom["MSG"],
+            "COSTINGS" => array());
+        $arr_daily_idx["STATUS"] = "CHILDREN_OWN_ROOM_FAIL";
+
+        return;
+    }
+
+    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM. COMBINATION INDEX:" . ($capacity_test_adch["INDEX"]),
+        "COSTINGS" => array());
+    //========================================================
+    //all ok finally
+    return;
+}
+
+function rates_calculator_get_nights_with_lowest_rates($arr_daily_free_nights,$free_nights_num_nights,$arr_params)
+{   
+    $num_nights = $arr_params["num_nights"];
     
-    return array("STAYS"=>$stays,"PAYS"=>$pays);
+    $arr_night_total = array();
+    
+   
+    for($i = 0; $i < $num_nights; $i++)
+    {
+        $night_total = 0;
+        $arr_cost_work = $arr_daily_free_nights[$i]["COSTINGS_WORKINGS"];
+        for($j = 0; $j < count($arr_cost_work); $j++)
+        {
+            $arr_costings = $arr_cost_work[$j]["COSTINGS"];
+            for($k = 0; $k < count($arr_costings); $k++)
+            {
+                $caption = $arr_costings[$k]["CAPTION"];
+                $value = $arr_costings[$k]["VALUE"]; 
+                if($caption == "BUY PRICE")
+                {
+                    $night_total += $value;
+                }
+            }
+        }
+        
+        $arr_night_total[] = array("NIGHT_INDEX"=>$i, "NIGHT_VALUE"=>$night_total);
+    }
+    
+    
+    //sort $arr_night_total by NIGHT VALUE ascending
+    
+    function __cmp_free_nights_sort_ascending($a, $b)
+    {
+        return $a["NIGHT_VALUE"] > $b["NIGHT_VALUE"];
+    }
+
+    usort($arr_night_total, "__cmp_free_nights_sort_ascending");
+    
+    //now get the first $free_nights_num_nights index of nights
+    $arr =array();
+    $idx = 0;
+    while($idx < count($arr_night_total) && $idx < $free_nights_num_nights)
+    {
+        $arr[] = $arr_night_total[$idx]["NIGHT_INDEX"];
+        $idx ++;
+    }
+    
+    return $arr;
 }
 ?>
 
