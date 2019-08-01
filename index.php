@@ -820,12 +820,14 @@ if ($menu == "usergroups") {
         <script src="js/booking_engine/script.js"></script>
         <script src="js/booking_engine/models/excursionsModel.js"></script>';
 } else if ($menu == "backoff_excursions") {
-    echo '<script src="js/boexcursions/script_backOff_Excursions.js"></script>
+    echo '<script src="js/boexcursions/scriptBackOffExcursions.js"></script>
         <script src="js/boexcursions/utils/editor.js"></script>
         <script src="js/boexcursions/utils/generateOptionCode.js"></script>
         <script src="js/boexcursions/models/boexcursionsModel.js"></script>
         <script src="js/boexcursions/ctrlBackOffExcursions.js"></script>
-        <script src="js/boexcursions/scriptExcursionTableGrid.js"></script>';
+        <script src="js/boexcursions/scriptExcursionTableGrid.js"></script>
+        <script src="js/boexcursions/models/boexcursionsUpdatedetailsModel.js"></script>,
+        <script src="js/boexcursions/models/boExcursionsSearchModels.js"></script>';
 }
 ?>
         <div id = "alert_placeholder"></div>

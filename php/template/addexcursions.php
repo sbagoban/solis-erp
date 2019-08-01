@@ -120,7 +120,7 @@
                 </div>
             </div>
         </div>
-        <div class="toast jam" aria-hidden="true" style="display:none;">
+        <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
             <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
         </div>
         <!-- Row end -->
@@ -241,20 +241,21 @@
                     <!-- Start First Tab -->
                     <div class="tab-content">
                         <div class="tab-pane active in fade" id="costDetails">
-                            <form>
+                            <form action="#" onsubmit="return false">
                                 <div class="row">
                                     <div class="col-md-12">
                                         &nbsp;
                                     </div>
                                 </div>
                                 
+                                <h3 class="panel-title" style="display: none;"><strong>ID :</strong><div id="idBlock"></div></h3>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-6 has-success">
                                             <h5>Locality</h5>
                                             <div class="form-group selectValidation">
                                                 <select class="custom-select form-control form-control-sm" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="location[location]" id="ddlChooseLocality">
-                                                    <option value="selectedLocality" selected disabled hidden>Choose Locality</option>
+                                                    <option selected disabled hidden>Select an option</option>
                                                     <option value="North">North</option>
                                                     <option value="East">East</option>
                                                     <option value="South">South</option>
@@ -270,8 +271,8 @@
                                         <div class="col-md-6 has-warning">
                                             <h5>Department</h5>
                                             <div class="form-group selectValidation">
-                                                <select class="custom-select form-control form-control-sm inputValidationCostDetails" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="dept[deptn]" id="ddlChooseDept">
-                                                    <option value="selectedDepartment" selected disabled hidden>Choose Department</option>
+                                                <select class="custom-select form-control form-control-sm inputValidationCostDetails" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="dept[dept]" id="ddlChooseDept">
+                                                    <option selected disabled hidden>Select an option</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -298,18 +299,18 @@
                                                     <h5>Cost charged - Adults / Unit</h5>
                                                     <div class="costPerRadio">
                                                         <p>
-                                                            <input type="radio" id="adults" name="radio-group" checked>
+                                                            <input type="radio" id="adults" value="adults" name="radioGroupAdult" checked>
                                                             <label for="adults">Adults</label>
                                                         </p>
                                                         <p>
-                                                            <input type="radio" id="unit" name="radio-group">
+                                                            <input type="radio" id="unit" value="unit" name="radioGroupAdult">
                                                             <label for="unit">Unit</label>
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <h5>Min Adults</h5>
-                                                    <input type="number" min='1' max='100' class="form-control">
+                                                    <input type="number" min='1' max='100' class="form-control" id="minAdults">
                                                     <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
                                                         <option selected disabled hidden>Minimum Persons</option>
                                                         <option value="1">1</option>
@@ -321,7 +322,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <h5>Max Adults</h5>
-                                                    <input type="number" min='1' max='9999' class="form-control">
+                                                    <input type="number" min='1' max='9999' class="form-control" id="maxAdults">
                                                     <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
                                                         <option selected disabled hidden>Maximum Persons</option>
                                                         <option value="1">1</option>
@@ -339,18 +340,18 @@
                                                     <h5>Cost charged - Children / Unit</h5>
                                                     <div class="costPerRadio">
                                                         <p>
-                                                            <input type="radio" id="children" name="radio-group-children" checked>
+                                                            <input type="radio" id="children" value="children" name="radioCostChildren" checked>
                                                             <label for="children">Children</label>
                                                         </p>
                                                         <p>
-                                                            <input type="radio" id="unitChildren" name="radio-group-children">
+                                                            <input type="radio" id="unitChildren" value="unit" name="radioCostChildren">
                                                             <label for="unitChildren">Unit</label>
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <h5>Min Children</h5>
-                                                    <input type="number" min='1' max='100' class="form-control">
+                                                    <input type="number" min='1' max='100' class="form-control" id="minChildren">
                                                     <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
                                                         <option selected disabled hidden>Minimum Persons</option>
                                                         <option value="1">1</option>
@@ -362,7 +363,7 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <h5>Max Children</h5>
-                                                    <input type="number" min='1' max='9999' class="form-control">
+                                                    <input type="number" min='1' max='9999' class="form-control" id="maxChildren">
                                                     <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
                                                         <option selected disabled hidden>Maximum Persons</option>
                                                         <option value="1">1</option>
@@ -377,7 +378,7 @@
                                         </div>
                                         <div class="col-md-6 has-success">
                                             <h5>Comments</h5>
-                                            <textarea class="form-control" rows="5" id="textFieldCommentsCostDetails"></textarea>
+                                            <textarea class="form-control" rows="5" id="textFieldCommentsCostDetails" class="hhh"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -396,11 +397,11 @@
                                         <div class="col-md-3">
                                             <h5>Tax Basis</h5>
                                             <p>
-                                                <input type="radio" id="inclusive" name="radio-group" checked>
+                                                <input type="radio" id="inclusive" value="inclusive" name="radioGroupTax" checked>
                                                 <label for="inclusive">Inclusive</label>
                                             </p>
                                             <p>
-                                                <input type="radio" id="exclusive" name="radio-group">
+                                                <input type="radio" id="exclusive"  value="exclusive" name="radioGroupTax">
                                                 <label for="exclusive">Exclusive</label>
                                             </p>
                                         </div>
@@ -614,6 +615,17 @@
                                             <textarea id="txtEditor"></textarea>
                                         </div>
                                     </div>
+                                    <div class="test"></div>
+                                    <div class="col-md-12">
+                                        &nbsp;
+                                    </div>
+                                    <div class="col-md-12">
+                                        <button id="updateNotes" class="btn btn-primary pull-right">Update Notes &raquo;</button>
+                                    </div> 
+                                    
+                                    <div class="col-md-12">
+                                        &nbsp;
+                                    </div>  
                                 </div>
                             </div>
                         </div>
@@ -958,6 +970,9 @@
                             </div>
                         </div>
                         <!-- Start Six Tab -->
+                        <div class="toast jam toast_updated" aria-hidden="true" style="display:none;">
+                            <span class="close" aria-role="button" tabindex="0">&times;</span> Service Updated.
+                        </div>
                     </div>
                 </div>
                 </div>

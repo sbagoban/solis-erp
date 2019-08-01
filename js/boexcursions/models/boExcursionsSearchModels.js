@@ -1,9 +1,14 @@
-function callDataNewServiceGrid() {
-    //$('#searchServiceDetails').load(document.URL +  ' #searchServiceDetails');
+$("#searchService").click(function () {
+    callDataSearchServiceGrid();
+    document.getElementById('serviceDetails').setAttribute('style', 'display: none');
+});
+
+function callDataSearchServiceGrid() {    
+
     // Request call everything from database
     $('#sort').DataTable({       
         "processing" : true,
-
+        
         "ajax" : {
             "url" : "php/api/bckoffservices/servicesgrid.php?t=" + encodeURIComponent(global_token),
             dataSrc : ''
@@ -28,13 +33,7 @@ function callDataNewServiceGrid() {
             }
         ],
         "columnDefs": [
-            { "width": "10px", "targets": 0 },
-            { "width": "40px", "targets": 1 },
-            { "width": "100px", "targets": 2 },
-            { "width": "70px", "targets": 3 },
-            { "width": "70px", "targets": 4 },
-            { "width": "70px", "targets": 5 },
-            { "width": "70px", "targets": 6 }
+            { "visible": false, "targets": 6}
         ],
         "columns" : [ {
             "data" : "countryfk"
@@ -48,6 +47,8 @@ function callDataNewServiceGrid() {
             "data" : "descriptionservice"
         }, {
             "data" : "comments"
+        }, {
+            "data" : "services_notes"
         },
             {
                 "targets": -1,
@@ -60,5 +61,13 @@ function callDataNewServiceGrid() {
         var table = $('#sort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         editRowService(data);
-    } );
+    });
+    animate();
+}
+
+function animate() {
+    document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
+    $('html, body').animate({
+        scrollTop: $("#searchServiceDetails").offset().top
+    }, 2000);
 }
