@@ -1,3 +1,4 @@
+
 $(document).ready(function(){
     ////////////////////////////////////////////////////
     // model --> Search Block Display None By Deafult //
@@ -80,11 +81,9 @@ $(document).ready(function(){
         url : url_optioncode,
         type : "GET",
         success : function(data) {
-            helpersDropdownDepartment.buildDropdown(
-                jQuery.parseJSON(data),
-                $('#ddlOptionCode'),
-                'Select an option'
-            );
+                helpersDropdownDepartment.buildDropdown(
+                    jQuery.parseJSON(data), 
+                    $('#ddlOptionCode'), 'Select option');
         }, 
         error:function(error) {
             console.log('Error ${error}');
@@ -140,6 +139,38 @@ $(document).ready(function(){
         }
     }
     
+     /////////////////////////////////////////
+    // model --> fetch Api Select Location //
+    /////////////////////////////////////////
+    const url_department = "php/api/combos/contactdepartment_combo.php?t=" + encodeURIComponent(global_token); 
+    $.ajax({
+        url : url_department,
+        type : "GET",
+        success : function(data) {
+                helpersDropdownDepart.buildDropdown(
+                    jQuery.parseJSON(data), 
+                    $('#ddlChooseDept'), 'Select option');
+        }, 
+        error:function(error) {
+            console.log('Error ${error}');
+        }
+    });
+    var helpersDropdownDepart = {
+        buildDropdown: function(result, dropdown, emptyMessage) {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '') {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(data, result) {
+                    dropdown.append('<option value="' + result.text + '">' + result.description + '</option>');
+                });
+            }
+        }
+    }
+
     /////////////////////////////////////////
     // model --> Selected Option Code1///////
     /////////////////////////////////////////
@@ -200,7 +231,7 @@ $(document).ready(function(){
 
     // Function Reset Form Add New Service
     function resetFormAddNewService() {
-        $('.toast').stop().fadeIn(400).delay(3000).fadeOut(500);
+        $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
         $('#createNewService').attr('disabled', 'disabled');
         $('select option:contains("Select an option")').prop('selected',true);
         $('#addedDescription').val('');
@@ -210,42 +241,6 @@ $(document).ready(function(){
         document.getElementById('generateNone').setAttribute('style', 'display: block');
     }
 
-     /////////////////////////////////////////
-    // model --> save form value to dB //////
-    /////////////////////////////////////////
-    $("#searchService").click(function () {
-        var ddlLocationSelected = $('#ddlChooseLocation').val();
-        var ddlServiceTypeSelected = $('#ddlSelectServiceType').val();
-        var ddlSupplierSelected = $('#ddlChooseSupplier').val();
-
-        var objSearchService = {
-            id:-1, //for new items, id is always -1
-            countryfk: ddlLocationSelected, //please make sure the names match in JS and PHP
-            servicetypefk: ddlServiceTypeSelected,
-            supplierfk: ddlSupplierSelected
-        };
-
-        const url_save_service = "php/api/bckoffservices/savenewservices.php?t=" + encodeURIComponent(global_token);
-        $.ajax({
-            url : url_save_service,
-            method : "POST",
-            data : objSearchService,                                                                                                                                                                                                                                                                                                                                                                                                                                              
-            success : function(data){
-                console.log('value', data);
-                callDataSearchServiceGrid();
-            },
-            error: function(error) {
-                console.log('Error ${error}');
-            }
-        });
-
-        document.getElementById('searchServiceDetails').setAttribute('style', 'display: block');
-        $('html, body').animate({
-            scrollTop: $("#searchServiceDetails").offset().top
-        }, 2000);
-
-    });
-    // End click
     
 });
 

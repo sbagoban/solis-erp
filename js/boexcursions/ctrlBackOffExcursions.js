@@ -13,10 +13,22 @@ $(document).ready(function(){
     element.classList.add("has-warning");
 
     $('#createNewService').attr('disabled', 'disabled');
-    if (!$.trim($("#addedDescription").val())) {
-        // textarea is empty or contains only white-space
-        console.log('test');
-    }
+    $('#updateService').attr('disabled', 'disabled');
+
+        $('.inputValidationCostDetails').click(function() {
+            var check = false;
+            $('.inputValidationCostDetails').each(function() {
+                if ($(this).val() == '') {
+                    check = true;
+                }
+            });
+            if (check == true) {
+                $('#updateService').attr('disabled', 'disabled');
+            } else {
+                $('#updateService').removeAttr('disabled');
+            }
+        });
+
         $('.inputValidation').click(function() {
             var empty = false;
             $('.inputValidation').each(function() {
@@ -25,22 +37,8 @@ $(document).ready(function(){
                     empty = true;
                     console.log($(this).val());
                 }
-                // if (empty == false) {
-                //     var check = document.getElementById("chooseLocation");
-                //     var check2 = document.getElementById("serviceType");
-                //     if (check) {
-                //         var element = document.getElementById("chooseLocation");
-                //         element.classList.remove("has-warning");
-                //     }
-
-                //     if (check2) { 
-                //         var element = document.getElementById("serviceType");
-                //         element.classList.remove("has-warning");
-                //     }
-                // }
             });
-
-            if (empty) {
+            if (empty == true) {
                 $('#createNewService').attr('disabled', 'disabled');
             } else {
                 $('#createNewService').removeAttr('disabled');

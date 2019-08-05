@@ -13,12 +13,6 @@ if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
 
-// if (!isset($_GET["supplierfk"])) {
-//     die("INVALID Supplier ID");
-// }
-
-//$supplierfk = $_GET["supplierfk"];
-
 require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
 require_once("../../connector/data_connector.php");
@@ -26,7 +20,7 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("
-select es.id, es.optioncode, es.descriptionservice, es.comments, c.country_name, s.suppliername, st.servicetype
+select es.id, es.optioncode, es.descriptionservice, es.comments, es.services_notes, c.country_name, s.suppliername, st.servicetype
 from tblexcursion_services es 
 join tblcountries c on es.countryfk = c.id
 join tblservicetype st on es.servicetypefk = st.id
@@ -46,7 +40,7 @@ if ($row_count_c > 0) {
             'optioncode'         => $row['optioncode'],
             'descriptionservice' => $row['descriptionservice'],
             'comments'           => $row['comments'],
-
+            'services_notes'     => $row['services_notes']
         );
     }
     $myData = $excursionservices;
