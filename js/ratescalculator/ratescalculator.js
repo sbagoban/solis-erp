@@ -600,7 +600,9 @@ function ratescalculator() {
 
         if (!validate_spos())
         {
-            spo_discount
+            tabViews.setTabActive("params");
+            accordConSPO.openItem("contract");
+            return;
         }
 
         //=================================
@@ -644,11 +646,15 @@ function ratescalculator() {
 
 
         param_layout.progressOn();
+        results_layout.progressOn();
+        
         var params = "params=" + encodeURIComponent(JSON.stringify(main_details)) +
                 "&spo_params=" + encodeURIComponent(JSON.stringify(spo_details)) +
                 "&t=" + encodeURIComponent(global_token);
         dhtmlxAjax.post("php/api/ratescalculator/testrates.php", params, function (loader) {
             param_layout.progressOff();
+            results_layout.progressOff();
+            
             if (loader)
             {
                 if (loader.xmlDoc.responseURL == "")
@@ -790,7 +796,7 @@ function ratescalculator() {
             //SUMMATION VALUES
             //DISPLAY GRAND TOTAL
             rwid++;
-            row_style = "font-weight:bold; background-color: #F9EEA6;"
+            row_style = "font-weight:bold; background-color: #CBF7F0;";
             grid_results.addRow(rwid, "");
             grid_results.setRowTextStyle(rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;" + row_style);
             grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue("GRAND TOTAL");
@@ -884,11 +890,14 @@ function ratescalculator() {
     function initialiseGrandTotal(columns)
     {
         var arr = [];
-        for (var i = 0; i < columns.length; i++)
+        if(columns)
         {
-            arr[i] = 0;
+            for (var i = 0; i < columns.length; i++)
+            {
+                arr[i] = 0;
+            }
         }
-
+        
         return arr;
 
     }
@@ -900,21 +909,25 @@ function ratescalculator() {
         var initwidth = "80,100,400";
         var colalign = "center,center,left";
         var colsorting = "na,na,na";
-
-        for (var i = 0; i < columns.length; i++)
+        
+        if(columns)
         {
-            var caption = utils_toTitleCase(columns[i].CAPTION);
-            var currency_code = columns[i].CURRENCY_CODE;
-            var colid = i + "_colid";
+            for (var i = 0; i < columns.length; i++)
+            {
+                var caption = utils_toTitleCase(columns[i].CAPTION);
+                var currency_code = columns[i].CURRENCY_CODE;
+                var colid = i + "_colid";
 
-            header += "," + caption + " (" + currency_code + ")";
-            colids += "," + colid;
-            coltypes += ",ro";
-            initwidth += ",80";
-            colalign += ",right";
-            colsorting += ",na";
+                header += "," + caption + " (" + currency_code + ")";
+                colids += "," + colid;
+                coltypes += ",ro";
+                initwidth += ",80";
+                colalign += ",right";
+                colsorting += ",na";
 
+            }
         }
+        
 
         grid_results.clearAll(true);
         grid_results = null;

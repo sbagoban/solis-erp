@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="596">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="615">
         <file>
             <url>php/api/hotelcontracts/_contract_combinations_rooms.php</url>
             <bookmark id="544">
@@ -130,7 +130,7 @@
             <url>index.php</url>
             <bookmark id="587">
                 <name/>
-                <line>61</line>
+                <line>51</line>
                 <key/>
             </bookmark>
         </file>
@@ -162,14 +162,27 @@
         </file>
         <file>
             <url>php/api/ratescalculator/_rates_calculator.php</url>
-            <bookmark id="585">
+            <bookmark id="615">
                 <name/>
-                <line>2928</line>
+                <line>76</line>
                 <key/>
             </bookmark>
-            <bookmark id="586">
+            <bookmark id="614">
                 <name/>
-                <line>2949</line>
+                <line>606</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>js/ratescalculator/ratescalculator.js</url>
+            <bookmark id="610">
+                <name/>
+                <line>601</line>
+                <key/>
+            </bookmark>
+            <bookmark id="611">
+                <name/>
+                <line>647</line>
                 <key/>
             </bookmark>
         </file>
@@ -183,9 +196,6 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/test_free_nights.php</file>
-            <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_calculator.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

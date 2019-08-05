@@ -944,10 +944,10 @@ function hotelcontracts()
 
     var grid_minstay = minstay_layout.cells("a").attachGrid();
     grid_minstay.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_minstay.setHeader("Duration (Nights),Name");
+    grid_minstay.setHeader("Min Night(s) within Period,Description");
     grid_minstay.setColumnIds("minstay_duration,minstay_description");
     grid_minstay.setColTypes("edn,ed");
-    grid_minstay.setInitWidths("70,200");
+    grid_minstay.setInitWidths("100,200");
     grid_minstay.setColAlign("center,left");
     grid_minstay.setColSorting('str,str');
     grid_minstay.enableEditTabOnly(true);
