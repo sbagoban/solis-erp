@@ -28,13 +28,17 @@ function callDataNewServiceGrid() {
             }
         ],
         "columnDefs": [
-            { "width": "10px", "targets": 0 },
-            { "width": "40px", "targets": 1 },
-            { "width": "100px", "targets": 2 },
-            { "width": "70px", "targets": 3 },
-            { "width": "70px", "targets": 4 },
-            { "width": "70px", "targets": 5 },
-            { "width": "70px", "targets": 6 }
+            { "visible": false, "targets": 6},
+            { "visible": false, "targets": 7},
+            { "visible": false, "targets": 8},
+            { "visible": false, "targets": 9},
+            { "visible": false, "targets": 10},
+            { "visible": false, "targets": 11},
+            { "visible": false, "targets": 12},
+            { "visible": false, "targets": 13},
+            { "visible": false, "targets": 14},
+            { "visible": false, "targets": 15},
+            { "visible": false, "targets": 16}
         ],
         "columns" : [ {
             "data" : "countryfk"
@@ -48,6 +52,28 @@ function callDataNewServiceGrid() {
             "data" : "descriptionservice"
         }, {
             "data" : "comments"
+        }, {
+            "data" : "services_notes"
+        }, {
+            "data" : "address_voucherdetails"
+        },  {
+            "data" : "country_voucherdetails"
+        }, {
+            "data" : "state_voucherdetails"
+        }, {
+            "data" : "postcode_voucherdetails"
+        },  {
+            "data" : "vouchercreation_voucherdetails"
+        },  {
+            "data" : "printvoucher_voucherdetails"
+        },  {
+            "data" : "vouchertext1_voucherdetails"
+        },  {
+            "data" : "vouchertext2_voucherdetails"
+        },  {
+            "data" : "vouchertext3_voucherdetails"
+        }, {
+            "data" : "vouchertext4_voucherdetails"
         },
             {
                 "targets": -1,
