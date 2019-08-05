@@ -160,7 +160,7 @@
         &nbsp; &nbsp;
         <!-- Row Search Service Details -->
         <!-- Row start - Service Details  -->
-        <div class="row" id="serviceDetails" style="display: block;">
+        <div class="row" id="serviceDetails" style="display: none;">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
@@ -178,7 +178,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-12" id="editServiceBlock" style="display: block;">
+            <div class="col-lg-12" id="editServiceBlock" style="display: none;">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="board">
