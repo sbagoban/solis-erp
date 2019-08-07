@@ -17,25 +17,25 @@ require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
 require_once("../../connector/data_connector.php");
 
-$idservicesFetch = $_GET["idservicesfk"];
+//$idservicesfkFetch = $_GET["idservicesfk"];
 $con = pdo_con();
 
-// $query_c = $con->prepare("SELECT * FROM tblexcursion_services_quotedetails WHERE idservicesfk = :idservicesfk  ORDER BY idservicesfk ASC");
+//$query_c = $con->prepare("SELECT * FROM tblexcursion_services_quotedetails WHERE idservicesfk = :idservicesfkFetch");
 $query_c = $con->prepare("SELECT * FROM tblexcursion_services_quotedetails ORDER BY id ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
-        $excursionservices[] = array(
+        $quoteDetails[] = array(
             'id'                => $row['id'],
-            'idservicesfk'      => $row['idservicesfk'],
+            'idservicesfkFetch' => $row['idservicesfk'],
             'extraname'         => $row['extraname'],
             'extradescription'  => $row['extradescription'],
             'chargeper'         => $row['chargeper']
         );
     }
-    $myData = $excursionservices;
+    $myData = $quoteDetails;
     echo json_encode($myData);
 } else {
     echo "NO DATA";

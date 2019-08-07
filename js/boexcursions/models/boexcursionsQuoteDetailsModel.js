@@ -4,7 +4,8 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + data.id,
+            //"url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + data.id,
+            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token),
             dataSrc : ''
         },
         "destroy": true,
@@ -38,7 +39,8 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
         //     { "visible": false, "targets": 15},
         //     { "visible": false, "targets": 16}
         // ],
-        "columns" : [ {
+        "columns" : [
+        {
             "data" : "extraname"
         }, {
             "data" : "extradescription"
@@ -110,15 +112,15 @@ $('#btnSaveEditQuoteDetails').click(function (event) {
 
 function deleteRowQuoteDetailschk(data) {
     console.log('>>>>>>>>>>>>>>>>>>', data.id);
-    const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token);
+    var objDel = { id: data.id};
+    const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
     $.ajax({
         url: url_delete_QuoteDetails,
         method: "POST",
-        type: "DELETE",
-        data: data.id,
+        data: objDel,
         success: function (data) {
             console.log('value', data);
-            //quoteDetailsEditRows();
+            quoteDetailsEditRows();
         },
         error: function (error) {
             console.log('Error ${error}');
