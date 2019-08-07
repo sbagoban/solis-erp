@@ -2826,7 +2826,7 @@ function hotelcontracts()
                 {
                     _json_capacity = json_obj.CAPACITY;
 
-                    console.log("loading contract:",_json_capacity);
+                    console.log("loading contract:", _json_capacity);
 
                     if (callback)
                     {
@@ -3652,8 +3652,8 @@ function hotelcontracts()
 
         return;
     }
-    
-    
+
+
     function explode_ageranges(agefrom, ageto)
     {
         //explode the age range in the ranges defined in main
@@ -3687,45 +3687,45 @@ function hotelcontracts()
 
         return arr;
     }
-    
-    function is_age_in_mix( child_age_from, child_age_to)
+
+    function is_age_in_mix(child_age_from, child_age_to)
     {
         //returns true if age is in mix ranges
         var child_ages_ids = form_main.getItemValue("children_ages_ids");
         var arr_ids = child_ages_ids.split(",");
-            
+
         for (var i = 0; i < arr_ids.length; i++)
+        {
+            var id_1 = arr_ids[i];
+            var item_1 = _dsChildPolicy.item(id_1);
+            if (item_1)
             {
-                var id_1 = arr_ids[i];
-                var item_1 = _dsChildPolicy.item(id_1);
-                if (item_1)
+                var agefrom_1 = parseInt(item_1.agefrom, 10);
+
+                for (var j = 0; j < arr_ids.length; j++)
                 {
-                    var agefrom_1 = parseInt(item_1.agefrom, 10);
+                    var id_2 = arr_ids[j];
+                    var item_2 = _dsChildPolicy.item(id_2);
 
-                    for (var j = 0; j < arr_ids.length; j++)
+                    if (item_2)
                     {
-                        var id_2 = arr_ids[j];
-                        var item_2 = _dsChildPolicy.item(id_2);
+                        var ageto_2 = parseInt(item_2.ageto, 10);
 
-                        if (item_2)
+                        if (agefrom_1 < ageto_2 && id_1 != id_2)
                         {
-                            var ageto_2 = parseInt(item_2.ageto, 10);
-
-                            if (agefrom_1 < ageto_2 && id_1 != id_2)
+                            if (agefrom_1 == child_age_from && ageto_2 == child_age_to)
                             {
-                                if(agefrom_1 == child_age_from && ageto_2==child_age_to)
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
             }
-            
+        }
+
         return false;
     }
-    
+
     function is_age_in_main(agefrom, ageto)
     {
         //returns true if this age combination is selected in contract main
@@ -7841,18 +7841,17 @@ function hotelcontracts()
                 return false; //do not allow editing
             }
             return true;
-        }
-        else if (stage == 1)
+        } else if (stage == 1)
         {
             if (grid_checkinouts.editor && grid_checkinouts.editor.obj)
             {
                 grid_checkinouts.editor.obj.select(); /* grid.editor.obj is the input object*/
             }
-            
+
         } else if (stage == 2)
         {
             if (nValue != oValue)
-            {                
+            {
                 if (colid == "checkinout_policytype")
                 {
                     if (nValue == "ECI")
@@ -7860,15 +7859,13 @@ function hotelcontracts()
                         //set beforeafter to before
                         grid_checkinouts.cells(rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter")).setValue("BEFORE");
                         onGridCheckInOutEdit(2, rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter"), "BEFORE", "");
-                    }
-                    else if (nValue == "LCO")
+                    } else if (nValue == "LCO")
                     {
                         //set beforeafter to before
                         grid_checkinouts.cells(rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter")).setValue("AFTER");
                         onGridCheckInOutEdit(2, rId, grid_checkinouts.getColIndexById("checkinout_time_beforeafter"), "AFTER", "");
                     }
-                }
-                else if (colid == "checkinout_charge_value")
+                } else if (colid == "checkinout_charge_value")
                 {
                     if (nValue != "")
                     {
@@ -8320,29 +8317,28 @@ function hotelcontracts()
                                     if (capacity_obj.capacity_maxpax == 0 && capacity_obj.capacity_minpax == 0)
                                     {
                                         capacity_obj.capacity_action = "DELETE";
-                                    }
-                                    else
+                                    } else
                                     {
                                         //check children ages
                                         var capacity_category = capacity_obj.capacity_category;
                                         var child_age_from = capacity_obj.capacity_child_agefrom;
                                         var child_age_to = capacity_obj.capacity_child_ageto;
-                                        if(capacity_category == "CHILD" || capacity_category == "CH")
+                                        if (capacity_category == "CHILD" || capacity_category == "CH")
                                         {
                                             //make sure the age is valid
                                             var chk = is_age_in_main(child_age_from, child_age_to);
-                                            if(!chk)
+                                            if (!chk)
                                             {
                                                 //make sure it is a valid mix
                                                 chk = is_age_in_mix(child_age_from, child_age_to);
-                                                if(!chk)
+                                                if (!chk)
                                                 {
                                                     capacity_obj.capacity_action = "DELETE";
                                                 }
                                             }
                                         }
                                     }
-                                    
+
                                 }
                             }
                         }
@@ -9187,7 +9183,7 @@ function hotelcontracts()
                     var err = validateSpecificRoomTaxCommiSetting(my_room_id);
                     if (err != "")
                     {
-                        arr_error.push({roomid: my_room_id, room_name: my_room_name, msg: err.msg, buysell:err.buysell});
+                        arr_error.push({roomid: my_room_id, room_name: my_room_name, msg: err.msg, buysell: err.buysell});
                     }
                 }
             }
@@ -9206,7 +9202,7 @@ function hotelcontracts()
 
         //selling rules
         //formula cannot be blank
-        
+
         //basis for ADDON items can be either PPPN or PN
         //can never have both PPPN and PN in the same room
 
@@ -9215,7 +9211,7 @@ function hotelcontracts()
         {
             return "";
         }
-        
+
         var addon_basis = "";
         var first = true;
         for (var i = 0; i < roomobj.buying_settings.length; i++)
@@ -9227,7 +9223,7 @@ function hotelcontracts()
                 var coreaddon = item.setting_core_addon;
                 if (coreaddon != "CORE" && first)
                 {
-                    return {buysell:"buying",msg:"<b>Tax:</b> Initial Item in Buying Setting should be a <b>CORE</b> item!"};
+                    return {buysell: "buying", msg: "<b>Tax:</b> Initial Item in Buying Setting should be a <b>CORE</b> item!"};
                 }
 
                 if (!first)
@@ -9237,51 +9233,49 @@ function hotelcontracts()
                     if (formula == "")
                     {
 
-                        return {buysell:"buying",msg:"<b>Tax:</b> <b>Buying Setting</b>: Formula cell cannot be Blank for Non-Initial Items!"};
+                        return {buysell: "buying", msg: "<b>Tax:</b> <b>Buying Setting</b>: Formula cell cannot be Blank for Non-Initial Items!"};
                     }
                 }
-                
-                
-                if(coreaddon == "ADDON")
+
+
+                if (coreaddon == "ADDON")
                 {
                     //check basis PPPN or PN
                     var _basis = utils_trim(item.setting_basis, " ");
-                    if(_basis == "")
+                    if (_basis == "")
                     {
-                        return {buysell:"buying",msg:"<b>Tax:</b> <b>Buying Setting</b>: Basis cannot be Blank for Add-On Items!"};
+                        return {buysell: "buying", msg: "<b>Tax:</b> <b>Buying Setting</b>: Basis cannot be Blank for Add-On Items!"};
                     }
-                    
-                    if(_basis.includes("PNI"))
+
+                    if (_basis.includes("PNI"))
                     {
                         _basis = "PNI";
-                    }
-                    else if(_basis.includes("PPPN"))
+                    } else if (_basis.includes("PPPN"))
                     {
                         _basis = "PPPN";
                     }
-                    
+
                     //===================================
-                    if(addon_basis == "")
+                    if (addon_basis == "")
                     {
                         addon_basis = _basis;
-                    }
-                    else if(addon_basis != _basis)
+                    } else if (addon_basis != _basis)
                     {
-                        return {buysell:"buying",msg:"<b>Tax:</b> <b>Buying Setting</b>: Basis cannot be both <b>PPPN</b> and <b>PNI</b> in the same Room!"};
+                        return {buysell: "buying", msg: "<b>Tax:</b> <b>Buying Setting</b>: Basis cannot be both <b>PPPN</b> and <b>PNI</b> in the same Room!"};
                     }
                     //===================================
-                    if(item.setting_item_code == "COMMI" || 
-                       item.setting_item_code == "CCCOMMI" ||
-                       item.setting_item_code == "SREPCOMMI") 
+                    if (item.setting_item_code == "COMMI" ||
+                            item.setting_item_code == "CCCOMMI" ||
+                            item.setting_item_code == "SREPCOMMI")
                     {
                         //cannot allow flat values for commission
-                        if(item.setting_basis.includes("FLAT"))
+                        if (item.setting_basis.includes("FLAT"))
                         {
-                            return {buysell:"buying",msg:"<b>Tax:</b> <b>Buying Setting</b>: Commission can only be % and not be FLAT"};
+                            return {buysell: "buying", msg: "<b>Tax:</b> <b>Buying Setting</b>: Commission can only be % and not be FLAT"};
                         }
                     }
                     //===================================
-                        
+
                 }
                 first = false;
             }
@@ -9298,51 +9292,49 @@ function hotelcontracts()
                 var formula = utils_trim(item.setting_applyon_formula, " ");
                 if (formula == "")
                 {
-                    return {buysell:"selling",msg:"<b>Tax:</b> <b>Selling Setting</b>: Formula cell cannot be Blank for Selling Items!"};
+                    return {buysell: "selling", msg: "<b>Tax:</b> <b>Selling Setting</b>: Formula cell cannot be Blank for Selling Items!"};
                 }
-                
-                if(coreaddon == "ADDON")
+
+                if (coreaddon == "ADDON")
                 {
                     //check basis PPPN or PN
                     var _basis = utils_trim(item.setting_basis, " ");
-                    if(_basis == "")
+                    if (_basis == "")
                     {
-                        return {buysell:"selling",msg:"<b>Tax:</b> <b>Selling Setting</b>: Basis cannot be Blank for Add-On Items!"};
+                        return {buysell: "selling", msg: "<b>Tax:</b> <b>Selling Setting</b>: Basis cannot be Blank for Add-On Items!"};
                     }
-                    
-                    if(_basis.includes("PNI"))
+
+                    if (_basis.includes("PNI"))
                     {
                         _basis = "PNI";
-                    }
-                    else if(_basis.includes("PPPN"))
+                    } else if (_basis.includes("PPPN"))
                     {
                         _basis = "PPPN";
                     }
-                    
+
                     //===================================
-                    if(addon_basis == "")
+                    if (addon_basis == "")
                     {
                         addon_basis = _basis;
-                    }
-                    else if(addon_basis != _basis)
+                    } else if (addon_basis != _basis)
                     {
-                        return {buysell:"selling",msg:"<b>Tax:</b> <b>Selling Setting</b>: Basis cannot be both <b>PPPN</b> and <b>PNI</b> in the same Room!"};
+                        return {buysell: "selling", msg: "<b>Tax:</b> <b>Selling Setting</b>: Basis cannot be both <b>PPPN</b> and <b>PNI</b> in the same Room!"};
                     }
                     //===================================
-                    
-                    if(item.setting_item_code == "COMMI" || 
-                       item.setting_item_code == "CCCOMMI" ||
-                       item.setting_item_code == "SREPCOMMI") 
+
+                    if (item.setting_item_code == "COMMI" ||
+                            item.setting_item_code == "CCCOMMI" ||
+                            item.setting_item_code == "SREPCOMMI")
                     {
                         //cannot allow flat values for commission
-                        if(item.setting_basis.includes("FLAT"))
+                        if (item.setting_basis.includes("FLAT"))
                         {
-                            return {buysell:"selling",msg:"<b>Tax:</b> <b>Selling Setting</b>: Commission can only be % and not be FLAT"};
+                            return {buysell: "selling", msg: "<b>Tax:</b> <b>Selling Setting</b>: Commission can only be % and not be FLAT"};
                         }
                     }
-                        
+
                 }
-                
+
             }
         }
 
@@ -10741,7 +10733,7 @@ function hotelcontracts()
                 var agefrom = arr_combii_nodes[l].AGEFROM;
                 var ageto = arr_combii_nodes[l].AGETO;
                 var no = arr_combii_nodes[l].No;
-                
+
 
                 if (no > 0)
                 {
@@ -10793,65 +10785,78 @@ function hotelcontracts()
 
     function saveContract()
     {
-        //===========================================
-        //validations first to come
-        var maintabid = tabViews.getActiveTab();
-        var subtabid = "";
-        if (maintabid == "rooms")
+        try
         {
-            subtabid = tabRoomViews.getActiveTab();
-        }
+            //===========================================
+            //validations first to come
+            var maintabid = tabViews.getActiveTab();
+            var subtabid = "";
+            if (maintabid == "rooms")
+            {
+                subtabid = tabRoomViews.getActiveTab();
+            }
 
-        //===========================================
+            //===========================================
 
-        var arr_validations = ["main_details", "main_contractdates", "main_rollover",
-            "main_childrenages",
-            "currency_details", "currency_mapping", "tax", "rooms_dates",
-            "rooms_minstay", "rooms_capacity", "rooms_policies",
-            "rooms_meal", "rooms_adult", "rooms_child", "rooms_singleparent"];
+            var arr_validations = ["main_details", "main_contractdates", "main_rollover",
+                "main_childrenages",
+                "currency_details", "currency_mapping", "tax", "rooms_dates",
+                "rooms_minstay", "rooms_capacity", "rooms_policies",
+                "rooms_meal", "rooms_adult", "rooms_child", "rooms_singleparent"];
 
 
-        resetError();
-        validateContract(arr_validations);
+            resetError();
+            validateContract(arr_validations);
 
-        if (!parseErrors())
-        {
-            dhtmlx.alert({
-                text: "<b>Errors</b> detected in Contract. Please address them before Saving...",
-                type: "alert-warning",
-                title: "SAVE",
-                callback: function () {
-                    grid_choices.selectRowById(maintabid, false, true, true);
-                    if (subtabid != "")
-                    {
-                        grid_room_choices.selectRowById(subtabid, false, true, true);
+            if (!parseErrors())
+            {
+                dhtmlx.alert({
+                    text: "<b>Errors</b> detected in Contract. Please address them before Saving...",
+                    type: "alert-warning",
+                    title: "SAVE",
+                    callback: function () {
+                        grid_choices.selectRowById(maintabid, false, true, true);
+                        if (subtabid != "")
+                        {
+                            grid_room_choices.selectRowById(subtabid, false, true, true);
+                        }
                     }
+                });
+
+                return;
+            } else
+            {
+                grid_choices.selectRowById("main", false, true, true);
+            }
+
+            //=========================================================================
+            //clean up unnecessary rooms and children ages from
+            //1. meal supplement
+            //2. extra supplement
+            //3. sharing and single children
+
+            cleanJsonCapacityFromRoomsAndAges();
+
+            //==========================================================================
+            //
+            cleanJsonAdults();
+            cleanJsonChildren("sharing");
+            cleanJsonChildren("single");
+            cleanJsonSingleParent();
+
+            //then save
+            saveContractCore();
+
+        } catch (err) {
+            console.log(err.message);
+            dhtmlx.alert({
+                text: err.message,
+                type: "alert-warning",
+                title: "Save Contract",
+                callback: function () {
                 }
             });
-
-            return;
-        } else
-        {
-            grid_choices.selectRowById("main", false, true, true);
         }
-
-        //=========================================================================
-        //clean up unnecessary rooms and children ages from
-        //1. meal supplement
-        //2. extra supplement
-        //3. sharing and single children
-
-        cleanJsonCapacityFromRoomsAndAges();
-
-        //==========================================================================
-        //
-        cleanJsonAdults();
-        cleanJsonChildren("sharing");
-        cleanJsonChildren("single");
-        cleanJsonSingleParent();
-
-        //then save
-        saveContractCore();
 
 
     }
@@ -11319,16 +11324,16 @@ function hotelcontracts()
                     _json_capacity[i].room_action = "DELETE";
                 } else
                 {
-                    
+
 
                     var roomdates = _json_capacity[i].room_dates;
                     for (var d = 0; d < roomdates.length; d++)
                     {
                         if (roomdates[d].date_action != "DELETE")
                         {
-                            
+
                             cleanJsonCapacityCategoryAge(room_id, roomdates[d].date_rwid);
-                            
+
                             //=========== clean meal supplements from unnecessary ages =============
                             var mealsupp = roomdates[d].date_mealsupplement_rules;
                             for (var m = 0; m < mealsupp.length; m++)
@@ -11419,89 +11424,102 @@ function hotelcontracts()
     function saveContractCore()
     {
         //=========================================================================
+        try
+        {
+
+            var params = "token=" + encodeURIComponent(global_token);
+
+            //main
+            var main_details = form_main.getFormData();
+            params += "&main_details=" + encodeURIComponent(JSON.stringify(main_details));
+
+            //currency
+            var currency_details = form_currency.getFormData();
+            params += "&currency_details=" + encodeURIComponent(JSON.stringify(currency_details));
+            params += "&currency_exchrates=" + encodeURIComponent(JSON.stringify(_json_exchangerates));
+
+            //taxcomm
+            params += "&taxcomm=" + encodeURIComponent(JSON.stringify(_json_taxcommi));
+
+            //minstay, meal, extra, checkinout, cancellation, capacity, adult, child, single parent
+            params += "&capacity=" + encodeURIComponent(JSON.stringify(_json_capacity));
+
+            //notes
+            var notes_details = form_notes.getFormData();
+            params += "&notes_details=" + encodeURIComponent(JSON.stringify(notes_details));
+
+            detailslayout.progressOn();
+
+            dhtmlxAjax.post("php/api/hotelcontracts/savecontract.php", params, function (loader) {
+                detailslayout.progressOff();
+                if (loader)
+                {
+                    if (loader.xmlDoc.responseURL == "")
+                    {
+                        dhtmlx.alert({
+                            text: "Connection Lost!",
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
 
 
-        var params = "token=" + encodeURIComponent(global_token);
+                    var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
 
-        //main
-        var main_details = form_main.getFormData();
-        params += "&main_details=" + encodeURIComponent(JSON.stringify(main_details));
 
-        //currency
-        var currency_details = form_currency.getFormData();
-        params += "&currency_details=" + encodeURIComponent(JSON.stringify(currency_details));
-        params += "&currency_exchrates=" + encodeURIComponent(JSON.stringify(_json_exchangerates));
+                    if (!json_obj)
+                    {
+                        dhtmlx.alert({
+                            text: loader.xmlDoc.responseText,
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
 
-        //taxcomm
-        params += "&taxcomm=" + encodeURIComponent(JSON.stringify(_json_taxcommi));
+                    if (json_obj.OUTCOME == "OK")
+                    {
+                        dhtmlx.alert({
+                            text: "Save Successful",
+                            type: "alert",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
 
-        //minstay, meal, extra, checkinout, cancellation, capacity, adult, child, single parent
-        params += "&capacity=" + encodeURIComponent(JSON.stringify(_json_capacity));
+                        form_main.setItemValue("id", json_obj.ID);
+                        loadHotelContracts(json_obj.ID);
+                        loadCapacity(json_obj.ID, null);
 
-        //notes
-        var notes_details = form_notes.getFormData();
-        params += "&notes_details=" + encodeURIComponent(JSON.stringify(notes_details));
+                    } else
+                    {
+                        dhtmlx.alert({
+                            text: json_obj.OUTCOME,
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+            });
 
-        detailslayout.progressOn();
-
-        dhtmlxAjax.post("php/api/hotelcontracts/savecontract.php", params, function (loader) {
+        } catch (err) {
             detailslayout.progressOff();
-            if (loader)
-            {
-                if (loader.xmlDoc.responseURL == "")
-                {
-                    dhtmlx.alert({
-                        text: "Connection Lost!",
-                        type: "alert-warning",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-                    return false;
+            console.log(err.message);
+            dhtmlx.alert({
+                text: err.message,
+                type: "alert-warning",
+                title: "Save Contract Core",
+                callback: function () {
                 }
-
-
-                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
-
-
-                if (!json_obj)
-                {
-                    dhtmlx.alert({
-                        text: loader.xmlDoc.responseText,
-                        type: "alert-warning",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-                    return false;
-                }
-
-                if (json_obj.OUTCOME == "OK")
-                {
-                    dhtmlx.alert({
-                        text: "Save Successful",
-                        type: "alert",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-
-                    form_main.setItemValue("id", json_obj.ID);
-                    loadHotelContracts(json_obj.ID);
-                    loadCapacity(json_obj.ID, null);
-
-                } else
-                {
-                    dhtmlx.alert({
-                        text: json_obj.OUTCOME,
-                        type: "alert-warning",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-                }
-            }
-        });
+            });
+        }
     }
 
 
@@ -12047,8 +12065,8 @@ function hotelcontracts()
                                     {
                                         var min = rule_capacity[l].capacity_minpax;
                                         var max = rule_capacity[l].capacity_maxpax;
-                                        
-                                                
+
+
                                         if (min == "") {
                                             min = 0;
                                         }
@@ -13624,7 +13642,7 @@ function hotelcontracts()
 
         var arr_buy = room_obj.buying_settings;
         var arr_sell = room_obj.selling_settings;
-        
+
         var arr_items = ["ROOM"];
         var params = "t=" + encodeURIComponent(global_token) +
                 "&value_input=" + encodeURIComponent(value_input) +
@@ -14402,30 +14420,29 @@ function hotelcontracts()
                 var arr = obj.err;
                 for (var i = 0; i < arr.length; i++)
                 {
-                    
+
                     var nodeid = "";
-                    
+
                     //select the room node
-                    if(arr[i].roomid == "GENERAL")
+                    if (arr[i].roomid == "GENERAL")
                     {
                         nodeid = arr[i].roomid;
-                    }
-                    else
+                    } else
                     {
                         nodeid = "EXCEPTION_" + arr[i].roomid;
-                    }      
-                    
+                    }
+
                     var callback = "";
                     callback = "accord_taxcommi.cells(\"" + arr[i].buysell + "\").open();";
                     callback += "tree_taxcomm.selectItem(\"" + nodeid + "\", true, false);";
-            
+
                     var rwid = i + 1;
                     grid_problem.addRow(rwid, [rwid, arr[i].msg, callback]);
                     grid_problem.setRowTextStyle(rwid, "color:red; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
                 }
             }
-            
-            
+
+
         }
         //===================================================
         else

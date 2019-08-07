@@ -370,6 +370,8 @@ function hotelspecialoffers()
                     {
 
                         _json_capacity = json_obj.SPO.FLAT_RATES_CAPACITY;
+                        console.log(_json_capacity);
+
                         _flat_rate_tax_commi_obj = json_obj.SPO.FLAT_RATES_TAX_COMMI;
 
                         loadFlatRateGroupValidity(json_obj.SPO.FLAT_RATES_VALIDY_PERIOD_GROUP);
@@ -6153,6 +6155,403 @@ function hotelspecialoffers()
     }
 
 
+    function flat_rate_cleanJsonAdults()
+    {
+        for (var i = 0; i < _json_capacity.length; i++)
+        {
+            if (_json_capacity[i].room_action != "DELETE")
+            {
+                var room_id = _json_capacity[i].room_id;
+                var room_variants = _json_capacity[i].room_variants;
+                var room_dates = _json_capacity[i].room_dates;
+                if (room_variants == "PERSONS")
+                {
+                    for (var d = 0; d < room_dates.length; d++)
+                    {
+                        var date_action = room_dates[d].date_action;
+                        var date_dtfrom = room_dates[d].date_dtfrom;
+                        var date_dtto = room_dates[d].date_dtto;
+
+                        if (date_action != "DELETE")
+                        {
+                            var adult_max = getCapacityRoomMaxAdult(room_id, date_dtfrom, date_dtto, "ADULT");
+                            var date_adultpolicies_rules = room_dates[d].date_adultpolicies_rules;
+                            for (var ad = 0; ad < date_adultpolicies_rules.length; ad++)
+                            {
+                                var ruleaction = date_adultpolicies_rules[ad].rule_action;
+                                var rule_category = parseInt(date_adultpolicies_rules[ad].rule_category, 10);
+
+                                if (ruleaction != "DELETE" && rule_category > adult_max)
+                                {
+                                    date_adultpolicies_rules[ad].rule_action = "DELETE";
+                                }
+                            }
+                        }
+                    }
+                } else if (room_variants == "UNITS")
+                {
+                    for (var d = 0; d < room_dates.length; d++)
+                    {
+                        var date_action = room_dates[d].date_action;
+                        var date_dtfrom = room_dates[d].date_dtfrom;
+                        var date_dtto = room_dates[d].date_dtto;
+
+                        if (date_action != "DELETE")
+                        {
+                            var adult_max = getCapacityRoomMaxAdult(room_id, date_dtfrom, date_dtto, "ADDITIONALPERSONS");
+                            var date_adultpolicies_rules = room_dates[d].date_adultpolicies_rules;
+                            for (var ad = 0; ad < date_adultpolicies_rules.length; ad++)
+                            {
+                                var ruleaction = date_adultpolicies_rules[ad].rule_action;
+                                var rule_category = parseInt(date_adultpolicies_rules[ad].rule_category, 10);
+
+                                if (ruleaction != "DELETE" && rule_category > adult_max)
+                                {
+                                    date_adultpolicies_rules[ad].rule_action = "DELETE";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function flat_rate_cleanJsonChildren(sharing_single)
+    {
+        for (var i = 0; i < _json_capacity.length; i++)
+        {
+            if (_json_capacity[i].room_action != "DELETE")
+            {
+                var room_id = _json_capacity[i].room_id;
+                var room_variants = _json_capacity[i].room_variants;
+                var room_dates = _json_capacity[i].room_dates;
+
+                for (var d = 0; d < room_dates.length; d++)
+                {
+                    var date_action = room_dates[d].date_action;
+                    var date_dtfrom = room_dates[d].date_dtfrom;
+                    var date_dtto = room_dates[d].date_dtto;
+                    var date_childpolicies_rules = room_dates[d].date_childpolicies_rules;
+
+                    if (date_action != "DELETE")
+                    {
+                        if (room_variants == "PERSONS")
+                        {
+                            cleanJsonChildren_by_date(sharing_single, room_id, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
+                        } else if (room_variants == "UNITS" && sharing_single == "sharing")
+                        {
+                            cleanJsonChildren_by_date(sharing_single, room_id, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    function cleanJsonChildren_by_date(sharing_single, roomid, dtfrom, dtto, arr_rules, room_variants)
+    {
+        var child_ages_ids = getChildrenAgeString();
+
+        //get count of children for each date first
+
+        var arr_childages_count = [];
+        var arr_ids = child_ages_ids.split(",");
+        for (var i = 0; i < arr_ids.length; i++)
+        {
+            var id = arr_ids[i];
+            if (id != "")
+            {
+                var item = _dsChildPolicy.item(id);
+                var agefrom = parseInt(item.agefrom, 10);
+                var ageto = parseInt(item.ageto, 10);
+                var child_stats = null;
+
+                if (room_variants == "PERSONS")
+                {
+                    child_stats = getPersonsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
+                } else if (room_variants == "UNITS")
+                {
+                    child_stats = getUnitsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
+                }
+
+
+                if (child_stats[sharing_single].max_child > 0)
+                {
+                    arr_childages_count.push(child_stats);
+                }
+            }
+        }
+
+
+        //now for each rule, check if the index by age is respected
+        for (var i = 0; i < arr_rules.length; i++)
+        {
+            if (arr_rules[i].rule_action != "DELETE")
+            {
+                var rulecategory = arr_rules[i].rule_category;
+                var rule_sharing_single = arr_rules[i].rule_sharing_single;
+
+                if (rule_sharing_single == sharing_single.toUpperCase())
+                {
+                    var flg_delete = true;
+
+                    var rulepolicy = arr_rules[i].rule_policy;
+                    for (var j = 0; j < rulepolicy.length; j++)
+                    {
+                        if (rulepolicy[j].policy_action != "DELETE")
+                        {
+                            var policy_action = rulepolicy[j].policy_action;
+                            var agfrom = rulepolicy[j].policy_units_additional_child_agefrom;
+                            var agto = rulepolicy[j].policy_units_additional_child_ageto;
+
+                            if (policy_action != "DELETE")
+                            {
+                                //get the max children count from arr_childages_count
+                                //for that age from and to
+                                //if the max_children_count < rulecategory then delete this
+                                //policy
+
+                                var max = getMaxChildCountFromArrChildAges(arr_childages_count, agfrom, agto, sharing_single);
+                                if (max < rulecategory)
+                                {
+                                    rulepolicy[j].policy_action = "DELETE";
+                                } else
+                                {
+                                    flg_delete = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (flg_delete)
+                    {
+                        arr_rules[i].rule_action = "DELETE";
+                    }
+                }
+            }
+        }
+    }
+
+    function getMaxChildCountFromArrChildAges(arr_childages_count, agfrom, agto, sharing_single)
+    {
+
+        agfrom = parseInt(agfrom, 10);
+        agto = parseInt(agto, 10);
+
+        for (var i = 0; i < arr_childages_count.length; i++)
+        {
+            var age_from = arr_childages_count[i].age_from;
+            var age_to = arr_childages_count[i].age_to;
+            if (age_from == agfrom && age_to == agto)
+            {
+                return arr_childages_count[i][sharing_single].max_child;
+            }
+        }
+
+        return 0;
+    }
+
+
+    function  flat_rate_cleanJsonSingleParent()
+    {
+        //get array group by rule_ageranges
+        var arr_ruleranges = getSingleParentRuleRanges();
+
+
+        //now for each ruleranges, assess if they are outside or within scope
+        for (var i = 0; i < arr_ruleranges.length; i++)
+        {
+
+            cleanSingleParentRuleRange(arr_ruleranges[i].rule_ageranges,
+                    arr_ruleranges[i].room_id,
+                    arr_ruleranges[i].date_rwid);
+
+            decideDeleteSingleParentRuleRange(arr_ruleranges[i].rule_ageranges);
+        }
+    }
+
+    function getSingleParentRuleRanges()
+    {
+        var arr = [];
+
+        for (var i = 0; i < _json_capacity.length; i++)
+        {
+            if (_json_capacity[i].room_action != "DELETE")
+            {
+                var room_id = _json_capacity[i].room_id;
+                var room_variants = _json_capacity[i].room_variants;
+                var room_dates = _json_capacity[i].room_dates;
+
+                if (room_variants == "PERSONS")
+                {
+                    for (var d = 0; d < room_dates.length; d++)
+                    {
+                        var date_action = room_dates[d].date_action;
+                        var date_rwid = room_dates[d].date_rwid;
+
+                        if (date_action != "DELETE")
+                        {
+                            var date_single_rules = room_dates[d].date_singleparentpolicies_rules;
+                            for (var ad = 0; ad < date_single_rules.length; ad++)
+                            {
+                                if (date_single_rules[ad].rule_action != "DELETE")
+                                {
+                                    var rule_ageranges = date_single_rules[ad].rule_ageranges;
+                                    var pos = arr.map(function (e) {
+                                        return e.rule_ageranges;
+                                    }).indexOf(rule_ageranges);
+
+                                    if (pos == -1)
+                                    {
+                                        arr.push({room_id: room_id, date_rwid: date_rwid, rule_ageranges: rule_ageranges});
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    function cleanSingleParentRuleRange(rule_ageranges, roomid, date_rwid)
+    {
+
+        //get all rule lines for that _rulerange
+        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges);
+
+
+        var return_arr = singleParentGetChildRanges(roomid, date_rwid);
+        var arr_result = return_arr.RESULT;
+        //var arr_main_childages = return_arr.MAIN_CHILD_AGES;
+
+        //for each result
+        for (var r = 0; r < arr_result.length; r++)
+        {
+            if (singleParentChildrenAgesInCategory(arr_result[r].children_ages, rule_ageranges))
+            {
+                for (var i = 0; i < arr_result[r].children_ages.length; i++)
+                {
+                    var ag_from = arr_result[r].children_ages[i].capacity_child_agefrom;
+                    var ag_to = arr_result[r].children_ages[i].capacity_child_ageto;
+                    var max_pax = arr_result[r].children_ages[i].capacity_maxpax;
+
+                    enforceMaxPaxChildrenSingleParent(arr_rules, ag_from, ag_to, max_pax);
+                }
+            }
+        }
+
+    }
+
+    function enforceMaxPaxChildrenSingleParent(arr_rules, ag_from, ag_to, max_pax)
+    {
+        for (var i = 0; i < arr_rules.length; i++)
+        {
+            var rule_category = arr_rules[i].rule_category;
+            var arr_rule_policy = arr_rules[i].rule_policy;
+            for (var j = 0; j < arr_rule_policy.length; j++)
+            {
+                var policy_adult_child = arr_rule_policy[j].policy_adult_child;
+                var agfrom = arr_rule_policy[j].policy_child_agefrom;
+                var agto = arr_rule_policy[j].policy_child_ageto;
+
+                if (policy_adult_child == "CHILD" && ag_from == agfrom && ag_to == agto)
+                {
+                    if (parseInt(rule_category, 10) > parseInt(max_pax, 10))
+                    {
+                        arr_rule_policy[j].policy_action = "DELETE";
+                    }
+                }
+            }
+        }
+    }
+
+
+    function decideDeleteSingleParentRuleRange(rule_ageranges)
+    {
+        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges);
+
+        for (var i = 0; i < arr_rules.length; i++)
+        {
+            var flg_delete = true;
+
+            var arr_rule_policy = arr_rules[i].rule_policy;
+            for (var j = 0; j < arr_rule_policy.length; j++)
+            {
+                var policy_adult_child = arr_rule_policy[j].policy_adult_child;
+                var agfrom = arr_rule_policy[j].policy_child_agefrom;
+                var agto = arr_rule_policy[j].policy_child_ageto;
+                var policy_action = arr_rule_policy[j].policy_action;
+
+                if (policy_adult_child == "CHILD" && policy_action != "DELETE")
+                {
+                    var arrvalues = arr_rule_policy[j].policy_values;
+                    for (var k = 0; k < arrvalues.length; k++)
+                    {
+                        var val = arrvalues[k].value_value;
+                        val = utils_trim(val, " ");
+                        val = utils_trim(val, String.fromCharCode(160));
+                        if (val != "")
+                        {
+                            flg_delete = false;
+                        }
+                    }
+                }
+            }
+
+            if (flg_delete)
+            {
+                arr_rules[i].rule_action = "DELETE";
+            }
+        }
+    }
+
+    function getSingleParentRulesByRuleRange(rulerange)
+    {
+        var arr = [];
+
+        for (var i = 0; i < _json_capacity.length; i++)
+        {
+            if (_json_capacity[i].room_action != "DELETE")
+            {
+                var room_id = _json_capacity[i].room_id;
+                var room_variants = _json_capacity[i].room_variants;
+                var room_dates = _json_capacity[i].room_dates;
+                if (room_variants == "PERSONS")
+                {
+                    for (var d = 0; d < room_dates.length; d++)
+                    {
+                        var date_action = room_dates[d].date_action;
+                        var date_dtfrom = room_dates[d].date_dtfrom;
+                        var date_dtto = room_dates[d].date_dtto;
+
+                        if (date_action != "DELETE")
+                        {
+                            var date_single_rules = room_dates[d].date_singleparentpolicies_rules;
+                            for (var ad = 0; ad < date_single_rules.length; ad++)
+                            {
+                                if (date_single_rules[ad].rule_action != "DELETE")
+                                {
+                                    var rule_ageranges = date_single_rules[ad].rule_ageranges;
+                                    if (rulerange == rule_ageranges)
+                                    {
+                                        arr.push(date_single_rules[ad]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return arr;
+    }
+
     function flat_rate_cleanJsonCapacityFromRoomsAndAges()
     {
         var roomids = form_name.getItemValue("rooms_ids");
@@ -6659,166 +7058,180 @@ function hotelspecialoffers()
 
     function saveSPO()
     {
-        var params = "token=" + encodeURIComponent(global_token);
+        try
+        {
+            var params = "token=" + encodeURIComponent(global_token);
 
-        //name
-        var name = form_name.getFormData();
-        params += "&name=" + encodeURIComponent(JSON.stringify(name));
-
-
-        //periods
-        var periods = form_periods.getFormData();
-        params += "&periods=" + encodeURIComponent(JSON.stringify(periods));
+            //name
+            var name = form_name.getFormData();
+            params += "&name=" + encodeURIComponent(JSON.stringify(name));
 
 
-        //period validity
-        var period_validity = utils_dhxSerializeGridToJson(grid_period);
-        params += "&period_validity=" + encodeURIComponent(period_validity);
-
-        //conditions
-        var conditions = form_conditions.getFormData();
-        params += "&conditions=" + encodeURIComponent(JSON.stringify(conditions));
-
-        //applicable
-        var applicable = form_applicable.getFormData();
-        params += "&applicable=" + encodeURIComponent(JSON.stringify(applicable));
-
-        //discounts 
-        var discounts = form_discounts.getFormData();
-        params += "&discounts=" + encodeURIComponent(JSON.stringify(discounts));
-
-        //wedding discounts
-        var wedding_discounts = form_wedding_discounts.getFormData();
-        params += "&wedding_discounts=" + encodeURIComponent(JSON.stringify(wedding_discounts));
-
-        //free nights
-        var free_nights = form_free_nights.getFormData();
-        params += "&free_nights=" + encodeURIComponent(JSON.stringify(free_nights));
-
-        //free nights validity period
-        var free_nights_validity = utils_dhxSerializeGridToJson(grid_free_nights_validity);
-        params += "&free_nights_validity=" + encodeURIComponent(free_nights_validity);
-
-        //free nights grid
-        var free_nights_grid = utils_dhxSerializeGridToJson(grid_free_nights);
-        params += "&free_nights_grid=" + encodeURIComponent(free_nights_grid);
-
-        //room upgrade
-        var room_upgrade = utils_dhxSerializeGridToJson(grid_upgrade);
-        params += "&room_upgrade=" + encodeURIComponent(room_upgrade);
-
-        //wedding anniversary
-        var wedding_anniversary = form_wedding_anniversary_discounts.getFormData();
-        params += "&wedding_anniversary=" + encodeURIComponent(JSON.stringify(wedding_anniversary));
+            //periods
+            var periods = form_periods.getFormData();
+            params += "&periods=" + encodeURIComponent(JSON.stringify(periods));
 
 
-        //family offer
-        var family_offer = form_familydiscounts.getFormData();
-        params += "&family_offer=" + encodeURIComponent(JSON.stringify(family_offer));
+            //period validity
+            var period_validity = utils_dhxSerializeGridToJson(grid_period);
+            params += "&period_validity=" + encodeURIComponent(period_validity);
 
-        var family_offer_children = utils_dhxSerializeGridToJson(grid_family_discount_childrenage);
-        params += "&family_offer_children=" + encodeURIComponent(family_offer_children);
+            //conditions
+            var conditions = form_conditions.getFormData();
+            params += "&conditions=" + encodeURIComponent(JSON.stringify(conditions));
 
-        //wedding party
-        var wedding_party = form_wedding_party_discounts.getFormData();
-        params += "&wedding_party=" + encodeURIComponent(JSON.stringify(wedding_party));
+            //applicable
+            var applicable = form_applicable.getFormData();
+            params += "&applicable=" + encodeURIComponent(JSON.stringify(applicable));
 
-        var senior_offer = form_senior_discounts.getFormData();
-        params += "&senior_offer=" + encodeURIComponent(JSON.stringify(senior_offer));
+            //discounts 
+            var discounts = form_discounts.getFormData();
+            params += "&discounts=" + encodeURIComponent(JSON.stringify(discounts));
 
-        //meal upgrade
-        var meal_upgrade_grid = utils_dhxSerializeGridToJson(grid_meal_upgrade);
-        params += "&meal_upgrade_grid=" + encodeURIComponent(meal_upgrade_grid);
+            //wedding discounts
+            var wedding_discounts = form_wedding_discounts.getFormData();
+            params += "&wedding_discounts=" + encodeURIComponent(JSON.stringify(wedding_discounts));
 
-        //flat rate
-        var flat_rate_validity_group_grid = utils_dhxSerializeGridToJson(grid_flat_rate_validity);
-        params += "&flat_rate_validity_group_grid=" + encodeURIComponent(flat_rate_validity_group_grid);
+            //free nights
+            var free_nights = form_free_nights.getFormData();
+            params += "&free_nights=" + encodeURIComponent(JSON.stringify(free_nights));
 
-        var flat_rate_supplement_grid = utils_dhxSerializeGridToJson(grid_flatrate_supp);
-        params += "&flat_rate_supplement_grid=" + encodeURIComponent(flat_rate_supplement_grid);
+            //free nights validity period
+            var free_nights_validity = utils_dhxSerializeGridToJson(grid_free_nights_validity);
+            params += "&free_nights_validity=" + encodeURIComponent(free_nights_validity);
 
-        var flat_rate_checkinout_grid = utils_dhxSerializeGridToJson(grid_flatrate_checkinout);
-        params += "&flat_rate_checkinout_grid=" + encodeURIComponent(flat_rate_checkinout_grid);
+            //free nights grid
+            var free_nights_grid = utils_dhxSerializeGridToJson(grid_free_nights);
+            params += "&free_nights_grid=" + encodeURIComponent(free_nights_grid);
 
-        var flat_rate_cancellation_grid = utils_dhxSerializeGridToJson(grid_flatrate_cancellation);
-        params += "&flat_rate_cancellation_grid=" + encodeURIComponent(flat_rate_cancellation_grid);
+            //room upgrade
+            var room_upgrade = utils_dhxSerializeGridToJson(grid_upgrade);
+            params += "&room_upgrade=" + encodeURIComponent(room_upgrade);
 
-        var flat_rate_currency_details = form_flat_rate_currency.getFormData();
-        params += "&flat_rate_currency_details=" + encodeURIComponent(JSON.stringify(flat_rate_currency_details));
+            //wedding anniversary
+            var wedding_anniversary = form_wedding_anniversary_discounts.getFormData();
+            params += "&wedding_anniversary=" + encodeURIComponent(JSON.stringify(wedding_anniversary));
 
-        var flat_rate_exchrates = utils_dhxSerializeGridToJson(grid_flat_rate_exchrates);
-        params += "&flat_rate_exchrates=" + encodeURIComponent(flat_rate_exchrates);
 
-        var flat_rate_currencymap = utils_dhxSerializeGridToJson(grid_flat_rate_currencymap);
-        params += "&flat_rate_currencymap=" + encodeURIComponent(flat_rate_currencymap);
+            //family offer
+            var family_offer = form_familydiscounts.getFormData();
+            params += "&family_offer=" + encodeURIComponent(JSON.stringify(family_offer));
 
-        params += "&flat_rate_taxcomm=" + encodeURIComponent(JSON.stringify(_flat_rate_tax_commi_obj));
+            var family_offer_children = utils_dhxSerializeGridToJson(grid_family_discount_childrenage);
+            params += "&family_offer_children=" + encodeURIComponent(family_offer_children);
 
-        params += "&flat_rate_capacity=" + encodeURIComponent(JSON.stringify(_json_capacity));
+            //wedding party
+            var wedding_party = form_wedding_party_discounts.getFormData();
+            params += "&wedding_party=" + encodeURIComponent(JSON.stringify(wedding_party));
 
-        //temp
+            var senior_offer = form_senior_discounts.getFormData();
+            params += "&senior_offer=" + encodeURIComponent(JSON.stringify(senior_offer));
 
-        winspo_layout.progressOn();
+            //meal upgrade
+            var meal_upgrade_grid = utils_dhxSerializeGridToJson(grid_meal_upgrade);
+            params += "&meal_upgrade_grid=" + encodeURIComponent(meal_upgrade_grid);
 
-        dhtmlxAjax.post("php/api/hotelspecialoffers/savespo.php", params, function (loader) {
+            //flat rate
+            var flat_rate_validity_group_grid = utils_dhxSerializeGridToJson(grid_flat_rate_validity);
+            params += "&flat_rate_validity_group_grid=" + encodeURIComponent(flat_rate_validity_group_grid);
+
+            var flat_rate_supplement_grid = utils_dhxSerializeGridToJson(grid_flatrate_supp);
+            params += "&flat_rate_supplement_grid=" + encodeURIComponent(flat_rate_supplement_grid);
+
+            var flat_rate_checkinout_grid = utils_dhxSerializeGridToJson(grid_flatrate_checkinout);
+            params += "&flat_rate_checkinout_grid=" + encodeURIComponent(flat_rate_checkinout_grid);
+
+            var flat_rate_cancellation_grid = utils_dhxSerializeGridToJson(grid_flatrate_cancellation);
+            params += "&flat_rate_cancellation_grid=" + encodeURIComponent(flat_rate_cancellation_grid);
+
+            var flat_rate_currency_details = form_flat_rate_currency.getFormData();
+            params += "&flat_rate_currency_details=" + encodeURIComponent(JSON.stringify(flat_rate_currency_details));
+
+            var flat_rate_exchrates = utils_dhxSerializeGridToJson(grid_flat_rate_exchrates);
+            params += "&flat_rate_exchrates=" + encodeURIComponent(flat_rate_exchrates);
+
+            var flat_rate_currencymap = utils_dhxSerializeGridToJson(grid_flat_rate_currencymap);
+            params += "&flat_rate_currencymap=" + encodeURIComponent(flat_rate_currencymap);
+
+            params += "&flat_rate_taxcomm=" + encodeURIComponent(JSON.stringify(_flat_rate_tax_commi_obj));
+
+            params += "&flat_rate_capacity=" + encodeURIComponent(JSON.stringify(_json_capacity));
+
+            //temp
+
+            winspo_layout.progressOn();
+
+            dhtmlxAjax.post("php/api/hotelspecialoffers/savespo.php", params, function (loader) {
+                winspo_layout.progressOff();
+
+                if (loader)
+                {
+                    if (loader.xmlDoc.responseURL == "")
+                    {
+                        dhtmlx.alert({
+                            text: "Connection Lost!",
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+
+
+                    var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+
+                    if (!json_obj)
+                    {
+                        dhtmlx.alert({
+                            text: loader.xmlDoc.responseText,
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+
+                    if (json_obj.OUTCOME == "OK")
+                    {
+                        dhtmlx.alert({
+                            text: "Save Successful",
+                            type: "alert",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+
+                        form_name.setItemValue("id", json_obj.ID);
+                        loadHotelSPOs(json_obj.ID);
+                        modifySPO(json_obj.ID, false);
+
+                    } else
+                    {
+                        dhtmlx.alert({
+                            text: json_obj.OUTCOME,
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+            });
+
+        } catch (err) {
             winspo_layout.progressOff();
-
-            if (loader)
-            {
-                if (loader.xmlDoc.responseURL == "")
-                {
-                    dhtmlx.alert({
-                        text: "Connection Lost!",
-                        type: "alert-warning",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-                    return false;
+            console.log(err.message);
+            dhtmlx.alert({
+                text: err.message,
+                type: "alert-warning",
+                title: "Save SPO",
+                callback: function () {
                 }
-
-
-                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
-
-
-                if (!json_obj)
-                {
-                    dhtmlx.alert({
-                        text: loader.xmlDoc.responseText,
-                        type: "alert-warning",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-                    return false;
-                }
-
-                if (json_obj.OUTCOME == "OK")
-                {
-                    dhtmlx.alert({
-                        text: "Save Successful",
-                        type: "alert",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-
-                    form_name.setItemValue("id", json_obj.ID);
-                    loadHotelSPOs(json_obj.ID);
-                    modifySPO(json_obj.ID, false);
-
-                } else
-                {
-                    dhtmlx.alert({
-                        text: json_obj.OUTCOME,
-                        type: "alert-warning",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
-                }
-            }
-        });
+            });
+        }
 
     }
     function clearSPO()
@@ -7494,7 +7907,14 @@ function hotelspecialoffers()
     {
         var colid = grid_flatrate_checkinout.getColumnId(cInd);
 
-        if (stage == 1)
+        if (stage == 0)
+        {
+            if (colid == "time_before_after")
+            {
+                return false; //do not allow editing
+            }
+            return true;
+        } else if (stage == 1)
         {
             if (grid_flatrate_checkinout.editor && grid_flatrate_checkinout.editor.obj)
             {
@@ -7535,6 +7955,17 @@ function hotelspecialoffers()
                         }
                     }
 
+                } else if (colid == "checkinout_type")
+                {
+                    if (nValue == "ECI")
+                    {
+                        //set beforeafter to before
+                        grid_flatrate_checkinout.cells(rId, grid_flatrate_checkinout.getColIndexById("time_before_after")).setValue("BEFORE");
+                    } else if (nValue == "LCO")
+                    {
+                        //set beforeafter to before
+                        grid_flatrate_checkinout.cells(rId, grid_flatrate_checkinout.getColIndexById("time_before_after")).setValue("AFTER");
+                    }
                 }
             }
         }
@@ -9234,7 +9665,7 @@ function hotelspecialoffers()
         //selling rules
         //formula cannot be blank
 
-
+        var addon_basis = "";
         var first = true;
         for (var i = 0; i < _flat_rate_tax_commi_obj.buying_settings.length; i++)
         {
@@ -9275,6 +9706,75 @@ function hotelspecialoffers()
                     }
                 }
 
+                if (coreaddon == "ADDON")
+                {
+                    //check basis PPPN or PN
+                    var _basis = utils_trim(item.setting_basis, " ");
+                    if (_basis == "")
+                    {
+                        dhtmlx.alert({
+                            text: "<b>Buying Setting</b>: Basis cannot be Blank for Add-On Items!",
+                            type: "alert-warning",
+                            title: "Validate Tax Commission",
+                            callback: function () {
+                                accord_flat_rate_taxcommi.cells("buying").open();
+                                accord_flat_rate_taxcommi.cells("selling").close();
+                            }
+                        });
+                        return false;
+                    }
+
+                    if (_basis.includes("PNI"))
+                    {
+                        _basis = "PNI";
+                    } else if (_basis.includes("PPPN"))
+                    {
+                        _basis = "PPPN";
+                    }
+
+                    //===================================
+                    if (addon_basis == "")
+                    {
+                        addon_basis = _basis;
+                    } else if (addon_basis != _basis)
+                    {
+
+                        dhtmlx.alert({
+                            text: "<b>Buying Setting</b>: <b>Buying Setting</b>: Basis cannot be both <b>PPPN</b> and <b>PNI</b> in the same Room!",
+                            type: "alert-warning",
+                            title: "Validate Tax Commission",
+                            callback: function () {
+                                accord_flat_rate_taxcommi.cells("buying").open();
+                                accord_flat_rate_taxcommi.cells("selling").close();
+                            }
+                        });
+                        return false;
+                    }
+
+                    //===================================
+                    if (item.setting_item_code == "COMMI" ||
+                            item.setting_item_code == "CCCOMMI" ||
+                            item.setting_item_code == "SREPCOMMI")
+                    {
+                        //cannot allow flat values for commission
+                        if (item.setting_basis.includes("FLAT"))
+                        {
+                            dhtmlx.alert({
+                                text: "<b>Buying Setting</b>: <b>Buying Setting</b>: Commission can only be % and not be FLAT",
+                                type: "alert-warning",
+                                title: "Validate Tax Commission",
+                                callback: function () {
+                                    accord_flat_rate_taxcommi.cells("buying").open();
+                                    accord_flat_rate_taxcommi.cells("selling").close();
+                                }
+                            });
+                            return false;
+                        }
+                    }
+                    //===================================
+
+                }
+
                 first = false;
             }
         }
@@ -9286,6 +9786,7 @@ function hotelspecialoffers()
             var item = _flat_rate_tax_commi_obj.selling_settings[i];
             if (item.setting_action != "DELETE")
             {
+                var coreaddon = item.setting_core_addon;
                 var formula = utils_trim(item.setting_applyon_formula, " ");
                 if (formula == "")
                 {
@@ -9299,6 +9800,74 @@ function hotelspecialoffers()
                         }
                     });
                     return false;
+                }
+
+
+                if (coreaddon == "ADDON")
+                {
+                    //check basis PPPN or PN
+                    var _basis = utils_trim(item.setting_basis, " ");
+                    if (_basis == "")
+                    {
+                        dhtmlx.alert({
+                            text: "<b>Selling Setting</b>: Basis cannot be Blank for Add-On Items!",
+                            type: "alert-warning",
+                            title: "Validate Tax Commission",
+                            callback: function () {
+                                accord_flat_rate_taxcommi.cells("selling").open();
+                                accord_flat_rate_taxcommi.cells("buying").close();
+                            }
+                        });
+                        return false;
+                    }
+
+                    if (_basis.includes("PNI"))
+                    {
+                        _basis = "PNI";
+                    } else if (_basis.includes("PPPN"))
+                    {
+                        _basis = "PPPN";
+                    }
+
+                    //===================================
+                    if (addon_basis == "")
+                    {
+                        addon_basis = _basis;
+                    } else if (addon_basis != _basis)
+                    {
+                        dhtmlx.alert({
+                            text: "<b>Selling Setting</b>: Basis cannot be both <b>PPPN</b> and <b>PNI</b> in the same Room!",
+                            type: "alert-warning",
+                            title: "Validate Tax Commission",
+                            callback: function () {
+                                accord_flat_rate_taxcommi.cells("selling").open();
+                                accord_flat_rate_taxcommi.cells("buying").close();
+                            }
+                        });
+                        return false;
+                    }
+                    //===================================
+
+                    if (item.setting_item_code == "COMMI" ||
+                            item.setting_item_code == "CCCOMMI" ||
+                            item.setting_item_code == "SREPCOMMI")
+                    {
+                        //cannot allow flat values for commission
+                        if (item.setting_basis.includes("FLAT"))
+                        {
+                            dhtmlx.alert({
+                                text: "<b>Selling Setting</b>: Commission can only be % and not be FLAT!",
+                                type: "alert-warning",
+                                title: "Validate Tax Commission",
+                                callback: function () {
+                                    accord_flat_rate_taxcommi.cells("selling").open();
+                                    accord_flat_rate_taxcommi.cells("buying").close();
+                                }
+                            });
+                            return false;
+                        }
+                    }
+
                 }
             }
         }
@@ -9516,9 +10085,13 @@ function hotelspecialoffers()
             return;
         }
 
-
-        //TODO CLEAN UP AGES GROUPS
-
+        flat_rate_cleanJsonCapacityFromRoomsAndAges();
+        flat_rate_cleanJsonAdults();
+        flat_rate_cleanJsonChildren("sharing");
+        flat_rate_cleanJsonChildren("single");
+        flat_rate_cleanJsonSingleParent();
+        
+        console.log(_json_capacity);
         saveSPO();
 
     }
@@ -11229,7 +11802,7 @@ function hotelspecialoffers()
                 var colid = grid_singleparentpolicy_age.getColumnId(c.cell.cellIndex);
                 if (colid.indexOf("adult_") != -1)
                 {
-                    duplicateSingleParentAdultValuesDisplay(rwid, colid, finalsp, null, null);
+                    //duplicateSingleParentAdultValuesDisplay(rwid, colid, finalsp, null, null);
                 }
             }
         });
@@ -11326,7 +11899,7 @@ function hotelspecialoffers()
                                 roomid, daterwid,
                                 rwid, val);
 
-                        duplicateSingleParentAdultValuesDisplay(rwid, grid_singleparentpolicy_age.getColumnId(c.cell.cellIndex), val, roomid, daterwid);
+                        //duplicateSingleParentAdultValuesDisplay(rwid, grid_singleparentpolicy_age.getColumnId(c.cell.cellIndex), val, roomid, daterwid);
 
 
 
@@ -11547,7 +12120,7 @@ function hotelspecialoffers()
                 //with same rule_index - just for aesthetic
                 if (colid.indexOf("adult_") != -1)
                 {
-                    duplicateSingleParentAdultValuesDisplay(rId, colid, nValue, roomid, daterwid);
+                    //duplicateSingleParentAdultValuesDisplay(rId, colid, nValue, roomid, daterwid);
                 }
 
             }
@@ -14410,17 +14983,17 @@ function hotelspecialoffers()
 
             var pay_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("pay_nights")).getValue();
             var stay_nights = grid_free_nights.cells(rwid, grid_free_nights.getColIndexById("stay_nights")).getValue();
-            arr_free_nights.push({"STAYS":stay_nights,"PAYS":pay_nights});
+            arr_free_nights.push({"STAYS": stay_nights, "PAYS": pay_nights});
         }
-        
+
         var cumulative = form_free_nights.isItemChecked("free_nights_cumulative")
         cumulative = (cumulative) ? 1 : 0;
-        
+
         var params = "t=" + encodeURIComponent(global_token) +
                 "&arr_free_nights=" + encodeURIComponent(JSON.stringify(arr_free_nights)) +
                 "&stays=" + stays +
                 "&cumulative=" + cumulative;
-        
+
         freenights_layout.progressOn();
         dhtmlxAjax.post("php/api/hotelspecialoffers/test_free_nights.php", params, function (loader) {
             freenights_layout.progressOff();
@@ -14460,7 +15033,7 @@ function hotelspecialoffers()
                     var free = json_obj.FREE;
                     var stay = json_obj.STAY;
                     var pay = json_obj.PAY;
-                    
+
                     dhtmlx.alert({
                         text: "Stays:" + stay + " - Pays:" + pay + " = Free: <b>" + free + "</b> night(s)",
                         type: "alert",
@@ -14482,6 +15055,184 @@ function hotelspecialoffers()
             }
         });
     }
+
+    function singleParentGetChildRanges(roomid, date_rwid)
+    {
+        //for each capacity rule, check if min_adult = 1 and max_adult = 1
+        //      push child_ages applicable to rule + min_max child
+        //next rule
+
+        //if no rules found from min_adult = 1 and max_adult = 1 then
+        //check for rules where min_adult = 1
+        //      push child ages applicale to rule + min_max child
+        //next rule
+
+
+        var arr_result = [];
+        var arr_main_childages = [];
+
+        var dateobj = lookupCapacityRoomDateObj(roomid, date_rwid);
+        var arrrulecounter = dateobj.date_capacity_rules;
+
+        //===========================================================
+        //CHECK 1
+
+        for (var i = 0; i < dateobj.date_capacity_rules.length; i++)
+        {
+            var ruleobj = arrrulecounter[i];
+            if (ruleobj.rule_action != "DELETE")
+            {
+                var arrrule_capacity = ruleobj.rule_capacity;
+                for (var k = 0; k < arrrule_capacity.length; k++)
+                {
+                    var capacityobj = arrrule_capacity[k];
+                    if (capacityobj.capacity_action != "DELETE")
+                    {
+                        if (capacityobj.capacity_category == "ADULT")
+                        {
+                            if (capacityobj.capacity_minpax == 1 && capacityobj.capacity_maxpax == 1)
+                            {
+                                //got a single parent obj
+                                var xobj = pushCapacitySingleParentChilrenObj(ruleobj);
+                                arr_result.push(xobj);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //===========================================================
+        //CHECK 2
+        if (arr_result.length == 0)
+        {
+            //check for records where capacity_minpax == 1 
+            for (var i = 0; i < dateobj.date_capacity_rules.length; i++)
+            {
+                var ruleobj = arrrulecounter[i];
+                if (ruleobj.rule_action != "DELETE")
+                {
+                    var arrrule_capacity = ruleobj.rule_capacity;
+                    for (var k = 0; k < arrrule_capacity.length; k++)
+                    {
+                        var capacityobj = arrrule_capacity[k];
+                        if (capacityobj.capacity_action != "DELETE")
+                        {
+                            if (capacityobj.capacity_category == "ADULT")
+                            {
+                                if (capacityobj.capacity_minpax == 1)
+                                {
+                                    //got a single parent obj
+                                    var xobj = pushCapacitySingleParentChilrenObj(ruleobj);
+                                    arr_result.push(xobj);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //===========================================================
+        //===========================================================
+
+
+        for (var i = 0; i < arr_result.length; i++)
+        {
+            var arr_ageranges = arr_result[i].children_ages;
+            for (var j = 0; j < arr_ageranges.length; j++)
+            {
+                var capacity_child_agefrom = arr_ageranges[j]["capacity_child_agefrom"];
+                var capacity_child_ageto = arr_ageranges[j]["capacity_child_ageto"];
+
+
+                //combination must be based on contract.main
+                //if not, then add it there
+
+                if (is_age_in_main(capacity_child_agefrom, capacity_child_ageto))
+                {
+                    if (!checkAgeRangeInArray(arr_main_childages, capacity_child_agefrom, capacity_child_ageto))
+                    {
+                        arr_main_childages.push({age_from: capacity_child_agefrom, age_to: capacity_child_ageto});
+                    }
+                } else
+                {
+                    //explode the age range in the ranges defined in main
+                    //eg: main = 0-1, 2-11, 12-17 and here range is 0-11
+                    //return array 0-1, 2-11
+                    var arr_explode = explode_ageranges(capacity_child_agefrom, capacity_child_ageto);
+                    for (var x = 0; x < arr_explode.length; x++)
+                    {
+                        if (!checkAgeRangeInArray(arr_main_childages, arr_explode[x].age_from, arr_explode[x].age_to))
+                        {
+                            arr_main_childages.push({age_from: arr_explode[x].age_from,
+                                age_to: arr_explode[x].age_to});
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //===========================================================
+        arr_main_childages.sort(function (a, b) {
+            return parseFloat(a.age_from) - parseFloat(b.age_from);
+        });
+        //===========================================================
+
+        return {RESULT: arr_result, MAIN_CHILD_AGES: arr_main_childages};
+    }
+
+    function singleParentChildrenAgesInCategory(children_ages, rule_ageranges)
+    {
+        var copy_children_ages = utils_deepCopy(children_ages);
+
+
+        //rule_ageranges example: ;0_1;2_3;
+        //explode rule_ageranges and check if each of the ages are in children_ages
+
+        var arr_age_ranges = rule_ageranges.split(";");
+        for (var i = 0; i < arr_age_ranges.length; i++)
+        {
+            var age_value = arr_age_ranges[i];
+            if (utils_trim(age_value, " ") != "")
+            {
+                var arr_age_from_to = age_value.split("_");
+                var age_from = arr_age_from_to[0];
+                var age_to = arr_age_from_to[1];
+                var found = false;
+
+                //now for this age range, search into copy_children_ages
+                var j = copy_children_ages.length;
+
+                while (j--) {
+
+                    if (copy_children_ages[j].capacity_child_agefrom == age_from &&
+                            copy_children_ages[j].capacity_child_ageto == age_to)
+                    {
+                        copy_children_ages.splice(j, 1);
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    return false;
+                }
+            }
+        }
+
+        //now check if array is empty
+        if (copy_children_ages.length == 0)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
     //=======================================================
     popupwin_spo.hide();
     popupwin_link.hide();

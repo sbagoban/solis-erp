@@ -35,6 +35,8 @@ try {
     require_once("../../connector/pdo_connect_main.php");
     require_once("./_rates_calculator.php");
     require_once("./_rates_get_contract.php");
+    require_once("../hotelspecialoffers/_spo.php");
+    require_once("../hotelspecialoffers/_spo_taxcommi.php");
     require_once("../hotelcontracts/_contract_capacityarr.php");
     require_once("../hotelcontracts/_contract_exchangerates.php");
     require_once("../hotelcontracts/_contract_calculatesp.php");

@@ -32,9 +32,6 @@ try {
         throw new Exception("INVALID TOKEN");
     }
 
-
-
-
     //NAME 
 
     $name = json_decode($_POST["name"], true); //+
@@ -97,7 +94,7 @@ try {
     if ($outcome != "OK") {
         throw new Exception($outcome);
     }
-        
+
     $outcome = savetouroperators($toids);
     if ($outcome != "OK") {
         throw new Exception($outcome);
@@ -110,7 +107,7 @@ try {
     $rate_fk = $periods["rate_fk"];
     $booking_before_date = $periods["booking_before_date"];
     $booking_before_days = $periods["booking_before_days"];
-    
+
     $booking_before_date_from = utils_stringBlank($periods["booking_before_date_from"], null);
     if (!is_null($booking_before_date_from)) {
         $booking_before_date_from = date("Y-m-d", strtotime($booking_before_date_from));
@@ -143,8 +140,8 @@ try {
         ":booking_before_date_to" => $booking_before_date_to,
         ":booking_before_days_from" => $booking_before_days_from,
         ":booking_before_days_to" => $booking_before_days_to,
-        ":booking_before_date"=>$booking_before_date,
-        ":booking_before_days"=>$booking_before_days));
+        ":booking_before_date" => $booking_before_date,
+        ":booking_before_days" => $booking_before_days));
 
 
     $period_validity = json_decode($_POST["period_validity"], true); //+
@@ -429,7 +426,7 @@ try {
 
         $wedding_min_guests = utils_stringBlank($wedding_party["wedding_min_guests"], null);
         $wedding_max_guests = utils_stringBlank($wedding_party["wedding_max_guests"], null);
-        
+
         $wedding_apply_discount_both = utils_stringBlank($wedding_party["wedding_apply_discount_both"], null);
         $wedding_apply_discount_both_basis = utils_stringBlank($wedding_party["wedding_apply_discount_both_basis"], null);
         $wedding_apply_discount_both_sngl_dbl = utils_stringBlank($wedding_party["wedding_apply_discount_both_sngl_dbl"], null);
@@ -515,70 +512,70 @@ try {
             throw new Exception($outcome);
         }
     }
-    
-    
+
+
     //=========================================================================
     //FLAT RATES
     if ($template == "flat_rate") {
-        
+
         //save group date periods
         $flat_rate_validity_group_grid = json_decode($_POST["flat_rate_validity_group_grid"], true);
         $outcome = saveflatratevaliditygroup($flat_rate_validity_group_grid);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
+
         //save meal supplements
         $flat_rate_supplement_grid = json_decode($_POST["flat_rate_supplement_grid"], true);
         $outcome = saveflatratesupp($flat_rate_supplement_grid);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
+
         //save checkin out settings        
         $flat_rate_checkinout_grid = json_decode($_POST["flat_rate_checkinout_grid"], true);
         $outcome = saveflatratecheckinout($flat_rate_checkinout_grid);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
+
         //save cancellation settings        
         $flat_rate_cancellation_grid = json_decode($_POST["flat_rate_cancellation_grid"], true);
         $outcome = saveflatratecancellation($flat_rate_cancellation_grid);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
-        
+
+
         //save currency details
         $flat_rate_currency_details = json_decode($_POST["flat_rate_currency_details"], true);
         $outcome = saveflatratecurrencydetails($flat_rate_currency_details);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
+
         //save currency exchange rates
         $flat_rate_exchrates = json_decode($_POST["flat_rate_exchrates"], true);
         $outcome = saveflatratecurrencyexgrates($flat_rate_exchrates);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
+
         //save currency mapping
         $flat_rate_currencymap = json_decode($_POST["flat_rate_currencymap"], true);
         $outcome = saveflatratecurrencymapping($flat_rate_currencymap);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
-        
+
+
         //save tax commission settings
         $flat_rate_taxcomm = json_decode($_POST["flat_rate_taxcomm"], true);
         $outcome = saveflatratetaxcommi($flat_rate_taxcomm);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-        
+
         //save capacity
         $flat_rate_capacity = json_decode($_POST["flat_rate_capacity"], true);
         $outcome = saveflatratecapacity_rates($flat_rate_capacity);
@@ -644,13 +641,16 @@ function saveapplicable_childages($child_age_ids, $sharing_own) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+
+
+        $sql = "DELETE FROM $tablename WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM $tablename WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -693,13 +693,15 @@ function savemeals($meals_ids) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+
+        $sql = "DELETE FROM tblspecial_offer_mealplan WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_mealplan WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -741,13 +743,15 @@ function saverooms($rooms_ids) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+
+        $sql = "DELETE FROM tblspecial_offer_rooms WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_rooms WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -764,41 +768,43 @@ function savecountries($market_countries_ids) {
         $arr_needed_ids = array();
 
         $arr_countries = explode(",", $market_countries_ids);
-        
+
         for ($i = 0; $i < count($arr_countries); $i++) {
 
             $countryid = $arr_countries[$i];
-            
+
             //if($countryid != "")
             //{
-                //check if exists
-                $sql = "SELECT * FROM tblspecial_offer_countries WHERE spo_fk=:spo_fk AND 
+            //check if exists
+            $sql = "SELECT * FROM tblspecial_offer_countries WHERE spo_fk=:spo_fk AND 
                         country_fk=:country_fk";
+            $stmt = $con->prepare($sql);
+            $stmt->execute(array(":spo_fk" => $id, ":country_fk" => $countryid));
+
+            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $arr_needed_ids[] = $rw["id"];
+            } else {
+                //insert
+                $sql = "INSERT INTO tblspecial_offer_countries (spo_fk, country_fk) VALUES 
+                            (:spo_fk, :country_fk)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":spo_fk" => $id, ":country_fk" => $countryid));
-
-                if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $arr_needed_ids[] = $rw["id"];
-                } else {
-                    //insert
-                    $sql = "INSERT INTO tblspecial_offer_countries (spo_fk, country_fk) VALUES 
-                            (:spo_fk, :country_fk)";
-                    $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":spo_fk" => $id, ":country_fk" => $countryid));
-                    $arr_needed_ids[] = $con->lastInsertId();
-                }
+                $arr_needed_ids[] = $con->lastInsertId();
+            }
             //}            
         }
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+
+        $sql = "DELETE FROM tblspecial_offer_countries WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_countries WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -844,13 +850,14 @@ function saveperiodvalidity($period_validity) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+        $sql = "DELETE FROM tblspecial_offer_validityperiods WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_validityperiods WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -898,13 +905,14 @@ function savefreenights($free_nights_grid) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+        $sql = "DELETE FROM tblspecial_offer_freenights WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_freenights WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -955,15 +963,12 @@ function savefreenightvalidity($free_nights_validity) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
-        
-        if ($deleteids == "") {
-            $sql = "DELETE FROM tblspecial_offer_freenights_validity_periods WHERE spo_fk=:spo_fk";
+        $sql = "DELETE FROM tblspecial_offer_freenights_validity_periods 
+                    WHERE spo_fk=:spo_fk";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        else if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_freenights_validity_periods 
-                    WHERE spo_fk=:spo_fk
-                    AND id NOT IN ($deleteids)";
-        }
+
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":spo_fk" => $id));
 
@@ -1028,13 +1033,14 @@ function savefamilyofferchildren($family_offer_children) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+        $sql = "DELETE FROM tblspecial_offer_familyoffer_childage_discount WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_familyoffer_childage_discount WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -1082,13 +1088,14 @@ function savemealupgrade($mealgrid) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+        $sql = "DELETE FROM tblspecial_offer_upgrade_meal WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_upgrade_meal WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -1096,27 +1103,25 @@ function savemealupgrade($mealgrid) {
     }
 }
 
-
-function saveflatratevaliditygroup_childrenages($grpid,$children_ages_ids)
-{
+function saveflatratevaliditygroup_childrenages($grpid, $children_ages_ids) {
     try {
 
         global $con;
 
         $arr_needed_ids = array();
-        
+
         $arr_child_age_ids = explode(",", $children_ages_ids);
-        
+
         for ($i = 0; $i < count($arr_child_age_ids); $i++) {
 
             $ageid = trim($arr_child_age_ids[$i]);
-           
+
             //check if exists
             $sql = "SELECT * FROM 
                     tblspecial_offer_flatrate_group_validity_period_childages
                     WHERE spo_fltrate_grp_valid_period_fk=$grpid AND 
                     childage_fk=$ageid";
-            
+
             $stmt = $con->prepare($sql);
             $stmt->execute();
 
@@ -1131,19 +1136,17 @@ function saveflatratevaliditygroup_childrenages($grpid,$children_ages_ids)
                         ($grpid,$ageid)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
-                $arr_needed_ids[] =  $con->lastInsertId();
+                $arr_needed_ids[] = $con->lastInsertId();
             }
         }
         //====================================================================
-
-
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
         $sql = "DELETE FROM tblspecial_offer_flatrate_group_validity_period_childages
                 WHERE spo_fltrate_grp_valid_period_fk=$grpid ";
         if ($deleteids != "") {
-             
-            $sql .= " AND id NOT IN ($deleteids)";            
+
+            $sql .= " AND id NOT IN ($deleteids)";
         }
         $stmt = $con->prepare($sql);
         $stmt->execute();
@@ -1154,30 +1157,28 @@ function saveflatratevaliditygroup_childrenages($grpid,$children_ages_ids)
     }
 }
 
-
-function saveflatratesupp_childrenages($suppid,$data_arr)
-{
+function saveflatratesupp_childrenages($suppid, $data_arr) {
     try {
 
         global $con;
 
         $arr_needed_ids = array();
-        
+
         $arrkeys = array_keys($data_arr);
-        
+
         for ($i = 0; $i < count($arrkeys); $i++) {
 
             $key = trim($arrkeys[$i]);
-           
+
             if (strpos($key, "_") !== false) {
-                
-                
-                
+
+
+
                 $age_arr = explode("_", $key);
                 $age_from = trim($age_arr[0]);
                 $age_to = trim($age_arr[1]);
-                $count = utils_stringBlank($data_arr[$key],null);
-                
+                $count = utils_stringBlank($data_arr[$key], 0);
+
                 //check if exists
                 $sql = "SELECT * FROM 
                         tblspecial_offer_flatrate_mealsupp_children_ages
@@ -1193,7 +1194,7 @@ function saveflatratesupp_childrenages($suppid,$data_arr)
                             tblspecial_offer_flatrate_mealsupp_children_ages SET
                             child_count = :count WHERE id=:id";
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":count"=>$count,":id"=>$rw["id"]));
+                    $stmt->execute(array(":count" => $count, ":id" => $rw["id"]));
                 } else {
                     //insert
                     $sql = "INSERT INTO 
@@ -1202,23 +1203,19 @@ function saveflatratesupp_childrenages($suppid,$data_arr)
                             VALUES 
                             ($suppid, $age_from,$age_to,:count)";
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":count"=>$count));
-                    $arr_needed_ids[] =  $con->lastInsertId();
+                    $stmt->execute(array(":count" => $count));
+                    $arr_needed_ids[] = $con->lastInsertId();
                 }
-                
             }
-            
         }
         //====================================================================
-
-
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
         $sql = "DELETE FROM tblspecial_offer_flatrate_mealsupp_children_ages
                 WHERE spo_ftrte_mealsupp_fk=$suppid ";
         if ($deleteids != "") {
-             
-            $sql .= " AND id NOT IN ($deleteids)";            
+
+            $sql .= " AND id NOT IN ($deleteids)";
         }
         $stmt = $con->prepare($sql);
         $stmt->execute();
@@ -1229,16 +1226,15 @@ function saveflatratesupp_childrenages($suppid,$data_arr)
     }
 }
 
-function saveflatratecancellation_rooms($suppid,$rooms_ids)
-{
+function saveflatratecancellation_rooms($suppid, $rooms_ids) {
     try {
 
         global $con;
         global $id;
 
         $arr_needed_ids = array();
-        
-        $arr_rooms = explode(",",$rooms_ids);
+
+        $arr_rooms = explode(",", $rooms_ids);
 
         for ($i = 0; $i < count($arr_rooms); $i++) {
 
@@ -1249,8 +1245,8 @@ function saveflatratecancellation_rooms($suppid,$rooms_ids)
                         WHERE spo_ftrte_cancellation_fk=:spo_ftrte_cancellation_fk
                         AND roomfk=:roomfk";
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_ftrte_cancellation_fk" => $suppid, 
-                                 ":roomfk" => $room_id));
+            $stmt->execute(array(":spo_ftrte_cancellation_fk" => $suppid,
+                ":roomfk" => $room_id));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $arr_needed_ids[] = $rw["id"];
@@ -1262,7 +1258,7 @@ function saveflatratecancellation_rooms($suppid,$rooms_ids)
                             (:spo_ftrte_cancellation_fk, :roomfk)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":spo_ftrte_cancellation_fk" => $suppid,
-                                     ":roomfk" => $room_id));
+                    ":roomfk" => $room_id));
                 $arr_needed_ids[] = $con->lastInsertId();
             }
         }
@@ -1271,12 +1267,12 @@ function saveflatratecancellation_rooms($suppid,$rooms_ids)
         //clean up
         $sql = "DELETE FROM tblspecial_offer_flatrate_cancellation_rooms WHERE 
                     spo_ftrte_cancellation_fk=:spo_ftrte_cancellation_fk";
-        
+
         $deleteids = implode(",", $arr_needed_ids);
         if ($deleteids != "") {
-            $sql .= " AND id NOT IN ($deleteids)";            
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        
+
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":spo_ftrte_cancellation_fk" => $suppid));
 
@@ -1286,16 +1282,15 @@ function saveflatratecancellation_rooms($suppid,$rooms_ids)
     }
 }
 
-function saveflatratecheckinout_rooms($suppid,$rooms_ids)
-{
+function saveflatratecheckinout_rooms($suppid, $rooms_ids) {
     try {
 
         global $con;
         global $id;
 
         $arr_needed_ids = array();
-        
-        $arr_rooms = explode(",",$rooms_ids);
+
+        $arr_rooms = explode(",", $rooms_ids);
 
         for ($i = 0; $i < count($arr_rooms); $i++) {
 
@@ -1306,8 +1301,8 @@ function saveflatratecheckinout_rooms($suppid,$rooms_ids)
                         WHERE spo_ftrte_checkinout_fk=:spo_ftrte_checkinout_fk
                         AND roomfk=:roomfk";
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_ftrte_checkinout_fk" => $suppid, 
-                                 ":roomfk" => $room_id));
+            $stmt->execute(array(":spo_ftrte_checkinout_fk" => $suppid,
+                ":roomfk" => $room_id));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $arr_needed_ids[] = $rw["id"];
@@ -1319,7 +1314,7 @@ function saveflatratecheckinout_rooms($suppid,$rooms_ids)
                             (:spo_ftrte_checkinout_fk, :roomfk)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":spo_ftrte_checkinout_fk" => $suppid,
-                                     ":roomfk" => $room_id));
+                    ":roomfk" => $room_id));
                 $arr_needed_ids[] = $con->lastInsertId();
             }
         }
@@ -1328,12 +1323,12 @@ function saveflatratecheckinout_rooms($suppid,$rooms_ids)
         //clean up
         $sql = "DELETE FROM tblspecial_offer_flatrate_checkinout_rooms WHERE 
                     spo_ftrte_checkinout_fk=:spo_ftrte_checkinout_fk";
-        
+
         $deleteids = implode(",", $arr_needed_ids);
         if ($deleteids != "") {
-            $sql .= " AND id NOT IN ($deleteids)";            
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        
+
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":spo_ftrte_checkinout_fk" => $suppid));
 
@@ -1343,27 +1338,24 @@ function saveflatratecheckinout_rooms($suppid,$rooms_ids)
     }
 }
 
-
-function saveflatratecancellation_dateperiods($suppid,$dateperiods)
-{
+function saveflatratecancellation_dateperiods($suppid, $dateperiods) {
     try {
 
         global $con;
 
         $arr_needed_ids = array();
-        
+
         $arr_dates = explode("<br>", $dateperiods);
-        
+
         for ($i = 0; $i < count($arr_dates); $i++) {
 
             $dates = trim($arr_dates[$i]);
-            
-            if($dates != "")
-            {
-                $arr_single_dates = explode(" - ",$dates);
+
+            if ($dates != "") {
+                $arr_single_dates = explode(" - ", $dates);
                 $dtfrom = utils_DMY_YMD(trim($arr_single_dates[0]));
                 $dtto = utils_DMY_YMD(trim($arr_single_dates[1]));
-                
+
                 //check if exists
                 $sql = "SELECT * FROM 
                         tblspecial_offer_flatrate_cancellation_dateperiods
@@ -1385,26 +1377,26 @@ function saveflatratecancellation_dateperiods($suppid,$dateperiods)
                             (:spo_ftrte_cancellation_fk, :valid_from, :valid_to)";
 
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":spo_ftrte_cancellation_fk" => $suppid, 
-                                         ":valid_from" => $dtfrom,
-                                         ":valid_to" => $dtto));
-                    $arr_needed_ids[] =  $con->lastInsertId();
+                    $stmt->execute(array(":spo_ftrte_cancellation_fk" => $suppid,
+                        ":valid_from" => $dtfrom,
+                        ":valid_to" => $dtto));
+                    $arr_needed_ids[] = $con->lastInsertId();
                 }
-            }   
+            }
         }
-   
+
         //clean up
-        
-         $sql = "DELETE FROM 
+
+        $sql = "DELETE FROM 
                  tblspecial_offer_flatrate_cancellation_dateperiods
                  WHERE 
                  spo_ftrte_cancellation_fk=$suppid";
-         
+
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {            
-            $sql .= " AND id NOT IN ($deleteids)";            
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        
+
         $stmt = $con->prepare($sql);
         $stmt->execute();
 
@@ -1414,26 +1406,24 @@ function saveflatratecancellation_dateperiods($suppid,$dateperiods)
     }
 }
 
-function saveflatratecheckinout_dateperiods($suppid,$dateperiods)
-{
+function saveflatratecheckinout_dateperiods($suppid, $dateperiods) {
     try {
 
         global $con;
 
         $arr_needed_ids = array();
-        
+
         $arr_dates = explode("<br>", $dateperiods);
-        
+
         for ($i = 0; $i < count($arr_dates); $i++) {
 
             $dates = trim($arr_dates[$i]);
-            
-            if($dates != "")
-            {
-                $arr_single_dates = explode(" - ",$dates);
+
+            if ($dates != "") {
+                $arr_single_dates = explode(" - ", $dates);
                 $dtfrom = utils_DMY_YMD(trim($arr_single_dates[0]));
                 $dtto = utils_DMY_YMD(trim($arr_single_dates[1]));
-                
+
                 //check if exists
                 $sql = "SELECT * FROM 
                         tblspecial_offer_flatrate_checkinout_dateperiods
@@ -1455,26 +1445,26 @@ function saveflatratecheckinout_dateperiods($suppid,$dateperiods)
                             (:spo_ftrte_checkinout_fk, :valid_from, :valid_to)";
 
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":spo_ftrte_checkinout_fk" => $suppid, 
-                                         ":valid_from" => $dtfrom,
-                                         ":valid_to" => $dtto));
-                    $arr_needed_ids[] =  $con->lastInsertId();
+                    $stmt->execute(array(":spo_ftrte_checkinout_fk" => $suppid,
+                        ":valid_from" => $dtfrom,
+                        ":valid_to" => $dtto));
+                    $arr_needed_ids[] = $con->lastInsertId();
                 }
-            }   
+            }
         }
-   
+
         //clean up
-        
-         $sql = "DELETE FROM 
+
+        $sql = "DELETE FROM 
                  tblspecial_offer_flatrate_checkinout_dateperiods
                  WHERE 
                  spo_ftrte_checkinout_fk=$suppid";
-         
+
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {            
-            $sql .= " AND id NOT IN ($deleteids)";            
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        
+
         $stmt = $con->prepare($sql);
         $stmt->execute();
 
@@ -1484,27 +1474,25 @@ function saveflatratecheckinout_dateperiods($suppid,$dateperiods)
     }
 }
 
-function saveflatratesupp_dateperiods($suppid,$dateperiods)
-{
-       
-try {
+function saveflatratesupp_dateperiods($suppid, $dateperiods) {
+
+    try {
 
         global $con;
 
         $arr_needed_ids = array();
-        
+
         $arr_dates = explode("<br>", $dateperiods);
-        
+
         for ($i = 0; $i < count($arr_dates); $i++) {
 
             $dates = trim($arr_dates[$i]);
-            
-            if($dates != "")
-            {
-                $arr_single_dates = explode(" - ",$dates);
+
+            if ($dates != "") {
+                $arr_single_dates = explode(" - ", $dates);
                 $dtfrom = utils_DMY_YMD(trim($arr_single_dates[0]));
                 $dtto = utils_DMY_YMD(trim($arr_single_dates[1]));
-                
+
                 //check if exists
                 $sql = "SELECT * FROM 
                         tblspecial_offer_flatrate_mealsupp_dateperiods
@@ -1526,25 +1514,25 @@ try {
                             (:spo_ftrte_mealsupp_fk, :valid_from, :valid_to)";
 
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":spo_ftrte_mealsupp_fk" => $suppid, 
-                                         ":valid_from" => $dtfrom,
-                                         ":valid_to" => $dtto));
-                    $arr_needed_ids[] =  $con->lastInsertId();
+                    $stmt->execute(array(":spo_ftrte_mealsupp_fk" => $suppid,
+                        ":valid_from" => $dtfrom,
+                        ":valid_to" => $dtto));
+                    $arr_needed_ids[] = $con->lastInsertId();
                 }
-            }   
+            }
         }
-   
+
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
-         $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                  tblspecial_offer_flatrate_mealsupp_dateperiods
                  WHERE 
                  spo_ftrte_mealsupp_fk=$suppid";
-         
+
         if ($deleteids != "") {
-            $sql .= " AND id NOT IN ($deleteids)";            
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        
+
         $stmt = $con->prepare($sql);
         $stmt->execute();
 
@@ -1554,9 +1542,8 @@ try {
     }
 }
 
-function saveflatratecapacity_rates($flat_rate_capacity)
-{
-        try {
+function saveflatratecapacity_rates($flat_rate_capacity) {
+    try {
 
         global $con;
         global $id;
@@ -1628,9 +1615,7 @@ function saveflatratecapacity_rates($flat_rate_capacity)
     }
 }
 
-
-function saveflatrateroomcapacitydates($room_rwid, $arr_room_dates)
-{
+function saveflatrateroomcapacitydates($room_rwid, $arr_room_dates) {
     try {
 
         global $con;
@@ -1733,13 +1718,13 @@ function saveflatrateroomcapacitydates($room_rwid, $arr_room_dates)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
+        $sql = "DELETE FROM tblspecial_offer_flatrate_roomcapacity_dates WHERE 
+                    spo_flatrates_roomcapacity_fk=:id ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_flatrate_roomcapacity_dates WHERE 
-                    spo_flatrates_roomcapacity_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $room_rwid));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $room_rwid));
 
 
         return "OK";
@@ -1748,9 +1733,7 @@ function saveflatrateroomcapacitydates($room_rwid, $arr_room_dates)
     }
 }
 
-
-function saveflatratermsngprntpolicydtrules($date_rwid, $arr_singleparentpolicies_rules)
-{
+function saveflatratermsngprntpolicydtrules($date_rwid, $arr_singleparentpolicies_rules) {
     try {
 
         global $con;
@@ -1816,14 +1799,15 @@ function saveflatratermsngprntpolicydtrules($date_rwid, $arr_singleparentpolicie
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_flatrate_snglprnt_rm_dt_rules
+        $sql = "DELETE FROM tblspecial_offer_flatrate_snglprnt_rm_dt_rules
                     WHERE 
-                    spo_flatrate_roomcapacity_dates_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $date_rwid));
+                    spo_flatrate_roomcapacity_dates_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $date_rwid));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -1831,9 +1815,8 @@ function saveflatratermsngprntpolicydtrules($date_rwid, $arr_singleparentpolicie
     }
 }
 
-function saveflatratermsngprntpolicydtrulesages($rule_rwid, $arr_rule_policy)
-{
-        try {
+function saveflatratermsngprntpolicydtrulesages($rule_rwid, $arr_rule_policy) {
+    try {
 
         global $con;
         $arr_needed_ids = array();
@@ -1911,25 +1894,23 @@ function saveflatratermsngprntpolicydtrulesages($rule_rwid, $arr_rule_policy)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages
+        $sql = "DELETE FROM tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages
                     WHERE 
-                    spo_flatrate_snglprnt_rm_dt_rules_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $rule_rwid));
+                    spo_flatrate_snglprnt_rm_dt_rules_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $rule_rwid));
 
 
         return "OK";
     } catch (Exception $ex) {
         return "SNGPRNT DATES RULE AGES: " . $ex->getMessage();
     }
-
 }
 
-function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_values)
-{
+function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_values) {
     try {
 
         global $con;
@@ -1981,25 +1962,25 @@ function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values
                     WHERE 
-                    spo_flatrate_snglprnt_rm_dt_rules_ages_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $policy_rwid));
+                    spo_flatrate_snglprnt_rm_dt_rules_ages_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $policy_rwid));
+
 
         return "OK";
     } catch (Exception $ex) {
         return "SNGPRNT DATES RULE AGES VALUES: " . $ex->getMessage();
-    }    
+    }
 }
 
-function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules)
-{
-        try {
+function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) {
+    try {
 
         global $con;
         $arr_needed_ids = array();
@@ -2067,14 +2048,15 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_flatrate_ch_rm_dt_rules
+        $sql = "DELETE FROM tblspecial_offer_flatrate_ch_rm_dt_rules
                     WHERE 
-                    spo_flatrate_roomcapacity_dates_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $date_rwid));
+                    spo_flatrate_roomcapacity_dates_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $date_rwid));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -2082,8 +2064,7 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules)
     }
 }
 
-function saveflatratermchildpolicydtrulesages($rule_rwid, $arr_rule_policy)
-{
+function saveflatratermchildpolicydtrulesages($rule_rwid, $arr_rule_policy) {
     try {
 
         global $con;
@@ -2155,15 +2136,15 @@ function saveflatratermchildpolicydtrulesages($rule_rwid, $arr_rule_policy)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_ch_rm_dt_rules_ages
                     WHERE 
-                    spo_flatrate_childpolicy_room_dates_rules_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $rule_rwid));
+                    spo_flatrate_childpolicy_room_dates_rules_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $rule_rwid));
 
         return "OK";
     } catch (Exception $ex) {
@@ -2171,8 +2152,7 @@ function saveflatratermchildpolicydtrulesages($rule_rwid, $arr_rule_policy)
     }
 }
 
-function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_values)
-{
+function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_values) {
     try {
 
         global $con;
@@ -2224,24 +2204,23 @@ function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_va
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values
                     WHERE 
-                    spo_flatrate_child_policy_room_dates_rules_ages_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $policy_rwid));
+                    spo_flatrate_child_policy_room_dates_rules_ages_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $policy_rwid));
 
         return "OK";
     } catch (Exception $ex) {
         return "CHILD DATES RULE AGES VALUES: " . $ex->getMessage();
-    }    
+    }
 }
 
-function saveflatratermadultpolicydtrules($date_rwid, $arr_adultpolicies_rules)
-{
+function saveflatratermadultpolicydtrules($date_rwid, $arr_adultpolicies_rules) {
     try {
         global $con;
 
@@ -2299,14 +2278,14 @@ function saveflatratermadultpolicydtrules($date_rwid, $arr_adultpolicies_rules)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_ad_rm_dt_rules WHERE 
-                    spo_flatrate_roomcapacity_dates_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $date_rwid));
+                    spo_flatrate_roomcapacity_dates_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $date_rwid));
 
         return "OK";
     } catch (Exception $ex) {
@@ -2314,8 +2293,7 @@ function saveflatratermadultpolicydtrules($date_rwid, $arr_adultpolicies_rules)
     }
 }
 
-function saveflatratermadultpolicydtrulesages($rule_rwid, $arr_rule_ages)
-{
+function saveflatratermadultpolicydtrulesages($rule_rwid, $arr_rule_ages) {
     try {
 
         global $con;
@@ -2392,14 +2370,14 @@ function saveflatratermadultpolicydtrulesages($rule_rwid, $arr_rule_ages)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_ad_rm_dt_rules_ages WHERE 
-                    spo_flatrate_adultpolicy_room_dates_rules_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $rule_rwid));
+                    spo_flatrate_adultpolicy_room_dates_rules_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $rule_rwid));
 
         return "OK";
     } catch (Exception $ex) {
@@ -2407,8 +2385,7 @@ function saveflatratermadultpolicydtrulesages($rule_rwid, $arr_rule_ages)
     }
 }
 
-function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values)
-{
+function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values) {
     try {
         global $con;
         $arr_needed_ids = array();
@@ -2459,15 +2436,15 @@ function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_ad_rm_dt_rules_ages_values
                     WHERE 
-                    spo_fte_ad_rm_dt_rules_ag_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $policy_rwid));
+                    spo_fte_ad_rm_dt_rules_ag_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $policy_rwid));
 
         return "OK";
     } catch (Exception $ex) {
@@ -2475,8 +2452,7 @@ function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values)
     }
 }
 
-function saveflatratermcapdtrules($date_rwid, $arr_capacity_rules)
-{
+function saveflatratermcapdtrules($date_rwid, $arr_capacity_rules) {
     try {
         global $con;
 
@@ -2521,14 +2497,14 @@ function saveflatratermcapdtrules($date_rwid, $arr_capacity_rules)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_roomcapacity_dates_rules WHERE 
-                    spo_flatrates_roomcapacity_dates_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $date_rwid));
+                    spo_flatrates_roomcapacity_dates_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $date_rwid));
 
 
         return "OK";
@@ -2537,8 +2513,7 @@ function saveflatratermcapdtrules($date_rwid, $arr_capacity_rules)
     }
 }
 
-function saveflatratermcapdtruleages($rule_rwid, $arr_rule_capacity)
-{
+function saveflatratermcapdtruleages($rule_rwid, $arr_rule_capacity) {
     try {
 
         global $con;
@@ -2603,14 +2578,14 @@ function saveflatratermcapdtruleages($rule_rwid, $arr_rule_capacity)
 
         //clean ups
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_roomcapacity_dates_rules_ages WHERE 
-                    spo_flatrates_roomcapacity_dates_rules_fk=:id 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $rule_rwid));
+                    spo_flatrates_roomcapacity_dates_rules_fk=:id ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $rule_rwid));
 
         return "OK";
     } catch (Exception $ex) {
@@ -2618,10 +2593,9 @@ function saveflatratermcapdtruleages($rule_rwid, $arr_rule_capacity)
     }
 }
 
-function saveflatratetaxcommi($taxcomm)
-{
+function saveflatratetaxcommi($taxcomm) {
     try {
- 
+
         //process the buying settings
         $outcome = saveFlatRateTaxCommiBuySellValues($taxcomm["buying_settings"], "BUYING");
         if ($outcome != "OK") {
@@ -2723,14 +2697,16 @@ function saveFlatRateTaxCommiBuySellValues($arr_settings, $buying_selling) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_flatrate_taxcomm 
+
+        $sql = "DELETE FROM tblspecial_offer_flatrate_taxcomm 
                     WHERE spo_fk=:id 
-                    AND buying_selling=:buying_selling
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $id, ":buying_selling" => $buying_selling));
+                    AND buying_selling=:buying_selling";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $id, ":buying_selling" => $buying_selling));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -2790,15 +2766,15 @@ function saveFlatRateTaxCommiValues($setting_rwid, $arr_values) {
 
 
         //clean up
-        
+
         $sql = "DELETE FROM tblspecial_offer_flatrate_taxcomm_values WHERE 
                     special_offer_taxcomm_fk=:id ";
-        
+
         $deleteids = implode(",", $arr_needed_ids);
         if ($deleteids != "") {
-            $sql .= " AND id NOT IN ($deleteids)";            
+            $sql .= " AND id NOT IN ($deleteids)";
         }
-        
+
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":id" => $setting_rwid));
 
@@ -2808,17 +2784,16 @@ function saveFlatRateTaxCommiValues($setting_rwid, $arr_values) {
     }
 }
 
-function saveflatratecurrencymapping($currencymap_grid)
-{
+function saveflatratecurrencymapping($currencymap_grid) {
     try {
-        
+
         global $con;
         global $id;
 
         $arr_needed_ids = array();
-        
+
         for ($i = 0; $i < count($currencymap_grid); $i++) {
-            
+
             $rwid = $currencymap_grid[$i]["rwid"];
             $currency_id_buy = $currencymap_grid[$i]["cells"]["currency_buy"];
             $action = $currencymap_grid[$i]["cells"]["action"];
@@ -2864,25 +2839,24 @@ function saveflatratecurrencymapping($currencymap_grid)
                 spo_fk=:id AND id NOT IN ($ids_to_delete)";
             $stmt = $con->prepare($sql);
             $stmt->execute(array(":id" => $id));
-        }      
-        
+        }
+
         return "OK";
     } catch (Exception $ex) {
         return "SAVE FLAT RATE: CURRENCY MAPPING: " . $ex->getMessage();
     }
 }
 
-function saveflatratecurrencyexgrates($exchrates_grid)
-{
+function saveflatratecurrencyexgrates($exchrates_grid) {
     try {
-        
+
         global $con;
         global $id;
 
         $arr_needed_ids = array();
-        
+
         for ($i = 0; $i < count($exchrates_grid); $i++) {
-            
+
             $rates_id = $exchrates_grid[$i]["rwid"];
             $rates_exchange_rate = $exchrates_grid[$i]["cells"]["rates_exchange_rate"];
             $rates_action = $exchrates_grid[$i]["cells"]["action"];
@@ -2940,44 +2914,42 @@ function saveflatratecurrencyexgrates($exchrates_grid)
                 spo_fk=:id AND id NOT IN ($ids_to_delete)";
             $stmt = $con->prepare($sql);
             $stmt->execute(array(":id" => $id));
-        }      
-        
+        }
+
         return "OK";
     } catch (Exception $ex) {
         return "SAVE FLAT RATE: EXCHANGE RATES: " . $ex->getMessage();
     }
 }
 
-
-function saveflatratecurrencydetails($currency_details)
-{
+function saveflatratecurrencydetails($currency_details) {
     try {
-        
+
         $mycostprice_currencyfk = $currency_details["mycostprice_currencyfk"];
         $selected_currency_buy_ids = $currency_details["selected_currency_buy_ids"];
         $selected_currency_sell_ids = $currency_details["selected_currency_sell_ids"];
-    
-    
+
+
         global $con;
         global $id;
 
-        
+
         //check if exists
         $sql = " UPDATE tblspecial_offer SET " .
                 " flatrate_mycostprice_currencyfk=:costprice_currencyfk " .
                 " WHERE id=:id";
         $stmt = $con->prepare($sql);
-        $stmt->execute(array(":id" => $id,":costprice_currencyfk"=>$mycostprice_currencyfk));
-            
-            
-       
+        $stmt->execute(array(":id" => $id, ":costprice_currencyfk" => $mycostprice_currencyfk));
+
+
+
         //====================================================================
         //CURRENCIES BUY
         $outcome = saveflatratecurrenciesbuysell("BUY", $selected_currency_buy_ids);
         if ($outcome != "OK") {
             throw new Exception($outcome);
         }
-    
+
         //====================================================================
         //CURRENCIES SELL
         $outcome = saveflatratecurrenciesbuysell("SELL", $selected_currency_sell_ids);
@@ -2991,7 +2963,6 @@ function saveflatratecurrencydetails($currency_details)
         return "SAVE FLAT RATE: CURRENCY DETAILS: " . $ex->getMessage();
     }
 }
-
 
 function saveflatratecurrenciesbuysell($bs, $currencyids) {
     try {
@@ -3038,8 +3009,7 @@ function saveflatratecurrenciesbuysell($bs, $currencyids) {
     }
 }
 
-function saveflatratecancellation($cancellation_grid)
-{
+function saveflatratecancellation($cancellation_grid) {
     try {
 
         global $con;
@@ -3047,29 +3017,29 @@ function saveflatratecancellation($cancellation_grid)
 
         $arr_needed_ids = array();
         $suppid = "";
-        
+
         for ($i = 0; $i < count($cancellation_grid); $i++) {
-            
+
             $cancellation_type = $cancellation_grid[$i]["cells"]["cancellation_type"];
             $charge_basis = $cancellation_grid[$i]["cells"]["charge_basis"];
             $charge_value = $cancellation_grid[$i]["cells"]["charge_value"];
-            $days_before_arrival_from = utils_stringBlank($cancellation_grid[$i]["cells"]["days_before_arrival_from"],null);
-            $days_before_arrival_to = utils_stringBlank($cancellation_grid[$i]["cells"]["days_before_arrival_to"],null);
-            $date_before_arrival_from = utils_stringBlank($cancellation_grid[$i]["cells"]["date_before_arrival_from"],null);
-            $date_before_arrival_to = utils_stringBlank($cancellation_grid[$i]["cells"]["date_before_arrival_to"],null);
+            $days_before_arrival_from = utils_stringBlank($cancellation_grid[$i]["cells"]["days_before_arrival_from"], null);
+            $days_before_arrival_to = utils_stringBlank($cancellation_grid[$i]["cells"]["days_before_arrival_to"], null);
+            $date_before_arrival_from = utils_stringBlank($cancellation_grid[$i]["cells"]["date_before_arrival_from"], null);
+            $date_before_arrival_to = utils_stringBlank($cancellation_grid[$i]["cells"]["date_before_arrival_to"], null);
             $rooms_ids = $cancellation_grid[$i]["cells"]["rooms_ids"];
             $dateperiods = $cancellation_grid[$i]["cells"]["dateperiods"];
-            
-            
+
+
             if (!is_null($date_before_arrival_from)) {
-                $date_before_arrival_from = date("Y-m-d", strtotime(str_replace("/","-",$date_before_arrival_from)));
+                $date_before_arrival_from = date("Y-m-d", strtotime(str_replace("/", "-", $date_before_arrival_from)));
             }
             if (!is_null($date_before_arrival_to)) {
-                $date_before_arrival_to = date("Y-m-d", strtotime(str_replace("/","-",$date_before_arrival_to)));
+                $date_before_arrival_to = date("Y-m-d", strtotime(str_replace("/", "-", $date_before_arrival_to)));
             }
-                       
-            
-            
+
+
+
             //insert
             $sql = "INSERT INTO 
                     tblspecial_offer_flatrate_cancellation 
@@ -3082,49 +3052,47 @@ function saveflatratecancellation($cancellation_grid)
                     :dates_before_arrival_from,:dates_before_arrival_to)";
 
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id, 
-                                 ":cancellation_type" => $cancellation_type, 
-                                 ":charge_basis" => $charge_basis,
-                                 ":charge_value" => $charge_value, 
-                                 ":days_before_arrival_from"=>$days_before_arrival_from,
-                                 ":days_before_arrival_to"=>$days_before_arrival_to,
-                                 ":dates_before_arrival_from"=>$date_before_arrival_from,
-                                 ":dates_before_arrival_to"=>$date_before_arrival_to));
+            $stmt->execute(array(":spo_fk" => $id,
+                ":cancellation_type" => $cancellation_type,
+                ":charge_basis" => $charge_basis,
+                ":charge_value" => $charge_value,
+                ":days_before_arrival_from" => $days_before_arrival_from,
+                ":days_before_arrival_to" => $days_before_arrival_to,
+                ":dates_before_arrival_from" => $date_before_arrival_from,
+                ":dates_before_arrival_to" => $date_before_arrival_to));
             $suppid = $con->lastInsertId();
             $arr_needed_ids[] = $suppid;
-            
-            
-            
-            //====================================================================
-            
-            //save checkinout date periods
-            $outcome = saveflatratecancellation_dateperiods($suppid,$dateperiods);
-            if ($outcome != "OK") {
-                throw new Exception($outcome);
-            }
-            
-            //save checinout rooms
-            $outcome = saveflatratecancellation_rooms($suppid,$rooms_ids);
-            if ($outcome != "OK") {
-                throw new Exception($outcome);
-            }
-          
-            //====================================================================
 
+
+
+            //====================================================================
+            //save checkinout date periods
+            $outcome = saveflatratecancellation_dateperiods($suppid, $dateperiods);
+            if ($outcome != "OK") {
+                throw new Exception($outcome);
+            }
+
+            //save checinout rooms
+            $outcome = saveflatratecancellation_rooms($suppid, $rooms_ids);
+            if ($outcome != "OK") {
+                throw new Exception($outcome);
+            }
+
+            //====================================================================
         }
-                
+
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM 
+        $sql = "DELETE FROM 
                     tblspecial_offer_flatrate_cancellation
                     WHERE 
-                    spofk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+                    spofk=:spo_fk ";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
 
         return "OK";
     } catch (Exception $ex) {
@@ -3132,8 +3100,7 @@ function saveflatratecancellation($cancellation_grid)
     }
 }
 
-function saveflatratecheckinout($checkinout_grid)
-{
+function saveflatratecheckinout($checkinout_grid) {
     try {
 
         global $con;
@@ -3141,7 +3108,7 @@ function saveflatratecheckinout($checkinout_grid)
 
         $arr_needed_ids = array();
         $suppid = "";
-        
+
         for ($i = 0; $i < count($checkinout_grid); $i++) {
 
             $checkinout_type = $checkinout_grid[$i]["cells"]["checkinout_type"];
@@ -3152,7 +3119,7 @@ function saveflatratecheckinout($checkinout_grid)
             $rooms_ids = $checkinout_grid[$i]["cells"]["rooms_ids"];
             $dateperiods = $checkinout_grid[$i]["cells"]["dateperiods"];
 
-            
+
             //insert
             $sql = "INSERT INTO 
                     tblspecial_offer_flatrate_checkinout 
@@ -3163,47 +3130,49 @@ function saveflatratecheckinout($checkinout_grid)
                     :charge_basis,:charge_value)";
 
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id, 
-                                 ":checkinout_type" => $checkinout_type, 
-                                 ":time_before_after" => $time_before_after,
-                                 ":time_checkinout" => $time_checkinout, 
-                                 ":charge_basis"=>$charge_basis,
-                                 ":charge_value"=>$charge_value));
+            $stmt->execute(array(":spo_fk" => $id,
+                ":checkinout_type" => $checkinout_type,
+                ":time_before_after" => $time_before_after,
+                ":time_checkinout" => $time_checkinout,
+                ":charge_basis" => $charge_basis,
+                ":charge_value" => $charge_value));
             $suppid = $con->lastInsertId();
             $arr_needed_ids[] = $suppid;
-            
-            
-            
-            //====================================================================
-            
-            //save checkinout date periods
-            $outcome = saveflatratecheckinout_dateperiods($suppid,$dateperiods);
-            if ($outcome != "OK") {
-                throw new Exception($outcome);
-            }
-            
-            //save checinout rooms
-            $outcome = saveflatratecheckinout_rooms($suppid,$rooms_ids);
-            if ($outcome != "OK") {
-                throw new Exception($outcome);
-            }
-          
-            //====================================================================
 
+
+
+            //====================================================================
+            //save checkinout date periods
+            $outcome = saveflatratecheckinout_dateperiods($suppid, $dateperiods);
+            if ($outcome != "OK") {
+                throw new Exception($outcome);
+            }
+
+            //save checinout rooms
+            $outcome = saveflatratecheckinout_rooms($suppid, $rooms_ids);
+            if ($outcome != "OK") {
+                throw new Exception($outcome);
+            }
+
+            //====================================================================
         }
-                
+
 
         //clean up
+        $sql = "DELETE FROM 
+                tblspecial_offer_flatrate_checkinout
+                WHERE 
+                spofk=:spo_fk";
+
         $deleteids = implode(",", $arr_needed_ids);
         if ($deleteids != "") {
-            $sql = "DELETE FROM 
-                    tblspecial_offer_flatrate_checkinout
-                    WHERE 
-                    spofk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -3211,25 +3180,24 @@ function saveflatratecheckinout($checkinout_grid)
     }
 }
 
-function saveflatratesupp($supp_grid)
-{
-    
-try {
+function saveflatratesupp($supp_grid) {
+
+    try {
 
         global $con;
         global $id;
 
         $arr_needed_ids = array();
         $suppid = "";
-        
+
         for ($i = 0; $i < count($supp_grid); $i++) {
 
             $mealplanfk = $supp_grid[$i]["cells"]["mealplanfk"];
             $ismain = $supp_grid[$i]["cells"]["ismain"];
             $dateperiods = $supp_grid[$i]["cells"]["dateperiods"];
-            $adult = utils_stringBlank($supp_grid[$i]["cells"]["adult"],null);
-            
-            
+            $adult = utils_stringBlank($supp_grid[$i]["cells"]["adult"], null);
+
+
             //insert
             $sql = "INSERT INTO 
                     tblspecial_offer_flatrate_mealsupp 
@@ -3238,57 +3206,54 @@ try {
                     (:spo_fk, :mealplanfk, :adult, :ismain)";
 
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id, 
-                                 ":mealplanfk" => $mealplanfk,
-                                 ":adult" => $adult, ":ismain"=>$ismain));
+            $stmt->execute(array(":spo_fk" => $id,
+                ":mealplanfk" => $mealplanfk,
+                ":adult" => $adult, ":ismain" => $ismain));
             $suppid = $con->lastInsertId();
             $arr_needed_ids[] = $suppid;
-            
-            
-            
+
+
+
             //====================================================================
-            
             //save group date periods
-            $outcome = saveflatratesupp_dateperiods($suppid,$dateperiods);
+            $outcome = saveflatratesupp_dateperiods($suppid, $dateperiods);
             if ($outcome != "OK") {
                 throw new Exception($outcome);
             }
-            
+
             //save children ages
-            $outcome = saveflatratesupp_childrenages($suppid,$supp_grid[$i]["cells"]);
+            $outcome = saveflatratesupp_childrenages($suppid, $supp_grid[$i]["cells"]);
             if ($outcome != "OK") {
                 throw new Exception($outcome);
             }
 
             //====================================================================
-
         }
-        
-        
+
+
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+
+        $sql = "DELETE FROM 
+                tblspecial_offer_flatrate_mealsupp
+                WHERE 
+                spofk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM 
-                    tblspecial_offer_flatrate_mealsupp
-                    WHERE 
-                    spofk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
         return "SAVE FLAT RATE: MEAL SUPP: " . $ex->getMessage();
     }
-    
 }
 
-
-
-function saveflatratevaliditygroup($group_grid)
-{
+function saveflatratevaliditygroup($group_grid) {
     try {
 
         global $con;
@@ -3296,7 +3261,7 @@ function saveflatratevaliditygroup($group_grid)
 
         $arr_needed_ids = array();
         $grpid = "";
-        
+
         for ($i = 0; $i < count($group_grid); $i++) {
 
             $X = $group_grid[$i]["cells"]["X"];
@@ -3304,20 +3269,20 @@ function saveflatratevaliditygroup($group_grid)
             $dt_to = utils_DMY_YMD($group_grid[$i]["cells"]["dt_to"]);
             $group_no = $group_grid[$i]["cells"]["group_no"];
             $children_ages_ids = $group_grid[$i]["cells"]["children_ages_ids"];
-            
+
 
             //check if exists
             $sql = "SELECT * FROM tblspecial_offer_flatrate_group_validity_period
                     WHERE spo_fk=:spo_fk AND 
                     dt_from=:dt_from AND dt_to=:dt_to AND groupno=:groupno";
-            
+
             $stmt = $con->prepare($sql);
             $stmt->execute(array(":spo_fk" => $id, ":dt_from" => $dt_from,
-                ":dt_to" => $dt_to, ":groupno"=>$group_no));
+                ":dt_to" => $dt_to, ":groupno" => $group_no));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $arr_needed_ids[] = $rw["id"];
-                $grpid =  $rw["id"];
+                $grpid = $rw["id"];
             } else {
                 //insert
                 $sql = "INSERT INTO tblspecial_offer_flatrate_group_validity_period 
@@ -3326,34 +3291,34 @@ function saveflatratevaliditygroup($group_grid)
                             (:spo_fk, :dt_from, :dt_to, :groupno)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":spo_fk" => $id, ":dt_from" => $dt_from,
-                                     ":dt_to" => $dt_to, ":groupno"=>$group_no));
+                    ":dt_to" => $dt_to, ":groupno" => $group_no));
                 $grpid = $con->lastInsertId();
                 $arr_needed_ids[] = $grpid;
             }
-            
+
             //====================================================================
-        
-            $outcome = saveflatratevaliditygroup_childrenages($grpid,$children_ages_ids);
+
+            $outcome = saveflatratevaliditygroup_childrenages($grpid, $children_ages_ids);
             if ($outcome != "OK") {
                 throw new Exception($outcome);
             }
 
             //====================================================================
-
         }
-        
-        
+
+
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
-        if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_flatrate_group_validity_period
+        $sql = "DELETE FROM tblspecial_offer_flatrate_group_validity_period
                     WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+                    spo_fk=:spo_fk";
+        if ($deleteids != "") {
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -3401,13 +3366,14 @@ function saveroomupgrade($roomgrid) {
 
         //clean up
         $deleteids = implode(",", $arr_needed_ids);
+        $sql = "DELETE FROM tblspecial_offer_upgrade_rooms WHERE 
+                    spo_fk=:spo_fk ";
         if ($deleteids != "") {
-            $sql = "DELETE FROM tblspecial_offer_upgrade_rooms WHERE 
-                    spo_fk=:spo_fk 
-                    AND id NOT IN ($deleteids)";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":spo_fk" => $id));
+            $sql .= " AND id NOT IN ($deleteids)";
         }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":spo_fk" => $id));
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -3415,8 +3381,7 @@ function saveroomupgrade($roomgrid) {
     }
 }
 
-function savetouroperators($toids)
-{
+function savetouroperators($toids) {
     try {
 
         global $con;
