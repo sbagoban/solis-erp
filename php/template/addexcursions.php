@@ -311,26 +311,10 @@
                                                         <div class="col-md-4">
                                                             <h5>Min Adults</h5>
                                                             <input type="number" min='1' max='100' class="form-control" id="minAdults">
-                                                            <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                        <option selected disabled hidden>Minimum Persons</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                    </select>   -->
                                                         </div>
                                                         <div class="col-md-4">
                                                             <h5>Max Adults</h5>
                                                             <input type="number" min='1' max='9999' class="form-control" id="maxAdults">
-                                                            <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                        <option selected disabled hidden>Maximum Persons</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                    </select>                                                                                                -->
                                                         </div>
                                                     </div>
 
@@ -373,7 +357,6 @@
                                                     </select>                                                                                                -->
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <div class="col-md-6 has-success">
                                                     <h5>Comments</h5>
@@ -458,7 +441,7 @@
 
                                 <!-- Start Second Tab -->
                                 <div class="tab-pane fade" id="quoteDetails">
-                                    <form>
+                                    <form action="#" id="addDetails" onsubmit="return false">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="col-md-12">
@@ -468,31 +451,31 @@
                                             <div class="col-md-12">
                                                 <table class="table">
                                                     <thead>
-                                                        <tr>
+                                                        <!-- <tr>
                                                             <th>Extra Name</th>
                                                             <th>Extra Description</th>
                                                             <th>Charge Per</th>
                                                             <th></th>
-                                                        </tr>
+                                                        </tr> -->
                                                     </thead>
                                                     <tbody>
                                                         <tr id="addRow">
                                                             <td class="col-xs-3">
-                                                                <input class="form-control addMain" type="text" placeholder="Enter Name" />
+                                                                <input class="form-control addMain" id="addName" type="text" name="addName" placeholder="Enter Name" />
                                                             </td>
 
                                                             <td class="col-xs-3">
-                                                                <input class="form-control addPrefer" type="text" placeholder="Enter Descrition" />
+                                                                <input class="form-control addPrefer" id="addDesc" type="text" name="addDesc" placeholder="Enter Descrition" />
                                                             </td>
                                                             <td class="col-xs-5">
                                                                 <div class="resize4 form-control">
                                                                     <div class="policiesGroup">
                                                                         <p>
-                                                                            <input type="radio" id="chargePerPerson" name="radioChargePer" checked>
+                                                                            <input type="radio" id="chargePerPerson" name="radioChargePer" checked value="person">
                                                                             <label for="chargePerPerson">Person</label>
                                                                         </p>
                                                                         <p>
-                                                                            <input type="radio" id="chargePerUnit" name="radioChargePer">
+                                                                            <input type="radio" id="chargePerUnit" name="radioChargePer" value="unit">
                                                                             <label for="chargePerUnit">Unit</label>
                                                                         </p>
                                                                     </div>
@@ -500,81 +483,83 @@
                                                             </td>
                                                             <td class="col-xs-1 text-center">
                                                                 <span class="addBtn" id="btnCounter">
-                                                    <i class="fa fa-plus fa-lg" data-toggle="tooltip" title="Add Extra Field"></i>
-                                                </span>
+                                                                    <i class="fa fa-plus fa-lg" data-toggle="tooltip" title="Add Extra Field"></i>
+                                                                </span>
                                                             </td>
                                                         </tr>
-                                                        <tr>
-                                                            <td class="col-xs-3">
-                                                                <input type="text" value="Enter Name" class="form-control editable" />
-                                                            </td>
 
-                                                            <td class="col-xs-3">
-                                                                <input type="text" value="Enter Descrition" class="form-control editable" />
-                                                            </td>
-                                                            <td class="col-xs-5">
-                                                                <div class="resize4 form-control">
-                                                                    <div class="policiesGroup">
-                                                                        <p>
-                                                                            <input type="radio" id="chargePerPerson0" name="radioChargePer0" checked>
-                                                                            <label for="chargePerPerson0">Person</label>
-                                                                        </p>
-                                                                        <p>
-                                                                            <input type="radio" id="chargePerUnit0" name="radioChargePer0">
-                                                                            <label for="chargePerUnit0">Unit</label>
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td class="col-xs-1 text-center"><a class="deleteBtn" data-toggle="tooltip" title="Delete Row"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></a></td>
-                                                        </tr>
+                                                        
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-                                        <hr>
+                                    </form>
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <div class="row" id="searchQuoteDetails">
+                                                <div class="col=md-12">
+                                                    <div class="col=md-12">
+                                                        <table class="table responsive" id="quoteDetailsSort">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Extra Name</th>
+                                                                    <th scope="col">Extra Description</th>
+                                                                    <th scope="col">Charge Per Unit/Person</th>
+                                                                    <th scope="col">Edit</th>
+                                                                    <th scope="col">Delete</th>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                        <!-- Alert Modal when Flag -->
+                                        <div class="modal fade" id="editModal" role="dialog">
+                                            <div class="modal-dialog">
+                                                <!-- Modal content-->
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">
+                                                <i class="fa fa-info" style="color: #337ab7;"></i> 
+                                                Edit Selected Extra Service</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <label>Name</label><input class="form-control addMain" id="addNameEdit" type="text" placeholder="Enter Name" />
+                                                        <label>Description</label><input class="form-control addMain" id="addDescEdit" type="text" placeholder="Enter Name" />
+                                                        <div class="resize4 form-control">
+                                                            <div class="policiesGroup">
+                                                                <p>
+                                                                    <input type="radio" id="chargePerPersonEdit" name="radioChargePerEdit" checked value="person">
+                                                                    <label for="chargePerPersonEdit">Person</label>
+                                                                </p>
+                                                                <p>
+                                                                    <input type="radio" id="chargePerUnitEdit" name="radioChargePerEdit" value="unit">
+                                                                    <label for="chargePerUnitEdit">Unit</label>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" id="btnSaveEditQuoteDetails" class="btn btn-success" data-dismiss="modal">Save</button>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <!-- End Alert Modal when Flag -->
+
+                                    <form action="#" onsubmit="return false">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="col-md-12">
                                                     <h5>Pay Breaks</h5>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        &nbsp;
-                                        <!-- Copy Paste -->
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        &nbsp;
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <input type="number" max="9999" min="1" class="form-control">
+                                                <div id="paybreaksPopulate">
                                                 </div>
                                             </div>
                                         </div>
@@ -600,6 +585,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        &nbsp;
                                     </form>
                                 </div>
                                 <!-- End Second Tab -->

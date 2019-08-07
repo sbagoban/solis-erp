@@ -441,11 +441,6 @@ span.ui-slider-handle.ui-state-default.ui-corner-all {
   height: auto;
 }
 
-.fa.fa-trash-o {
-  color: red;
-  padding-top: 15px;
-}
-
 a i.fa.fa-plus.fa-lg {
   padding-top: 14px;
   cursor: pointer;

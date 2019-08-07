@@ -1,6 +1,6 @@
 
     function editRowService(data) {
-        
+        console.log(data);
         // Set Value - From Selected Line
         document.getElementById("OptionCodeDisplay").innerHTML = data.optioncode;
         document.getElementById("descriptionDisplay").innerHTML = data.descriptionservice;
@@ -23,6 +23,10 @@
 
         // Set Value to voucher details -
         policiesDetailsEditRows(data);
+        // Quote Details
+        
+        var idQuoteDetails = document.getElementById('idBlock').innerHTML;
+        quoteDetailsEditRows(data, idQuoteDetails);
 
         $('html, body').animate({
             scrollTop: $("#OptionCodeDisplay").offset().top
@@ -367,7 +371,6 @@
             method: "POST",
             data: objUpdateService,
             success: function (data) {
-                console.log('value', data);
                 //resetFormUpdatedService();
                 callDataNewServiceGrid();
                 $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
@@ -375,9 +378,17 @@
             error: function (error) {
                 console.log('Error ${error}');
             }
-        });    
+        });   
+        var calcNumberOfPersons = +maxAdults + +minAdults;
+        getUnitsPopulate(calcNumberOfPersons);
     });
     // End click
+
+    function getUnitsPopulate(data) {
+        for (var count = 0; count < data; count++) {
+            $("<div class='col-md-4'><input type='number' max='9999' min='1' class='form-control'></div>").appendTo("#paybreaksPopulate");
+        }
+    }
 
     /////////////////////////////////////////
     // model --> Update Notes to dB /////////
@@ -654,4 +665,45 @@
             }
         });    
     });
-    // End click
+    // End click  
+
+function displayChargePerAdult() {
+    var ele = document.getElementsByName('radioChargePer');
+    for (i = 0; i < ele.length; i++) {
+        if (ele[i].checked)
+            var check = ele[i].value;
+    }
+    return check;
+}
+
+$('#btnCounter').click(function (event) {    
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
+    var chargePer = displayChargePerAdult();
+    var extraNameQuoteDetails = document.getElementById('addName').value;        
+    var extraDecriptionQuoteDetails = document.getElementById('addDesc').value; 
+    console.log(chargePer, extraNameQuoteDetails, extraDecriptionQuoteDetails);
+    
+    var objUpdateQuoteDetails = {
+        id: -1,
+        idservicesfk: idCostDetails,        
+        extraname: extraNameQuoteDetails,        
+        extradescription: extraDecriptionQuoteDetails,        
+        chargeper: chargePer
+    };
+console.table(objUpdateQuoteDetails);
+    const url_update_quoteDetails = "php/api/bckoffservices/savequotedetails.php?t=" + encodeURIComponent(global_token);
+    $.ajax({
+        url: url_update_quoteDetails,
+        method: "POST",
+        data: objUpdateQuoteDetails,
+        success: function (data) {
+            console.log('sdfs', data);
+            quoteDetailsEditRows();
+            $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
+        },
+        error: function (error) {
+            console.log('Error ${error}');
+        }
+    });
+
+});

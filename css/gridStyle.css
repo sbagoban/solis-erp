@@ -83,3 +83,38 @@ tr td {
 div#OptionCodeDisplay {
   display: inline-block;
 }
+
+i#editBtn{
+  color: #337ab7;
+  background: #ecf0f5;
+  padding: 10px;
+  border-radius: 20px;  
+  margin: 0 0px 0 13px;
+  transition: all .5s ease-in-out;
+}
+i#editBtn:hover {
+  color: white;
+  background-color: #337ab7;
+}
+
+/* GRID QUOTE DETAILS */
+td.editBtnCol {
+  width: 4%;
+}
+
+td.deleteBtnCol {
+  width: 4%;
+  text-align: center;
+}
+
+.fa.fa-trash-o {
+  color: red;
+  padding-top: 15px;
+  transition: all .5s ease-in-out;
+}
+
+.fa.fa-trash-o:hover {
+  transform: scale(1.1);
+}
+
+/* GRID QUOTE DETAILS */
