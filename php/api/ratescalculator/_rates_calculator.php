@@ -24,7 +24,8 @@ function _rates_calculator($con, $arr_params) {
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "%ALL", "VALUE" => $discount_percnt_all,
             "APPLY_TO_DATES" => array("ALL"),
-            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
@@ -33,7 +34,8 @@ function _rates_calculator($con, $arr_params) {
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => $discount_percnt_room,
             "APPLY_TO_DATES" => array("ALL"),
-            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
@@ -42,7 +44,8 @@ function _rates_calculator($con, $arr_params) {
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "FLAT_PPPN", "VALUE" => $discount_flat_pppn,
             "APPLY_TO_DATES" => array("ALL"),
-            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
         $arr_spo_discounts[] = $arr_item;
 
         $arr_item = array(
@@ -51,7 +54,8 @@ function _rates_calculator($con, $arr_params) {
             "AGE_FROM" => -1, "AGE_TO" => -1,
             "ROOM_ALL_FLAT" => "FLAT_PNI", "VALUE" => $discount_flat_pni,
             "APPLY_TO_DATES" => array("ALL"),
-            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "");
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
 
         $arr_spo_discounts[] = $arr_item;
 
@@ -62,12 +66,33 @@ function _rates_calculator($con, $arr_params) {
                 "AGE_FROM" => -1, "AGE_TO" => -1,
                 "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => 100,
                 "APPLY_TO_DATES" => array(), //to be changed later on for filters
-                "FREE_NIGHTS" => $free_nights_num_nights, "FREE_NIGHTS_START_END" => $spo_free_nights_start_end);
+                "FREE_NIGHTS" => $free_nights_num_nights, "FREE_NIGHTS_START_END" => $spo_free_nights_start_end,
+                "FLAT_RATE_CAPACITY_ARRAY" => array());
 
             $arr_spo_discounts[] = $arr_item;
         }
 
-        
+
+        /*
+        $arr_fr = _spo_loadspo($con, 58, $arr_params["hotel"]);
+        $arr_item = array(
+            "SPO_ID" => 58, "SPO_NAME" => "TESTING 6", "SPO_TYPE" => "FLAT_RATES",
+            "AD_CH" => "", "BRIDE_GROOM" => "",
+            "AGE_FROM" => "", "AGE_TO" => "",
+            "ROOM_ALL_FLAT" => "", "VALUE" => "0",
+            //these dates are chosen after passing following tests:
+            //1. dates match FR criteria
+            //2. there are adults/children rates for these dates                
+            "APPLY_TO_DATES" => array(
+                array("DATE" => "2019-04-03", "IDX" => 0),
+                array("DATE" => "2019-04-04", "IDX" => 1),
+                array("DATE" => "2019-04-05", "IDX" => 2)),
+            "FREE_NIGHTS" => "", "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => $arr_fr["FLAT_RATES_CAPACITY"]);
+
+        $arr_spo_discounts[] = $arr_item;
+
+        */
 
         ////TEMP END ======================================================
         //=================================================================        
@@ -188,7 +213,7 @@ function _rates_calculator($con, $arr_params) {
         $arr_capacity = _contract_capacityarr($con, $arr_params["current_contract_id"]); //TODO: CHANGE IN FLAT RATES SPO
         $arr_taxcomm = _contract_taxcommi($con, $arr_params["current_contract_id"]);
 
-        $arr_params["arr_capacity"] = $arr_capacity; 
+        $arr_params["arr_capacity"] = $arr_capacity;
         $arr_params["arr_taxcomm"] = $arr_taxcomm;
         //========================================================================
         //determine the markup basis: is it PPPN or PNI
@@ -203,7 +228,7 @@ function _rates_calculator($con, $arr_params) {
         //=========================================================================
         //CHECK IF THERE ARE FREE NIGHTS AND THEN SEARCH FOR NIGHTS THAT WILL BE FREE
         $arr_params["spo_discounts_array"] = $arr_spo_discounts;
-        _rates_calculator_process_SPO_free_nights($arr_spo_discounts, $arr_days, $arr_params, $con);
+        _rates_calculator_process_SPO_free_nights($arr_spo_discounts, $arr_days, $arr_params, $con, $arr_capacity);
         $arr_params["spo_discounts_array"] = $arr_spo_discounts;
         //=========================================================================
 
@@ -212,7 +237,11 @@ function _rates_calculator($con, $arr_params) {
         for ($idx = 0; $idx < count($arr_days["DAILY"]); $idx++) {
             $this_date = $arr_days["DAILY"][$idx]["DATE"];
             $arr_contract_ids = $arr_days["DAILY"][$idx]["CONTRACT_ID"];
-            $arr_lookup_mode = array("TOTAL" => true, "ROOM_ONLY" => false, "LCO" => true, "DISCOUNTS"=>true);
+            $arr_lookup_mode = array("TOTAL" => true, "ROOM_ONLY" => false, "LCO" => true, "DISCOUNTS" => true);
+
+
+            $arr_normal_or_flatrates = _rates_calculator_decide_contract_or_spo_flatrate($arr_params, $this_date);
+            $arr_params["flat_rate_spo_apply"] = $arr_normal_or_flatrates;
 
             rates_calculator_CORE_lookup($arr_daily, $idx, $this_date, $arr_contract_ids, $arr_params, $con, $arr_lookup_mode);
         }
@@ -234,7 +263,6 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
         $arr_params, $con, $arr_lookup_mode) {
 
 
-
     //this is the core daily lookups for the contract
     //all changes are done to $arr_daily
     //
@@ -242,6 +270,7 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
     //$arr_lookup_mode[ROOM_ONLY] = true/false => lookup room only or not
     //$arr_lookup_mode[LCO] = true/false => calculate LCO or not
     //$arr_lookup_mode[DISCOUNTS] = true/false => apply discounts or not
+
     $arr_params["lookupmode"] = $arr_lookup_mode;
     //======================================================================
     //======================================================================
@@ -262,7 +291,6 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
     $arr_daily[$idx]["COSTINGS_WORKINGS"] = array();
     $arr_daily[$idx]["STATUS"] = "OK"; //to be used for further checks below
 
-    $arr_capacity = $arr_params["arr_capacity"];
     $arr_taxcomm = $arr_params["arr_taxcomm"];
     $arr_columns = $arr_params["arr_columns"];
 
@@ -283,7 +311,7 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
         "COSTINGS" => array());
 
     //perform validations now
-    _rates_calculator_validate_reservation($arr_capacity, $arr_params, $this_date, $con, $arr_daily[$idx]);
+    _rates_calculator_validate_reservation($arr_params, $this_date, $con, $arr_daily[$idx]);
 
     if ($arr_daily[$idx]["STATUS"] == "OK") { //all ok after all validation checks
         //=====================================================================
@@ -296,7 +324,7 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
         $arr_eci = array("CHARGE_TYPE" => "", "WORKINGS" => "", "CHARGE_VALUE" => "");
         if ($idx == 0) {
             //CHECK IF THERE IS EARLY CHECK IN ON FIRST NIGHT
-            $arr_eci = _rates_calculator_eci_lco("ECI", $arr_capacity, $arr_params, $this_date);
+            $arr_eci = _rates_calculator_eci_lco("ECI", $arr_params, $this_date);
         }
         //=====================================================================
         //
@@ -305,7 +333,7 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
         //=====================================================================
         //=============  GET DAILY ROOM RATES =================================
 
-        $arr = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
+        $arr = _rates_calculator_lookup_rates($arr_params, $this_date, $con, $arr_eci);
         $arr = _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params, $this_date);
 
         $arr = _rates_calculator_calc_rollover_percentage($arr_params, $arr);
@@ -334,10 +362,10 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
                 $checkout_date = $checkout_date->modify('+1 day');
                 $checkout_date = $checkout_date->format("Y-m-d");
 
-                $arr_lco = _rates_calculator_eci_lco("LCO", $arr_capacity, $arr_params, $checkout_date);
+                $arr_lco = _rates_calculator_eci_lco("LCO", $arr_params, $checkout_date);
 
                 //get the rates for the date of checkout
-                $arr_rates = _rates_calculator_lookup_rates($arr_capacity, $arr_params, $checkout_date, $con, $arr_eci);
+                $arr_rates = _rates_calculator_lookup_rates($arr_params, $checkout_date, $con, $arr_eci);
                 $arr_rates = _rates_calculator_apply_rates_lco_percentage($arr_rates, $arr_lco, $lco_applied, $arr_params["currency_buy_code"]);
                 $arr_rates = _rates_calculator_apply_rates_lco_flat_pni($arr_rates, $arr_lco, $arr_params, $lco_applied, $checkout_date);
                 $arr_rates = _rates_calculator_calc_rollover_percentage($arr_params, $arr_rates);
@@ -371,8 +399,7 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
         if (!$arr_lookup_mode["ROOM_ONLY"]) {
             if ($arr_params["supp_mealplan"] != "") {
                 //there is a meal supplement
-                $arr_meal_supp = _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $con);
-
+                $arr_meal_supp = _rates_calculator_meal_supp($arr_params, $this_date, $con);
                 $arr_meal_supp = _rates_calculator_calc_rollover_percentage($arr_params, $arr_meal_supp);
                 $arr_meal_supp = _rates_calculator_meal_supp_PPPN($arr_meal_supp, $arr_params, $arr_taxcomm, $con);
                 $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_meal_supp);
@@ -386,7 +413,7 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
         //EXTRA MEAL SUPPLEMENTS
         //CHECK FOR COMPULSORY MEALS
         if (!$arr_lookup_mode["ROOM_ONLY"]) {
-            $arr_extra_meal_supp = _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_date, $con);
+            $arr_extra_meal_supp = _rates_calculator_extra_meal_supp($arr_params, $this_date, $con);
             $arr_extra_meal_supp = _rates_calculator_calc_rollover_percentage($arr_params, $arr_extra_meal_supp);
             $arr_extra_meal_supp = _rates_calculator_extra_meal_supp_PPPN($arr_extra_meal_supp, $arr_params, $arr_taxcomm, $con);
             $arr_daily[$idx]["COSTINGS_WORKINGS"] = array_merge($arr_daily[$idx]["COSTINGS_WORKINGS"], $arr_extra_meal_supp);
@@ -463,12 +490,44 @@ function _rates_calculator_eci_lco_lookup_charge($checkinout_time_dt, $arr_polic
     return array("CHARGE_TYPE" => "", "LIMIT_TIME" => "", "CHARGE_VALUE" => "");
 }
 
-function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_date) {
+function _rates_calculator_eci_lco($eci_lco, $arr_params, $this_date) {
+
     $workings = "";
 
+
     $hotelroom = $arr_params["hotelroom"];
+    $arr_capacity = $arr_params["arr_capacity"];
+    $flg_found = false;
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        //so bypass contract ECI and LCO policies and apply SPO ECI and LCO policies
+        $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
+        $workings .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+
+        $arr_eci_lco_params = _rates_calculator_eci_lco_lookup_params($arr_params, $eci_lco, $arr_capacity, $workings, $hotelroom, $this_date, $flg_found);
+    }
+    //=============================================================================
+
+    if (!$flg_found) {
+        //fall back to contract level
+        $arr_capacity = $arr_params["arr_capacity"];
+        if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+            $workings .= "<font color='orange'><b>$eci_lco</b> POLICIES NOT DEFINED IN SPO.</font> REVERTING TO CONTRACT POLICIES...<br>";
+        }
+
+        $arr_eci_lco_params = _rates_calculator_eci_lco_lookup_params($arr_params, $eci_lco, $arr_capacity, $workings, $hotelroom, $this_date, $flg_found);
+    }
+
+    return $arr_eci_lco_params;
+}
+
+function _rates_calculator_eci_lco_lookup_params($arr_params, $eci_lco, $arr_capacity, $workings, $hotelroom, $this_date, &$flg_found) {
+    $flg_found = false;
 
     $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
+
     if (!is_null($rules)) {
 
         $arr_policies = $rules["date_policies_checkinout"];
@@ -489,7 +548,8 @@ function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_d
                 if ($charge_type != "") {
 
                     //there is an early check in here!
-                    $workings = "<b><font color='blue'>EARLY CHECK IN</font></b>: before $limit_time ";
+                    $flg_found = true;
+                    $workings .= "<b><font color='blue'>EARLY CHECK IN</font></b>: before $limit_time ";
                     return array("WORKINGS" => $workings, "CHARGE_TYPE" => $charge_type, "CHARGE_VALUE" => $charge_value);
                 }
             }
@@ -508,7 +568,8 @@ function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_d
                 if ($charge_type != "") {
 
                     //there is a late checkout here!
-                    $workings = "<b><font color='blue'>LATE CHECK OUT</font></b>: after $limit_time";
+                    $flg_found = true;
+                    $workings .= "<b><font color='blue'>LATE CHECK OUT</font></b>: after $limit_time";
                     return array("WORKINGS" => $workings, "CHARGE_TYPE" => $charge_type, "CHARGE_VALUE" => $charge_value);
                 }
             }
@@ -520,10 +581,10 @@ function _rates_calculator_eci_lco($eci_lco, $arr_capacity, $arr_params, $this_d
 
 function _rates_calculator_test_children_ages($arr_params, $con) {
     try {
-
-        $current_contract_id = $arr_params["current_contract_id"];
+        
         $children = $arr_params["children"];
-        $arr_age_groups = _rates_calculator_get_children_agegroups($current_contract_id, $con);
+        
+        $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, "CONTRACT");
 
 
         for ($a = 0; $a < count($arr_age_groups); $a++) {
@@ -540,7 +601,7 @@ function _rates_calculator_test_children_ages($arr_params, $con) {
         //now check if there are ages outside the contract definition
         for ($i = 0; $i < count($children); $i++) {
             if ($children[$i]["age"] != "OK") {
-                return $children[$i]["age"] . "YRS OUTSIDE CONTRACT ALLOWABLE AGE RANGES";
+                return $children[$i]["age"] . "YRS OUTSIDE $spo_contract ALLOWABLE AGE RANGES";
             }
         }
 
@@ -551,58 +612,56 @@ function _rates_calculator_test_children_ages($arr_params, $con) {
     }
 }
 
-function _rates_calculator_min_stay_nights($arr_capacity, $arr_params, $this_date,&$flg_min_test) {
+function _rates_calculator_min_stay_nights($arr_params, $this_date, &$flg_min_test) {
     //return OK if min stay is satisfied, minstay nights otherwise
 
     try {
+
+        $arr_capacity = $arr_params["arr_capacity"];
         $hotelroom = $arr_params["hotelroom"];
-        
+
         $checkin_date = new DateTime($arr_params["checkin_date"]); //yyyy-mm-dd
         $checkout_date = new DateTime($arr_params["checkout_date"]); //yyyy-mm-dd
-        
+
         $contract_active_from = $arr_params["contract_details"]["active_from"];
         $contract_active_to = $arr_params["contract_details"]["active_to"];
-                
-        
+
+
         $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
         if (!is_null($rules)) {
-            
+
             //========================================================
             $rules_date_from = $rules["date_dtfrom"];
             $rules_date_to = $rules["date_dtto"];
-            
-            if($rules_date_from == "")
-            {
+
+            if ($rules_date_from == "") {
                 $rules_date_from = $contract_active_from;
             }
-            if($rules_date_to == "")
-            {
+            if ($rules_date_to == "") {
                 $rules_date_to = $contract_active_to;
             }
-            
+
             $rules_date_from = new DateTime($rules_date_from);
             $rules_date_to = new DateTime($rules_date_to);
-            
+
             //========================================================
             //get the number of nights spent in the period $rules_date_from - $rules_date_to
             $overlapping_nights = 0;
             if ($rules_date_from < $checkout_date && $rules_date_to > $checkin_date) {
-                $overlapping_nights = min($rules_date_to,$checkout_date)->diff(max($checkin_date,$rules_date_from))->days+1;
+                $overlapping_nights = min($rules_date_to, $checkout_date)->diff(max($checkin_date, $rules_date_from))->days + 1;
             }
-            
+
             $arr_minstay_rules = $rules["date_minstay_rules"];
             for ($i = 0; $i < count($arr_minstay_rules); $i++) {
                 $minstay_duration = $arr_minstay_rules[$i]["minstay_duration"];
-                
+
                 //if ($num_nights < $minstay_duration) {
-                if($checkout_date <= $rules_date_to)
-                {
+                if ($checkout_date <= $rules_date_to) {
                     //this is the last period
                     $overlapping_nights--;
                 }
-                
-                if($overlapping_nights < $minstay_duration)
-                {
+
+                if ($overlapping_nights < $minstay_duration) {
                     $flg_min_test = false;
                     return "PERIOD <b>" . $rules_date_from->format("d M Y") . " - " . $rules_date_to->format("d M Y") . "</b> : STAYED <b>$overlapping_nights</b> NIGHTS &lt; <b>$minstay_duration</b> NIGHTS";
                 }
@@ -615,13 +674,22 @@ function _rates_calculator_min_stay_nights($arr_capacity, $arr_params, $this_dat
     }
 }
 
-function _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_date) {
+function _rates_calculator_ch_own_capacity($arr_params, $this_date) {
     //OWN ROOM  children
     //return OK if capacity is satisfied, error message otherwise
     try {
-        $hotelroom = $arr_params["hotelroom"];
 
-        $room_details = _rates_calculator_get_room_details($arr_capacity, $hotelroom);
+        if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+            //clearly SPO FLAT RATES will take over for this date
+            //so bypass the check
+            //because this check has already been done at another level before reaching here
+            return array("MSG" => "OK", "INDEX" => "<font color='#BB3C94'>SEE FLAT RATES SPO</font>");
+        }
+
+        $hotelroom = $arr_params["hotelroom"];
+        $arr_capacity = $arr_params["arr_capacity"];
+
+        $room_details = _rates_calculator_get_room_details($arr_params);
         $room_type = $room_details["room_variants"]; //"PERSONS", "UNITS"
 
         if ($room_type == "UNITS") {
@@ -669,15 +737,26 @@ function _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_dat
     }
 }
 
-function _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date) {
+function _rates_calculator_adch_capacity($arr_params, $this_date) {
 
     //test adult + SHARING children
     //return OK if capacity is satisfied, error message otherwise
     try {
 
+        if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+            //clearly SPO FLAT RATES will take over for this date
+            //so bypass the check
+            //because this check has already been done at another level before reaching here
+            return array("MSG" => "OK", "INDEX" => "<font color='#BB3C94'>SEE FLAT RATES SPO</font>");
+        }
+
+        //if we are here means that there are no SPO Flat Rates for this date
+        //apply check as per normal contract
+
+        $arr_capacity = $arr_params["arr_capacity"];
         $hotelroom = $arr_params["hotelroom"];
 
-        $room_details = _rates_calculator_get_room_details($arr_capacity, $hotelroom);
+        $room_details = _rates_calculator_get_room_details($arr_params);
 
         $children = array();
         for ($i = 0; $i < count($arr_params["children"]); $i++) {
@@ -686,6 +765,7 @@ function _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date)
                 $children[] = $arr_params["children"][$i];
             }
         }
+
         $adult = count($arr_params["adults"]);
 
         $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
@@ -844,7 +924,11 @@ function _rates_calculator_test_capacity_rule_units_extra_adult(&$std_max, &$adu
     return;
 }
 
-function _rates_calculator_get_room_details($arr_capacity, $roomid) {
+function _rates_calculator_get_room_details($arr_params) {
+
+    $roomid = $arr_params["hotelroom"];
+    $arr_capacity = $arr_params["arr_capacity"];
+
     for ($i = 0; $i < count($arr_capacity); $i++) {
         //get the room
         if ($roomid == $arr_capacity[$i]["room_id"]) {
@@ -961,22 +1045,33 @@ function _rates_calculator_getcontracts_for_the_date($arr_params, $thedate, $con
     return $arrids;
 }
 
-function _rates_calculator_lookup_rates($arr_capacity, $arr_params, $this_date, $con, $arr_eci) {
+function _rates_calculator_lookup_rates($arr_params, $this_date, $con, $arr_eci) {
 
-    $hotelroom = $arr_params["hotelroom"];
-    $room_details = _rates_calculator_get_room_details($arr_capacity, $hotelroom);
+    $room_details = _rates_calculator_get_room_details($arr_params);
     $room_type = $room_details["room_variants"]; //"PERSONS", "UNITS"
 
     if ($room_type == "PERSONS") {
-        return _rates_calculator_lookup_rates_persons($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
+        return _rates_calculator_lookup_rates_persons($arr_params, $this_date, $con, $arr_eci);
     } else if ($room_type == "UNITS") {
-        return _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
+        return _rates_calculator_lookup_rates_units($arr_params, $this_date, $con, $arr_eci);
     }
 }
 
-function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_date, $con, $arr_eci) {
+function _rates_calculator_lookup_rates_units($arr_params, $this_date, $con, $arr_eci) {
     $arr = array();
 
+    $arr_capacity = $arr_params["arr_capacity"];
+    
+    $flat_rate_comments = "";
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
+        $flat_rate_comments .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
+    
     $adult = count($arr_params["adults"]);
     $children = $arr_params["children"];
 
@@ -993,7 +1088,7 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
         $rule_capacity = $arr_capacity_rules[0]["rule_capacity"]; //only one rule                
         $arr_std_occup = _rates_calculator_get_capacity_rule_units_getoccupation($rule_capacity, "STANDARDOCCUPATION");
 
-        $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con);
+        $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con, $spo_contract);
 
         $std_max = $arr_std_occup[0]["MAX"];
 
@@ -1027,7 +1122,7 @@ function _rates_calculator_lookup_rates_units($arr_capacity, $arr_params, $this_
         //===========================================================
         //finally get the normal standard unit price and split it per person
         //reload the $arr_group_children
-        $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con);
+        $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con,$spo_contract);
 
 
         $num_persons = 0;
@@ -1103,16 +1198,25 @@ function _rates_calculator_lookup_rates_units_get_pax_details($adinx, $arr_param
 function _rates_calculator_lookup_rates_units_standard($rules, $arr_params) {
     $rates = 0;
     $workings = "";
-    $currency_buy = $arr_params["currency_buy_code"];
 
+    $currency_buy = $arr_params["currency_buy_code"];
     $arr_adult_rules = $rules["date_adultpolicies_rules"];
 
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
+
+
     $rates = _rates_calculator_lookup_rates_units_lookup_adult_rates($arr_adult_rules, "unit_price", 0);
-    $workings = "<b>UNIT PRICE</b>: $currency_buy $rates";
+    $workings .= "<b>UNIT PRICE</b>: $currency_buy $rates";
 
     if ($rates == "") {
         $rates = 0;
-        $workings = "NO UNIT PRICE";
+        $workings .= "NO UNIT PRICE";
     }
 
     return array("RATES_STANDARD" => $rates, "WORKINGS_STANDARD" => $workings);
@@ -1123,6 +1227,16 @@ function _rates_calculator_lookup_rates_units_extra_children($rules, $arr_params
     $currency_buy = $arr_params["currency_buy_code"];
 
     $arr_children_rules = $rules["date_childpolicies_rules"];
+
+    $workings_children = "";
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings_children .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
 
     for ($i = 0; $i < count($arr_group_children); $i++) {
         $arr_children = $arr_group_children[$i]["CHILDREN"];
@@ -1145,7 +1259,7 @@ function _rates_calculator_lookup_rates_units_extra_children($rules, $arr_params
                 }
 
                 $rates_children = $percentage;
-                $workings_children = "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) = <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
+                $workings_children .= "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) = <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
 
                 //apply eci for that child if any
                 _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
@@ -1161,13 +1275,23 @@ function _rates_calculator_lookup_rates_units_extra_children($rules, $arr_params
             } else if ($basis == "FLAT") {
 
                 $rates_children = $value;
-                $workings_children = "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) = $currency_buy $value";
+                $workings_children .= "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) = $currency_buy $value";
 
                 //apply eci for that child if any
                 _rates_calculator_apply_rates_eci_percentage($rates_children, $arr_eci, $workings_children, $currency_buy);
 
                 //apply spo percent discount for that child if any                    
                 _rates_calculator_apply_spo_discount_percentage($rates_children, $workings_children, $arr_params, "CHILDREN", $child_age, "", "ROOM", $this_date);
+
+                $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children,
+                    "ADCH" => "CHILDREN",
+                    "AGE" => $child_age,
+                    "BRIDEGROOM" => "");
+            }
+            else
+            {
+                $rates_children = 0;
+                $workings_children .= "<b>EXTRA PAX</b>: Ch #$idx (<b>$child_age yrs</b>) <font color='orange'>NO RATES DEFINED...</font>";
 
                 $arr[] = array("MSG" => $workings_children, "COSTINGS" => $rates_children,
                     "ADCH" => "CHILDREN",
@@ -1184,8 +1308,18 @@ function _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $
     $arr = array();
     $rates = 0;
     $workings = "";
+
     $currency_buy = $arr_params["currency_buy_code"];
     $arr_adults = $arr_params["adults"];
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
+
 
     $arr_adult_rules = $rules["date_adultpolicies_rules"];
 
@@ -1204,10 +1338,10 @@ function _rates_calculator_lookup_rates_units_extra_adult($rules, $arr_params, $
                 $percentage = round(($value / 100) * $normal_rates, 2);
             }
             $rates = $percentage;
-            $workings = "<b>EXTRA PAX</b>: Ad #$adult_index: <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
+            $workings .= "<b>EXTRA PAX</b>: Ad #$adult_index: <b>$value%</b> of $currency_buy $normal_rates = $currency_buy $percentage";
         } else if ($basis == "FLAT") {
             $rates = $value;
-            $workings = "<b>EXTRA PAX</b>: Ad #$adult_index: $currency_buy $value";
+            $workings .= "<b>EXTRA PAX</b>: Ad #$adult_index: $currency_buy $value";
         }
 
         //apply eci for that extra adult if any
@@ -1275,22 +1409,27 @@ function _rates_calculator_lookup_rates_units_lookup_adult_rates($arr_rule, $val
     return "";
 }
 
-function _rates_calculator_lookup_rates_persons($arr_capacity, $arr_params, $this_date, $con, $arr_eci) {
+function _rates_calculator_lookup_rates_persons($arr_params, $this_date, $con, $arr_eci) {
 
     $adult = $arr_params["adults"];
     $count_adult = count($adult);
     $children = $arr_params["children"];
     $flg_got_rates = false; //to be passed by reference below
+    $flg_looked_at_single_parent_first = false;
     $arr = array();
 
+
     if ($count_adult == 1 && count($children) > 0) {
-        //single parent policy exists?
-        $arr = _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params, $this_date, $con, $flg_got_rates, $arr_eci);
+        //does single parent policy exists?
+        $flg_looked_at_single_parent_first = true;
+        $arr = _rates_calculator_lookup_rates_single_parent($arr_params, $this_date, $con, $flg_got_rates, $arr_eci);
     }
     if (!$flg_got_rates) {
         //no single parent rates defined?! then lookup in normal rates
-        $arr = _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this_date, $con, $arr_eci);
+        $arr = _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $arr_eci, $flg_looked_at_single_parent_first);
     }
+
+
 
     return $arr;
 }
@@ -1313,7 +1452,7 @@ function _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $this_date)
     }
 
 
-    //split rollover equally between non FOC pax
+    //split rollover equally between Non FOC pax
 
     $num_non_foc_pax = 0;
 
@@ -1325,11 +1464,10 @@ function _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $this_date)
 
     //split the roll over now
     $pax_rollover = 0;
-    if($num_non_foc_pax > 0)
-    {
+    if ($num_non_foc_pax > 0) {
         $pax_rollover = round($roll_over_value / $num_non_foc_pax, 2);
     }
-    
+
 
     //now apply it to the costings per each pax
     $cumul_applied = 0;
@@ -1351,7 +1489,7 @@ function _rates_calculator_calc_rollover_flat_pni($arr_params, $arr, $this_date)
             $applied_to ++;
 
 
-            $msg .= "<br> + (<font color='blue'><b>ROLLOVER</b>: </font> FLAT PNI : $currency_buy $roll_over_value &#247; $num_non_foc_pax = $currency_buy $pax_rollover per non FOC pax)";
+            $msg .= "<br> + (<font color='blue'><b>ROLLOVER</b>: </font> FLAT PNI : $currency_buy $roll_over_value &#247; $num_non_foc_pax = $currency_buy $pax_rollover per Non FOC pax)";
 
             //apply spo percent discount if any for that pax
             _rates_calculator_apply_spo_discount_percentage($pax_rollover, $msg, $arr_params, $adch, $age, $bridegroom, "ROOM", $this_date);
@@ -1402,14 +1540,24 @@ function _rates_calculator_calc_rollover_percentage($arr_params, $arr) {
     return $arr;
 }
 
-function _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params, $this_date, $con, &$flg_got_rates, $arr_eci) {
+function _rates_calculator_lookup_rates_single_parent($arr_params, $this_date, $con, &$flg_got_rates, $arr_eci) {
 
     $arr = array();
 
     $children = $arr_params["children"];
     $hotelroom = $arr_params["hotelroom"];
+    $arr_capacity = $arr_params["arr_capacity"];
 
-    $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con);
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        //so bypass contract ECI and LCO policies and apply SPO ECI and LCO policies
+        $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
+    }
+    //=============================================================================
+
+
+    $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con,$spo_contract);
     $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
 
     if (!is_null($rules)) {
@@ -1452,9 +1600,29 @@ function _rates_calculator_lookup_rates_single_parent($arr_capacity, $arr_params
     return $arr;
 }
 
-function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this_date, $con, $arr_eci) {
+function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $arr_eci, $flg_looked_at_single_parent_first) {
+
+    //$flg_looked_at_single_parent_first = true/false : showing if
+    //searched rates from single parent first
 
     $arr = array();
+
+    $single_parent_comments = "";
+    if ($flg_looked_at_single_parent_first) {
+        $single_parent_comments = "<font color='orange'>NO <b>SINGLE PARENT</b> RATES FOUND!</font> REVERTING TO <B>NORMAL RATES</B>...<br>";
+    }
+
+    $arr_capacity = $arr_params["arr_capacity"];
+    $flat_rate_comments = "";
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
+        $flat_rate_comments .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
+
     $adult = count($arr_params["adults"]);
     $children = $arr_params["children"];
     $hotelroom = $arr_params["hotelroom"];
@@ -1486,7 +1654,7 @@ function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this
                 $cumul_buyprice += $adult_buyprice;
             }
 
-            $_workings = "$workings => Ad #$adinx = $currency_buy $adult_buyprice";
+            $_workings = "$flat_rate_comments $single_parent_comments $workings => Ad #$adinx = $currency_buy $adult_buyprice";
 
             //apply eci for that adult if any
             _rates_calculator_apply_rates_eci_percentage($adult_buyprice, $arr_eci, $_workings, $currency_buy);
@@ -1508,7 +1676,7 @@ function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this
         //======================================================================
         //
         //calculate children rates =============================================
-        $arr_rates_children = _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date);
+        $arr_rates_children = _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
         $arr = array_merge($arr, $arr_rates_children);
 
         //======================================================================
@@ -1522,13 +1690,12 @@ function _rates_calculator_lookup_rates_normal($arr_capacity, $arr_params, $this
     return $arr;
 }
 
-function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date) {
+function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date, $flg_looked_at_single_parent_first) {
 
     //regroup each child in $children by age groups defined in the contract
     $arr = array();
 
-    $current_contract_id = $arr_params["current_contract_id"];
-    $arr_age_groups = _rates_calculator_get_children_agegroups($current_contract_id, $con);
+    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con);
 
     //for each age group, get children that fall within that range
     for ($a = 0; $a < count($arr_age_groups); $a++) {
@@ -1544,7 +1711,7 @@ function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules,
 
         //now calculate the rates for all children in that age group
         if (count($arr_temp_children) > 0) {
-            $_arr = _rates_calculator_calc_children_by_agegroup($arr_temp_children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date);
+            $_arr = _rates_calculator_calc_children_by_agegroup($arr_temp_children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
             $arr = array_merge($arr, $_arr);
         }
     }
@@ -1552,9 +1719,14 @@ function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules,
     return $arr;
 }
 
-function _rates_calculator_get_children_agegroups($contractid, $con) {
+function _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contract) {
     $arr_age_groups = array();
-
+    
+    //need to know if to take ages group from contract level or from spo level
+    //$spo_contract = CONTRACT / SPO
+    
+    $contractid = $arr_params["current_contract_id"];
+            
     //return an array of age groups for that contract
     $sql = "SELECT ca.agefrom, ca.ageto
             FROM tblservice_contract_childages scc
@@ -1573,7 +1745,10 @@ function _rates_calculator_get_children_agegroups($contractid, $con) {
     return $arr_age_groups;
 }
 
-function _rates_calculator_calc_children_by_agegroup($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date) {
+function _rates_calculator_calc_children_by_agegroup($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first) {
+
+
+
     $arr_sharing = array();
     $arr_single = array();
     $arr_final = array();
@@ -1590,25 +1765,39 @@ function _rates_calculator_calc_children_by_agegroup($children, $arr_childrenpol
 
     //===============================================================
     //get sharing children rates
-    $_arr = _rates_calculator_calculate_children_rates("SHARING", $arr_sharing, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date);
+    $_arr = _rates_calculator_calculate_children_rates("SHARING", $arr_sharing, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
     $arr_final = array_merge($arr_final, $_arr);
 
     //===============================================================
     //get single children rates    
-    $_arr = _rates_calculator_calculate_children_rates("SINGLE", $arr_single, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date);
+    $_arr = _rates_calculator_calculate_children_rates("SINGLE", $arr_single, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
     $arr_final = array_merge($arr_final, $_arr);
     //===========================================================================
 
     return $arr_final;
 }
 
-function _rates_calculator_calculate_children_rates($sharing_single, $arr_children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date) {
+function _rates_calculator_calculate_children_rates($sharing_single, $arr_children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first) {
+
+    $single_parent_comments = "";
+    if ($flg_looked_at_single_parent_first) {
+        $single_parent_comments = "<font color='orange'>NO <b>SINGLE PARENT</b> RATES FOUND!</font> REVERTING TO <B>NORMAL RATES</B>...<br>";
+    }
+
     $currency_buy = $arr_params["currency_buy_code"];
 
     $arr = array();
-    $workings = "";
+    $workings_spo = "";
     $child_index = count($arr_children);
     $rates_children = 0;
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings_spo .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
 
     while ($child_index > 0) {
         $child_age = $arr_children[$child_index - 1]["age"];
@@ -1620,7 +1809,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
         $status = $arr_lkup["STATUS"];
 
         if ($status == "NO_RATES") {
-            $workings = " (CH #$child_index {$child_age}yr NO RATES) => ";
+            $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr NO RATES) => ";
 
             $arr[] = array("WORKINGS" => $workings, "RATES" => 0, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
 
@@ -1635,7 +1824,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
         } else {
             if ($basis == "SINGLE") {
                 //here we are just taking the value attached to the child
-                $workings = " (CH #$child_index {$child_age}yr SNGL $currency_buy $value) ";
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr SNGL $currency_buy $value) ";
                 $rates_children = $value;
 
                 $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
@@ -1644,7 +1833,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
                 break;
             } else if ($basis == "FLAT") {
                 //here just take the flat rate
-                $workings = " (CH #$child_index {$child_age}yr FLAT $currency_buy $value) ";
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr FLAT $currency_buy $value) ";
                 $rates_children = $value;
                 $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
 
@@ -1663,7 +1852,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
                 }
 
                 $rates_children = $child_rate_value;
-                $workings = "(CH #$child_index {$child_age}yr $value% of AD $currency_buy $rates_adult = $currency_buy $child_rate_value)";
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr $value% of AD $currency_buy $rates_adult = $currency_buy $child_rate_value)";
 
                 $arr[] = array("WORKINGS" => $workings, "RATES" => $child_rate_value, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
 
@@ -1673,7 +1862,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
                 //implies take the adult double rate
                 //here we are just taking the value attached to the child (good?)
 
-                $workings = "(CH #$child_index $basis {$child_age}yr DBL $currency_buy $value) ";
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index $basis {$child_age}yr DBL $currency_buy $value) ";
                 $rates_children = $value;
 
                 $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 2);
@@ -1684,7 +1873,7 @@ function _rates_calculator_calculate_children_rates($sharing_single, $arr_childr
                 //implies take the adult double rate
                 //here we are just taking the value attached to the child (good?)
 
-                $workings = " (CH #$child_index $basis {$child_age}yr TRPL $currency_buy $value) ";
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index $basis {$child_age}yr TRPL $currency_buy $value) ";
                 $rates_children = $value;
 
                 $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 3);
@@ -1895,9 +2084,10 @@ function _rates_calculator_get_contract_currency_buy_sell($con, $contractid, $bu
     return array("ID" => "-1", "CODE" => "");
 }
 
-function _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_date, $con) {
+function _rates_calculator_extra_meal_supp($arr_params, $this_date, $con) {
 
     $hotelroom = $arr_params["hotelroom"];
+    $arr_capacity = $arr_params["arr_capacity"];
 
     $this_date = date("Y-m-d", strtotime($this_date)); //convert into yyyy-mm-dd
 
@@ -1937,7 +2127,7 @@ function _rates_calculator_extra_meal_supp($arr_capacity, $arr_params, $this_dat
                     //apply any percentage discount if applicable
                     _rates_calculator_apply_spo_discount_percentage($extra_adult, $msg, $arr_params,
                             "ADULT", $ad_pax["age"], $ad_pax["bride_groom"],
-                            "EXTRA_MEAL_SUPPLEMENT", $this_date); 
+                            "EXTRA_MEAL_SUPPLEMENT", $this_date);
 
                     $arr[] = array("MSG" => $msg, "COSTINGS" => $extra_adult,
                         "ADCH" => "ADULT",
@@ -1972,20 +2162,56 @@ function _rates_calculator_get_meal_name($supp_mealplan, $con) {
     return "";
 }
 
-function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $con) {
+function _rates_calculator_meal_supp($arr_params, $this_date, $con) {
 
 
-    $workings = "";
-    $hotelroom = $arr_params["hotelroom"];
+    $workings_flat_rate = "";
+    
+    $arr_capacity = $arr_params["arr_capacity"];
 
+    $flg_found_meal_supp = false;
     $arr = array();
 
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        //so bypass contract MEAL SUPP policies and apply SPO policies
+        $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
+        $workings_flat_rate .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+
+        $arr = _rates_calculator_meal_supp_lookup($arr_capacity, $workings_flat_rate, $arr_params, $this_date, $con, $flg_found_meal_supp, "SPO");
+    }
+    //=============================================================================
+
+    if (!$flg_found_meal_supp) {
+        //fall back to contract level
+        $arr_capacity = $arr_params["arr_capacity"];
+        if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+            $workings_flat_rate .= "<font color='orange'><b>$flg_found_meal_supp</b> MEAL SUPPLEMENT POLICIES NOT DEFINED IN SPO.</font> REVERTING TO CONTRACT POLICIES...<br>";
+        }
+        $arr = _rates_calculator_meal_supp_lookup($arr_capacity, $workings_flat_rate, $arr_params, $this_date, $con, $flg_found_meal_supp, "CONTRACT");
+    }
+
+
+    return $arr;
+}
+
+function _rates_calculator_meal_supp_lookup($arr_capacity, $workings_flat_rate, $arr_params, $this_date, $con, &$flg_found_meal_supp, $spo_contract) {
+
+    //$spo_contract = SPO / CONTRACT
+    
+    $arr = array();
+    
+    $hotelroom = $arr_params["hotelroom"];
     $supp_mealplan = $arr_params["supp_mealplan"];
     $children = $arr_params["children"];
 
     $currency_buy = $arr_params["currency_buy_code"];
 
+    $meal_supplement_caption = _rates_calculator_get_meal_name($supp_mealplan, $con);
     //======================
+
+
 
     $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
     if (!is_null($rules)) {
@@ -1997,7 +2223,7 @@ function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $co
             if ($rules["meal_ismain"] == 0 && $rules["meal_mealplanfk"] == $supp_mealplan) {
 
                 //get the meal supplement caption
-                $meal_supplement_caption = _rates_calculator_get_meal_name($supp_mealplan, $con);
+                $flg_found_meal_supp = true;
                 $adult_supp_price = $rules["meal_adult_count"];
 
                 //=========================================================================
@@ -2006,7 +2232,7 @@ function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $co
 
                 for ($a = 1; $a <= count($arr_params["adults"]); $a++) {
 
-                    $workings = "<font color='blue'><b>MEAL SUPPLEMENT</b>: $meal_supplement_caption </font> Ad #$a => $currency_buy $adult_supp_price";
+                    $workings = "<font color='blue'><b>MEAL SUPPLEMENT</b>: $meal_supplement_caption </font> $workings_flat_rate  Ad #$a => $currency_buy $adult_supp_price";
 
                     //apply spo percent discount if any for that pax
                     $ad_pax = $arr_params["adults"][$a - 1];
@@ -2023,7 +2249,7 @@ function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $co
 
                 //============= and now for each children ==========
                 $children_rules = $rules["meal_children"];
-                $arr_children_result = _rates_calculator_meal_supplement_children($children_rules, $children, $con, $arr_params, $meal_supplement_caption, $this_date);
+                $arr_children_result = _rates_calculator_meal_supplement_children($children_rules, $children, $con, $arr_params, $meal_supplement_caption, $this_date, $workings_flat_rate, $spo_contract);
                 $arr = array_merge($arr, $arr_children_result);
 
 
@@ -2032,6 +2258,8 @@ function _rates_calculator_meal_supp($arr_capacity, $arr_params, $this_date, $co
             }
         }
     }
+
+
 
     return $arr;
 }
@@ -2044,8 +2272,7 @@ function _rates_calculator_extra_meal_supplement_children($children_rules, $chil
 
     $currency_buy = $arr_params["currency_buy_code"];
 
-    $current_contract_id = $arr_params["current_contract_id"];
-    $arr_age_groups = _rates_calculator_get_children_agegroups($current_contract_id, $con);
+    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, "CONTRACT");
 
     //for each age group, get children that fall within that range
 
@@ -2094,14 +2321,13 @@ function _rates_calculator_extra_meal_supplement_children($children_rules, $chil
     return $arr;
 }
 
-function _rates_calculator_meal_supplement_children($children_rules, $children, $con, $arr_params, $meal_supplement_caption, $this_date) {
-    $workings = "";
+function _rates_calculator_meal_supplement_children($children_rules, $children, $con, $arr_params, $meal_supplement_caption, $this_date, $workings_flat_rate, $spo_contract) {
+
     $arr = array();
 
     $currency_buy = $arr_params["currency_buy_code"];
 
-    $current_contract_id = $arr_params["current_contract_id"];
-    $arr_age_groups = _rates_calculator_get_children_agegroups($current_contract_id, $con);
+    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contract);
 
     //for each age group, get children that fall within that range
 
@@ -2133,7 +2359,7 @@ function _rates_calculator_meal_supplement_children($children_rules, $children, 
                         $age = $arr_temp_children[$ec - 1]["age"];
                         $child_meal_rate = $children_rules[$r]["child_count"];
 
-                        $workings = "<font color='blue'><b>MEAL SUPPLEMENT</b>: $meal_supplement_caption </font>" .
+                        $workings = "<font color='blue'><b>MEAL SUPPLEMENT</b>: $meal_supplement_caption </font> $workings_flat_rate" .
                                 " Ch #$ec {$age_from}-{$age_to}yrs => $currency_buy $child_meal_rate";
 
                         //apply spo percent discount if any for that pax
@@ -2185,13 +2411,12 @@ function _rates_calculator_single_parent_get_rules_by_agerange($rules, $ag) {
     return $arr_rules;
 }
 
-function _rates_calculator_regroup_children_by_age($arr_params, $children, $con) {
+function _rates_calculator_regroup_children_by_age($arr_params, $children, $con,$spo_contract) {
     //for each age group, get children that fall within that range
     $arr_group_children = array();
 
     //group children by age groups in the contract
-    $current_contract_id = $arr_params["current_contract_id"];
-    $arr_age_groups = _rates_calculator_get_children_agegroups($current_contract_id, $con);
+    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con,$spo_contract);
 
 
     for ($a = 0; $a < count($arr_age_groups); $a++) {
@@ -2290,7 +2515,17 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
     $arr = array();
     $rates = 0;
-    $workings = "SINGLE PRNT: ";
+
+    $workings = "";
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
+    $workings .= " SINGLE PRNT: ";
 
     $currency_buy = $arr_params["currency_buy_code"];
 
@@ -2422,6 +2657,14 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
 
     $arr_final = array();
     $rates = 0;
+    $workings = "";
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
 
     $currency_buy = $arr_params["currency_buy_code"];
 
@@ -2449,7 +2692,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
 
 
             if ($basis == "FLAT") {
-                $workings = "SINGLE PARENT: (CH #$index {$child_age}yr $category $currency_buy $value)";
+                $workings .= "SINGLE PARENT: (CH #$index {$child_age}yr $category $currency_buy $value)";
 
                 //take price as it is
                 $rates = $value;
@@ -2479,7 +2722,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
-                    $workings = "SINGLE PARENT: (CH #$index $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH #$index $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2503,7 +2746,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
 
-                    $workings = "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2528,7 +2771,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
-                    $workings = "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2546,7 +2789,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     break;
                 } else if ($category == "SHARING") {
                     //this is not possible
-                    $workings = "SINGLE PARENT: (CH #$index {$child_age}yr : SHARING % IS NOT POSSIBLE)";
+                    $workings .= "SINGLE PARENT: (CH #$index {$child_age}yr : SHARING % IS NOT POSSIBLE)";
                     $_arr[] = array("WORKINGS" => $workings, "RATES" => 0, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
                 }
             }
@@ -2830,7 +3073,7 @@ function _rates_calculator_prepare_costings_array($con, $arr_taxcomm, $arr_param
 function _rates_calculator_apply_rates_lco_flat_pni($arr, $arr_lco, $arr_params, &$lco_applied, $this_date) {
     //$lco_applied = false;
     //this will only apply if late check out FLAT PNI, then:
-    //share the lco costs between non FOC pax
+    //share the lco costs between Non FOC pax
 
     $currency_buy = $arr_params["currency_buy_code"];
     $workings = $arr_lco["WORKINGS"];
@@ -2857,11 +3100,10 @@ function _rates_calculator_apply_rates_lco_flat_pni($arr, $arr_lco, $arr_params,
 
     //split the lco now
     $pax_lco = 0;
-    if($num_non_foc_pax > 0)
-    {
+    if ($num_non_foc_pax > 0) {
         $pax_lco = round($charge_value / $num_non_foc_pax, 2);
     }
-    
+
 
     //now apply it to the costings per each pax
     $cumul_applied = 0;
@@ -2882,7 +3124,7 @@ function _rates_calculator_apply_rates_lco_flat_pni($arr, $arr_lco, $arr_params,
 
             $applied_to ++;
 
-            $msg .= " <br> ($workings = FLAT PNI : $currency_buy $charge_value &#247; $num_non_foc_pax = $currency_buy $pax_lco per non FOC pax) ";
+            $msg .= " <br> ($workings = FLAT PNI : $currency_buy $charge_value &#247; $num_non_foc_pax = $currency_buy $pax_lco per <b>Non FOC</b> pax) ";
             $costings = $pax_lco;
 
             //apply spo percent discount if any for that pax
@@ -2899,7 +3141,7 @@ function _rates_calculator_apply_rates_lco_flat_pni($arr, $arr_lco, $arr_params,
 
 function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params, $this_date) {
     //this will only apply if early check in FLAT PNI, then:
-    //share the eci costs between non FOC pax
+    //share the eci costs between Non FOC pax
     $currency_buy = $arr_params["currency_buy_code"];
 
     $workings = $arr_eci["WORKINGS"];
@@ -2924,11 +3166,10 @@ function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params,
 
     //split the eci now
     $pax_eci = 0;
-    if($num_non_foc_pax > 0)
-    {
+    if ($num_non_foc_pax > 0) {
         $pax_eci = round($charge_value / $num_non_foc_pax, 2);
     }
-    
+
 
     //now apply it to the costings per each pax
     $cumul_applied = 0;
@@ -2949,7 +3190,7 @@ function _rates_calculator_apply_rates_eci_flat_pni($arr, $arr_eci, $arr_params,
 
             $applied_to ++;
 
-            $msg .= "<br> + ($workings =  FLAT PNI : $currency_buy $charge_value &#247; $num_non_foc_pax = $currency_buy $pax_eci per non FOC pax) ";
+            $msg .= "<br> + ($workings =  FLAT PNI : $currency_buy $charge_value &#247; $num_non_foc_pax = $currency_buy $pax_eci per <b>Non FOC</b> pax) ";
 
             //apply spo percent discount if any for that pax
             _rates_calculator_apply_spo_discount_percentage($pax_eci, $msg, $arr_params, $pax_adch, $pax_age, $pax_bridegroom, "ROOM", $this_date);
@@ -2971,7 +3212,7 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr) {
     $arr_spo_discounts = $arr_params["spo_discounts_array"];
     $currency_buy = $arr_params["currency_buy_code"];
     $apply_discounts = $arr_params["lookupmode"]["DISCOUNTS"]; //true or false
-    
+
     $num_pax = count($arr);
 
     for ($i = 0; $i < count($arr_spo_discounts); $i++) {
@@ -2983,52 +3224,50 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr) {
         $disc_type = $discount_item["ROOM_ALL_FLAT"]; //is discount percentage_room, percentage_all or FLAT
         $disc_value = $discount_item["VALUE"]; //value of discount
         //finally apply the discount when it flat PPPN
-        
-        if($apply_discounts)
-        {
+
+        if ($apply_discounts) {
             if ($disc_value > 0) {
 
-            if ($disc_type == "FLAT_PNI") {
+                if ($disc_type == "FLAT_PNI") {
 
-                $disc_amt = $disc_value;
+                    $disc_amt = $disc_value;
 
-                //split the discount PNI over now
-                $per_pax_discount = round($disc_amt / $num_pax, 2);
+                    //split the discount PNI over now
+                    $per_pax_discount = round($disc_amt / $num_pax, 2);
 
-                //now apply it to the discount to each pax
-                $cumul_applied = 0;
-                $applied_to = 1;
+                    //now apply it to the discount to each pax
+                    $cumul_applied = 0;
+                    $applied_to = 1;
 
-                for ($p = 0; $p < count($arr); $p++) {
-                    $costings = $arr[$p]["COSTINGS"];
-                    $msg = $arr[$p]["MSG"];
+                    for ($p = 0; $p < count($arr); $p++) {
+                        $costings = $arr[$p]["COSTINGS"];
+                        $msg = $arr[$p]["MSG"];
 
-                    if ($costings > 0) {
+                        if ($costings > 0) {
 
-                        if ($applied_to < $num_pax) {
-                            $cumul_applied += $per_pax_discount;
-                        } else {
-                            $per_pax_discount = $disc_amt - $cumul_applied;
+                            if ($applied_to < $num_pax) {
+                                $cumul_applied += $per_pax_discount;
+                            } else {
+                                $per_pax_discount = $disc_amt - $cumul_applied;
+                            }
+                            $applied_to ++;
+
+
+                            $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : FLAT PNI : $currency_buy $disc_amt &#247; $num_pax = $currency_buy $per_pax_discount per pax)</font>";
+
+                            $costings -= $per_pax_discount;
+
+                            if ($costings < 0) {
+                                $costings = 0;
+                            }
+
+                            $arr[$p]["MSG"] = $msg;
+                            $arr[$p]["COSTINGS"] = $costings;
                         }
-                        $applied_to ++;
-
-
-                        $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : FLAT PNI : $currency_buy $disc_amt &#247; $num_pax = $currency_buy $per_pax_discount per pax)</font>";
-
-                        $costings -= $per_pax_discount;
-
-                        if ($costings < 0) {
-                            $costings = 0;
-                        }
-
-                        $arr[$p]["MSG"] = $msg;
-                        $arr[$p]["COSTINGS"] = $costings;
                     }
                 }
             }
         }
-        }
-        
     }
 
     return $arr;
@@ -3062,7 +3301,7 @@ function _rates_calculator_apply_spo_discount_PPPN(&$rates, &$msg, $arr_params, 
 
     $arr_spo_discounts = $arr_params["spo_discounts_array"];
     $apply_discounts = $arr_params["lookupmode"]["DISCOUNTS"]; //true or false
-    
+
     $currency_buy = $arr_params["currency_buy_code"];
 
     for ($i = 0; $i < count($arr_spo_discounts); $i++) {
@@ -3078,38 +3317,36 @@ function _rates_calculator_apply_spo_discount_PPPN(&$rates, &$msg, $arr_params, 
         $disc_type = $discount_item["ROOM_ALL_FLAT"]; //is discount percentage_room, percentage_all or FLAT
         $disc_value = $discount_item["VALUE"]; //value of discount
 
-        
-        if($apply_discounts)
-        {
+
+        if ($apply_discounts) {
             if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
-                $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
-            //passed check for adult or children applicable discounts
+                    $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
+                //passed check for adult or children applicable discounts
 
-            if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
-                //passed age limits check
+                if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
+                    //passed age limits check
 
-                if (_rates_calculator_apply_spo_discount_test_bride_groom($pax_bridegroom, $disc_bd_gm, $adult_children)) {
+                    if (_rates_calculator_apply_spo_discount_test_bride_groom($pax_bridegroom, $disc_bd_gm, $adult_children)) {
 
-                    //passed bride groom checks
-                    //finally apply the discount when it flat PPPN
-                    if ($disc_value > 0) {
+                        //passed bride groom checks
+                        //finally apply the discount when it flat PPPN
+                        if ($disc_value > 0) {
 
-                        if (($disc_type == "FLAT_PPPN" && $room_nonroom == "ROOM")) {
+                            if (($disc_type == "FLAT_PPPN" && $room_nonroom == "ROOM")) {
 
-                            $disc_amt = $disc_value;
-                            $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : PPPN : $currency_buy $disc_amt)</font>";
-                            $rates -= $disc_amt;
+                                $disc_amt = $disc_value;
+                                $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : PPPN : $currency_buy $disc_amt)</font>";
+                                $rates -= $disc_amt;
 
-                            if ($rates < 0) {
-                                $rates = 0;
+                                if ($rates < 0) {
+                                    $rates = 0;
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        }
-        
     }
 
     return;
@@ -3125,7 +3362,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
     $arr_spo_discounts = $arr_params["spo_discounts_array"];
     $currency_buy = $arr_params["currency_buy_code"];
     $apply_discounts = $arr_params["lookupmode"]["DISCOUNTS"]; //true or false
-    
+
     for ($i = 0; $i < count($arr_spo_discounts); $i++) {
         $discount_item = $arr_spo_discounts[$i];
 
@@ -3148,43 +3385,41 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
 
             if (in_array("ALL", $apply_to_dates)) {
                 $flg_date_check_passed = true;
-            } else  {
-                
-                for($x = 0; $x < count($apply_to_dates); $x++)
-                {
-                    if($apply_to_dates[$x]["DATE"] == $this_date)
-                    {
+            } else {
+
+                for ($x = 0; $x < count($apply_to_dates); $x++) {
+                    if ($apply_to_dates[$x]["DATE"] == $this_date) {
                         $flg_date_check_passed = true;
                     }
                 }
             }
         }
 
-        if($apply_discounts)
-        {
+        if ($apply_discounts) {
             if ($flg_date_check_passed) {
-            if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
-                    $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
-                //passed check for adult or children applicable discounts
+                if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
+                        $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
+                    //passed check for adult or children applicable discounts
 
-                if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
-                    //passed age limits check
+                    if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
+                        //passed age limits check
 
-                    if (_rates_calculator_apply_spo_discount_test_bride_groom($pax_bridegroom, $disc_bd_gm, $adult_children)) {
+                        if (_rates_calculator_apply_spo_discount_test_bride_groom($pax_bridegroom, $disc_bd_gm, $adult_children)) {
 
-                        //passed bride groom checks
-                        //finally apply the discount when it is percetage only
-                        if ($disc_value > 0) {
+                            //passed bride groom checks
+                            //finally apply the discount when it is percetage only
+                            if ($disc_value > 0) {
 
-                            if (($disc_type == "%ROOM" && $room_nonroom == "ROOM") ||
-                                    ($disc_type == "%ALL")) {
+                                if (($disc_type == "%ROOM" && $room_nonroom == "ROOM") ||
+                                        ($disc_type == "%ALL")) {
 
-                                $disc_amt = round(($disc_value / 100) * $rates, 2);
-                                $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] = $disc_value% of $currency_buy $rates = $currency_buy $disc_amt)</font>";
-                                $rates -= $disc_amt;
+                                    $disc_amt = round(($disc_value / 100) * $rates, 2);
+                                    $msg .= "<br><font color='#BB3C94'> - (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] = $disc_value% of $currency_buy $rates = $currency_buy $disc_amt)</font>";
+                                    $rates -= $disc_amt;
 
-                                if ($rates < 0) {
-                                    $rates = 0;
+                                    if ($rates < 0) {
+                                        $rates = 0;
+                                    }
                                 }
                             }
                         }
@@ -3192,7 +3427,6 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
                 }
             }
         }
-        }        
     }
 
     return;
@@ -3487,14 +3721,12 @@ function _rates_calculator_calc_free_nights_lookup_night($arr_stays, $x) {
     return array("STAYS" => $stays, "PAYS" => $pays);
 }
 
-function _rates_calculator_validate_reservation($arr_capacity, $arr_params, $this_date, $con, &$arr_daily_idx) {
-
-    $num_nights = $arr_params["num_nights"];
+function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &$arr_daily_idx) {
 
     //========================================================
     //TEST 2: MINIMUM STAY 
     $flg_min_test = true;
-    $min_test_msg = _rates_calculator_min_stay_nights($arr_capacity, $arr_params, $this_date, $flg_min_test);
+    $min_test_msg = _rates_calculator_min_stay_nights($arr_params, $this_date, $flg_min_test);
     if (!$flg_min_test) {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 2</font>: $min_test_msg",
             "COSTINGS" => array());
@@ -3521,7 +3753,7 @@ function _rates_calculator_validate_reservation($arr_capacity, $arr_params, $thi
     //========================================================
     //========================================================
     //TEST 4: ADULT AND CHILDREN CAPACITY
-    $capacity_test_adch = _rates_calculator_adch_capacity($arr_capacity, $arr_params, $this_date);
+    $capacity_test_adch = _rates_calculator_adch_capacity($arr_params, $this_date);
     if ($capacity_test_adch["MSG"] != "OK") {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 4</font>: CAPACITY TEST ADULT + CHILDREN SHARING: " . $capacity_test_adch["MSG"],
             "COSTINGS" => array());
@@ -3535,7 +3767,7 @@ function _rates_calculator_validate_reservation($arr_capacity, $arr_params, $thi
     //========================================================
     //========================================================
     //TEST 5: CHILDREN IN OWN ROOM
-    $capacity_test_ch_ownroom = _rates_calculator_ch_own_capacity($arr_capacity, $arr_params, $this_date);
+    $capacity_test_ch_ownroom = _rates_calculator_ch_own_capacity($arr_params, $this_date);
     if ($capacity_test_ch_ownroom["MSG"] != "OK") {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 5</font>: CAPACITY TEST CHILDREN OWN ROOM: " . $capacity_test_ch_ownroom["MSG"],
             "COSTINGS" => array());
@@ -3578,18 +3810,18 @@ function rates_calculator_get_nights_with_lowest_rates($arr_daily_free_nights, $
 
     //sort $arr_night_total by NIGHT VALUE ascending
     /*
-    function __cmp_free_nights_sort_ascending($a, $b) {
-        return $a["NIGHT_VALUE"] > $b["NIGHT_VALUE"];
-    }
+      function __cmp_free_nights_sort_ascending($a, $b) {
+      return $a["NIGHT_VALUE"] > $b["NIGHT_VALUE"];
+      }
 
-    usort($arr_night_total, "__cmp_free_nights_sort_ascending");
+      usort($arr_night_total, "__cmp_free_nights_sort_ascending");
      * 
      */
-    
+
     $night_value = array();
     $night_idx = array();
     foreach ($arr_night_total as $key => $row) {
-        $night_value[$key]  = $row["NIGHT_VALUE"];
+        $night_value[$key] = $row["NIGHT_VALUE"];
         $night_idx[$key] = $row["NIGHT_INDEX"];
     }
 
@@ -3608,7 +3840,7 @@ function rates_calculator_get_nights_with_lowest_rates($arr_daily_free_nights, $
     return $arr;
 }
 
-function _rates_calculator_process_SPO_free_nights(&$arr_spo_discounts, $arr_days, $arr_params, $con) {
+function _rates_calculator_process_SPO_free_nights(&$arr_spo_discounts, $arr_days, $arr_params, $con, $arr_capacity) {
     //HAVE WE GOT FREE NIGHTS SPO?
     $arr_dates_free_nights = array();
     $free_nights_num_nights = 0;
@@ -3658,8 +3890,13 @@ function _rates_calculator_process_SPO_free_nights(&$arr_spo_discounts, $arr_day
                 $arr_contract_ids = $arr_days["DAILY"][$idx]["CONTRACT_ID"];
 
                 //free nights applicable to ROOM rates only. Skip Total, LCO and DISCOUNTS
-                $arr_lookup_mode = array("TOTAL" => false, "ROOM_ONLY" => true, "LCO" => false, "DISCOUNTS"=>false);
+                $arr_lookup_mode = array("TOTAL" => false, "ROOM_ONLY" => true, "LCO" => false, "DISCOUNTS" => false);
 
+                //use SPO Flat Rate or normal Contract Rates?
+                $arr_normal_or_flatrates = _rates_calculator_decide_contract_or_spo_flatrate($arr_params, $this_date);
+                $arr_params["flat_rate_spo_apply"] = $arr_normal_or_flatrates;
+
+                //proceed with rates lookup
                 rates_calculator_CORE_lookup($arr_daily_free_nights, $idx, $this_date, $arr_contract_ids, $arr_params, $con, $arr_lookup_mode);
             }
 
@@ -3670,6 +3907,38 @@ function _rates_calculator_process_SPO_free_nights(&$arr_spo_discounts, $arr_day
 
     //place the array of free dates into the Free Night SPO
     $arr_spo_discounts[$spo_FN_index]["APPLY_TO_DATES"] = $arr_dates_free_nights; //recall nights Free
+}
+
+function _rates_calculator_decide_contract_or_spo_flatrate($arr_params, $this_date) {
+
+    //check if for this date, there is a flat rate SPO to be applied
+
+    $arr_spo_discounts = $arr_params["spo_discounts_array"];
+
+    for ($i = 0; $i < count($arr_spo_discounts); $i++) {
+        $discount_item = $arr_spo_discounts[$i];
+
+        $spo_id = $discount_item["SPO_ID"];
+        $spo_name = $discount_item["SPO_NAME"];
+        $spo_type = $discount_item["SPO_TYPE"];
+        $apply_to_dates = $discount_item["APPLY_TO_DATES"]; //any array of date filters?
+
+
+        if ($spo_type == "FLAT_RATES") {
+            for ($x = 0; $x < count($apply_to_dates); $x++) {
+                if ($apply_to_dates[$x]["DATE"] == $this_date) {
+
+                    //return SPO Flat Rates
+                    return array("RATES" => $discount_item["FLAT_RATE_CAPACITY_ARRAY"],
+                        "SPO_ID"=>$spo_id,"SPO_NAME"=>$spo_name,"SPO_TYPE"=>$spo_type,
+                        "COMMENTS" => "<font color='#BB3C94'><b>SPO </b>[ID:$spo_id $spo_type - $spo_name]</font><br>",
+                        "APPLY_SPO_FLAT_RATE" => true);
+                }
+            }
+        }
+    }
+
+    return array("RATES" => "", "COMMENTS" => "", "APPLY_SPO_FLAT_RATE" => false); //return normal contract rates
 }
 ?>
 

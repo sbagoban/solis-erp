@@ -54,14 +54,14 @@ function _getSettings($con, $spoid, $buysell) {
             "setting_applyon_formula" => $applyon_formula,
             "setting_rounding" => $rounding,
             "setting_action" => "",
-            "setting_values" => _getSettingValues($con, $rwid));
+            "setting_values" => _getSPOSettingValues($con, $rwid));
     }
     
     return $arr_setting;
 }
 
 
-function _getSettingValues($con, $rwid)
+function _getSPOSettingValues($con, $rwid)
 {
    $arr_values = array();
    

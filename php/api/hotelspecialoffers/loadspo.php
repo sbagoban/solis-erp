@@ -42,7 +42,7 @@ try {
 
     $con = pdo_con();
 
-    $arr_spo = _spo_loadspo($con, $spoid,$hotel_fk);
+    $arr_spo = _spo_loadspo($con, $spoid, $hotel_fk);
 
     echo json_encode(array("OUTCOME" => "OK", "SPO" => $arr_spo));
 } catch (Exception $ex) {

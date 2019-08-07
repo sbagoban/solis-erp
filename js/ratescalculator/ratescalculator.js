@@ -906,7 +906,7 @@ function ratescalculator() {
         var header = "Date,Status,Comments";
         var colids = "date,status,comments";
         var coltypes = "ro,ro,ro";
-        var initwidth = "80,100,400";
+        var initwidth = "80,100,*";
         var colalign = "center,center,left";
         var colsorting = "na,na,na";
         

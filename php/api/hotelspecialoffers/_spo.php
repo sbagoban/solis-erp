@@ -1,5 +1,6 @@
 <?php
 
+        
 function _spo_loadspo($con, $spoid, $hotelfk) {
     $arr_spo = array();
     
@@ -635,12 +636,12 @@ function _load_flat_rate_capacity($con,$spoid)
             "room_numbedrooms" => $room_numbedrooms,
             "room_variants" => $room_variants,
             "room_action" => "",
-            "room_dates" => _load_capacity_room_dates($con, $room_rwid));
+            "room_dates" => _load_capacity_room_dates($con, $room_rwid, $room_id, $spoid));
     }
     return $arr_room;
 }
 
-function _load_capacity_room_dates($con, $room_rwid)
+function _load_capacity_room_dates($con, $room_rwid , $room_id, $spoid)
 {
     $arr_dates = array();
     $sql = "SELECT 
@@ -662,6 +663,11 @@ function _load_capacity_room_dates($con, $room_rwid)
             "date_dtfrom" => $date_dtfrom,
             "date_dtto" => $date_dtto,
             "date_action" => "",
+            "date_minstay_rules"=>array(), //dummy to look like contract
+            "date_mealextrasupplement_rules"=>array(), //dummy to look like contract
+            "date_policies_cancellation"=>_load_capacity_room_dates_capacityrules_cancellation($con, $date_dtfrom, $date_dtto, $room_id, $spoid),
+            "date_policies_checkinout" => _load_capacity_room_dates_capacityrules_checkinout($con, $date_dtfrom, $date_dtto, $room_id, $spoid),
+            "date_mealsupplement_rules" => _load_capacity_room_dates_capacityrules_meal_supplement($con, $date_dtfrom, $date_dtto, $spoid),
             "date_capacity_rules" => _load_capacity_room_dates_capacityrules($con, $date_rwid),
             "date_adultpolicies_rules" => _load_capacity_room_dates_capacityrules_adultpoliciesrules($con, $date_rwid),
             "date_childpolicies_rules" => _load_capacity_room_dates_capacityrules_childpoliciesrules($con, $date_rwid),
@@ -669,6 +675,159 @@ function _load_capacity_room_dates($con, $room_rwid)
     }
 
     return $arr_dates;
+}
+
+
+function _load_capacity_room_dates_capacityrules_cancellation($con, $date_dtfrom, $date_dtto, $room_id, $spoid)
+{
+    $arr_rules = array();
+    
+    $sql = "select * from tblspecial_offer_flatrate_cancellation
+            where spofk = :spoid and 
+            id IN 
+            (
+                SELECT spo_ftrte_cancellation_fk 
+                FROM tblspecial_offer_flatrate_cancellation_rooms
+                WHERE roomfk=:roomid 
+            )
+            and id IN 
+            (
+                select spo_ftrte_cancellation_fk from 
+                tblspecial_offer_flatrate_cancellation_dateperiods
+                where valid_from=:valid_from AND valid_to = :valid_to
+            )";
+
+    $stmtvalue = $con->prepare($sql);
+    $stmtvalue->execute(array(":spoid" => $spoid,":roomid" => $room_id,
+                              ":valid_from"=>$date_dtfrom,":valid_to"=>$date_dtto));
+
+    while ($rwvalue = $stmtvalue->fetch(PDO::FETCH_ASSOC)) {
+        $rwid = $rwvalue["id"];
+        $canceltype = $rwvalue["cancellation_type"];
+        $charge_method = $rwvalue["charge_basis"];
+        $charge_value = $rwvalue["charge_value"];
+        $days_before_arrival_from = $rwvalue["days_before_arrival_from"];
+        $days_before_arrival_to = $rwvalue["days_before_arrival_to"];
+        $dates_before_arrival_from = $rwvalue["dates_before_arrival_from"];
+        $dates_before_arrival_to = $rwvalue["dates_before_arrival_to"];
+
+
+
+        $arr_rules[] = array("cancellation_rwid" => $rwid,
+            "cancellation_canceltype" => $canceltype,
+            "cancellation_charge_method" => $charge_method,
+            "cancellation_charge_value" => $charge_value,
+            "cancellation_days_before_arrival_from" => $days_before_arrival_from,
+            "cancellation_days_before_arrival_to" => $days_before_arrival_to,
+            "cancellation_dates_before_arrival_from" => $dates_before_arrival_from,
+            "cancellation_dates_before_arrival_to" => $dates_before_arrival_to,
+            "cancellation_action" => "");
+    }
+
+    return $arr_rules;
+}
+
+function _load_capacity_room_dates_capacityrules_checkinout($con, $date_dtfrom, $date_dtto, $room_id, $spoid)
+{
+    $arr_rules = array();
+
+
+    $sql = "select * from tblspecial_offer_flatrate_checkinout
+            where spofk = :spoid and 
+            id in (
+            select spo_ftrte_checkinout_fk FROM tblspecial_offer_flatrate_checkinout_rooms
+            WHERE roomfk=:roomid )
+            and id in (select spo_ftrte_checkinout_fk from 
+            tblspecial_offer_flatrate_checkinout_dateperiods
+            where valid_from=:valid_from AND valid_to = :valid_to)";
+
+    $stmtvalue = $con->prepare($sql);
+    $stmtvalue->execute(array(":spoid" => $spoid,":roomid" => $room_id,
+                              ":valid_from"=>$date_dtfrom,":valid_to"=>$date_dtto));
+
+    while ($rwvalue = $stmtvalue->fetch(PDO::FETCH_ASSOC)) {
+        $rwid = $rwvalue["id"];
+        $policytype = $rwvalue["checkinout_type"];
+        $time_beforeafter = $rwvalue["time_before_after"];
+        $checkinout_time = $rwvalue["time_checkinout"];
+        $charge_type = $rwvalue["charge_basis"];
+        $charge_value = $rwvalue["charge_value"];
+
+
+        $arr_rules[] = array("checkinout_rwid" => $rwid,
+            "checkinout_policytype" => $policytype,
+            "checkinout_time_beforeafter" => $time_beforeafter,
+            "checkinout_checkinout_time" => $checkinout_time,
+            "checkinout_charge_type" => $charge_type,
+            "checkinout_charge_value" => $charge_value,
+            "checkinout_action" => "");
+    }
+
+
+    return $arr_rules;
+}
+
+function _load_capacity_room_dates_capacityrules_meal_supplement($con, $date_dtfrom, $date_dtto, $spoid)
+{
+    //get all meal supplements for that room and date ranges
+    $arr_meal = array();
+
+    $sql = "select * from tblspecial_offer_flatrate_mealsupp where spofk = :spoid
+            and id in 
+            (
+               select spo_ftrte_mealsupp_fk 
+               FROM tblspecial_offer_flatrate_mealsupp_dateperiods                
+                WHERE valid_from=:valid_from AND valid_to=:valid_to
+            )
+            order by spofk";
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":spoid" => $spoid, ":valid_from"=>$date_dtfrom, ":valid_to"=>$date_dtto));
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+
+        $meal_id = $rw["id"];
+        $meal_mealplanfk = $rw["mealplanfk"];
+        $meal_ismain = $rw["ismain"];
+        $meal_adult_count = $rw["adult"];
+
+
+        $arr_meal[] = array("meal_rwid" => $meal_id,
+            "meal_mealplanfk" => $meal_mealplanfk,
+            "meal_ismain" => $meal_ismain,
+            "meal_adult_count" => $meal_adult_count,
+            "meal_action" => "",
+            "meal_children" => _load_capacity_room_dates_capacityrules_meal_supplement_children($meal_id, $con));
+    }
+
+    return $arr_meal;
+}
+
+function _load_capacity_room_dates_capacityrules_meal_supplement_children($meal_id, $con)
+{
+    $arr_children = array();
+
+    //get children count by age range
+    $sql = "SELECT * FROM tblspecial_offer_flatrate_mealsupp_children_ages 
+            WHERE spo_ftrte_mealsupp_fk=:meal_id 
+            ORDER BY child_age_from,child_age_to";
+
+    $query_child = $con->prepare($sql);
+    $query_child->execute(array(":meal_id" => $meal_id));
+    while ($rw_child = $query_child->fetch(PDO::FETCH_ASSOC)) {
+
+        $child_rwid = $rw_child["id"];
+        $age_from = $rw_child["child_age_from"];
+        $age_to = $rw_child["child_age_to"];
+        $child_count = $rw_child["child_count"];
+
+        $arr_children[] = array("child_rwid" => $child_rwid,
+            "child_agefrom" => $age_from,
+            "child_ageto" => $age_to,
+            "child_count" => $child_count,
+            "child_action" => "");
+    }
+
+    return $arr_children;
 }
 
 function _load_capacity_room_dates_capacityrules($con, $date_rwid)
