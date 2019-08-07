@@ -240,8 +240,6 @@ $(document).ready(function(){
         document.getElementById('generate').setAttribute('style', 'display: none');
         document.getElementById('generateNone').setAttribute('style', 'display: block');
     }
-
-    
 });
 
 
