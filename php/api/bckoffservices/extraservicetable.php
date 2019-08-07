@@ -17,7 +17,7 @@ require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
 require_once("../../connector/data_connector.php");
 
-// $idservicesFetch = $_POST["idservicesfk"];
+$idservicesFetch = $_GET["idservicesfk"];
 $con = pdo_con();
 
 // $query_c = $con->prepare("SELECT * FROM tblexcursion_services_quotedetails WHERE idservicesfk = :idservicesfk  ORDER BY idservicesfk ASC");

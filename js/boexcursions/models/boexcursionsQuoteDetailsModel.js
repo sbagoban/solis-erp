@@ -4,7 +4,7 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token),
+            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + data.id,
             dataSrc : ''
         },
         "destroy": true,
