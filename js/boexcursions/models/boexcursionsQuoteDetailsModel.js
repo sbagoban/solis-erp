@@ -1,11 +1,11 @@
 function quoteDetailsEditRows(data, idQuoteDetails) {
-    console.log('>> Chk',data);
+    console.log('>> Chk', data);
     $('#quoteDetailsSort').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            //"url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + data.id,
-            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token),
+            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + idQuoteDetails,
+            //"url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token),
             dataSrc : ''
         },
         "destroy": true,
@@ -22,23 +22,10 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
             // {
             // "extend":    "csvHtml5",
             // "text":      "<i class='fa fa-file-text-o'> Excel</i>",
-            // "titleAttr": "Download in Excel Format"
+            // "titleAttr": "Download in Excel Format" 
             // }
         ],
         
-        // "columnDefs": [
-        //     { "visible": false, "targets": 6},
-        //     { "visible": false, "targets": 7},
-        //     { "visible": false, "targets": 8},
-        //     { "visible": false, "targets": 9},
-        //     { "visible": false, "targets": 10},
-        //     { "visible": false, "targets": 11},
-        //     { "visible": false, "targets": 12},
-        //     { "visible": false, "targets": 13},
-        //     { "visible": false, "targets": 14},
-        //     { "visible": false, "targets": 15},
-        //     { "visible": false, "targets": 16}
-        // ],
         "columns" : [
         {
             "data" : "extraname"
@@ -75,6 +62,24 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
     });
 } 
 
+function deleteRowQuoteDetailschk(data) {
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
+    console.log('>>>', data);
+    var objDel = {id: data.id};
+    const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
+    $.ajax({
+        url: url_delete_QuoteDetails,
+        method: "POST",
+        data: objDel,
+        success: function (data) {
+            console.log('value -2', data);
+        },
+        error: function (error) {
+            console.log('Error ${error}');
+        }
+    });
+    quoteDetailsEditRows(data, idCostDetails);
+}
 
 function editRowQuoteDetailschk(data) {
     $('#editModal').modal();
@@ -82,13 +87,13 @@ function editRowQuoteDetailschk(data) {
     document.getElementById('addDescEdit').value = data.extradescription;
     chkDataId = data.id; // Global Variable
     chkchargeper = data.chargeper;
+    console.log('test -->', data);
 }
-
 
 $('#btnSaveEditQuoteDetails').click(function (event) { 
     var chkExtraName = document.getElementById('addNameEdit').value;
     var chkExtraDesc = document.getElementById('addDescEdit').value;
-    
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
     var objEditQuoteDetails = {
         id: chkDataId,
         extraname: chkExtraName,        
@@ -101,29 +106,11 @@ $('#btnSaveEditQuoteDetails').click(function (event) {
         method: "POST",
         data: objEditQuoteDetails,
         success: function (data) {
-            console.log('value', data);
-            quoteDetailsEditRows();
+            console.log('value -1', data);
+            quoteDetailsEditRows(data, idCostDetails);
         },
         error: function (error) {
             console.log('Error ${error}');
         }
     });
 });
-
-function deleteRowQuoteDetailschk(data) {
-    console.log('>>>>>>>>>>>>>>>>>>', data.id);
-    var objDel = { id: data.id};
-    const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
-    $.ajax({
-        url: url_delete_QuoteDetails,
-        method: "POST",
-        data: objDel,
-        success: function (data) {
-            console.log('value', data);
-            quoteDetailsEditRows();
-        },
-        error: function (error) {
-            console.log('Error ${error}');
-        }
-    });
-}
