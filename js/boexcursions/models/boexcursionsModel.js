@@ -174,16 +174,16 @@ $(document).ready(function(){
     /////////////////////////////////////////
     // model --> Selected Option Code1///////
     /////////////////////////////////////////
-    $("#ddlOptionCode").change(function () {
-        if ($('#ddlOptionCode').val() == '') {
-            console.log('sasdg');
-            document.getElementById('generate').setAttribute('style', 'display: none');
-            document.getElementById('generateNone').setAttribute('style', 'display: block');
-        } else { 
-            document.getElementById('generate').setAttribute('style', 'display: block');
-            document.getElementById('generateNone').setAttribute('style', 'display: none');
-        }
-    });
+    // $("#ddlOptionCode").change(function () {
+    //     if ($('#ddlOptionCode').val() == '') {
+    //         console.log('sasdg');
+    //         document.getElementById('generate').setAttribute('style', 'display: none');
+    //         document.getElementById('generateNone').setAttribute('style', 'display: block');
+    //     } else { 
+    //         document.getElementById('generate').setAttribute('style', 'display: block');
+    //         document.getElementById('generateNone').setAttribute('style', 'display: none');
+    //     }
+    // });
 
     /////////////////////////////////////////
     // model --> save form value to dB //////
@@ -237,8 +237,8 @@ $(document).ready(function(){
         $('#addedDescription').val('');
         $('#addedComment').val('');
         $("#output").html("0000");
-        document.getElementById('generate').setAttribute('style', 'display: none');
-        document.getElementById('generateNone').setAttribute('style', 'display: block');
+        //document.getElementById('generate').setAttribute('style', 'display: none');
+        //document.getElementById('generateNone').setAttribute('style', 'display: block');
     }
 });
 

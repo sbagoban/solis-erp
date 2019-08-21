@@ -43,5 +43,14 @@ if ($row_count_c > 0) {
     $myData = $quoteDetails;
     echo json_encode($myData);
 } else {
-    echo "NO DATA";
+    //echo "NO DATA";
+    $quoteDetails[] = array(
+        'id'                => '-',
+        'idservicesfk'      => '-',
+        'extraname'         => '-',
+        'extradescription'  => '-',
+        'chargeper'         => '-'
+    );
+    $myData = $quoteDetails;
+    echo json_encode($myData);
 }

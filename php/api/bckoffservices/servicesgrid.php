@@ -69,7 +69,7 @@ if ($row_count_c > 0) {
             'charged_unit_children_costdetails' => $row['charged_unit_children_costdetails'],
             'min_children_costdetails'   => $row['min_children_costdetails'],
             'max_children_costdetails'   => $row['max_children_costdetails'],
-            'taxbasis_costdetails'   => $row['taxbasis_costdetails'],
+            // 'taxbasis_costdetails'   => $row['taxbasis_costdetails'],
             'duration_costdetails'   => $row['duration_costdetails'],
             'invoice_desciption_costdetails'   => $row['invoice_desciption_costdetails'], 
             'settingapplyto_policies' => $row['settingapplyto_policies'],
@@ -102,5 +102,27 @@ if ($row_count_c > 0) {
     $myData = $excursionservices;
     echo json_encode($myData);
 } else {
-    echo "NO DATA";
+    //echo "NO DATA";
+    
+    $excursionservices[] = array(
+        'countryfk'          => '-',
+        'servicetypefk'      => '-',
+        'supplierfk'         => '-',
+        'optioncode'         => '-',
+        'descriptionservice' => '-',
+        'comments'           => '-',
+        'services_notes'     => '-',
+        'address_voucherdetails' => '-',
+        'country_voucherdetails' => '-',
+        'state_voucherdetails'   => '-',
+        'postcode_voucherdetails' => '-',
+        'vouchercreation_voucherdetails' => '-',
+        'printvoucher_voucherdetails'   => '-',
+        'vouchertext1_voucherdetails'   => '-',
+        'vouchertext2_voucherdetails'   => '-',
+        'vouchertext3_voucherdetails'   => '-',
+        'vouchertext4_voucherdetails'   => '-',
+    );
+    $myData = $excursionservices;
+    echo json_encode($myData);
 }

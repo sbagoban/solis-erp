@@ -82,7 +82,7 @@
                             <div class="form-group selectValidation" id="optionCode">
                                 <label class="col-md-2 control-label">Option Code</label>
                                 <div class="col-md-3">
-                                    <select class="custom-select form-control form-control-sm inputValidation opt1" name="regular" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="optionCode[optionCode]" id="ddlOptionCode">
+                                    <select class="custom-select form-control form-control-sm inputValidation opt1" name="optionCodeName" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" id="ddlOptionCode">
                                         <option value="00" selected disabled hidden>Select Option</option>
                                     </select>
                                 </div>
@@ -90,13 +90,13 @@
                                     <h3><code id="output">0000</code></h3>
                                 </div>
 
-                                <div class="col-xs-1">
+                                <!-- <div class="col-xs-1">
                                     <a id="generateNone" style="display: block;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-lg" aria-hidden="true"></i></a>
                                     <a id="generate" style="display: none;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="form-group has-warning">
-                                <label class="col-md-2 control-label">Desctription</label>
+                                <label class="col-md-2 control-label">Description</label>
                                 <div class="col-md-10">
                                     <textarea class="form-control textAreaDesc" rows="5" id="addedDescription"></textarea>
                                 </div>
@@ -376,7 +376,7 @@
                                                     <h5>Duration</h5>
                                                     <input type="text" class="form-control" id="duration">
                                                 </div>
-                                                <div class="col-md-3">
+                                                <!-- <div class="col-md-3">
                                                     <h5>Tax Basis</h5>
                                                     <p>
                                                         <input type="radio" id="inclusive" value="inclusive" name="radioGroupTax" checked>
@@ -386,7 +386,7 @@
                                                         <input type="radio" id="exclusive" value="exclusive" name="radioGroupTax">
                                                         <label for="exclusive">Exclusive</label>
                                                     </p>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                         <hr>

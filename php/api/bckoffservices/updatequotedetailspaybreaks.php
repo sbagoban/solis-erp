@@ -26,12 +26,12 @@
             throw new Exception("INVALID TOKEN2");
         }
 
-        if (!isset($_POST["idservicesfk"])) {
-            throw new Exception("INVALID ID");
+        if (!isset($_GET["idservicesfk"])) {
+            throw new Exception("INVALID ID". $_GET["idservicesfk"]);
         }
         require_once("../../connector/pdo_connect_main.php");
 
-        $idservicesfk = $_POST["idservicesfk"];
+        $idservicesfk = $_GET["idservicesfk"];
         $includechildren_paybreaks = trim($_POST["includechildren_paybreaks"]);
         $includeinfant_paybreaks = trim($_POST["includeinfant_paybreaks"]);
 

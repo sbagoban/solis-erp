@@ -40,7 +40,7 @@
         $comments = trim($_POST["comments"]);
         $invoice_desciption_costdetails = trim($_POST["invoice_desciption_costdetails"]);
         $duration_costdetails = trim($_POST["duration_costdetails"]);
-        $taxbasis_costdetails = trim($_POST["taxbasis_costdetails"]);
+        // $taxbasis_costdetails = trim($_POST["taxbasis_costdetails"]);
         $charged_unit_children_costdetails = trim($_POST["charged_unit_children_costdetails"]);
         $min_children_costdetails = trim($_POST["min_children_costdetails"]);
         $max_children_costdetails = trim($_POST["max_children_costdetails"]);
@@ -55,7 +55,7 @@
                         comments=:comments,
                         invoice_desciption_costdetails=:invoice_desciption_costdetails, 
                         duration_costdetails=:duration_costdetails,
-                        taxbasis_costdetails=:taxbasis_costdetails,
+                        -- taxbasis_costdetails=:taxbasis_costdetails,
                         charged_unit_children_costdetails=:charged_unit_children_costdetails,
                         min_children_costdetails=:min_children_costdetails,
                         max_children_costdetails=:max_children_costdetails,
@@ -72,7 +72,7 @@
                 ":comments" => $comments,
                 ":invoice_desciption_costdetails" => $invoice_desciption_costdetails,
                 "duration_costdetails" => $duration_costdetails,
-                "taxbasis_costdetails" => $taxbasis_costdetails,
+                // "taxbasis_costdetails" => $taxbasis_costdetails,
                 "charged_unit_children_costdetails" => $charged_unit_children_costdetails,
                 "min_children_costdetails" => $min_children_costdetails,
                 "max_children_costdetails" => $max_children_costdetails,
