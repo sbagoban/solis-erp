@@ -471,7 +471,7 @@
                                                                 <div class="resize4 form-control">
                                                                     <div class="policiesGroup">
                                                                         <p>
-                                                                            <input type="radio" id="chargePerPerson" name="radioChargePer" checked value="person">
+                                                                            <input type="radio" id="chargePerPerson" name="radioChargePer" value="person">
                                                                             <label for="chargePerPerson">Person</label>
                                                                         </p>
                                                                         <p>
@@ -533,7 +533,7 @@
                                                         <div class="resize4 form-control">
                                                             <div class="policiesGroup">
                                                                 <p>
-                                                                    <input type="radio" id="chargePerPersonEdit" name="radioChargePerEdit" checked value="person">
+                                                                    <input type="radio" id="chargePerPersonEdit" name="radioChargePerEdit" value="person">
                                                                     <label for="chargePerPersonEdit">Person</label>
                                                                 </p>
                                                                 <p>
@@ -570,7 +570,7 @@
                                                 <div class="col-md-4">
                                                     <li class="checkBoxMain">
                                                         <label class='with-square-checkbox'>
-                                                            <input type='checkbox' />
+                                                            <input type='checkbox' id="childrenPayBreaks"/>
                                                             <span>Include <strong>Children</strong> in Pax Break Count</span>
                                                         </label>
                                                     </li>
@@ -578,10 +578,13 @@
                                                 <div class="col-md-4">
                                                     <li class="checkBoxMain">
                                                         <label class='with-square-checkbox'>
-                                                            <input type='checkbox' />
+                                                            <input type='checkbox' id="infantPayBreaks"/>
                                                             <span>Include <strong>Infant</strong> in Pax Break Count</span>
                                                         </label>
                                                     </li>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button id="updateQuoteDetails" class="btn btn-primary pull-right">Update Quote Details &raquo;</button>
                                                 </div>
                                             </div>
                                         </div>

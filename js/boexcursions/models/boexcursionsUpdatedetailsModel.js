@@ -1,6 +1,6 @@
 
     function editRowService(data) {
-        console.log(data);
+        console.log('test >>', data);
         // Set Value - From Selected Line
         document.getElementById("OptionCodeDisplay").innerHTML = data.optioncode;
         document.getElementById("descriptionDisplay").innerHTML = data.descriptionservice;
@@ -680,9 +680,7 @@ $('#btnCounter').click(function (event) {
     var idCostDetails = document.getElementById('idBlock').innerHTML;
     var chargePer = displayChargePerAdult();
     var extraNameQuoteDetails = document.getElementById('addName').value;        
-    var extraDecriptionQuoteDetails = document.getElementById('addDesc').value; 
-    console.log(chargePer, extraNameQuoteDetails, extraDecriptionQuoteDetails);
-    
+    var extraDecriptionQuoteDetails = document.getElementById('addDesc').value;     
     var objUpdateQuoteDetails = {
         id: -1,
         idservicesfk: idCostDetails,        
@@ -690,20 +688,17 @@ $('#btnCounter').click(function (event) {
         extradescription: extraDecriptionQuoteDetails,        
         chargeper: chargePer
     };
-console.table(objUpdateQuoteDetails);
     const url_update_quoteDetails = "php/api/bckoffservices/savequotedetails.php?t=" + encodeURIComponent(global_token);
     $.ajax({
         url: url_update_quoteDetails,
         method: "POST",
         data: objUpdateQuoteDetails,
         success: function (data) {
-            console.log('sdfs', data);
-            quoteDetailsEditRows();
+            quoteDetailsEditRows(objUpdateQuoteDetails, idCostDetails);
             $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
         },
         error: function (error) {
             console.log('Error ${error}');
         }
     });
-
 });

@@ -1,10 +1,11 @@
 function quoteDetailsEditRows(data, idQuoteDetails) {
-    console.log('>> Chk',data);
+    console.log('>> Chk', data);
     $('#quoteDetailsSort').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + data.id,
+            "url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + idQuoteDetails,
+            //"url" : "php/api/bckoffservices/extraservicetable.php?t=" + encodeURIComponent(global_token),
             dataSrc : ''
         },
         "destroy": true,
@@ -21,24 +22,12 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
             // {
             // "extend":    "csvHtml5",
             // "text":      "<i class='fa fa-file-text-o'> Excel</i>",
-            // "titleAttr": "Download in Excel Format"
+            // "titleAttr": "Download in Excel Format" 
             // }
         ],
         
-        // "columnDefs": [
-        //     { "visible": false, "targets": 6},
-        //     { "visible": false, "targets": 7},
-        //     { "visible": false, "targets": 8},
-        //     { "visible": false, "targets": 9},
-        //     { "visible": false, "targets": 10},
-        //     { "visible": false, "targets": 11},
-        //     { "visible": false, "targets": 12},
-        //     { "visible": false, "targets": 13},
-        //     { "visible": false, "targets": 14},
-        //     { "visible": false, "targets": 15},
-        //     { "visible": false, "targets": 16}
-        // ],
-        "columns" : [ {
+        "columns" : [
+        {
             "data" : "extraname"
         }, {
             "data" : "extradescription"
@@ -73,34 +62,55 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
     });
 } 
 
+function deleteRowQuoteDetailschk(data) {
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
+    var objDel = {id: data.id};
+    const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
+    $.ajax({
+        url: url_delete_QuoteDetails,
+        method: "POST",
+        data: objDel,
+        success: function (data) {
+            console.log('value -2', data);
+        },
+        error: function (error) {
+            console.log('Error ${error}');
+        }
+    });
+    quoteDetailsEditRows(data, idCostDetails);
+}
 
 function editRowQuoteDetailschk(data) {
     $('#editModal').modal();
     document.getElementById('addNameEdit').value = data.extraname;
     document.getElementById('addDescEdit').value = data.extradescription;
+    if (data.chargeper == "unit") {
+        document.getElementById('chargePerUnitEdit').checked = true;
+    } else if (data.chargeper == "person") { 
+        document.getElementById('chargePerPersonEdit').checked = true;
+    }
     chkDataId = data.id; // Global Variable
     chkchargeper = data.chargeper;
 }
 
-
 $('#btnSaveEditQuoteDetails').click(function (event) { 
     var chkExtraName = document.getElementById('addNameEdit').value;
     var chkExtraDesc = document.getElementById('addDescEdit').value;
-    
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
     var objEditQuoteDetails = {
         id: chkDataId,
         extraname: chkExtraName,        
         extradescription: chkExtraDesc,
         chargeper: chkchargeper
     };
-    const url_edit_QuoteDetails = "php/api/bckoffservices/updatequotedetails.php?t=" + encodeURIComponent(global_token);
+    const url_edit_quoteDetails = "php/api/bckoffservices/updatequotedetails.php?t=" + encodeURIComponent(global_token);
     $.ajax({
-        url: url_edit_QuoteDetails,
+        url: url_edit_quoteDetails,
         method: "POST",
         data: objEditQuoteDetails,
         success: function (data) {
-            console.log('value', data);
-            quoteDetailsEditRows();
+            console.log('value -1', data);
+            quoteDetailsEditRows(data, idCostDetails);
         },
         error: function (error) {
             console.log('Error ${error}');
@@ -108,20 +118,38 @@ $('#btnSaveEditQuoteDetails').click(function (event) {
     });
 });
 
-function deleteRowQuoteDetailschk(data) {
-    console.log('>>>>>>>>>>>>>>>>>>', data.id);
-    const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token);
+$('#updateQuoteDetails').click(function (event) { 
+    var chkChildrenPayBreaks = document.getElementById('childrenPayBreaks');
+    var chkInfantPayBreaks = document.getElementById('infantPayBreaks');
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
+    if (chkChildrenPayBreaks.checked == true) {
+        chkChildrenPayBreaksValue = 1;
+    } 
+    if (chkChildrenPayBreaks.checked == false) {
+        chkChildrenPayBreaksValue = 0;
+    }
+    if (chkInfantPayBreaks.checked == true) {
+        chkInfantPayBreaksValue = 1;
+    } 
+    if (chkInfantPayBreaks.checked == false) {
+        chkInfantPayBreaksValue = 0;
+    }
+    console.log(idCostDetails);
+    var objUpdateQuoteDetails = {
+        id: idCostDetails,
+        includechildren_paybreaks: chkChildrenPayBreaksValue,        
+        includeinfant_paybreaks: chkInfantPayBreaksValue
+    };
+    const url_update_QuoteDetails = "php/api/bckoffservices/updatequotedetailspaybreaks.php?t=" + encodeURIComponent(global_token);
     $.ajax({
-        url: url_delete_QuoteDetails,
+        url: url_update_QuoteDetails,
         method: "POST",
-        type: "DELETE",
-        data: data.id,
+        data: objUpdateQuoteDetails,
         success: function (data) {
-            console.log('value', data);
-            //quoteDetailsEditRows();
+            console.log('value -1', data);
         },
         error: function (error) {
             console.log('Error ${error}');
         }
     });
-}
+});
