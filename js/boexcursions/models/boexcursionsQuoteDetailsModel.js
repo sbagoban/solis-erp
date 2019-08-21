@@ -64,7 +64,6 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
 
 function deleteRowQuoteDetailschk(data) {
     var idCostDetails = document.getElementById('idBlock').innerHTML;
-    console.log('>>>', data);
     var objDel = {id: data.id};
     const url_delete_QuoteDetails = "php/api/bckoffservices/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
     $.ajax({
@@ -85,9 +84,13 @@ function editRowQuoteDetailschk(data) {
     $('#editModal').modal();
     document.getElementById('addNameEdit').value = data.extraname;
     document.getElementById('addDescEdit').value = data.extradescription;
+    if (data.chargeper == "unit") {
+        document.getElementById('chargePerUnitEdit').checked = true;
+    } else if (data.chargeper == "person") { 
+        document.getElementById('chargePerPersonEdit').checked = true;
+    }
     chkDataId = data.id; // Global Variable
     chkchargeper = data.chargeper;
-    console.log('test -->', data);
 }
 
 $('#btnSaveEditQuoteDetails').click(function (event) { 
@@ -100,14 +103,50 @@ $('#btnSaveEditQuoteDetails').click(function (event) {
         extradescription: chkExtraDesc,
         chargeper: chkchargeper
     };
-    const url_edit_QuoteDetails = "php/api/bckoffservices/updatequotedetails.php?t=" + encodeURIComponent(global_token);
+    const url_edit_quoteDetails = "php/api/bckoffservices/updatequotedetails.php?t=" + encodeURIComponent(global_token);
     $.ajax({
-        url: url_edit_QuoteDetails,
+        url: url_edit_quoteDetails,
         method: "POST",
         data: objEditQuoteDetails,
         success: function (data) {
             console.log('value -1', data);
             quoteDetailsEditRows(data, idCostDetails);
+        },
+        error: function (error) {
+            console.log('Error ${error}');
+        }
+    });
+});
+
+$('#updateQuoteDetails').click(function (event) { 
+    var chkChildrenPayBreaks = document.getElementById('childrenPayBreaks');
+    var chkInfantPayBreaks = document.getElementById('infantPayBreaks');
+    var idCostDetails = document.getElementById('idBlock').innerHTML;
+    if (chkChildrenPayBreaks.checked == true) {
+        chkChildrenPayBreaksValue = 1;
+    } 
+    if (chkChildrenPayBreaks.checked == false) {
+        chkChildrenPayBreaksValue = 0;
+    }
+    if (chkInfantPayBreaks.checked == true) {
+        chkInfantPayBreaksValue = 1;
+    } 
+    if (chkInfantPayBreaks.checked == false) {
+        chkInfantPayBreaksValue = 0;
+    }
+    console.log(idCostDetails);
+    var objUpdateQuoteDetails = {
+        id: idCostDetails,
+        includechildren_paybreaks: chkChildrenPayBreaksValue,        
+        includeinfant_paybreaks: chkInfantPayBreaksValue
+    };
+    const url_update_QuoteDetails = "php/api/bckoffservices/updatequotedetailspaybreaks.php?t=" + encodeURIComponent(global_token);
+    $.ajax({
+        url: url_update_QuoteDetails,
+        method: "POST",
+        data: objUpdateQuoteDetails,
+        success: function (data) {
+            console.log('value -1', data);
         },
         error: function (error) {
             console.log('Error ${error}');
