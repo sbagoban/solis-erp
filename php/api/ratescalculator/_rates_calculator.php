@@ -73,7 +73,7 @@ function _rates_calculator($con, $arr_params) {
         }
 
 
-        /*
+        
         $arr_fr = _spo_loadspo($con, 58, $arr_params["hotel"]);
         $arr_item = array(
             "SPO_ID" => 58, "SPO_NAME" => "TESTING 6", "SPO_TYPE" => "FLAT_RATES",
@@ -91,8 +91,7 @@ function _rates_calculator($con, $arr_params) {
             "FLAT_RATE_CAPACITY_ARRAY" => $arr_fr["FLAT_RATES_CAPACITY"]);
 
         $arr_spo_discounts[] = $arr_item;
-
-        */
+        
 
         ////TEMP END ======================================================
         //=================================================================        
@@ -210,7 +209,7 @@ function _rates_calculator($con, $arr_params) {
         //======================================================================
         //========================================================================
         //load contract rules, tax and commission into arrays
-        $arr_capacity = _contract_capacityarr($con, $arr_params["current_contract_id"]); //TODO: CHANGE IN FLAT RATES SPO
+        $arr_capacity = _contract_capacityarr($con, $arr_params["current_contract_id"]); 
         $arr_taxcomm = _contract_taxcommi($con, $arr_params["current_contract_id"]);
 
         $arr_params["arr_capacity"] = $arr_capacity;
@@ -601,7 +600,7 @@ function _rates_calculator_test_children_ages($arr_params, $con) {
         //now check if there are ages outside the contract definition
         for ($i = 0; $i < count($children); $i++) {
             if ($children[$i]["age"] != "OK") {
-                return $children[$i]["age"] . "YRS OUTSIDE $spo_contract ALLOWABLE AGE RANGES";
+                return $children[$i]["age"] . "YRS OUTSIDE ALLOWABLE AGE RANGES";
             }
         }
 
@@ -1062,12 +1061,15 @@ function _rates_calculator_lookup_rates_units($arr_params, $this_date, $con, $ar
 
     $arr_capacity = $arr_params["arr_capacity"];
     
+    $spo_contract = "CONTRACT"; //load children ages at contract level
+    
     $flat_rate_comments = "";
     //==============================FLAT RATE SPO? ================================
     if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
         //clearly SPO FLAT RATES will take over for this date
         $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
         $flat_rate_comments .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+        $spo_contract = "SPO"; 
     }
     //=============================================================================
 
@@ -1547,12 +1549,15 @@ function _rates_calculator_lookup_rates_single_parent($arr_params, $this_date, $
     $children = $arr_params["children"];
     $hotelroom = $arr_params["hotelroom"];
     $arr_capacity = $arr_params["arr_capacity"];
+    
+    $spo_contract = "CONTRACT"; //load children ages at contract level initially
 
     //==============================FLAT RATE SPO? ================================
     if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
         //clearly SPO FLAT RATES will take over for this date
         //so bypass contract ECI and LCO policies and apply SPO ECI and LCO policies
         $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
+        $spo_contract = "SPO";
     }
     //=============================================================================
 
@@ -1606,6 +1611,8 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
     //searched rates from single parent first
 
     $arr = array();
+    
+    $spo_contract = "CONTRACT"; //to distinguish between loading children ages from CONTRACT or SPO
 
     $single_parent_comments = "";
     if ($flg_looked_at_single_parent_first) {
@@ -1619,6 +1626,7 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
         //clearly SPO FLAT RATES will take over for this date
         $arr_capacity = $arr_params["flat_rate_spo_apply"]["RATES"];
         $flat_rate_comments .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+        $spo_contract = "SPO";
     }
     //=============================================================================
 
@@ -1676,7 +1684,7 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
         //======================================================================
         //
         //calculate children rates =============================================
-        $arr_rates_children = _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
+        $arr_rates_children = _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date, $flg_looked_at_single_parent_first,$spo_contract);
         $arr = array_merge($arr, $arr_rates_children);
 
         //======================================================================
@@ -1690,12 +1698,12 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
     return $arr;
 }
 
-function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date, $flg_looked_at_single_parent_first) {
+function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $con, $arr_eci, $this_date, $flg_looked_at_single_parent_first, $spo_contract) {
 
     //regroup each child in $children by age groups defined in the contract
     $arr = array();
 
-    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con);
+    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contract);
 
     //for each age group, get children that fall within that range
     for ($a = 0; $a < count($arr_age_groups); $a++) {
@@ -1725,19 +1733,44 @@ function _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contra
     //need to know if to take ages group from contract level or from spo level
     //$spo_contract = CONTRACT / SPO
     
-    $contractid = $arr_params["current_contract_id"];
+    $query = null;
+    
+    if($spo_contract == "CONTRACT")
+    {
+        //load age ranges from CONTRACT level
+        $contractid = $arr_params["current_contract_id"];
             
-    //return an array of age groups for that contract
-    $sql = "SELECT ca.agefrom, ca.ageto
-            FROM tblservice_contract_childages scc
-            INNER JOIN tblchildrenagerange ca ON scc.child_age_fk = ca.id
-            WHERE service_contract_fk = :contractid
-            GROUP BY ca.agefrom, ca.ageto
-            ORDER BY ca.agefrom, ca.ageto";
-
-    $query = $con->prepare($sql);
-    $query->execute(array(":contractid" => $contractid));
-
+        //return an array of age groups for that contract
+        $sql = "SELECT ca.agefrom, ca.ageto
+                FROM tblservice_contract_childages scc
+                INNER JOIN tblchildrenagerange ca ON scc.child_age_fk = ca.id
+                WHERE service_contract_fk = :contractid
+                GROUP BY ca.agefrom, ca.ageto
+                ORDER BY ca.agefrom, ca.ageto";
+        
+        $query = $con->prepare($sql);
+        $query->execute(array(":contractid" => $contractid));
+    }
+    else if($spo_contract == "SPO")
+    {
+        //load age ranges from SPO level
+        $spoid = $arr_params["flat_rate_spo_apply"]["SPO_ID"];
+        
+        //return an array of age groups for that SPO
+        $sql = "SELECT cr.id, cr.agefrom, cr.ageto
+                FROM tblspecial_offer_flatrate_group_validity_period  sofgvp
+                INNER JOIN tblspecial_offer_flatrate_group_validity_period_childages sofgvpc 
+                ON sofgvp.id = sofgvpc.spo_fltrate_grp_valid_period_fk
+                INNER JOIN tblchildrenagerange cr on sofgvpc.childage_fk = cr.id
+                WHERE sofgvp.spo_fk = :spoid
+                GROUP BY cr.agefrom, cr.id, cr.ageto
+                ORDER BY cr.agefrom, cr.ageto";
+        
+        $query = $con->prepare($sql);
+        $query->execute(array(":spoid" => $spoid));
+    }
+    
+    
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
         $arr_age_groups[] = array("AGEFROM" => $rw["agefrom"], "AGETO" => $rw["ageto"]);
     }
@@ -2272,6 +2305,7 @@ function _rates_calculator_extra_meal_supplement_children($children_rules, $chil
 
     $currency_buy = $arr_params["currency_buy_code"];
 
+    //extra meal supplement always at CONTRACT level
     $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, "CONTRACT");
 
     //for each age group, get children that fall within that range
@@ -2411,12 +2445,12 @@ function _rates_calculator_single_parent_get_rules_by_agerange($rules, $ag) {
     return $arr_rules;
 }
 
-function _rates_calculator_regroup_children_by_age($arr_params, $children, $con,$spo_contract) {
+function _rates_calculator_regroup_children_by_age($arr_params, $children, $con, $spo_contract) {
     //for each age group, get children that fall within that range
     $arr_group_children = array();
 
     //group children by age groups in the contract
-    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con,$spo_contract);
+    $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contract);
 
 
     for ($a = 0; $a < count($arr_age_groups); $a++) {
