@@ -263,6 +263,16 @@ function hotelcontracts()
     popupwin_testtaxcomm.denyPark();
     popupwin_testtaxcomm.button("close").hide();
 
+
+    //=============
+
+    var popupwin_profile_taxcomm = dhxWins.createWindow("popupwin_profile_taxcomm", 50, 50, 900, 500);
+    popupwin_profile_taxcomm.setText("Profile Tax Commission:");
+    popupwin_profile_taxcomm.denyResize();
+    popupwin_profile_taxcomm.denyPark();
+    popupwin_profile_taxcomm.button("close").hide();
+
+
     //=============
 
     var popupwin_capacitydates = dhxWins.createWindow("popupwin_capacitydates", 50, 50, 600, 200);
@@ -1659,12 +1669,12 @@ function hotelcontracts()
     var str_frm_currency = [
         {type: "settings", position: "label-left", id: "form_currency"},
         {type: "block", width: 900, list: [
-                {type: "combo", name: "mycostprice_currencyfk", label: "Cost Price:",
+                {type: "combo", name: "mycostprice_currencyfk", label: "Default Currency:",
                     labelWidth: "80",
                     labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
-                    comboImagePath: "../../images/"
+                    comboImagePath: "../../images/", note: {text: "Used as Cost Price"}
                 }]},
         {type: "block", width: 900, list: [
                 {type: "input", name: "selected_currency_buy_display",
@@ -1800,6 +1810,7 @@ function hotelcontracts()
     var opts_taxcommi = Array(
             Array('new_exception', 'obj', 'Create Room Exception', 'add.png'),
             Array('test_settings', 'obj', 'Test Settings', 'exam_pass.png'),
+            Array('settings_profile', 'obj', 'Setting Profiles', 'modules.png'),
             Array('sep1', 'sep'),
             Array('delete_exception', 'obj', 'Delete Room Exception', 'delete.png'));
 
@@ -1818,6 +1829,9 @@ function hotelcontracts()
         } else if (id == "test_settings")
         {
             testTaxCommiSettings();
+        } else if (id == "settings_profile")
+        {
+            taxCommiSettingsProfile();
         }
     });
 
@@ -1897,6 +1911,7 @@ function hotelcontracts()
     });
 
 
+
     var test_taxcomm_layout = popupwin_testtaxcomm.attachLayout("1C");
     test_taxcomm_layout.cells("a").hideHeader();
 
@@ -1917,6 +1932,66 @@ function hotelcontracts()
             popupwin_contracts.setModal(true);
         }
     });
+
+
+    var profile_taxcomm_layout = popupwin_profile_taxcomm.attachLayout("1C");
+    profile_taxcomm_layout.cells("a").hideHeader();
+
+    var grid_profile_taxcomm = profile_taxcomm_layout.cells("a").attachGrid();
+    grid_profile_taxcomm.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_profile_taxcomm.setHeader("Profile,Description");
+    grid_profile_taxcomm.setColumnIds("profile_name,profile_description");
+    grid_profile_taxcomm.setColTypes("ed,txt");
+    grid_profile_taxcomm.setInitWidths("300,1000");
+    grid_profile_taxcomm.setColAlign("left,left");
+    grid_profile_taxcomm.setColSorting('str,str');
+    grid_profile_taxcomm.enableUndoRedo();
+    grid_profile_taxcomm.attachEvent("onEditCell", profileEdit);
+    grid_profile_taxcomm.enableAlterCss("", "");
+    grid_profile_taxcomm.enableMultiline(true);
+    grid_profile_taxcomm.init();
+
+    var toolbar_profile_taxcomm = profile_taxcomm_layout.cells("a").attachToolbar();
+    toolbar_profile_taxcomm.setIconsPath("images/");
+
+    var opts_profile_save = Array(
+            Array('save_new', 'obj', 'Save as New Profile', 'save_new.png'),
+            Array('over_save', 'obj', 'Overwrite Selected Profile', 'save.png')
+            );
+
+    toolbar_profile_taxcomm.addButton("load", 1, "Load Profile", "exam_pass.png", "exam_pass.png");
+    toolbar_profile_taxcomm.addButtonSelect("save", 2, "Save...", opts_profile_save, "save.png", "save.png", null, true);
+    toolbar_profile_taxcomm.addSpacer("save");
+    toolbar_profile_taxcomm.addButton("delete", 3, "Delete Profile", "delete.png", "delete.png");
+    toolbar_profile_taxcomm.addSpacer("delete");
+    toolbar_profile_taxcomm.addButton("exit", 4, "Exit", "exit.png", "exit.png");
+    toolbar_profile_taxcomm.setIconSize(32);
+
+
+    toolbar_profile_taxcomm.attachEvent("onClick", function (id) {
+        if (id == "exit")
+        {
+            popupwin_profile_taxcomm.setModal(false);
+            popupwin_profile_taxcomm.hide();
+            popupwin_contracts.setModal(true);
+        } else if (id == "load")
+        {
+            loadSettingsProfile();
+        } else if (id == "save_new")
+        {
+            rememberProfileState("-1");
+
+        } else if (id == "over_save")
+        {
+            rememberOverProfileState();
+
+        } else if (id == "delete")
+        {
+            deleteSettingsProfile();
+        }
+    });
+
+
     //===============================================================================
 
     applyrights();
@@ -3913,6 +3988,8 @@ function hotelcontracts()
         toolbar_taxcommi_tree.hideListOption("opts", "new_exception");
         toolbar_taxcommi_tree.hideListOption("opts", "delete_exception");
         toolbar_taxcommi_tree.hideListOption("opts", "test_settings");
+        toolbar_taxcommi_tree.hideListOption("opts", "settings_profile");
+
 
         toolbar_taxcommi_buy.hideListOption("opts", "additem");
         toolbar_taxcommi_buy.hideListOption("opts", "moveup");
@@ -3937,6 +4014,7 @@ function hotelcontracts()
             toolbar_taxcommi_buy.showListOption("opts", "additem");
             toolbar_taxcommi_sell.showListOption("opts", "additem");
             toolbar_taxcommi_tree.showListOption("opts", "test_settings");
+            toolbar_taxcommi_tree.showListOption("opts", "settings_profile");
 
 
         } else if (node == "ROOM")
@@ -3952,6 +4030,7 @@ function hotelcontracts()
             //show delete exception button
             toolbar_taxcommi_tree.showListOption("opts", "delete_exception");
             toolbar_taxcommi_tree.showListOption("opts", "test_settings");
+            toolbar_taxcommi_tree.showListOption("opts", "settings_profile");
 
             var roomid = tree_taxcomm.getUserData(id, "ROOMID");
             loadGridTaxCommXML(roomid, {
@@ -4884,7 +4963,6 @@ function hotelcontracts()
                     //select specific record
                     grid_taxcomm_buy.selectRowById(selectrowid_buy, false, true, true);
                 }
-
             }
         });
 
@@ -8916,7 +8994,6 @@ function hotelcontracts()
                 }
                 if (json_obj.OUTCOME == "OK")
                 {
-                    console.log(json_obj.COMBINATIONS);
                     displayCombinations(json_obj.COMBINATIONS);
                 } else
                 {
@@ -14877,12 +14954,391 @@ function hotelcontracts()
 
 
     }
-    //========================
+
+    function taxCommiSettingsProfile()
+    {
+        popupwin_contracts.setModal(false);
+        popupwin_profile_taxcomm.show();
+        popupwin_profile_taxcomm.center();
+        popupwin_profile_taxcomm.setModal(true);
+
+        loadTaxCommiProfile("", false);
+
+    }
+
+    function loadTaxCommiProfile(selectid, openeditor)
+    {
+        profile_taxcomm_layout.cells("a").progressOn();
+        grid_profile_taxcomm.clearAll();
+
+        var dsProfile = new dhtmlXDataStore();
+
+        dsProfile.load("php/api/hotelcontracts/profilegrid.php?t=" + encodeURIComponent(global_token), "json", function () {
+            profile_taxcomm_layout.cells("a").progressOff();
+
+            grid_profile_taxcomm.sync(dsProfile);
+
+            grid_profile_taxcomm.forEachRow(function (rwid) {
+                grid_profile_taxcomm.forEachCell(rwid, function (c, ind) {
+                    var cellstyle = "font-weight:normal; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+                    grid_profile_taxcomm.setCellTextStyle(rwid, ind, cellstyle);
+                });
+            });
+
+            if (selectid != "")
+            {
+                grid_profile_taxcomm.selectRowById(selectid, false, true, true);
+
+                if (openeditor)
+                {
+                    grid_profile_taxcomm.selectCell(grid_profile_taxcomm.getRowIndex(selectid), 0, false, false, true, true);
+                }
+            }
+        });
+    }
+
+    function deleteSettingsProfile()
+    {
+
+        var pid = grid_profile_taxcomm.getSelectedRowId();
+        if (!pid)
+        {
+            return;
+        }
+
+        dhtmlx.confirm({
+            title: "Delete Profile",
+            type: "confirm",
+            text: "Confirm Deletion?",
+            callback: function (tf) {
+                if (tf)
+                {
+                    profile_taxcomm_layout.progressOn();
+                    var params = "pid=" + pid + "&t=" + encodeURIComponent(global_token);
+                    dhtmlxAjax.post("php/api/hotelcontracts/deleteprofile.php", params, function (loader) {
+                        profile_taxcomm_layout.progressOff();
+                        if (loader)
+                        {
+                            if (loader.xmlDoc.responseURL == "")
+                            {
+                                dhtmlx.alert({
+                                    text: "Connection Lost!",
+                                    type: "alert-warning",
+                                    title: "DELETE PROFILE",
+                                    callback: function () {
+                                    }
+                                });
+                                return false;
+                            }
+
+                            var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                            if (!json_obj)
+                            {
+                                dhtmlx.alert({
+                                    text: loader.xmlDoc.responseText,
+                                    type: "alert-warning",
+                                    title: "DELETE PROFILE",
+                                    callback: function () {
+                                    }
+                                });
+                                return false;
+                            }
+                            if (json_obj.OUTCOME == "OK")
+                            {
+                                grid_profile_taxcomm.deleteRow(pid);
+
+                            } else
+                            {
+                                dhtmlx.alert({
+                                    text: json_obj.OUTCOME,
+                                    type: "alert-warning",
+                                    title: "DELETE PROFILE",
+                                    callback: function () {
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function profileEdit(stage, rId, cInd, nValue, oValue) {
+        if (stage == 2)
+        {
+            if (nValue != oValue)
+            {
+                var colid = grid_profile_taxcomm.getColumnId(cInd);
+                nValue = utils_trim(nValue, " ");
+                if (nValue == "")
+                {
+                    return false;
+                }
+
+                profile_taxcomm_layout.progressOn();
+                var params = "id=" + rId + "&colid=" + colid + "&val=" + encodeURIComponent(nValue) + "&t=" + encodeURIComponent(global_token);
+                dhtmlxAjax.post("php/api/hotelcontracts/updateprofile.php", params, function (loader) {
+                    profile_taxcomm_layout.progressOff();
+                    if (loader)
+                    {
+                        if (loader.xmlDoc.responseURL == "")
+                        {
+                            dhtmlx.alert({
+                                text: "Connection Lost!",
+                                type: "alert-warning",
+                                title: "UPDATE PROFILE",
+                                callback: function () {
+                                    grid_profile_taxcomm.doUndo();
+                                }
+                            });
+                            return;
+                        }
+
+                        var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                        if (!json_obj)
+                        {
+                            dhtmlx.alert({
+                                text: loader.xmlDoc.responseText,
+                                type: "alert-warning",
+                                title: "UPDATE PROFILE",
+                                callback: function () {
+                                    grid_profile_taxcomm.doUndo();
+                                }
+                            });
+                            return;
+                        }
+                        if (json_obj.OUTCOME != "OK")
+                        {
+
+                            dhtmlx.alert({
+                                text: json_obj.OUTCOME,
+                                type: "alert-warning",
+                                title: "UPDATE PROFILE",
+                                callback: function () {
+                                    grid_profile_taxcomm.doUndo();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        return true;
+    }
+
+    function rememberProfileState(profileid)
+    {
+        var nodeid = tree_taxcomm.getSelectedItemId();
+        var roomid = tree_taxcomm.getUserData(nodeid, "ROOMID");
+
+        var obj = lookupTaxCommiRoomObj(roomid);
+        if (obj)
+        {
+            var buying_settings = JSON.stringify(obj.buying_settings);
+            var selling_settings = JSON.stringify(obj.selling_settings);
+
+            profile_taxcomm_layout.progressOn();
+            var params = "id=" + profileid +
+                    "&buying_settings=" + encodeURIComponent(buying_settings) +
+                    "&selling_settings=" + encodeURIComponent(selling_settings) +
+                    "&t=" + encodeURIComponent(global_token);
+
+            dhtmlxAjax.post("php/api/hotelcontracts/saveprofile.php", params, function (loader) {
+                profile_taxcomm_layout.progressOff();
+                if (loader)
+                {
+                    if (loader.xmlDoc.responseURL == "")
+                    {
+                        dhtmlx.alert({
+                            text: "Connection Lost!",
+                            type: "alert-warning",
+                            title: "SAVE PROFILE",
+                            callback: function () {
+                            }
+                        });
+                        return;
+                    }
+
+                    var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                    if (!json_obj)
+                    {
+                        dhtmlx.alert({
+                            text: loader.xmlDoc.responseText,
+                            type: "alert-warning",
+                            title: "SAVE PROFILE",
+                            callback: function () {
+                            }
+                        });
+                        return;
+                    }
+                    if (json_obj.OUTCOME == "OK")
+                    {
+                        var select_id = json_obj.ID;
+                        var openeditor = false;
+                        if (profileid == "-1")
+                        {
+                            openeditor = true;
+                        }
+                        loadTaxCommiProfile(select_id, openeditor);
+                    } else
+                    {
+
+                        dhtmlx.alert({
+                            text: json_obj.OUTCOME,
+                            type: "alert-warning",
+                            title: "SAVE PROFILE",
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    function rememberOverProfileState()
+    {
+        var pid = grid_profile_taxcomm.getSelectedRowId();
+        if (!pid)
+        {
+            return;
+        }
+
+        dhtmlx.confirm({
+            title: "Overwrite Save Profile",
+            type: "confirm",
+            text: "Confirm <b>overwriting</b> currently selected Profile?",
+            callback: function (tf) {
+                if (tf)
+                {
+                    rememberProfileState(pid);
+                }
+            }
+        });
+
+    }
+
+
+    function loadSettingsProfile()
+    {
+        var pid = grid_profile_taxcomm.getSelectedRowId();
+        if (!pid)
+        {
+            return;
+        }
+
+        profile_taxcomm_layout.progressOn();
+        var params = "id=" + pid +
+                "&t=" + encodeURIComponent(global_token);
+
+        dhtmlxAjax.post("php/api/hotelcontracts/loadprofile.php", params, function (loader) {
+            profile_taxcomm_layout.progressOff();
+            if (loader)
+            {
+                if (loader.xmlDoc.responseURL == "")
+                {
+                    dhtmlx.alert({
+                        text: "Connection Lost!",
+                        type: "alert-warning",
+                        title: "LOAD PROFILE",
+                        callback: function () {
+                        }
+                    });
+                    return;
+                }
+
+                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                if (!json_obj)
+                {
+                    dhtmlx.alert({
+                        text: loader.xmlDoc.responseText,
+                        type: "alert-warning",
+                        title: "LOAD PROFILE",
+                        callback: function () {
+                        }
+                    });
+                    return;
+                }
+                if (json_obj.OUTCOME == "OK")
+                {
+                    var arr_buys = json_obj.BUY;
+                    var arr_sells = json_obj.SELL;
+
+                    var nodeid = tree_taxcomm.getSelectedItemId();
+                    var roomid = tree_taxcomm.getUserData(nodeid, "ROOMID");
+
+                    var obj = lookupTaxCommiRoomObj(roomid);
+                    if (obj)
+                    {
+                        obj.buying_settings = []; //clear array
+                        obj.selling_settings = []; //clear array
+                    }
+
+
+                    pushProfileTaxCommiItems(arr_buys, "BUYING", obj.buying_settings);
+                    pushProfileTaxCommiItems(arr_sells, "SELLING", obj.selling_settings);
+
+                    onTaxCommTreeNodeSelect(nodeid);
+
+                    popupwin_profile_taxcomm.setModal(false);
+                    popupwin_profile_taxcomm.hide();
+                    popupwin_contracts.setModal(true);
+
+                } else
+                {
+
+                    dhtmlx.alert({
+                        text: json_obj.OUTCOME,
+                        type: "alert-warning",
+                        title: "LOAD PROFILE",
+                        callback: function () {
+                        }
+                    });
+                }
+            }
+        });
+
+
+    }
+
+    function pushProfileTaxCommiItems(arr_buys_sells, buying_selling, arr_to_push)
+    {
+        for (var i = 0; i < arr_buys_sells.length; i++)
+        {
+
+            _taxcommi_settings_id--;
+            var obj = {
+                setting_rwid: _taxcommi_settings_id,
+                setting_buying_selling: buying_selling,
+                setting_row_index: arr_buys_sells[i].row_index,
+                setting_item_fk: arr_buys_sells[i].item_fk,
+                setting_item_name: arr_buys_sells[i].item_name,
+                setting_item_abbrv: arr_buys_sells[i].abbrv,
+                setting_item_code: arr_buys_sells[i].code,
+                setting_core_addon: arr_buys_sells[i].core_addon,
+                setting_basis: arr_buys_sells[i].basis,
+                setting_applyon_formula: arr_buys_sells[i].formula,
+                setting_rounding: arr_buys_sells[i].rounding,
+                setting_action: "INSERT",
+                setting_values: []
+            };
+
+            arr_to_push.push(obj);
+        }
+
+    }
 
     grid_choices.selectRowById("currency", false, true, true);
     popupwin_capacitydates.hide();
     popupwin_loadperiods.hide();
     popupwin_capacitycombinations.hide();
     popupwin_testtaxcomm.hide();
+    popupwin_profile_taxcomm.hide();
 
 }

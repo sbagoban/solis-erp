@@ -423,15 +423,15 @@ function hotels()
                 {type: "label", label: "Physical Address"},
                 {type: "input", name: "phy_address", label: "Street 1:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                 },
                 {type: "input", name: "phy_address2", label: "Street 2:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                 },
                 {type: "input", name: "phy_city", label: "City:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                 },
                 {type: "input", name: "phy_postcode", label: "Postcode:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -448,7 +448,10 @@ function hotels()
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
-                    comboImagePath: "../../images/"
+                    comboImagePath: "../../images/",
+                    note: {
+                        text: "Dependant on Physical Country Selected"
+                    }
                 },
                 {type: "combo", name: "coastfk", label: "Coast:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -470,15 +473,15 @@ function hotels()
                 {type: "label", label: "Mail Address"},
                 {type: "input", name: "mail_address", label: "Street 1:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "mail_address2", label: "Street 2:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "mail_city", label: "City:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                 },
                 {type: "input", name: "mail_postcode", label: "Postcode:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -496,14 +499,14 @@ function hotels()
 
                 {type: "combo", name: "ratecode", label: "Rate:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                     comboType: "image",
                     comboImagePath: "../../images/"
                 },
                 {type: "newcolumn"},
                 {type: "combo", name: "specialratecode", label: "Special Rate:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                     comboType: "image",
                     comboImagePath: "../../images/"
                 }]}
@@ -618,7 +621,7 @@ function hotels()
                 cboArea.addOption([{value: value, text: txt, img_src: "images/area.png"}]);
             }
 
-            if (selectAreaId != "")
+            if (selectAreaId != "" && utils_isIdInCombo(cboArea, selectAreaId))
             {
                 cboArea.setComboValue(selectAreaId);
             }
@@ -763,16 +766,19 @@ function hotels()
             {
 
 
-                var currencyid = arr_ids[i];
+                var currencyid = utils_trim(arr_ids[i], " ");
+                
+                if(currencyid != "")
+                {
+                    grid_currency_from.setRowHidden(currencyid, true);
+                    grid_currency_from.uncheckAll();
 
-                grid_currency_from.setRowHidden(currencyid, true);
-                grid_currency_from.uncheckAll();
+                    new_currency_row_id--;
+                    grid_currency_to.addRow(new_currency_row_id, [currencyid, "0", "", "0", "", "", "", "", "ADD", ""]);
+                    grid_currency_to.selectRowById(new_currency_row_id, false, true, false);
+                    grid_currency_to.setRowTextStyle(new_currency_row_id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
 
-                new_currency_row_id--;
-                grid_currency_to.addRow(new_currency_row_id, [currencyid, "0", "", "0", "", "", "", "", "ADD", ""]);
-                grid_currency_to.selectRowById(new_currency_row_id, false, true, false);
-                grid_currency_to.setRowTextStyle(new_currency_row_id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
-
+                }
             }
         }
     });
@@ -1503,10 +1509,17 @@ function hotels()
 
         if (from == "phy")
         {
-            cboMailCountry.setComboValue(cboPhyCountry.getSelectedValue());
+            if(utils_isIdInCombo(cboMailCountry, cboPhyCountry.getSelectedValue()))
+            {
+                cboMailCountry.setComboValue(cboPhyCountry.getSelectedValue());
+            }
+            
         } else
         {
-            cboPhyCountry.setComboValue(cboMailCountry.getSelectedValue());
+            if(utils_isIdInCombo(cboPhyCountry, cboMailCountry.getSelectedValue()))
+            {
+                cboPhyCountry.setComboValue(cboMailCountry.getSelectedValue());
+            }
         }
 
     }
@@ -1535,8 +1548,12 @@ function hotels()
 
             cboHotelGroup.setComboValue("-");
             cboCoast.setComboValue("");
-
-            cboHotelType.setComboValue(default_hoteltype_id);
+            
+            if(utils_isIdInCombo(cboHotelType, default_hoteltype_id))
+            {
+                cboHotelType.setComboValue(default_hoteltype_id);
+            }
+            
 
             cboPhyCountry.setComboValue(null);
             cboPhyCountry.setComboText("");
@@ -1601,12 +1618,22 @@ function hotels()
 
             cboHotelGroup.setComboValue("-");
             cboCoast.setComboValue("");
+            
+            if(utils_isIdInCombo(cboHotelType, default_hoteltype_id))
+            {
+                cboHotelType.setComboValue(default_hoteltype_id);
+            }
+            
 
-            cboHotelType.setComboValue(default_hoteltype_id);
-
-
-            cboPhyCountry.setComboValue(default_country_id);
-            cboMailCountry.setComboValue(default_country_id);
+            if(utils_isIdInCombo(cboPhyCountry, default_country_id))
+            {
+                cboPhyCountry.setComboValue(default_country_id);
+            }
+            
+            if(utils_isIdInCombo(cboMailCountry, default_country_id))
+            {
+                cboMailCountry.setComboValue(default_country_id);
+            }
 
             loadArea(default_country_id, "");
 
@@ -1924,6 +1951,7 @@ function hotels()
         //make sure all records are valid
         //make sure at most one currency is default
 
+        /*
         if (grid_currency_to.getRowsNum() == 0)
         {
             dhtmlx.alert({
@@ -1936,6 +1964,8 @@ function hotels()
             });
             return false;
         }
+         * 
+         */
 
         var default_count = 0;
 
@@ -2015,8 +2045,9 @@ function hotels()
             }
 
         }
-
-        if (default_count == 0 || default_count > 1)
+        
+        
+        if (grid_currency_to.getRowsNum() > 0 && (default_count == 0 || default_count > 1))
         {
             dhtmlx.alert({
                 text: "Please set a Currency as Default",

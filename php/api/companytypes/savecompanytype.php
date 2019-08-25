@@ -29,48 +29,39 @@ try {
     require_once("../../utils/utilities.php");
 
     $id = $_POST["id"];
-    $areaname = trim($_POST["areaname"]);
-    $countryfk = trim($_POST["countryfk"]);    
-    $lat = utils_stringBlank(trim($_POST["lat"]), 0);
-    $lon = utils_stringBlank(trim($_POST["lon"]), 0);
+    $comptype = trim($_POST["comptype"]);
+    
     
 
 
     $con = pdo_con();
 
     //check duplicates for area name
-    $sql = "SELECT * FROM tblareas WHERE areaname = :areaname AND id <> :id ";
+    $sql = "SELECT * FROM tblcompanytypes WHERE comptype = :comptype AND id <> :id ";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":areaname" => $areaname, ":id" => $id));
+    $stmt->execute(array(":comptype" => $comptype, ":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        throw new Exception("DUPLICATE AREA NAME!");
+        throw new Exception("DUPLICATE COMPANY TYPE!");
     }
 
     
 
     if ($id == "-1") {
-        $sql = "INSERT INTO tblareas (areaname,countryfk,lat,lon) 
-                VALUES (:areaname,:countryfk,:lat,:lon) ";
+        $sql = "INSERT INTO tblcompanytypes (comptype) 
+                VALUES (:comptype) ";
 
         $stmt = $con->prepare($sql);
-        $stmt->execute(array(":areaname" => $areaname, 
-            ":countryfk" => $countryfk,             
-            ":lat" => $lat,
-            ":lon" => $lon));
+        $stmt->execute(array(":comptype" => $comptype));
         
         $id = $con->lastInsertId();
     } else {
-        $sql = "UPDATE tblareas SET areaname=:areaname, countryfk=:countryfk,                
-                lat=:lat,lon=:lon
+        $sql = "UPDATE tblcompanytypes SET comptype=:comptype
                 WHERE id=:id ";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":id" => $id,
-            ":areaname" => $areaname, 
-            ":countryfk" => $countryfk,             
-            ":lat" => $lat,
-            ":lon" => $lon));
+            ":comptype" => $comptype));
     }
 
     

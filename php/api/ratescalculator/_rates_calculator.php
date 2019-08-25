@@ -81,8 +81,7 @@ function _rates_calculator($con, $arr_params) {
             "AGE_FROM" => "", "AGE_TO" => "",
             "ROOM_ALL_FLAT" => "", "VALUE" => "0",
             //these dates are chosen after passing following tests:
-            //1. dates match FR criteria
-            //2. there are adults/children rates for these dates                
+            //1. dates match Flat Rates criteria
             "APPLY_TO_DATES" => array(
                 array("DATE" => "2019-04-03", "IDX" => 0),
                 array("DATE" => "2019-04-04", "IDX" => 1),
@@ -3973,6 +3972,178 @@ function _rates_calculator_decide_contract_or_spo_flatrate($arr_params, $this_da
     }
 
     return array("RATES" => "", "COMMENTS" => "", "APPLY_SPO_FLAT_RATE" => false); //return normal contract rates
+}
+
+function _rates_calculator_getSPOs($arr_params, $con)
+{
+    //get all spos that hotel satisfy the criteria of:
+    //1. hotel_room
+    //2. meal_plan
+    //3. rate
+    //4. touroperator
+    //5. country
+    //6. spo type
+    
+    
+    $country = $arr_params["country"];
+    $hotel = $arr_params["hotel"];
+    $hotelroom = $arr_params["hotelroom"];
+    $mealplan = $arr_params["mealplan"];
+    $rate = $arr_params["rate"];
+    $touroperator = $arr_params["touroperator"];
+    $spo_type = $arr_params["spo_type"];
+    
+    
+    $sql = "SELECT * FROM tblspecial_offer WHERE deleted = 0 
+            and active_internal = 1 ";
+
+
+    //======================= HOTEL =========================
+    $sql .= " AND hotel_fk = :hotelfk ";
+
+    //======================= HOTEL ROOM =========================
+    $sql .= " AND id IN 
+                  (SELECT spo_fk
+                   FROM tblspecial_offer_rooms
+                   WHERE roomfk=:roomfk
+                  )";
+
+    //======================= COUNTRY =========================
+    $sql .= " AND id IN 
+                  (SELECT spo_fk FROM 
+                   tblspecial_offer_countries 
+                   WHERE country_fk=:countryfk 
+                  )";
+
+    //======================= MEAL PLAN =========================
+    $sql .= " AND id IN (SELECT spo_fk FROM 
+              tblspecial_offer_mealplan 
+              WHERE mealplanfk = :mealplan_fk
+              )";
+
+    //======================= RATES =========================
+    $sql .= " AND rate_fk=:ratefk   ";
+
+    //======================= TOUR OPERATORS =========================
+    $sql .= " AND id IN 
+                  (SELECT spofk FROM 
+                   tblspecial_offer_touroperator 
+                   WHERE tofk=:tofk 
+                  )";
+    
+    //======================= SPO TYPE =================================
+    if($spo_type != "both")
+    {
+        $sql .= " AND spo_type=$spo_type ";
+    }
+        
+        
+        
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":tofk" => $touroperator,
+        ":ratefk" => $rate, ":mealplan_fk" => $mealplan, ":hotelfk" => $hotel,
+        ":countryfk" => $country, ":roomfk" => $hotelroom));
+
+    $arr_spos = array();
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        
+        //================================================================
+        //APPLY BOOKING DATE AND DAYS FILTER IF APPLICABLE
+        if(_rates_calculator_spo_check_booking_date($arr_params,$rw) && 
+           _rates_calculator_spo_check_booking_days($arr_params,$rw))
+        {
+            
+            //============================================================
+            //APPLY 
+            $arr_spos[] = $rw;
+        }
+    }
+}
+
+function _rates_calculator_spo_check_booking_date($arr_params,$rw)
+{
+    $spo_booking_date = $arr_params["spo_booking_date"];
+    
+    if($spo_booking_date == "")
+    {
+        return true;
+    }
+    
+    if($rw["booking_before_date_from"] != "" && $rw["booking_before_date_to"] != "")
+    {
+        if($rw["booking_before_date_from"] <= $spo_booking_date && 
+           $spo_booking_date <= $rw["booking_before_date_to"])
+        {
+            return true;
+        }
+    }
+    else if($rw["booking_before_date_from"] == "" && $rw["booking_before_date_to"] != "")
+    {
+        //date <= dtfrom
+        if($spo_booking_date <= $rw["booking_before_date_to"])
+        {
+            return true;
+        }
+    }
+    else if($rw["booking_before_date_from"] != "" && $rw["booking_before_date_to"] == "")
+    {
+        //dtto <= date
+        if($rw["booking_before_date_from"] <= $spo_booking_date)
+        {
+            return true;
+        }
+    }   
+    
+    return false;
+}
+
+function _rates_calculator_spo_check_booking_days($arr_params,$rw)
+{
+    $spo_booking_date = $arr_params["spo_booking_date"];
+    $spo_travel_date = $arr_params["spo_travel_date"];    
+    
+    if($spo_booking_date == "")
+    {
+        return true;
+        
+    }
+    
+    if($spo_travel_date == "")
+    {
+        return true;
+        
+    }
+    
+    $days_booking = utils_days_diff($spo_booking_date,$spo_travel_date);
+        
+    if($rw["booking_before_days_from"] != "" && $rw["booking_before_days_to"] != "")
+    {
+        if($rw["booking_before_days_from"] <= $days_booking && 
+           $days_booking <= $rw["booking_before_days_to"])
+        {
+            return true;
+        }
+    }
+    else if($rw["booking_before_days_from"] == "" && $rw["booking_before_days_to"] != "")
+    {
+        //date <= dtfrom
+        if($days_booking <= $rw["booking_before_days_to"])
+        {
+            return true;
+        }
+    }
+    else if($rw["booking_before_days_from"] != "" && $rw["booking_before_days_to"] == "")
+    {
+        //dtto <= date
+        if($rw["booking_before_days_from"] <= $days_booking)
+        {
+            return true;
+        }
+    }   
+    
+    return false;
+    
 }
 ?>
 

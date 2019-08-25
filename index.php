@@ -694,133 +694,135 @@ if (isset($_GET["m"])) {
                                                 $('[data-toggle="push-menu"]').pushMenu('toggle');
         </script>
 
-<?php
-if (isset($_SESSION["menu_item_selected_open"])) {
-    echo '<script>' . $_SESSION["menu_item_selected_open"] . '</script>';
-}
+        <?php
+        if (isset($_SESSION["menu_item_selected_open"])) {
+            echo '<script>' . $_SESSION["menu_item_selected_open"] . '</script>';
+        }
 
 //generate token
-$token = openssl_random_pseudo_bytes(16);
-$token = bin2hex($token);
-$_SESSION["token"] = $token;
-echo '<script>var global_token="' . $token . '"</script>';
+        $token = openssl_random_pseudo_bytes(16);
+        $token = bin2hex($token);
+        $_SESSION["token"] = $token;
+        echo '<script>var global_token="' . $token . '"</script>';
 
-$menu = "";
+        $menu = "";
 
-if (isset($_GET["m"])) {
-    $menu = $_GET["m"];
-}
+        if (isset($_GET["m"])) {
+            $menu = $_GET["m"];
+        }
 
-echo '<script>var json_rights=' . utils_loadRights($menu, $con, $_SESSION["solis_grpid"]) . '</script>';
+        echo '<script>var json_rights=' . utils_loadRights($menu, $con, $_SESSION["solis_grpid"]) . '</script>';
 
-if ($menu == "usergroups") {
-    echo '<script type="text/javascript" src="js/usergroups/usergroups.js?' . time() . '"></script>';
-} else if ($menu == "users") {
-    echo '<script type="text/javascript" src="js/users/users.js?' . time() . '"></script>';
-} else if ($menu == "accessgranting") {
-    echo '<script type="text/javascript" src="js/accessgranting/accessgranting.js?' . time() . '"></script>';
-} else if ($menu == "countries") {
-    echo '<script type="text/javascript" src="js/countries/countries.js?' . time() . '"></script>';
-} else if ($menu == "areas") {
-    echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
-    echo '<script type="text/javascript" src="js/areas/areas.js?' . time() . '"></script>';
-} else if ($menu == "ratings") {
-    echo '<script type="text/javascript" src="js/ratings/ratings.js?' . time() . '"></script>';
-} else if ($menu == "coasts") {
-    echo '<script type="text/javascript" src="js/coasts/coasts.js?' . time() . '"></script>';
-} else if ($menu == "grphotels") {
-    echo '<script type="text/javascript" src="js/grphotels/grphotels.js?' . time() . '"></script>';
-} else if ($menu == "hoteltype") {
-    echo '<script type="text/javascript" src="js/hoteltype/hoteltype.js?' . time() . '"></script>';
-} else if ($menu == "mealplans") {
-    echo '<script type="text/javascript" src="js/mealplans/mealplans.js?' . time() . '"></script>';
-} else if ($menu == "optservices") {
-    echo '<script type="text/javascript" src="js/optionalservices/optionalservices.js?' . time() . '"></script>';
-} else if ($menu == "airports") {
-    echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
-    echo '<script type="text/javascript" src="js/airports/airports.js?' . time() . '"></script>';
-} else if ($menu == "childrenages") {
-    echo '<script type="text/javascript" src="js/childrenages/childrenages.js?' . time() . '"></script>';
-} else if ($menu == "bankdetails") {
-    echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
-    echo '<script type="text/javascript" src="js/banks/banks.js?' . time() . '"></script>';
-} else if ($menu == "exgrates") {
-    echo '<script type="text/javascript" src="js/exchangerates/exchangerates.js?' . time() . '"></script>';
-} else if ($menu == "companies") {
-    echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
-    echo '<script type="text/javascript" src="js/companies/companies.js?' . time() . '"></script>';
-} else if ($menu == "to") {
-    echo '<script type="text/javascript" src="js/touroperators/touroperators.js?' . time() . '"></script>';
-} else if ($menu == "categovehicles") {
-    echo '<script type="text/javascript" src="js/vehicletypes/vehicletypes.js?' . time() . '"></script>';
-} else if ($menu == "servicetype") {
-    echo '<script type="text/javascript" src="js/servicetypes/servicetypes.js?' . time() . '"></script>';
-} else if ($menu == "bckoffhotels") {
-    echo '<script>'
-    . 'var default_country_id = "' . utils_getDefaultCountry($con) . '";'
-    . 'var default_hoteltype_id = "' . utils_getDefaultHotelType($con) . '";'
-    . 'var select_hotel_id = ""; ';
+        if ($menu == "usergroups") {
+            echo '<script type="text/javascript" src="js/usergroups/usergroups.js?' . time() . '"></script>';
+        } else if ($menu == "users") {
+            echo '<script type="text/javascript" src="js/users/users.js?' . time() . '"></script>';
+        } else if ($menu == "accessgranting") {
+            echo '<script type="text/javascript" src="js/accessgranting/accessgranting.js?' . time() . '"></script>';
+        } else if ($menu == "countries") {
+            echo '<script type="text/javascript" src="js/countries/countries.js?' . time() . '"></script>';
+        } else if ($menu == "areas") {
+            echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
+            echo '<script type="text/javascript" src="js/areas/areas.js?' . time() . '"></script>';
+        } else if ($menu == "company_type") {
+            echo '<script type="text/javascript" src="js/companytype/companytype.js?' . time() . '"></script>';
+        } else if ($menu == "ratings") {
+            echo '<script type="text/javascript" src="js/ratings/ratings.js?' . time() . '"></script>';
+        } else if ($menu == "coasts") {
+            echo '<script type="text/javascript" src="js/coasts/coasts.js?' . time() . '"></script>';
+        } else if ($menu == "grphotels") {
+            echo '<script type="text/javascript" src="js/grphotels/grphotels.js?' . time() . '"></script>';
+        } else if ($menu == "hoteltype") {
+            echo '<script type="text/javascript" src="js/hoteltype/hoteltype.js?' . time() . '"></script>';
+        } else if ($menu == "mealplans") {
+            echo '<script type="text/javascript" src="js/mealplans/mealplans.js?' . time() . '"></script>';
+        } else if ($menu == "optservices") {
+            echo '<script type="text/javascript" src="js/optionalservices/optionalservices.js?' . time() . '"></script>';
+        } else if ($menu == "airports") {
+            echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
+            echo '<script type="text/javascript" src="js/airports/airports.js?' . time() . '"></script>';
+        } else if ($menu == "childrenages") {
+            echo '<script type="text/javascript" src="js/childrenages/childrenages.js?' . time() . '"></script>';
+        } else if ($menu == "bankdetails") {
+            echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
+            echo '<script type="text/javascript" src="js/banks/banks.js?' . time() . '"></script>';
+        } else if ($menu == "exgrates") {
+            echo '<script type="text/javascript" src="js/exchangerates/exchangerates.js?' . time() . '"></script>';
+        } else if ($menu == "companies") {
+            echo '<script>var default_country_id = "' . utils_getDefaultCountry($con) . '";</script>';
+            echo '<script type="text/javascript" src="js/companies/companies.js?' . time() . '"></script>';
+        } else if ($menu == "to") {
+            echo '<script type="text/javascript" src="js/touroperators/touroperators.js?' . time() . '"></script>';
+        } else if ($menu == "categovehicles") {
+            echo '<script type="text/javascript" src="js/vehicletypes/vehicletypes.js?' . time() . '"></script>';
+        } else if ($menu == "servicetype") {
+            echo '<script type="text/javascript" src="js/servicetypes/servicetypes.js?' . time() . '"></script>';
+        } else if ($menu == "bckoffhotels") {
+            echo '<script>'
+            . 'var default_country_id = "' . utils_getDefaultCountry($con) . '";'
+            . 'var default_hoteltype_id = "' . utils_getDefaultHotelType($con) . '";'
+            . 'var select_hotel_id = ""; ';
 
-    if (isset($_GET["hid"])) {
-        echo 'select_hotel_id = "' . $_GET["hid"] . '"';
-    }
-    echo '</script>';
+            if (isset($_GET["hid"])) {
+                echo 'select_hotel_id = "' . $_GET["hid"] . '"';
+            }
+            echo '</script>';
 
-    echo '<script type="text/javascript" src="js/bckoffhotels/bckoffhotels.js?' . time() . '"></script>';
-} else if ($menu == "markets") {
-    echo '<script type="text/javascript" src="js/markets/markets.js?' . time() . '"></script>';
-} else if ($menu == "" || $menu == "newsroom") {
-    echo '<script src="dist/js/pages/dashboard2.js?' . time() . '"></script>';
-} else if ($menu == "userprofile") {
-    echo '<script src="js/userprofile/userprofile.js?' . time() . '"></script>';
-} else if ($menu == "seasons") {
-    echo '<script src="js/seasons/seasons.js?' . time() . '"></script>';
-} else if ($menu == "hotelcontracts") {
-    if (!isset($_GET["hid"])) {
-        header("Location: index.php?m=norights");
-        exit();
-    }
-    echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
+            echo '<script type="text/javascript" src="js/bckoffhotels/bckoffhotels.js?' . time() . '"></script>';
+        } else if ($menu == "markets") {
+            echo '<script type="text/javascript" src="js/markets/markets.js?' . time() . '"></script>';
+        } else if ($menu == "" || $menu == "newsroom") {
+            echo '<script src="dist/js/pages/dashboard2.js?' . time() . '"></script>';
+        } else if ($menu == "userprofile") {
+            echo '<script src="js/userprofile/userprofile.js?' . time() . '"></script>';
+        } else if ($menu == "seasons") {
+            echo '<script src="js/seasons/seasons.js?' . time() . '"></script>';
+        } else if ($menu == "hotelcontracts") {
+            if (!isset($_GET["hid"])) {
+                header("Location: index.php?m=norights");
+                exit();
+            }
+            echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
 
-    echo '<script src="js/hotelcontracts/hotelcontracts.js?' . time() . '"></script>';
-} else if ($menu == "hotelspecialoffers") {
-    if (!isset($_GET["hid"])) {
-        header("Location: index.php?m=norights");
-        exit();
-    }
-    echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
+            echo '<script src="js/hotelcontracts/hotelcontracts.js?' . time() . '"></script>';
+        } else if ($menu == "hotelspecialoffers") {
+            if (!isset($_GET["hid"])) {
+                header("Location: index.php?m=norights");
+                exit();
+            }
+            echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
 
-    echo '<script src="js/hotelspecialoffers/hotelspecialoffers.js?' . time() . '"></script>';
-} else if ($menu == "inventory") {
-    if (!isset($_GET["hid"])) {
-        header("Location: index.php?m=norights");
-        exit();
-    }
-    echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
+            echo '<script src="js/hotelspecialoffers/hotelspecialoffers.js?' . time() . '"></script>';
+        } else if ($menu == "inventory") {
+            if (!isset($_GET["hid"])) {
+                header("Location: index.php?m=norights");
+                exit();
+            }
+            echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
 
-    echo '<script src="js/hotelinventory/hotelinventory.js?' . time() . '"></script>';
-} else if ($menu == "dateperiods") {
+            echo '<script src="js/hotelinventory/hotelinventory.js?' . time() . '"></script>';
+        } else if ($menu == "dateperiods") {
 
-    if (!isset($_GET["hid"])) {
-        header("Location: index.php?m=norights");
-        exit();
-    }
-    echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
+            if (!isset($_GET["hid"])) {
+                header("Location: index.php?m=norights");
+                exit();
+            }
+            echo '<script>var global_hotel_id = "' . $_GET["hid"] . '";</script>';
 
-    echo '<script type="text/javascript" src="js/dateperiods/dateperiods.js?' . time() . '"></script>';
-} else if ($menu == "sysparams") {
-    echo '<script src="js/sysparams/sysparams.js?' . time() . '"></script>';
-} else if ($menu == "ratescalc") {
-    echo '<script src="js/ratescalculator/ratescalculator.js?' . time() . '"></script>';
-} else if ($menu == "managebookings") {
-    echo '<script src="js/booking_engine/control/accomodationsCtrl.js"></script>
+            echo '<script type="text/javascript" src="js/dateperiods/dateperiods.js?' . time() . '"></script>';
+        } else if ($menu == "sysparams") {
+            echo '<script src="js/sysparams/sysparams.js?' . time() . '"></script>';
+        } else if ($menu == "ratescalc") {
+            echo '<script src="js/ratescalculator/ratescalculator.js?' . time() . '"></script>';
+        } else if ($menu == "managebookings") {
+            echo '<script src="js/booking_engine/control/accomodationsCtrl.js"></script>
         <script src="js/booking_engine/control/excursionsCtrl.js"></script>
         <script src="js/booking_engine/control/transfersCtrl.js"></script>
         <script src="js/booking_engine/utils/rangeSlider.js"></script>
         <script src="js/booking_engine/script.js"></script>
         <script src="js/booking_engine/models/excursionsModel.js"></script>';
-} else if ($menu == "backoff_excursions") {
-    echo '<script src="js/boexcursions/models/boexcursionsQuoteDetailsModel.js"></script>
+        } else if ($menu == "backoff_excursions") {
+            echo '<script src="js/boexcursions/models/boexcursionsQuoteDetailsModel.js"></script>
         <script src="js/boexcursions/models/boexcursionsModel.js"></script>
         <script src="js/boexcursions/utils/editor.js"></script>
         <script src="js/boexcursions/utils/generateOptionCode.js"></script>
@@ -829,8 +831,8 @@ if ($menu == "usergroups") {
         <script src="js/boexcursions/models/boexcursionsUpdatedetailsModel.js"></script>
         <script src="js/boexcursions/models/boExcursionsSearchModels.js"></script>
         <script src="js/boexcursions/scriptBackOffExcursions.js"></script>';
-}
-?>
+        }
+        ?>
         <div id = "alert_placeholder"></div>
     </body>
 </html>
