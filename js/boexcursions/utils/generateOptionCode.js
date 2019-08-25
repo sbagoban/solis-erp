@@ -23,14 +23,17 @@
     }
     
     document.addEventListener( "DOMContentLoaded", function() {
-        var btn = document.querySelector( "#generate" ),
-            output = document.querySelector( "#output" );
-        btn.addEventListener( "click", function() {
+        $('#ddlOptionCode').on('change', function(event) {
             var generator = new IDGenerator();
             output.innerHTML = generator.generate();
-        }, false); 
+        });
+
+        //btn = document.querySelector( "#optionCode" ),
         
+        // output = document.querySelector( "#output" );
+        // btn.addEventListener( "click", function() {
+        //     var generator = new IDGenerator();
+        //     output.innerHTML = generator.generate();
+        // }, false); 
     });
-    
-    
 })();

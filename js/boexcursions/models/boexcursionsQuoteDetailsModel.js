@@ -25,7 +25,6 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
             // "titleAttr": "Download in Excel Format" 
             // }
         ],
-        
         "columns" : [
         {
             "data" : "extraname"
@@ -140,7 +139,7 @@ $('#updateQuoteDetails').click(function (event) {
         includechildren_paybreaks: chkChildrenPayBreaksValue,        
         includeinfant_paybreaks: chkInfantPayBreaksValue
     };
-    const url_update_QuoteDetails = "php/api/bckoffservices/updatequotedetailspaybreaks.php?t=" + encodeURIComponent(global_token);
+    const url_update_QuoteDetails = "php/api/bckoffservices/updatequotedetailspaybreaks.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + idCostDetails;
     $.ajax({
         url: url_update_QuoteDetails,
         method: "POST",

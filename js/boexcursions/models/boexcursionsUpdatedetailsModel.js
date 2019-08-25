@@ -92,7 +92,7 @@
 
         radioButtonsAdults = data.charged_unit_adults_costdetails;
         radioButtonsChildren = data.charged_unit_children_costdetails
-        radioButtonsTax = data.taxbasis_costdetails
+        //radioButtonsTax = data.taxbasis_costdetails
 
         switch (radioButtonsAdults) {
             case "adults":
@@ -116,16 +116,16 @@
                 console.log("No voucher creation");
         }
 
-        switch (radioButtonsTax) {
-            case "inclusive":
-                document.getElementById("inclusive").checked = true;
-                break
-            case "exclusive":
-                document.getElementById("exclusive").checked = true;
-                break
-            default:
-                console.log("No voucher creation");
-        }
+        // switch (radioButtonsTax) {
+        //     case "inclusive":
+        //         document.getElementById("inclusive").checked = true;
+        //         break
+        //     case "exclusive":
+        //         document.getElementById("exclusive").checked = true;
+        //         break
+        //     default:
+        //         console.log("No voucher creation");
+        // }
 
         
         var checkBoxPickOff = document.getElementById("pickOffDropOff");  
@@ -303,14 +303,14 @@
         return ret;
     }
 
-    function displayTaxBasis() {
-        var ele = document.getElementsByName('radioGroupTax');
-        for (i = 0; i < ele.length; i++) {
-            if (ele[i].checked)
-                var check = ele[i].value;
-        }
-        return check;
-    }
+    // function displayTaxBasis() {
+    //     var ele = document.getElementsByName('radioGroupTax');
+    //     for (i = 0; i < ele.length; i++) {
+    //         if (ele[i].checked)
+    //             var check = ele[i].value;
+    //     }
+    //     return check;
+    // }
 
     function displayCostChildren() {
         var ele = document.getElementsByName('radioCostChildren');
@@ -345,7 +345,7 @@
         var minAdults = document.getElementById('minAdults').value;
         var maxAdults = document.getElementById('maxAdults').value;
         var timeDuration = dateManipulation();
-        var taxBasis = displayTaxBasis();
+        //var taxBasis = displayTaxBasis();
         var costChargedChildren = displayCostChildren();
         var costChargedAdults = displayCostAdults();
 
@@ -356,7 +356,7 @@
             descriptionservice: textFieldDescriptionCostDetails,
             comments: textFieldCommentsCostDetails,
             duration_costdetails: timeDuration,
-            taxbasis_costdetails: taxBasis,
+            //taxbasis_costdetails: taxBasis,
             charged_unit_children_costdetails: costChargedChildren,
             min_children_costdetails: minChildren,
             max_children_costdetails: maxChildren,
