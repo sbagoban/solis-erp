@@ -153,8 +153,17 @@ function touroperators()
 
 
     var dsTourOperators = new dhtmlXDataStore();
+    main_layout.cells("a").progressOn();
     dsTourOperators.load("php/api/touroperators/touroperatorgrid.php?t=" + encodeURIComponent(global_token), "json", function () {
+        main_layout.cells("a").progressOff();
         grid_touroperators.sync(dsTourOperators);
+
+        grid_touroperators.forEachRow(function (rwid) {
+            grid_touroperators.forEachCell(rwid, function (c, ind) {
+                var cellstyle = "font-weight:normal; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+                grid_touroperators.setCellTextStyle(rwid, ind, cellstyle);
+            });
+        });
     });
 
     resizeLayout();
@@ -308,15 +317,15 @@ function touroperators()
                 {type: "label", label: "Physical Address"},
                 {type: "input", name: "phy_address", label: "Street 1:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "phy_address2", label: "Street 2:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "phy_city", label: "City:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "phy_postcode", label: "Postcode:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -333,15 +342,15 @@ function touroperators()
                 {type: "label", label: "Mail Address"},
                 {type: "input", name: "mail_address", label: "Street 1:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "mail_address2", label: "Street 2:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "mail_city", label: "City:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                    labelTop: "10", inputLeft: "10", inputTop: "10", 
                 },
                 {type: "input", name: "mail_postcode", label: "Postcode:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -1301,7 +1310,7 @@ function touroperators()
             form_markets.setFormData(data);
 
             old_countries = form_markets.getItemValue("market_countries_ids");
-            
+
             //load companies
             grid_companies.checkAll(false)
             var selected_companies_ids = data.selected_companies_ids;
@@ -1507,6 +1516,14 @@ function touroperators()
                         grid_touroperators.sync(dsTourOperators);
 
                         touroperatorlayout.cells("b").progressOff();
+
+                        grid_touroperators.forEachRow(function (rwid) {
+                            grid_touroperators.forEachCell(rwid, function (c, ind) {
+                                var cellstyle = "font-weight:normal; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+                                grid_touroperators.setCellTextStyle(rwid, ind, cellstyle);
+                            });
+                        });
+
 
                         grid_touroperators.selectRowById(json_obj.ID, false, true, false);
 
@@ -1948,7 +1965,7 @@ function touroperators()
                     var first = true;
                     var arr_ids = checkedids.split(",");
                     var count_selected = 0;
-                    
+
                     //============================================================
                     if (arr_ids.length > 1)
                     {
@@ -1962,7 +1979,7 @@ function touroperators()
                         return;
                     }
                     //============================================================
-                    
+
                     for (var i = 0; i < arr_ids.length; i++)
                     {
                         var id = arr_ids[i];

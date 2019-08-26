@@ -18,6 +18,9 @@ function index_menuhandler(menuid)
     } else if (menuid == "countries")
     {
         window.location = "index.php?m=" + menuid;
+    } else if (menuid == "company_type")
+    {
+        window.location = "index.php?m=" + menuid;
     } else if (menuid == "areas")
     {
         window.location = "index.php?m=" + menuid;
@@ -60,16 +63,13 @@ function index_menuhandler(menuid)
     } else if (menuid == "categovehicles")
     {
         window.location = "index.php?m=" + menuid;
-    }
-    else if (menuid == "ratings")
+    } else if (menuid == "ratings")
     {
         window.location = "index.php?m=" + menuid;
-    }
-    else if (menuid == "inventory")
+    } else if (menuid == "inventory")
     {
         window.location = "index.php?m=" + menuid;
-    }
-    else if (menuid == "ratescalc")
+    } else if (menuid == "ratescalc")
     {
         window.location = "index.php?m=" + menuid;
     }

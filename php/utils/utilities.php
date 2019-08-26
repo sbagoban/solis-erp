@@ -208,10 +208,8 @@ function utils_DMY_YMD($dt, $default_blank = "") {
     return $dt;
 }
 
-function utils_stringBlank($dt, $default_blank = "")
-{
-    if(trim($dt) == "")
-    {
+function utils_stringBlank($dt, $default_blank = "") {
+    if (trim($dt) == "") {
         return $default_blank;
     }
     return trim($dt);
@@ -469,6 +467,24 @@ function utils_firewall_menu_rights($con, $menu, $ugrpid) {
     } else {
         return false;
     }
+}
+
+function utils_days_diff($dtfrom, $dtto) {
+    //return the number of days between dtfrom and dtto
+    //dtfrom in yyyy-mm-dd
+    //$dtto in yyyy-mm-dd
+    $dtfrom = trim($dtfrom);
+    $dtto = trim($dtto);
+
+    if ($dtfrom == "" || $dtto == "") {
+        return 0;
+    }
+
+    $dtfrom = strtotime($dtfrom);
+    $dtto = strtotime($dtto);
+    $datediff = $dtto - $dtfrom;
+
+    return round($datediff / (60 * 60 * 24));
 }
 
 ?>

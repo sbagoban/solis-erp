@@ -1,26 +1,25 @@
-var areas_obj = new areas();
+var companytype_obj = new companytypes();
 
-function areas()
+function companytypes()
 {
     
 
-    document.getElementById("aTitle").innerHTML = "AREAS";
+    document.getElementById("aTitle").innerHTML = "COMPANY TYPES";
 
     var main_layout = new dhtmlXLayoutObject("main_body", "1C");
 
 
-    main_layout.cells('a').setText("Areas");
+    main_layout.cells('a').setText("CompanyTypes");
 
-    var grid_areas = main_layout.cells("a").attachGrid();
-    grid_areas.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_areas.setHeader("Area,Country,Latitude,Longitude");
-    grid_areas.setColumnIds("areaname,country_name,lat,lon");
-    grid_areas.setColTypes("ro,ro,ro,ro,ro");
-    grid_areas.setInitWidths("*,250,100,100");
-    grid_areas.setColAlign("left,left,right,right");
-    grid_areas.setColSorting('str,str,int,int');
-    grid_areas.attachHeader("#text_filter,#select_filter,#text_filter,#text_filter");
-    grid_areas.init();
+    var grid_companytypes = main_layout.cells("a").attachGrid();
+    grid_companytypes.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_companytypes.setHeader("CompanyType");
+    grid_companytypes.setColumnIds("comptype");
+    grid_companytypes.setColTypes("ro");
+    grid_companytypes.setInitWidths("300");
+    grid_companytypes.setColAlign("left");
+    grid_companytypes.setColSorting('str');
+    grid_companytypes.init();
 
 
     var toolbar = main_layout.cells("a").attachToolbar();
@@ -36,38 +35,33 @@ function areas()
     toolbar.attachEvent("onClick", function (id) {
         if (id == "new")
         {
-            form_areas.clear();
-            form_areas.setItemValue("id", "-1");
-            
-            if(default_country_id != "-1")
-            {
-                cboCountry.setComboValue(default_country_id);
-            }
-            
-            popupwin_areas.setModal(true);
-            popupwin_areas.center();
-            popupwin_areas.show();
+            form_companytypes.clear();
+            form_companytypes.setItemValue("id", "-1");
+                        
+            popupwin_companytypes.setModal(true);
+            popupwin_companytypes.center();
+            popupwin_companytypes.show();
             
             
         } else if (id == "modify")
         {
-            var uid = grid_areas.getSelectedRowId();
+            var uid = grid_companytypes.getSelectedRowId();
             if (!uid)
             {
                 return;
             }
 
-            var data = dsAreas.item(uid);
-            form_areas.setFormData(data);
+            var data = dsCompanyTypes.item(uid);
+            form_companytypes.setFormData(data);
 
-            popupwin_areas.setModal(true);
-            popupwin_areas.center();
-            popupwin_areas.show();
+            popupwin_companytypes.setModal(true);
+            popupwin_companytypes.center();
+            popupwin_companytypes.show();
 
 
         } else if (id == "delete")
         {
-            var gid = grid_areas.getSelectedRowId();
+            var gid = grid_companytypes.getSelectedRowId();
             if (!gid)
             {
                 return;
@@ -75,14 +69,14 @@ function areas()
 
 
             dhtmlx.confirm({
-                title: "Delete Area",
+                title: "Delete Company Type",
                 type: "confirm",
                 text: "Confirm Deletion?",
                 callback: function (tf) {
                     if (tf)
                     {
                         var params = "gid=" + gid + "&t=" + encodeURIComponent(global_token);
-                        dhtmlxAjax.post("php/api/areas/deletearea.php", params, function (loader) {
+                        dhtmlxAjax.post("php/api/companytypes/deletecompanytype.php", params, function (loader) {
 
                             if (loader)
                             {
@@ -113,7 +107,7 @@ function areas()
                                 }
                                 if (json_obj.OUTCOME == "OK")
                                 {
-                                    grid_areas.deleteRow(gid);
+                                    grid_companytypes.deleteRow(gid);
                                 } else
                                 {
                                     dhtmlx.alert({
@@ -134,9 +128,9 @@ function areas()
     });
 
 
-    var dsAreas = new dhtmlXDataStore();
-    dsAreas.load("php/api/areas/areagrid.php?t=" + encodeURIComponent(global_token), "json", function () {
-        grid_areas.sync(dsAreas);
+    var dsCompanyTypes = new dhtmlXDataStore();
+    dsCompanyTypes.load("php/api/companytypes/companytypegrid.php?t=" + encodeURIComponent(global_token), "json", function () {
+        grid_companytypes.sync(dsCompanyTypes);
 
     });
 
@@ -174,10 +168,10 @@ function areas()
     dhxWins.enableAutoViewport(false);
     dhxWins.attachViewportTo(main_layout.cells("a"));
     
-    var popupwin_areas = dhxWins.createWindow("popupwin_areas", 50, 50, 500, 250);
-    popupwin_areas.setText("Area Details:");
-    popupwin_areas.denyResize();
-    popupwin_areas.denyPark();
+    var popupwin_companytypes = dhxWins.createWindow("popupwin_companytypes", 50, 50, 500, 250);
+    popupwin_companytypes.setText("CompanyType Details:");
+    popupwin_companytypes.denyResize();
+    popupwin_companytypes.denyPark();
 
     /*=== WINDOW ON CLOSE EVENT ===*/
     dhxWins.attachEvent("onClose", function (win) {
@@ -189,82 +183,52 @@ function areas()
 
 
     var str_frm_ug = [
-        {type: "settings", position: "label-left", id: "form_areas"},
+        {type: "settings", position: "label-left", id: "form_companytypes"},
         {type: "newcolumn", offset: 0},
         {type: "hidden", name: "id", required: true},
         {type: "hidden", name: "token"},
-        {type: "input", name: "areaname", label: "Area Name:", labelWidth: "130",
+        {type: "input", name: "comptype", label: "CompanyType:", labelWidth: "130",
             labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", required: true
-        },
-        {type: "combo", name: "countryfk", label: "Country:", labelWidth: "130",
-            labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
-            comboType: "image",
-            comboImagePath: "../../images/",
-        },
-        {type: "input", name: "lat", label: "Latitude:", labelWidth: "130",
-            labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", 
-            validate: "ValidNumeric"
-        },
-        {type: "input", name: "lon", label: "Longitude:", labelWidth: "130",
-            labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", 
-            validate: "ValidNumeric"
         },
         {type: "button", name: "cmdSave", value: "Save", width: "80", offsetLeft: 0},
         {type: "button", name: "cmdCancel", value: "Cancel", width: "80", offsetLeft: 0}
     ];
 
-    var arealayout = popupwin_areas.attachLayout("1C");
+    var companytypelayout = popupwin_companytypes.attachLayout("1C");
 
-    arealayout.cells("a").hideHeader();
+    companytypelayout.cells("a").hideHeader();
 
-    var form_areas = arealayout.cells("a").attachForm(str_frm_ug);
+    var form_companytypes = companytypelayout.cells("a").attachForm(str_frm_ug);
 
 
 
-    form_areas.attachEvent("onButtonClick", function (name, command) {
+    form_companytypes.attachEvent("onButtonClick", function (name, command) {
         if (name == "cmdCancel")
         {
-            popupwin_areas.setModal(false);
-            popupwin_areas.hide();
+            popupwin_companytypes.setModal(false);
+            popupwin_companytypes.hide();
         }
         if (name == "cmdSave")
         {
-            if (!form_areas.validate())
+            if (!form_companytypes.validate())
             {
                 dhtmlx.alert({
                     text: "Please fill highlighted fields correctly!",
                     type: "alert-warning",
-                    title: "Save Area",
+                    title: "Save Company Type",
                     callback: function () {
                     }
                 });
                 return;
             }
             
-            if(!utils_validate_autocompletecombo(cboCountry))
-            {
-                dhtmlx.alert({
-                    text: "Please select a valid Country!",
-                    type: "alert-warning",
-                    title: "Save Area",
-                    callback: function () {
-                        cboCountry.openSelect();
-                    }
-                });
-                return;
-            }
+           
+            companytypelayout.cells("a").progressOn();
 
+            form_companytypes.setItemValue("token", global_token);
 
-
-            arealayout.cells("a").progressOn();
-
-            form_areas.setItemValue("token", global_token);
-
-            form_areas.send("php/api/areas/savearea.php", "post", function (loader)
+            form_companytypes.send("php/api/companytypes/savecompanytype.php", "post", function (loader)
             {
                 if (loader)
                 {
@@ -277,7 +241,7 @@ function areas()
                             callback: function () {
                             }
                         });
-                        arealayout.cells("a").progressOff();
+                        companytypelayout.cells("a").progressOff();
                         return false;
                     }
 
@@ -293,7 +257,7 @@ function areas()
                             callback: function () {
                             }
                         });
-                        arealayout.cells("a").progressOff();
+                        companytypelayout.cells("a").progressOff();
                         return false;
                     }
 
@@ -304,16 +268,16 @@ function areas()
                             expire: 1500
                         });
 
-                        dsAreas.clearAll();
-                        grid_areas.clearAll();
+                        dsCompanyTypes.clearAll();
+                        grid_companytypes.clearAll();
 
-                        dsAreas.load("php/api/areas/areagrid.php?t=" + encodeURIComponent(global_token), "json", function () {
-                            grid_areas.sync(dsAreas);
-                            popupwin_areas.setModal(false);
-                            popupwin_areas.hide();
-                            arealayout.cells("a").progressOff();
+                        dsCompanyTypes.load("php/api/companytypes/companytypegrid.php?t=" + encodeURIComponent(global_token), "json", function () {
+                            grid_companytypes.sync(dsCompanyTypes);
+                            popupwin_companytypes.setModal(false);
+                            popupwin_companytypes.hide();
+                            companytypelayout.cells("a").progressOff();
 
-                            grid_areas.selectRowById(json_obj.ID, false, true, false);
+                            grid_companytypes.selectRowById(json_obj.ID, false, true, false);
                         });
 
                     } else
@@ -325,30 +289,14 @@ function areas()
                             callback: function () {
                             }
                         });
-                        arealayout.cells("a").progressOff();
+                        companytypelayout.cells("a").progressOff();
                     }
                 }
             });
         }
     });
 
-    var cboCountry = form_areas.getCombo("countryfk");
-    var dsCountry = new dhtmlXDataStore();
-    dsCountry.load("php/api/combos/country_combo.php?t=" + encodeURIComponent(global_token), "json", function () {
-
-        for (var i = 0; i < dsCountry.dataCount(); i++)
-        {
-            var item = dsCountry.item(dsCountry.idByIndex(i));
-            var value = item.value;
-            var txt = item.text;
-            cboCountry.addOption([{value: value, text: txt, img_src: "images/country.png"}]);
-        }
-
-        cboCountry.readonly(false);
-        cboCountry.enableFilteringMode(true);
-    });
-
-
+   
     function applyrights()
     {
         for (var i = 0; i < json_rights.length; i++)
@@ -369,6 +317,6 @@ function areas()
         }
     }
 
-    popupwin_areas.hide();
+    popupwin_companytypes.hide();
 
 }
