@@ -597,15 +597,34 @@ option {
 
 i.fa.fa-plus.fa-lg {
   margin-top: -1px;
-  background: white;
+  background: #e2e2e2;
   padding: 10px;
   border-radius: 25px;
   transition: all .5s ease-in-out;
+  cursor: pointer;
 }
 
 i.fa.fa-plus.fa-lg:hover {
   color: white;
   background-color: black;
+}
+
+a.remove_field {
+  position: relative;
+  bottom: 44px;
+  color: #ff0000;
+  float: right;
+  bottom: 62px;
+}
+
+div#ratesDetails {
+  height: 528px;
+}
+
+a.remove_field1 {
+  position: relative;
+  color: #ff0000;
+  left: 7px;
 }
 
 @keyframes spin {
@@ -616,6 +635,7 @@ i.fa.fa-plus.fa-lg:hover {
       transform:rotate(360deg);
   }
 }
+
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */

@@ -50,13 +50,11 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
     $('#quoteDetailsSort tbody').on( 'click', 'a', function () {
         var table = $('#quoteDetailsSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        console.log(data);
         editRowQuoteDetailschk(data);
     });
     $('#quoteDetailsSort tbody').on( 'click', 'i', function () {
         var table = $('#quoteDetailsSort').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        console.log(data);
+        var data = table.row( $(this).parents('tr')).data();
         deleteRowQuoteDetailschk(data);
     });
 } 
@@ -89,12 +87,22 @@ function editRowQuoteDetailschk(data) {
         document.getElementById('chargePerPersonEdit').checked = true;
     }
     chkDataId = data.id; // Global Variable
-    chkchargeper = data.chargeper;
+    //chkchargeper = data.chargeper;
+}
+
+function chargePerToRadio() {
+    var ele = document.getElementsByName('radioChargePerEdit');
+    for (i = 0; i < ele.length; i++) {
+        if (ele[i].checked)
+            var check = ele[i].value;
+    }
+    return check;
 }
 
 $('#btnSaveEditQuoteDetails').click(function (event) { 
     var chkExtraName = document.getElementById('addNameEdit').value;
     var chkExtraDesc = document.getElementById('addDescEdit').value;
+    var chkchargeper = chargePerToRadio();
     var idCostDetails = document.getElementById('idBlock').innerHTML;
     var objEditQuoteDetails = {
         id: chkDataId,
@@ -108,7 +116,6 @@ $('#btnSaveEditQuoteDetails').click(function (event) {
         method: "POST",
         data: objEditQuoteDetails,
         success: function (data) {
-            console.log('value -1', data);
             quoteDetailsEditRows(data, idCostDetails);
         },
         error: function (error) {

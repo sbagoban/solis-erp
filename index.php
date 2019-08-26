@@ -56,6 +56,8 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
         <link rel="stylesheet" href="css/editor.css">
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
+        <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
+        
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -645,7 +647,7 @@ if (isset($_GET["m"])) {
             </aside>
             <!-- /.control-sidebar -->
             <!-- Add the sidebar's background. This div must be placed
-                 immediately after the control sidebar -->
+                immediately after the control sidebar -->
             <div class="control-sidebar-bg"></div>
 
         </div>
@@ -659,6 +661,8 @@ if (isset($_GET["m"])) {
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.js"></script>
+        <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js'></script>
+        <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
@@ -828,7 +832,8 @@ if ($menu == "usergroups") {
         <script src="js/boexcursions/scriptExcursionTableGrid.js"></script>
         <script src="js/boexcursions/models/boexcursionsUpdatedetailsModel.js"></script>
         <script src="js/boexcursions/models/boExcursionsSearchModels.js"></script>
-        <script src="js/boexcursions/scriptBackOffExcursions.js"></script>';
+        <script src="js/boexcursions/scriptBackOffExcursions.js"></script>
+        <script src="js/booking_engine/script.js"></script>';
 }
 ?>
         <div id = "alert_placeholder"></div>

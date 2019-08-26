@@ -77,11 +77,10 @@
     function costDetailsEditRows(data) {
         // Set Value to textfield - From selected line
         document.getElementById("ddlChooseLocality").value = data.locality_costdetails;
-        document.getElementById("ddlChooseDept").value = data.locality_costdetails;
         document.getElementById("minAdults").value = data.min_adults_costdetails;
         document.getElementById("maxAdults").value = data.max_adults_costdetails;
-        document.getElementById("minChildren").value = data.min_children_costdetails;
-        document.getElementById("maxChildren").value = data.max_children_costdetails;
+        // document.getElementById("minChildren").value = data.min_children_costdetails;
+        // document.getElementById("maxChildren").value = data.max_children_costdetails;
         document.getElementById("descriptionInvoiceCostDetails").value = data.invoice_desciption_costdetails;
 
         //$('#duration').durationPicker('setTime', data.duration_costdetails);
@@ -91,8 +90,23 @@
         document.getElementById("textFieldInvoiceCostDetails").value = data.supplierfk;
 
         radioButtonsAdults = data.charged_unit_adults_costdetails;
-        radioButtonsChildren = data.charged_unit_children_costdetails
+        radioButtonsChildren = data.charged_unit_children_costdetails;
         //radioButtonsTax = data.taxbasis_costdetails
+        var checkOptionCodeDept = data.optioncode; 
+        var deptCodeVerif = checkOptionCodeDept.substring(0, 2);
+
+        if (deptCodeVerif == "DS") {
+            $("#ddlChooseDept").val("DS");
+        }
+        else if (deptCodeVerif == "FI") {
+            $("#ddlChooseDept").val("FIT");
+        }
+        else if (deptCodeVerif == "LS") {
+            $("#ddlChooseDept").val("LS");
+        }
+        else if (deptCodeVerif == "GR") {
+            $("#ddlChooseDept").val("GRP");
+        }
 
         switch (radioButtonsAdults) {
             case "adults":
@@ -105,16 +119,16 @@
                 console.log("No voucher creation");
         }
 
-        switch (radioButtonsChildren) {
-            case "children":
-                document.getElementById("children").checked = true;
-                break
-            case "unit":
-                document.getElementById("unitChildren").checked = true;
-                break
-            default:
-                console.log("No voucher creation");
-        }
+        // switch (radioButtonsChildren) {
+        //     case "children":
+        //         document.getElementById("children").checked = true;
+        //         break
+        //     case "unit":
+        //         document.getElementById("unitChildren").checked = true;
+        //         break
+        //     default:
+        //         console.log("No voucher creation");
+        // }
 
         // switch (radioButtonsTax) {
         //     case "inclusive":
@@ -312,14 +326,14 @@
     //     return check;
     // }
 
-    function displayCostChildren() {
-        var ele = document.getElementsByName('radioCostChildren');
-        for (i = 0; i < ele.length; i++) {
-            if (ele[i].checked)
-                var check = ele[i].value;
-        }
-        return check;
-    }
+    // function displayCostChildren() {
+    //     var ele = document.getElementsByName('radioCostChildren');
+    //     for (i = 0; i < ele.length; i++) {
+    //         if (ele[i].checked)
+    //             var check = ele[i].value;
+    //     }
+    //     return check;
+    // }
 
 
     function displayCostAdults() {
@@ -340,13 +354,13 @@
         var descriptionInvoiceCostDetails = document.getElementById('descriptionInvoiceCostDetails').value;
         var textFieldDescriptionCostDetails = document.getElementById('textFieldDescriptionCostDetails').value;
         var textFieldCommentsCostDetails = document.getElementById('textFieldCommentsCostDetails').value;
-        var minChildren = document.getElementById('minChildren').value;
-        var maxChildren = document.getElementById('maxChildren').value;
+        // var minChildren = document.getElementById('minChildren').value;
+        // var maxChildren = document.getElementById('maxChildren').value;
         var minAdults = document.getElementById('minAdults').value;
         var maxAdults = document.getElementById('maxAdults').value;
         var timeDuration = dateManipulation();
         //var taxBasis = displayTaxBasis();
-        var costChargedChildren = displayCostChildren();
+        //var costChargedChildren = displayCostChildren();
         var costChargedAdults = displayCostAdults();
 
         var objUpdateService = {
@@ -357,9 +371,9 @@
             comments: textFieldCommentsCostDetails,
             duration_costdetails: timeDuration,
             //taxbasis_costdetails: taxBasis,
-            charged_unit_children_costdetails: costChargedChildren,
-            min_children_costdetails: minChildren,
-            max_children_costdetails: maxChildren,
+            //charged_unit_children_costdetails: costChargedChildren,
+            // min_children_costdetails: minChildren,
+            // max_children_costdetails: maxChildren,
             charged_unit_adults_costdetails: costChargedAdults,
             min_adults_costdetails: minAdults,
             max_adults_costdetails: maxAdults
@@ -371,7 +385,6 @@
             method: "POST",
             data: objUpdateService,
             success: function (data) {
-                //resetFormUpdatedService();
                 callDataNewServiceGrid();
                 $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
@@ -381,6 +394,7 @@
         });   
         var calcNumberOfPersons = +maxAdults + +minAdults;
         getUnitsPopulate(calcNumberOfPersons);
+        console.log('>> cgh', calcNumberOfPersons);
     });
     // End click
 
