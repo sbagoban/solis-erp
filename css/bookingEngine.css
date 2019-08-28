@@ -611,10 +611,9 @@ i.fa.fa-plus.fa-lg:hover {
 
 a.remove_field {
   position: relative;
-  bottom: 44px;
   color: #ff0000;
   float: right;
-  bottom: 62px;
+  right: 29px;
 }
 
 div#ratesDetails {
@@ -625,6 +624,17 @@ a.remove_field1 {
   position: relative;
   color: #ff0000;
   left: 7px;
+}
+.col-md-2.chkArrow {
+  width: 23px;
+}
+
+.col-md-2.chkArrow i.fa.fa-arrow-right {
+  padding-top: 10px;
+}
+
+.displayNone{
+  display: none;
 }
 
 @keyframes spin {

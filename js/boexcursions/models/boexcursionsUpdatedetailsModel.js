@@ -27,6 +27,7 @@
         
         var idQuoteDetails = document.getElementById('idBlock').innerHTML;
         quoteDetailsEditRows(data, idQuoteDetails);
+        rateDetailsEditRows(idQuoteDetails);
 
         $('html, body').animate({
             scrollTop: $("#OptionCodeDisplay").offset().top
@@ -392,16 +393,63 @@
                 console.log('Error ${error}');
             }
         });   
-        var calcNumberOfPersons = +maxAdults + +minAdults;
-        getUnitsPopulate(calcNumberOfPersons);
-        console.log('>> cgh', calcNumberOfPersons);
+        //var calcNumberOfPersons = +maxAdults + +minAdults;
+        //getUnitsPopulate(calcNumberOfPersons);
     });
     // End click
 
-    function getUnitsPopulate(data) {
-        for (var count = 0; count < data; count++) {
-            $("<div class='col-md-4'><input type='number' max='9999' min='1' class='form-control'></div>").appendTo("#paybreaksPopulate");
+    // Get Value Of dynamic textField PaxBreaks Save to table
+    // Grab Value from Dynamic textfield
+    function CallTxtEvent(x) {
+        chk = $("#addedId" + x).val();
+        maxAdultsCostDetails = document.getElementById('maxAdults').value;
+        if (maxAdultsCostDetails > chk) {
+            console.log('maxAdultsCostDetails', maxAdultsCostDetails, '>', 'chk', chk);
+            document.querySelector(".add_more_button").click();
+            var counterPlusOne = +x + +1;
+            document.getElementById("removeId" + counterPlusOne).value = +chk + +1;
         }
+    }
+
+    $("#addedIdFirst").keyup(function(){
+        checkFirstPaxTextField = $("#addedIdFirst").val();
+        console.log(checkFirstPaxTextField);
+        // check first value input
+        minAdultsCostDetails = document.getElementById('minAdults').value;
+        maxAdultsCostDetails = document.getElementById('maxAdults').value;
+        if (maxAdultsCostDetails > checkFirstPaxTextField) {
+            document.querySelector(".add_more_button").click();
+            document.getElementById("removeId1").value = +checkFirstPaxTextField + +1;
+        } 
+    });
+
+    function updatePaxBreaksDetails(idBlockId) {
+        var paxBreaksStart = document.getElementById("paxBreaksStart").value;
+        var addedIdFirst = document.getElementById("addedIdFirst").value;
+
+        // objFirstPaxBreaks = {
+        //     paxBreaks1: paxBreaksStart,
+        //     paxBreaks2: addedIdFirst
+        // };
+    
+        var disabled = $('.paxBreaksForm').find(':input:disabled').removeAttr('disabled');
+        serializeForm2 = $('.paxBreaksForm').serializeArray();
+        disabled.attr('disabled','disabled');
+        console.log(serializeForm2);
+        const url_save_paxbreaks = "php/api/bckoffservices/savequotedetailspaxbreaksnumber.php?t=" + encodeURIComponent(global_token);
+        $.ajax({
+            url: url_save_paxbreaks,
+            method: "POST",
+            data: serializeForm2,
+            success: function (data) {
+                callDataNewServiceGrid();
+                $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
+                alert(data);
+            },
+            error: function (error) {
+                console.log('Error ${error}');
+            }
+        }); 
     }
 
     /////////////////////////////////////////
@@ -420,7 +468,6 @@
             method: "POST",
             data: objNotes,
             success: function (data) {
-                console.log('value', data);
                 callDataNewServiceGrid();
                 $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
             },

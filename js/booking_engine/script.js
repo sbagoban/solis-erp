@@ -9,6 +9,16 @@ $(document).ready(function () {
         startDate: date
     });
 
+    $('#datetimepickerFrom').datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: date
+    });
+
+    $('#datetimepickerTo').datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: date
+    });
+
     $('.filterBlock').slimScroll({
         height: '205px',
         color: '#DCDEE2',

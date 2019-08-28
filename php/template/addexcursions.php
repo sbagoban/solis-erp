@@ -138,8 +138,8 @@
         <!-- <div class="row" id="searchServiceDetails"> -->
 
         <div class="row" id="searchServiceDetails">
-            <div class="col=md-12">
-                <div class="col=md-12">
+            <div class="col-md-12">
+                <div class="col-md-12">
                     <table class="table responsive" id="sort">
                         <thead>
                             <tr>
@@ -489,8 +489,8 @@
                                     <div class="col-md-12">
                                         <div class="col-md-12">
                                             <div class="row" id="searchQuoteDetails">
-                                                <div class="col=md-12">
-                                                    <div class="col=md-12">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-12">
                                                         <table class="table responsive" id="quoteDetailsSort">
                                                             <thead>
                                                                 <tr>
@@ -551,7 +551,7 @@
                                                 <div class="col-lg-1">
                                                     <h5>Pax Breaks</h5>
                                                 </div>
-                                                <div class="col-lg-1">
+                                                <div class="col-lg-1 checkerBtn">
                                                     <span class="addBtn" id="btnCounter">
                                                         <i class="fa fa-plus fa-lg add_more_button" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
                                                     </span>
@@ -559,13 +559,24 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <br>
-                                                <div class="input_fields_container_part">
-                                                    <!-- <input type="text" name="tags"> -->
-                                                    <div class="col-md-4">
-                                                        <input type="number" max="9999" min="1" class="form-control" name="tags"/>
-                                                        <a href="#" class="remove_field" style="margin-left:10px;">Remove</a>
+                                                <form name="add_paxbreaks">
+                                                    <div class="input_fields_container_part">
+                                                            <div class="col-md-4" id="paxBreakMain">
+                                                                <form class="paxBreaksForm1">
+                                                                    <div class="col-md-3">
+                                                                        <input type="number" max="9999" min="1" class="form-control" id="paxBreaksStart" name="paxBreaksStart" value="1" disabled>
+                                                                    </div>
+                                                                    <div class="col-md-2 chkArrow">
+                                                                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                                    </div>
+                                                                    <div class="col-md-7">
+                                                                        <input type="number" max="9999" min="1" class="form-control" id="addedIdFirst" name="paxBreaksEnd">
+                                                                    </div>
+                                                                </form>
+                                                                    <!-- <a href="#" class="remove_field" style="margin-left:10px;"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a> -->
+                                                            </div>
                                                     </div>
-                                                </div>
+                                                </form>
                                             </div>
                                         </div>
                                         &nbsp;
@@ -589,7 +600,7 @@
                                                     </li>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <button id="updateQuoteDetails" class="btn btn-primary pull-right">Update Quote Details &raquo;</button>
+                                                    <button id="updateQuoteDetails" class="btn btn-primary pull-right updateQuoteDetails">Update Quote Details &raquo;</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -994,7 +1005,7 @@
                                                     <div class="col-md-6">
                                                         <fieldset class="form-group">
                                                             <h5>Service Date From</h5>
-                                                            <div class="input-group date datepicker-in" id="datetimepicker" data-provide="datepicker">
+                                                            <div class="input-group date datepicker-in serviceDateFrom" id="datetimepickerFrom" data-provide="datepicker">
                                                                 <input type="text" class="form-control" placeholder="dd-mm-yyyy">
                                                                 <div class="input-group-addon">
                                                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -1005,7 +1016,7 @@
                                                     <div class="col-md-6">
                                                         <fieldset class="form-group">
                                                             <h5>Service Date To</h5>
-                                                            <div class="input-group date datepicker-in" id="datetimepicker" data-provide="datepicker">
+                                                            <div class="input-group date datepicker-in serviceDateTo" id="datetimepickerTo" data-provide="datepicker">
                                                                 <input type="text" class="form-control" placeholder="dd-mm-yyyy">
                                                                 <div class="input-group-addon">
                                                                     <span class="glyphicon glyphicon-calendar"></span>
@@ -1063,20 +1074,32 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <fieldset class="form-group">
+                                                        <!-- <fieldset class="form-group">
                                                             <h5>Selected Closed Date</h5>
                                                             <div class="filterBlock resize form-control">
-                                                                <!-- Selected Closed Date -->
                                                                 <div id="selectedClosedDate"></div>
                                                             </div>
-                                                        </fieldset>
+                                                        </fieldset> -->
+                                                        <div class="col-md-12">
+                                                            <div class="row" id="searchRateDetails">
+                                                                <table class="table responsive" id="rateDetailsSort">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="col">Closed Date From</th>
+                                                                            <th scope="col">Closed Date To</th>
+                                                                            <!-- <th scope="col">Edit</th> -->
+                                                                            <th scope="col">Delete</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <!-- Row 3 -->
                                             </div>
-
-                                            <hr>
                                             <div class="col-md-12">
+                                                <hr>
                                                 <button id="createRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
                                             </div>
 

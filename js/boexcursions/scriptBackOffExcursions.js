@@ -48,37 +48,45 @@ $(document).ready(function () {
     });
     quoteDetailsPaxBreaks();
     dateRangePicker();
+    $('.checkerBtn').hide();
 });
 
 function quoteDetailsPaxBreaks() {
     var max_fields_limit      = 9999; //set limit for maximum input fields
-    var x = 1; //initialize counter for text box
+    var x = 0; //initialize counter for text box
     $('.add_more_button').click(function(e){ //click event on add more fields button having class add_more_button
         e.preventDefault();
             if(x < max_fields_limit){ //check conditions
                 x++; //counter increment
-                $('.input_fields_container_part').append('<div class="col-md-4"><input type="number" max="9999" min="1" class="form-control" name="tags"/><a href="#" class="remove_field" style="margin-left:10px;">Remove</a></div>'); //add input field
+                $('.input_fields_container_part').append('<form class="paxBreaksForm"><div class="col-md-4" id="paxBreakMain"><div class="col-md-3"><input type="number" id="removeId' + x + '" class="form-control" name="paxBreaksFrom' + x + '" disabled/></div><div class="col-md-2 chkArrow"><i class="fa fa-arrow-right" aria-hidden="true"></i></div><div class="col-md-7"><input type="number" max="9999" min="1" class="form-control addedValue" id="addedId' + x + '" onkeyup = "CallTxtEvent('+ x +')" name="paxBreaksTo' + x + '"/></div><a href="#" class="remove_field" style="margin-left:10px;"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a></div></form>'); //add input field
             }
     });  
 
     $('.input_fields_container_part').on("click",".remove_field", function(e){ //user click on remove text links
-        e.preventDefault(); 
+        e.preventDefault();
         $(this).parent('div').remove(); 
         x--;
     });
 }
 
 function dateRangePicker() {
+    var counterClose = 0;
     $('input[name="daterange"]').daterangepicker({
         opens: 'left'
     }, function(start, end, label) {
+        counterClose++;
         console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        var closedStartDate = start.format('YYYY-MM-DD');
+        var closedEndDate = end.format('YYYY-MM-DD');
+
         var chkkk = start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
-        $('#selectedClosedDate').append('<div class="col-md-4">' + chkkk + '<a href="#" class="remove_field1"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a></div>');
+        //$('#selectedClosedDate').append('<div class="col-md-4"><input type="text" class="closedatetxt" id="closeData'+ counterClose +'" value="' + chkkk + '"><a href="#" class="remove_field1"  onclick = "selectedClosedDateDelete('+ counterClose +')"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a></div>');
+        selectedClosedDateFunc(closedStartDate, closedEndDate);
     });
     
-    $('#selectedClosedDate').on("click",".remove_field1", function(e){ //user click on remove text links
-        e.preventDefault(); 
-        $(this).parent('div').remove();
-    });
+    // $('#selectedClosedDate').on("click",".remove_field1", function(e){ //user click on remove text links
+    //     e.preventDefault();
+    //     $(this).parent('div').remove();
+    // });
 }
+
