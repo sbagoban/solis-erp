@@ -1,5 +1,4 @@
 document.getElementById("aTitle").innerHTML = "Back Office Excursions";
-
 $(document).ready(function () {    
     // Tooltip
     $('[data-toggle="tooltip"]').tooltip();  
@@ -20,15 +19,6 @@ $(document).ready(function () {
     $("#txtEditor").Editor();
     // Add Excursions
 
-    $('#multiselectRate0').multiselect({
-        buttonWidth: '313px',
-        includeSelectAllOption: true,
-        nonSelectedText: 'Select an Option',
-        enableFiltering: true,
-        enableHTML: true,
-        buttonClass: 'btn large btn-primary',
-    });
-
     $('#multiselectRate1').multiselect({
         buttonWidth: '313px',
         includeSelectAllOption: true,
@@ -37,17 +27,10 @@ $(document).ready(function () {
         enableHTML: true,
         buttonClass: 'btn large btn-primary',
     });
-
-    $('#multiselectRate2').multiselect({
-        buttonWidth: '313px',
-        includeSelectAllOption: true,
-        nonSelectedText: 'Select an Option',
-        enableFiltering: true,
-        enableHTML: true,
-        buttonClass: 'btn large btn-primary',
-    });
+    
     quoteDetailsPaxBreaks();
     dateRangePicker();
+    dateRangePickerServiceFromTo();
     $('.checkerBtn').hide();
 });
 
@@ -71,7 +54,7 @@ function quoteDetailsPaxBreaks() {
 
 function dateRangePicker() {
     var counterClose = 0;
-    $('input[name="daterange"]').daterangepicker({
+    $('#dateRangeClosedDate').daterangepicker({
         opens: 'left'
     }, function(start, end, label) {
         counterClose++;
@@ -83,10 +66,14 @@ function dateRangePicker() {
         //$('#selectedClosedDate').append('<div class="col-md-4"><input type="text" class="closedatetxt" id="closeData'+ counterClose +'" value="' + chkkk + '"><a href="#" class="remove_field1"  onclick = "selectedClosedDateDelete('+ counterClose +')"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a></div>');
         selectedClosedDateFunc(closedStartDate, closedEndDate);
     });
-    
-    // $('#selectedClosedDate').on("click",".remove_field1", function(e){ //user click on remove text links
-    //     e.preventDefault();
-    //     $(this).parent('div').remove();
-    // });
 }
 
+function dateRangePickerServiceFromTo() {
+    $('#daterangeServiceFromTo').daterangepicker({
+        opens: 'left'
+    }, function(start, end, label) {
+        var serviceStartDate = start.format('YYYY-MM-DD');
+        var serviceEndDate = end.format('YYYY-MM-DD');
+        servicedatefunc(serviceStartDate, serviceEndDate);
+    });
+}

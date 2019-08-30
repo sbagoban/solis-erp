@@ -637,6 +637,11 @@ a.remove_field1 {
   display: none;
 }
 
+ul.multiselect-container.dropdown-menu {
+  height: 149px;
+  overflow-y: scroll;
+}
+
 @keyframes spin {
   from {
       transform:rotate(0deg);

@@ -1,6 +1,5 @@
 
     function editRowService(data) {
-        console.log('test >>', data);
         // Set Value - From Selected Line
         document.getElementById("OptionCodeDisplay").innerHTML = data.optioncode;
         document.getElementById("descriptionDisplay").innerHTML = data.descriptionservice;
@@ -55,7 +54,6 @@
                 document.getElementById("produtRadio").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
         switch (radioButtonsCross) {
             case "use first rate":
@@ -71,7 +69,6 @@
                 document.getElementById("notAllowed").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
     }
 
@@ -280,7 +277,6 @@
                 document.getElementById("voucherEachPersonDay").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
         switch (radioButtonsPrint) {
             case "Print Voucher":
@@ -293,7 +289,6 @@
                 document.getElementById("recordLiability").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
     }
 

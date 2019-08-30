@@ -1002,59 +1002,34 @@
                                             <div class="col-md-6">
                                                 <!-- Row 2 -->
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <fieldset class="form-group">
-                                                            <h5>Service Date From</h5>
-                                                            <div class="input-group date datepicker-in serviceDateFrom" id="datetimepickerFrom" data-provide="datepicker">
-                                                                <input type="text" class="form-control" placeholder="dd-mm-yyyy">
-                                                                <div class="input-group-addon">
-                                                                    <span class="glyphicon glyphicon-calendar"></span>
-                                                                </div>
+                                                    <div class="col-md-12">
+                                                        <h5>Service Date From / To</h5>
+                                                        <div class="input-group date datepicker-in">
+                                                            <input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
                                                             </div>
-                                                        </fieldset>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <fieldset class="form-group">
-                                                            <h5>Service Date To</h5>
-                                                            <div class="input-group date datepicker-in serviceDateTo" id="datetimepickerTo" data-provide="datepicker">
-                                                                <input type="text" class="form-control" placeholder="dd-mm-yyyy">
-                                                                <div class="input-group-addon">
-                                                                    <span class="glyphicon glyphicon-calendar"></span>
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <!-- Row 2 -->
 
                                                 <!-- Row 1 -->
                                                 <div class="row">
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-6">
                                                         <h5>Market</h5>
-                                                            <select id="multiselectRate0" multiple="multiple">
-                                                                <option value="Option 1">Option 1</option>
-                                                                <option value="Option 2">Option 2</option>
-                                                                <option value="Option 3">Option 3</option>
-                                                                <option value="Option 4">Option 4</option>
-                                                            </select>
+                                                            <select id="multiselectRate22" name="multiselectRate22" class="multiselectRate22" onchange="multiselectMarket()" multiple="multiple">
+                                                        </select>
                                                     </div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-6">
                                                         <h5>Tour Operator</h5>
-                                                            <select id="multiselectRate1" multiple="multiple">
-                                                                <option value="Option 1">Option 1</option>
-                                                                <option value="Option 2">Option 2</option>
-                                                                <option value="Option 3">Option 3</option>
-                                                                <option value="Option 4">Option 4</option>
-                                                            </select>
+                                                        <select id="multiselectRate24" name="multiselectRate24" class="multiselectRate24" multiple="multiple" style="display: none;">
+                                                        </select>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <h5>Rates Types</h5>
-                                                            <select id="multiselectRate2" multiple="multiple">
-                                                                <option value="Option 1">Option 1</option>
-                                                                <option value="Option 2">Option 2</option>
-                                                                <option value="Option 3">Option 3</option>
-                                                                <option value="Option 4">Option 4</option>
-                                                            </select>
+                                                        <select id="multiselectRate23" name="multiselectRate23" class="multiselectRate23" multiple="multiple" style="display: none;">
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <!-- Row 1 -->
@@ -1067,7 +1042,7 @@
                                                     <div class="col-md-12">
                                                         <h5>Closed Date</h5>
                                                         <div class="input-group date datepicker-in">
-                                                            <input type="text" name="daterange" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <input type="text" name="daterange" id="dateRangeClosedDate" class="form-control" placeholder="dd-mm-yyyy"/>
                                                             <div class="input-group-addon">
                                                                 <span class="glyphicon glyphicon-calendar"></span>
                                                             </div>
@@ -1106,6 +1081,25 @@
                                             <div class="col-md-4">
                                                 &nbsp;
                                             </div>
+
+                                            <div class="col-md-12">
+                                                <div id="row rateInsertDetails">
+                                                    <table class="table responsive" id="rateInsertDetailsSort">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Date</th>
+                                                                <th scope="col">Market</th>
+                                                                <th scope="col">Tour Operator</th>
+                                                                <th scope="col">Rate Type</th>
+                                                                <th scope="col">Description</th>
+                                                                <th scope="col">Edit</th>
+                                                                <th scope="col">Delete</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+
 
                                         </div>
                                     </div>

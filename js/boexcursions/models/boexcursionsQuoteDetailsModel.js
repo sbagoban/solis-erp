@@ -1,5 +1,4 @@
 function quoteDetailsEditRows(data, idQuoteDetails) {
-    console.log('>> Chk', data);
     $('#quoteDetailsSort').DataTable({       
         "processing" : true,
 

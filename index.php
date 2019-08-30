@@ -836,6 +836,7 @@ if (isset($_GET["m"])) {
         <script src="js/boexcursions/models/boExcursionsSearchModels.js"></script>
         <script src="js/boexcursions/scriptBackOffExcursions.js"></script>
         <script src="js/boexcursions_rate/models/boexcursions_save_rate.js"></script>
+        <script src="js/boexcursions_rate/models/boexcursions_rate_grid.js"></script>
         <script src="js/booking_engine/script.js"></script>';
 }
 ?>
