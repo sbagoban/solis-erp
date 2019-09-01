@@ -49,8 +49,7 @@ try {
     $arr_main_params = json_decode($_POST["params"],true);
     $arr_spo_params = json_decode($_POST["spo_params"],true);
     $arr_params = array_merge($arr_main_params,$arr_spo_params);
-    
-    
+        
     $outcome = _rates_calculator($con, $arr_params);
 
 
@@ -59,3 +58,4 @@ try {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 ?>
+

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="660">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="677">
         <file>
             <url>js/bckoffhotels/bckoffhotels.js</url>
             <bookmark id="30">
@@ -169,15 +169,7 @@
             <url>js/ratescalculator/ratescalculator.js</url>
             <bookmark id="636">
                 <name/>
-                <line>968</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>php/api/ratescalculator/_rates_calculator.php</url>
-            <bookmark id="660">
-                <name/>
-                <line>4082</line>
+                <line>929</line>
                 <key/>
             </bookmark>
         </file>
@@ -191,11 +183,6 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/var/www/html/soliserp/js/ratescalculator/ratescalculator.js</file>
-            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/test_free_nights.php</file>
-            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/_spo.php</file>
-            <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_calculator.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

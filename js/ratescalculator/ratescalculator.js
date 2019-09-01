@@ -349,41 +349,8 @@ function ratescalculator() {
         {type: "input", name: "spo_party_pax", label: "Additional Num Pax in Party:", labelWidth: "170",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
-        },
-        {type: "checkbox", name: "spo_discount", label: "Apply Test Discount", width: 800, list: [
-                {type: "input", name: "spo_discount_room_percentage", label: "Room Only (%)", labelWidth: "150",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
-                },
-                {type: "input", name: "spo_discount_all_percentage", label: "All (%)", labelWidth: "150",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
-                },
-                {type: "input", name: "spo_discount_PPPN", label: "Flat PPPN", labelWidth: "150",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
-                },
-                {type: "input", name: "spo_discount_PNI", label: "Flat PNI", labelWidth: "150",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
-                }]},
-        {type: "checkbox", name: "spo_free_nights", label: "Apply Free Nights", width: 800, list: [
-                {type: "input", name: "spo_free_nights_num_nights", label: "No Free Nights", labelWidth: "170",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
-                },
-
-                {type: "combo", name: "spo_free_nights_start_end", label: "Start/End:", labelWidth: "170",
-                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
-                }]},
-        {type: "block", width: 800, list: [
-                {type: "checkbox", name: "spo_ishoneymoon", label: "Is Honey Moon"},
-                {type: "newcolumn"},
-                {type: "checkbox", name: "spo_isweddingparty", label: "Is Wedding Party"},
-                {type: "newcolumn"},
-                {type: "checkbox", name: "spo_isweddinganniv", label: "Is Wedding Anniversary"}
-            ]}
+        }
+        
     ];
 
     var form_spo = accordConSPO.cells("spo").attachForm(str_frm_spo);
@@ -392,13 +359,7 @@ function ratescalculator() {
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
 
-    form_spo.getCombo("spo_free_nights_start_end").addOption([{value: "START", text: "START"}, {value: "END", text: "END"}, {value: "LOWEST", text: "LOWEST NIGHTS"}]);
-    form_spo.getCombo("spo_free_nights_start_end").readonly(true);
-    form_spo.getCombo("spo_free_nights_start_end").setComboValue("START");
-
-
-
-
+   
     //======================================================================
     var results_layout = tabViews.cells("results").attachLayout("1C");
     results_layout.cells("a").hideHeader();
@@ -985,103 +946,8 @@ function ratescalculator() {
             }
 
 
-        if (form_spo.isItemChecked("spo_discount"))
-        {
-
-            if (utils_trim(form_spo.getItemValue("spo_discount_room_percentage"), " ") == "")
-            {
-                form_spo.setItemValue("spo_discount_room_percentage", "0");
-            }
-            if (utils_trim(form_spo.getItemValue("spo_discount_all_percentage"), " ") == "")
-            {
-                form_spo.setItemValue("spo_discount_all_percentage", "0");
-            }
-            if (utils_trim(form_spo.getItemValue("spo_discount_flat"), " ") == "")
-            {
-                form_spo.setItemValue("spo_discount_flat", "0");
-            }
-            if (utils_trim(form_spo.getItemValue("spo_discount_PPPN"), " ") == "")
-            {
-                form_spo.setItemValue("spo_discount_PPPN", "0");
-            }
-
-            if (utils_trim(form_spo.getItemValue("spo_discount_PNI"), " ") == "")
-            {
-                form_spo.setItemValue("spo_discount_PNI", "0");
-            }
-
-            var room_percentage = parseFloat(form_spo.getItemValue("spo_discount_room_percentage"));
-            var all_percentage = parseFloat(form_spo.getItemValue("spo_discount_all_percentage"));
-            var flat_pppn = parseFloat(form_spo.getItemValue("spo_discount_PPPN"));
-            var flat_pni = parseFloat(form_spo.getItemValue("spo_discount_PNI"));
-
-            if (room_percentage < 0 || room_percentage > 100)
-            {
-                tabViews.setTabActive("params");
-                accordConSPO.openItem("spo");
-                dhtmlx.alert({
-                    text: "SPO: Room Percentage Discount MUST be between 0 and 100 inclusive",
-                    type: "alert-warning",
-                    title: "Test Rates Calculator",
-                    callback: function () {
-                        form_spo.setItemFocus("spo_discount_room_percentage");
-                    }
-                });
-                return false;
-            }
-
-            if (all_percentage < 0 || all_percentage > 100)
-            {
-                tabViews.setTabActive("params");
-                accordConSPO.openItem("spo");
-                dhtmlx.alert({
-                    text: "SPO: All Percentage Discount MUST be between 0 and 100 inclusive",
-                    type: "alert-warning",
-                    title: "Test Rates Calculator",
-                    callback: function () {
-                        form_spo.setItemFocus("spo_discount_all_percentage");
-                    }
-                });
-                return false;
-            }
-
-            if (flat_pppn < 0)
-            {
-                tabViews.setTabActive("params");
-                accordConSPO.openItem("spo");
-                dhtmlx.alert({
-                    text: "SPO: Flat Discount MUST cannot be less than ZERO",
-                    type: "alert-warning",
-                    title: "Test Rates Calculator",
-                    callback: function () {
-                        form_spo.setItemFocus("spo_discount_PPPN");
-                    }
-                });
-                return false;
-            }
-
-            if (flat_pni < 0)
-            {
-                tabViews.setTabActive("params");
-                accordConSPO.openItem("spo");
-                dhtmlx.alert({
-                    text: "SPO: Flat Discount MUST cannot be less than ZERO",
-                    type: "alert-warning",
-                    title: "Test Rates Calculator",
-                    callback: function () {
-                        form_spo.setItemFocus("spo_discount_PNI");
-                    }
-                });
-                return false;
-            }
-
-        }
-
         return true;
     }
-
-
-
 
 }
 
