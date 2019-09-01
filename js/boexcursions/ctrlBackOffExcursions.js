@@ -13,7 +13,7 @@ $(document).ready(function () {
             element.classList.add("has-warning");
 
             $('#createNewService').attr('disabled', 'disabled');
-            $('#updateService').attr('disabled', 'disabled');
+            //$('#updateService').attr('disabled', 'disabled');
 
             $('.inputValidationCostDetails').click(function () {
                 var check = false;
@@ -22,11 +22,11 @@ $(document).ready(function () {
                         check = true;
                     }
                 });
-                if (check == true) {
-                    $('#updateService').attr('disabled', 'disabled');
-                } else {
-                    $('#updateService').removeAttr('disabled');
-                }
+                // if (check == true) {
+                //     $('#updateService').attr('disabled', 'disabled');
+                // } else {
+                //     $('#updateService').removeAttr('disabled');
+                // }
             });
 
             $('.inputValidation').click(function () {
@@ -35,7 +35,6 @@ $(document).ready(function () {
                     if ($(this).val() == '') {
                         // set empty to true if ddl is empty
                         empty = true;
-                        console.log($(this).val());
                     }
                 });
                 if (empty == true) {

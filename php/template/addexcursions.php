@@ -138,8 +138,8 @@
         <!-- <div class="row" id="searchServiceDetails"> -->
 
         <div class="row" id="searchServiceDetails">
-            <div class="col=md-12">
-                <div class="col=md-12">
+            <div class="col-md-12">
+                <div class="col-md-12">
                     <table class="table responsive" id="sort">
                         <thead>
                             <tr>
@@ -231,8 +231,16 @@
                                     <li class="">
                                         <a href="#voucherDetails" data-toggle="tab" title="Voucher Details" aria-expanded="true">
                                             <span class="round-tabs one">
-                                        <i class="fa fa-gift fa-lg"></i><br>Voucher Details                                   
-                                    </span>
+                                                <i class="fa fa-gift fa-lg"></i><br>Voucher Details                                   
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <!-- Seven Tab -->
+                                    <li class="">
+                                        <a href="#ratesDetails" data-toggle="tab" title="Rates" aria-expanded="true">
+                                            <span class="round-tabs one">
+                                                <i class="fa fa-balance-scale fa-lg"></i><br>Rates
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -271,7 +279,7 @@
                                                 <div class="col-md-6 has-warning">
                                                     <h5>Department</h5>
                                                     <div class="form-group selectValidation">
-                                                        <select class="custom-select form-control form-control-sm inputValidationCostDetails" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="dept[dept]" id="ddlChooseDept">
+                                                        <select disabled class="custom-select form-control form-control-sm" data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="dept[dept]" id="ddlChooseDept">
                                                             <option selected disabled hidden>Select an option</option>
                                                         </select>
                                                     </div>
@@ -296,11 +304,11 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <h5>Cost charged - Adults / Unit</h5>
+                                                            <h5>Cost charged - Persons / Unit</h5>
                                                             <div class="costPerRadio">
                                                                 <p>
                                                                     <input type="radio" id="adults" value="adults" name="radioGroupAdult" checked>
-                                                                    <label for="adults">Adults</label>
+                                                                    <label for="adults">Persons</label>
                                                                 </p>
                                                                 <p>
                                                                     <input type="radio" id="unit" value="unit" name="radioGroupAdult">
@@ -309,17 +317,17 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <h5>Min Adults</h5>
+                                                            <h5>Min Persons</h5>
                                                             <input type="number" min='1' max='100' class="form-control" id="minAdults">
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <h5>Max Adults</h5>
+                                                            <h5>Max Persons</h5>
                                                             <input type="number" min='1' max='9999' class="form-control" id="maxAdults">
                                                         </div>
                                                     </div>
 
                                                     <div class="row">
-                                                        <div class="col-md-4">
+                                                        <!-- <div class="col-md-4">
                                                             <h5>Cost charged - Children / Unit</h5>
                                                             <div class="costPerRadio">
                                                                 <p>
@@ -331,31 +339,15 @@
                                                                     <label for="unitChildren">Unit</label>
                                                                 </p>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-4">
+                                                        </div> -->
+                                                        <!-- <div class="col-md-4">
                                                             <h5>Min Children</h5>
                                                             <input type="number" min='1' max='100' class="form-control" id="minChildren">
-                                                            <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                        <option selected disabled hidden>Minimum Persons</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                    </select>   -->
                                                         </div>
                                                         <div class="col-md-4">
                                                             <h5>Max Children</h5>
                                                             <input type="number" min='1' max='9999' class="form-control" id="maxChildren">
-                                                            <!-- <select class="custom-select form-control form-control-sm" name="regular" style="width: 100%;" name="location[location]" id="chooseLocation">
-                                                        <option selected disabled hidden>Maximum Persons</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                    </select>                                                                                                -->
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 has-success">
@@ -497,8 +489,8 @@
                                     <div class="col-md-12">
                                         <div class="col-md-12">
                                             <div class="row" id="searchQuoteDetails">
-                                                <div class="col=md-12">
-                                                    <div class="col=md-12">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-12">
                                                         <table class="table responsive" id="quoteDetailsSort">
                                                             <thead>
                                                                 <tr>
@@ -556,11 +548,35 @@
                                     <form action="#" onsubmit="return false">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="col-md-12">
-                                                    <h5>Pay Breaks</h5>
+                                                <div class="col-lg-1">
+                                                    <h5>Pax Breaks</h5>
                                                 </div>
-                                                <div id="paybreaksPopulate">
+                                                <div class="col-lg-1 checkerBtn">
+                                                    <span class="addBtn" id="btnCounter">
+                                                        <i class="fa fa-plus fa-lg add_more_button" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
+                                                    </span>
                                                 </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <br>
+                                                <form name="add_paxbreaks">
+                                                    <div class="input_fields_container_part">
+                                                            <div class="col-md-4" id="paxBreakMain">
+                                                                <form class="paxBreaksForm1">
+                                                                    <div class="col-md-3">
+                                                                        <input type="number" max="9999" min="1" class="form-control" id="paxBreaksStart" name="paxBreaksStart" value="1" disabled>
+                                                                    </div>
+                                                                    <div class="col-md-2 chkArrow">
+                                                                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                                                    </div>
+                                                                    <div class="col-md-7">
+                                                                        <input type="number" max="9999" min="1" class="form-control" id="addedIdFirst" name="paxBreaksEnd">
+                                                                    </div>
+                                                                </form>
+                                                                    <!-- <a href="#" class="remove_field" style="margin-left:10px;"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a> -->
+                                                            </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                         &nbsp;
@@ -584,7 +600,7 @@
                                                     </li>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <button id="updateQuoteDetails" class="btn btn-primary pull-right">Update Quote Details &raquo;</button>
+                                                    <button id="updateQuoteDetails" class="btn btn-primary pull-right updateQuoteDetails">Update Quote Details &raquo;</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -972,7 +988,123 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Start Six Tab -->
+                                <!-- End Six Tab -->
+
+
+                                <!-- Start Seven Tab -->
+                                <div class="tab-pane fade" id="ratesDetails">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-12">
+                                                <h3>Insert Rate</h3>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <!-- Row 2 -->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h5>Service Date From / To</h5>
+                                                        <div class="input-group date datepicker-in">
+                                                            <input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Row 2 -->
+
+                                                <!-- Row 1 -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h5>Market</h5>
+                                                            <select id="multiselectRate22" name="multiselectRate22" class="multiselectRate22" onchange="multiselectMarket()" multiple="multiple">
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <h5>Tour Operator</h5>
+                                                        <select id="multiselectRate24" name="multiselectRate24" class="multiselectRate24" multiple="multiple" style="display: none;">
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <h5>Rates Types</h5>
+                                                        <select id="multiselectRate23" name="multiselectRate23" class="multiselectRate23" multiple="multiple" style="display: none;">
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!-- Row 1 -->
+                                            </div>
+
+                                            
+                                            <div class="col-md-6">
+                                                <!-- Row 3 -->
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h5>Closed Date</h5>
+                                                        <div class="input-group date datepicker-in">
+                                                            <input type="text" name="daterange" id="dateRangeClosedDate" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <!-- <fieldset class="form-group">
+                                                            <h5>Selected Closed Date</h5>
+                                                            <div class="filterBlock resize form-control">
+                                                                <div id="selectedClosedDate"></div>
+                                                            </div>
+                                                        </fieldset> -->
+                                                        <div class="col-md-12">
+                                                            <div class="row" id="searchRateDetails">
+                                                                <table class="table responsive" id="rateDetailsSort">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th scope="col">Closed Date From</th>
+                                                                            <th scope="col">Closed Date To</th>
+                                                                            <!-- <th scope="col">Edit</th> -->
+                                                                            <th scope="col">Delete</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Row 3 -->
+                                            </div>
+                                            <div class="col-md-12">
+                                                <hr>
+                                                <button id="createRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                &nbsp;
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div id="row rateInsertDetails">
+                                                    <table class="table responsive" id="rateInsertDetailsSort">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Date</th>
+                                                                <th scope="col">Market</th>
+                                                                <th scope="col">Tour Operator</th>
+                                                                <th scope="col">Rate Type</th>
+                                                                <th scope="col">Description</th>
+                                                                <th scope="col">Edit</th>
+                                                                <th scope="col">Delete</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Seven Tab -->
                                 <div class="toast jam toast_updated" aria-hidden="true" style="display:none;">
                                     <span class="close" aria-role="button" tabindex="0">&times;</span> Service Updated.
                                 </div>

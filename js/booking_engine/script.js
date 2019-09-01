@@ -3,9 +3,18 @@ document.getElementById("aTitle").innerHTML = "BOOKING SEARCH ENGINE";
 $(document).ready(function () {
     var date = new Date();
     date.setDate(date.getDate() + 1);
-    console.log('chk', date.getDate() + 1);
     $('#datetimepicker').datepicker({
         format: 'dd-mm-yyyy',
+        startDate: date
+    });
+
+    $('#datetimepickerFrom').datepicker({
+        format: 'yyyy-mm-dd',
+        startDate: date
+    });
+
+    $('#datetimepickerTo').datepicker({
+        format: 'yyyy-mm-dd',
         startDate: date
     });
 

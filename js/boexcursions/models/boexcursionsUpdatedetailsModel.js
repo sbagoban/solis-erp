@@ -1,6 +1,5 @@
 
     function editRowService(data) {
-        console.log('test >>', data);
         // Set Value - From Selected Line
         document.getElementById("OptionCodeDisplay").innerHTML = data.optioncode;
         document.getElementById("descriptionDisplay").innerHTML = data.descriptionservice;
@@ -27,6 +26,7 @@
         
         var idQuoteDetails = document.getElementById('idBlock').innerHTML;
         quoteDetailsEditRows(data, idQuoteDetails);
+        rateDetailsEditRows(idQuoteDetails);
 
         $('html, body').animate({
             scrollTop: $("#OptionCodeDisplay").offset().top
@@ -54,7 +54,6 @@
                 document.getElementById("produtRadio").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
         switch (radioButtonsCross) {
             case "use first rate":
@@ -70,18 +69,16 @@
                 document.getElementById("notAllowed").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
     }
 
     function costDetailsEditRows(data) {
         // Set Value to textfield - From selected line
         document.getElementById("ddlChooseLocality").value = data.locality_costdetails;
-        document.getElementById("ddlChooseDept").value = data.locality_costdetails;
         document.getElementById("minAdults").value = data.min_adults_costdetails;
         document.getElementById("maxAdults").value = data.max_adults_costdetails;
-        document.getElementById("minChildren").value = data.min_children_costdetails;
-        document.getElementById("maxChildren").value = data.max_children_costdetails;
+        // document.getElementById("minChildren").value = data.min_children_costdetails;
+        // document.getElementById("maxChildren").value = data.max_children_costdetails;
         document.getElementById("descriptionInvoiceCostDetails").value = data.invoice_desciption_costdetails;
 
         //$('#duration').durationPicker('setTime', data.duration_costdetails);
@@ -91,8 +88,23 @@
         document.getElementById("textFieldInvoiceCostDetails").value = data.supplierfk;
 
         radioButtonsAdults = data.charged_unit_adults_costdetails;
-        radioButtonsChildren = data.charged_unit_children_costdetails
+        radioButtonsChildren = data.charged_unit_children_costdetails;
         //radioButtonsTax = data.taxbasis_costdetails
+        var checkOptionCodeDept = data.optioncode; 
+        var deptCodeVerif = checkOptionCodeDept.substring(0, 2);
+
+        if (deptCodeVerif == "DS") {
+            $("#ddlChooseDept").val("DS");
+        }
+        else if (deptCodeVerif == "FI") {
+            $("#ddlChooseDept").val("FIT");
+        }
+        else if (deptCodeVerif == "LS") {
+            $("#ddlChooseDept").val("LS");
+        }
+        else if (deptCodeVerif == "GR") {
+            $("#ddlChooseDept").val("GRP");
+        }
 
         switch (radioButtonsAdults) {
             case "adults":
@@ -105,16 +117,16 @@
                 console.log("No voucher creation");
         }
 
-        switch (radioButtonsChildren) {
-            case "children":
-                document.getElementById("children").checked = true;
-                break
-            case "unit":
-                document.getElementById("unitChildren").checked = true;
-                break
-            default:
-                console.log("No voucher creation");
-        }
+        // switch (radioButtonsChildren) {
+        //     case "children":
+        //         document.getElementById("children").checked = true;
+        //         break
+        //     case "unit":
+        //         document.getElementById("unitChildren").checked = true;
+        //         break
+        //     default:
+        //         console.log("No voucher creation");
+        // }
 
         // switch (radioButtonsTax) {
         //     case "inclusive":
@@ -265,7 +277,6 @@
                 document.getElementById("voucherEachPersonDay").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
         switch (radioButtonsPrint) {
             case "Print Voucher":
@@ -278,7 +289,6 @@
                 document.getElementById("recordLiability").checked = true;
                 break
             default:
-                console.log("No voucher creation");
         }
     }
 
@@ -312,14 +322,14 @@
     //     return check;
     // }
 
-    function displayCostChildren() {
-        var ele = document.getElementsByName('radioCostChildren');
-        for (i = 0; i < ele.length; i++) {
-            if (ele[i].checked)
-                var check = ele[i].value;
-        }
-        return check;
-    }
+    // function displayCostChildren() {
+    //     var ele = document.getElementsByName('radioCostChildren');
+    //     for (i = 0; i < ele.length; i++) {
+    //         if (ele[i].checked)
+    //             var check = ele[i].value;
+    //     }
+    //     return check;
+    // }
 
 
     function displayCostAdults() {
@@ -340,13 +350,13 @@
         var descriptionInvoiceCostDetails = document.getElementById('descriptionInvoiceCostDetails').value;
         var textFieldDescriptionCostDetails = document.getElementById('textFieldDescriptionCostDetails').value;
         var textFieldCommentsCostDetails = document.getElementById('textFieldCommentsCostDetails').value;
-        var minChildren = document.getElementById('minChildren').value;
-        var maxChildren = document.getElementById('maxChildren').value;
+        // var minChildren = document.getElementById('minChildren').value;
+        // var maxChildren = document.getElementById('maxChildren').value;
         var minAdults = document.getElementById('minAdults').value;
         var maxAdults = document.getElementById('maxAdults').value;
         var timeDuration = dateManipulation();
         //var taxBasis = displayTaxBasis();
-        var costChargedChildren = displayCostChildren();
+        //var costChargedChildren = displayCostChildren();
         var costChargedAdults = displayCostAdults();
 
         var objUpdateService = {
@@ -357,9 +367,9 @@
             comments: textFieldCommentsCostDetails,
             duration_costdetails: timeDuration,
             //taxbasis_costdetails: taxBasis,
-            charged_unit_children_costdetails: costChargedChildren,
-            min_children_costdetails: minChildren,
-            max_children_costdetails: maxChildren,
+            //charged_unit_children_costdetails: costChargedChildren,
+            // min_children_costdetails: minChildren,
+            // max_children_costdetails: maxChildren,
             charged_unit_adults_costdetails: costChargedAdults,
             min_adults_costdetails: minAdults,
             max_adults_costdetails: maxAdults
@@ -371,7 +381,6 @@
             method: "POST",
             data: objUpdateService,
             success: function (data) {
-                //resetFormUpdatedService();
                 callDataNewServiceGrid();
                 $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
@@ -379,15 +388,63 @@
                 console.log('Error ${error}');
             }
         });   
-        var calcNumberOfPersons = +maxAdults + +minAdults;
-        getUnitsPopulate(calcNumberOfPersons);
+        //var calcNumberOfPersons = +maxAdults + +minAdults;
+        //getUnitsPopulate(calcNumberOfPersons);
     });
     // End click
 
-    function getUnitsPopulate(data) {
-        for (var count = 0; count < data; count++) {
-            $("<div class='col-md-4'><input type='number' max='9999' min='1' class='form-control'></div>").appendTo("#paybreaksPopulate");
+    // Get Value Of dynamic textField PaxBreaks Save to table
+    // Grab Value from Dynamic textfield
+    function CallTxtEvent(x) {
+        chk = $("#addedId" + x).val();
+        maxAdultsCostDetails = document.getElementById('maxAdults').value;
+        if (maxAdultsCostDetails > chk) {
+            console.log('maxAdultsCostDetails', maxAdultsCostDetails, '>', 'chk', chk);
+            document.querySelector(".add_more_button").click();
+            var counterPlusOne = +x + +1;
+            document.getElementById("removeId" + counterPlusOne).value = +chk + +1;
         }
+    }
+
+    $("#addedIdFirst").keyup(function(){
+        checkFirstPaxTextField = $("#addedIdFirst").val();
+        console.log(checkFirstPaxTextField);
+        // check first value input
+        minAdultsCostDetails = document.getElementById('minAdults').value;
+        maxAdultsCostDetails = document.getElementById('maxAdults').value;
+        if (maxAdultsCostDetails > checkFirstPaxTextField) {
+            document.querySelector(".add_more_button").click();
+            document.getElementById("removeId1").value = +checkFirstPaxTextField + +1;
+        } 
+    });
+
+    function updatePaxBreaksDetails(idBlockId) {
+        var paxBreaksStart = document.getElementById("paxBreaksStart").value;
+        var addedIdFirst = document.getElementById("addedIdFirst").value;
+
+        // objFirstPaxBreaks = {
+        //     paxBreaks1: paxBreaksStart,
+        //     paxBreaks2: addedIdFirst
+        // };
+    
+        var disabled = $('.paxBreaksForm').find(':input:disabled').removeAttr('disabled');
+        serializeForm2 = $('.paxBreaksForm').serializeArray();
+        disabled.attr('disabled','disabled');
+        console.log(serializeForm2);
+        const url_save_paxbreaks = "php/api/bckoffservices/savequotedetailspaxbreaksnumber.php?t=" + encodeURIComponent(global_token);
+        $.ajax({
+            url: url_save_paxbreaks,
+            method: "POST",
+            data: serializeForm2,
+            success: function (data) {
+                callDataNewServiceGrid();
+                $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
+                alert(data);
+            },
+            error: function (error) {
+                console.log('Error ${error}');
+            }
+        }); 
     }
 
     /////////////////////////////////////////
@@ -406,7 +463,6 @@
             method: "POST",
             data: objNotes,
             success: function (data) {
-                console.log('value', data);
                 callDataNewServiceGrid();
                 $('.toast_updated').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
