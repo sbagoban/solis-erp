@@ -158,15 +158,18 @@ try {
     $meals_ids = $conditions["meals_ids"];
     $min_stay_from = utils_stringBlank($conditions["min_stay_from"], null);
     $min_stay_to = utils_stringBlank($conditions["min_stay_to"], null);
+    $min_stay_priority = utils_stringBlank($conditions["min_stay_priority"], null);
     $conditions_text = $conditions["conditions_text"];
     $added_values_text = $conditions["added_values_text"];
 
-    $sql = "UPDATE tblspecial_offer SET min_stay_from=:min_stay_from, 
+    $sql = "UPDATE tblspecial_offer SET min_stay_priority=:min_stay_priority,
+            min_stay_from=:min_stay_from, 
             min_stay_to=:min_stay_to, conditions_text=:conditions_text, 
             added_values_text=:added_values_text WHERE id=:id";
 
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id,
+        ":min_stay_priority"=>$min_stay_priority,
         ":min_stay_from" => $min_stay_from,
         ":min_stay_to" => $min_stay_to,
         ":conditions_text" => $conditions_text,

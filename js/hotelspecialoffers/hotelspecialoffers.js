@@ -344,7 +344,9 @@ function hotelspecialoffers()
                     form_senior_discounts.setFormData(json_obj.SPO.GENERAL);
                     form_familydiscounts.setFormData(json_obj.SPO.GENERAL);
                     form_free_nights.setFormData(json_obj.SPO.GENERAL);
-
+                    
+                    triggerConditionsChange("min_stay_priority","");
+                    
                     toggleSPOTabsVisible(json_obj.SPO.GENERAL.template);
                     toggleSPOTabsEnable("name");
 
@@ -817,7 +819,7 @@ function hotelspecialoffers()
 
 
     //===============================================================================
-    var popupwin_newspolink = dhxWins.createWindow("popupwin_newspolink", 50, 50, 600, 200);
+    var popupwin_newspolink = dhxWins.createWindow("popupwin_newspolink", 50, 50, 600, 150);
     popupwin_newspolink.setText("New SPO Link:");
     popupwin_newspolink.denyResize();
     popupwin_newspolink.denyPark();
@@ -1272,16 +1274,24 @@ function hotelspecialoffers()
                 {type: "button", name: "cmdLoadMeals", tooltip: "Select Meal Plans", value: "...", width: "30", height: "40", offsetLeft: 0}
             ]},
         {type: "block", width: 900, list: [
+                {type: "combo", name: "min_stay_priority", label: "Min Stay Priority:",
+                    labelWidth: "130",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                },
+                {type: "newcolumn"},
                 {type: "input", name: "min_stay_from", label: "Min Stay From:",
                     labelWidth: "100",
-                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",
                     validate: "ValidNumeric"
                 },
                 {type: "newcolumn"},
                 {type: "input", name: "min_stay_to", label: "Min Stay To:",
                     labelWidth: "80",
-                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",
                     validate: "ValidNumeric"
                 }
@@ -1306,6 +1316,16 @@ function hotelspecialoffers()
             showPopUp(form_conditions, "Meals", "meal_display", "meals_ids", _dsMealPlans, "MULTIPLE", null);
         }
     });
+    
+    var cboMinStay = form_conditions.getCombo("min_stay_priority");
+    cboMinStay.addOption([{value: "NONE", text: "NONE", img_src: "images/rollover.png"}]);
+    cboMinStay.addOption([{value: "SPO ONLY", text: "SPO ONLY", img_src: "images/rollover.png"}]);
+    cboMinStay.addOption([{value: "SPO THEN CONTRACT", text: "SPO THEN CONTRACT", img_src: "images/rollover.png"}]);
+    cboMinStay.readonly(true);
+    
+    form_conditions.attachEvent("onChange", function (id, value){
+        triggerConditionsChange(id,value);
+   });
 
 
     var str_frm_settings_condtion_buttons = [
@@ -1889,26 +1909,26 @@ function hotelspecialoffers()
         {type: "block", width: 900, list: [
                 {type: "input", name: "family_offer_adult_min",
                     label: "Min Adults",
-                    validate: "ValidNumeric", required: true,
+                    validate: "ValidNumeric",
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "family_offer_adult_max",
                     label: "Max Adults",
-                    validate: "ValidNumeric", required: true,
+                    validate: "ValidNumeric",
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "newcolumn"},
                 {type: "input", name: "family_offer_children_min",
                     label: "Min Children",
-                    validate: "ValidNumeric", required: true,
+                    validate: "ValidNumeric", 
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "family_offer_children_max",
                     label: "Max Children",
-                    validate: "ValidNumeric", required: true,
+                    validate: "ValidNumeric", 
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"}
 
@@ -1954,7 +1974,7 @@ function hotelspecialoffers()
     grid_family_discount_childrenage.setHeader("Age From,Age To,Discount Basis,Discount Value");
     grid_family_discount_childrenage.setColumnIds("child_age_from,child_age_to,discount_percentage_value,discount_value");
     grid_family_discount_childrenage.setColTypes("edn,edn,combo,edn");
-    grid_family_discount_childrenage.setInitWidths("100,100,100,100");
+    grid_family_discount_childrenage.setInitWidths("100,100,200,100");
     grid_family_discount_childrenage.setColAlign("center,center,center,center");
     grid_family_discount_childrenage.setColSorting('int,int,str,int');
     grid_family_discount_childrenage.enableAlterCss("", "");
@@ -4473,9 +4493,25 @@ function hotelspecialoffers()
         }
 
         //validate min stay
-        var min_stay_from = form_conditions.getItemValue("min_stay_from");
-        var min_stay_to = form_conditions.getItemValue("min_stay_to");
-
+        
+        var min_stay_from = utils_trim(form_conditions.getItemValue("min_stay_from")," ");
+        var min_stay_to = utils_trim(form_conditions.getItemValue("min_stay_to")," ");
+        var min_stay_priority = form_conditions.getItemValue("min_stay_priority");
+        
+        if(min_stay_priority != "NONE" && min_stay_from == "" && min_stay_to == "")
+        {
+            dhtmlx.alert({
+                text: "Please enter at least a value for Minimum Stay if Priority is not NONE",
+                type: "alert-warning",
+                title: "Special Offer",
+                callback: function () {
+                    form_conditions.setItemFocus("min_stay_from");
+                }
+            });
+            
+            return;
+        }
+        
         if (min_stay_from != "" && isNaN(min_stay_from))
         {
             dhtmlx.alert({
@@ -5497,8 +5533,11 @@ function hotelspecialoffers()
     function loadFamilyDiscountGridCombos()
     {
         var cbo = grid_family_discount_childrenage.getColumnCombo(grid_family_discount_childrenage.getColIndexById("discount_percentage_value"));
-        cbo.addOption([{value: "%", text: "%"}]);
-        cbo.addOption([{value: "VALUE", text: "VALUE"}]);
+        cbo.addOption([{value: "%ROOM", text: "Percentage Room"}]);
+        cbo.addOption([{value: "%ALL", text: "Percentage All"}]);
+        cbo.addOption([{value: "FLAT_PNI", text: "Flat PNI"}]);
+        cbo.addOption([{value: "FLAT_PPPN", text: "Flat PPPN"}]);
+    
         cbo.readonly(true);
     }
 
@@ -5584,11 +5623,28 @@ function hotelspecialoffers()
         }
 
 
-        var family_offer_adult_min = form_familydiscounts.getItemValue("family_offer_adult_min");
-        var family_offer_adult_max = form_familydiscounts.getItemValue("family_offer_adult_max");
-        var family_offer_children_min = form_familydiscounts.getItemValue("family_offer_children_min");
-        var family_offer_children_max = form_familydiscounts.getItemValue("family_offer_children_max");
-
+        var family_offer_adult_min = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_min")," ");
+        var family_offer_adult_max = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_max")," ");
+        var family_offer_children_min = utils_trim(form_familydiscounts.getItemValue("family_offer_children_min")," ");
+        var family_offer_children_max = utils_trim(form_familydiscounts.getItemValue("family_offer_children_max")," ");
+        
+        if(family_offer_adult_min == "")
+        {
+            family_offer_adult_min = 0;
+        }
+        if(family_offer_adult_max == "")
+        {
+            family_offer_adult_max = 0;
+        }
+        if(family_offer_children_min == "")
+        {
+            family_offer_children_min = 0;
+        }
+        if(family_offer_children_max == "")
+        {
+            family_offer_children_max = 0;
+        }
+        
 
         family_offer_adult_min = parseInt(family_offer_adult_min, 10);
         family_offer_adult_max = parseInt(family_offer_adult_max, 10);
@@ -5669,11 +5725,52 @@ function hotelspecialoffers()
                 return;
             }
         }
-
-
+        
+        //validate age overlappings
+        //TODO
+        for (var i = 0; i < grid_family_discount_childrenage.getRowsNum(); i++)
+        {
+            var rwid = grid_family_discount_childrenage.getRowId(i);
+            var child_age_from = grid_family_discount_childrenage.cells(rwid, grid_family_discount_childrenage.getColIndexById("child_age_from")).getValue();
+            var child_age_to = grid_family_discount_childrenage.cells(rwid, grid_family_discount_childrenage.getColIndexById("child_age_to")).getValue();
+            
+            if(!validate_family_discounts_age_overlapping(child_age_from,child_age_to,rwid))
+            {
+                dhtmlx.alert({
+                    text: "Overlapping Age Ranges Detected!",
+                    type: "alert-warning",
+                    title: "Special Offer",
+                    callback: function () {
+                        grid_family_discount_childrenage.selectRowById(rwid, false, true, false);
+                    }
+                });
+                
+                return;
+            }
+        }
+        
+        
         saveSPO();
 
-
+    }
+    
+    function validate_family_discounts_age_overlapping(agfrom,agto,rwid_skip)
+    {
+        for (var i = 0; i < grid_family_discount_childrenage.getRowsNum(); i++)
+        {
+            var rwid_inner = grid_family_discount_childrenage.getRowId(i);
+            var agfrom_inner = grid_family_discount_childrenage.cells(rwid_inner, grid_family_discount_childrenage.getColIndexById("child_age_from")).getValue();
+            var agto_inner = grid_family_discount_childrenage.cells(rwid_inner, grid_family_discount_childrenage.getColIndexById("child_age_to")).getValue();
+            
+            if (agfrom <= agto_inner && agfrom_inner <= agto && rwid_skip != rwid_inner)
+            {
+                return false;
+            }      
+            
+        }
+          
+        return true;
+        
     }
 
     function saveSPO_wedding_party()
@@ -14584,7 +14681,8 @@ function hotelspecialoffers()
                 }
                 if (json_obj.OUTCOME == "OK")
                 {
-
+                    
+                    /*
                     dhtmlx.alert({
                         text: "Save Successful",
                         type: "alert",
@@ -14592,6 +14690,7 @@ function hotelspecialoffers()
                         callback: function () {
                         }
                     });
+                     */
 
                     popupwin_newspolink.hide();
                     popupwin_newspolink.setModal(false);
@@ -15232,6 +15331,30 @@ function hotelspecialoffers()
             return false;
         }
     }
+    
+    function triggerConditionsChange(id,value)
+    {
+        if(id == "min_stay_priority")
+        {
+            var priority = form_conditions.getItemValue("min_stay_priority");
+            if(priority == "NONE")
+            {
+                form_conditions.setItemValue("min_stay_from","");
+                form_conditions.setItemValue("min_stay_to","");
+                
+                form_conditions.disableItem("min_stay_from");
+                form_conditions.disableItem("min_stay_to");
+            }
+            else
+            {
+                form_conditions.enableItem("min_stay_from");
+                form_conditions.enableItem("min_stay_to");
+            }
+        }
+        
+        return;
+    }
+        
 
     //=======================================================
     popupwin_spo.hide();

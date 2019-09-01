@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="636">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="660">
         <file>
             <url>js/bckoffhotels/bckoffhotels.js</url>
             <bookmark id="30">
@@ -125,24 +125,9 @@
         </file>
         <file>
             <url>js/hotelspecialoffers/hotelspecialoffers.js</url>
-            <bookmark id="595">
+            <bookmark id="655">
                 <name/>
-                <line>2568</line>
-                <key/>
-            </bookmark>
-            <bookmark id="619">
-                <name/>
-                <line>6254</line>
-                <key/>
-            </bookmark>
-            <bookmark id="617">
-                <name/>
-                <line>10080</line>
-                <key/>
-            </bookmark>
-            <bookmark id="596">
-                <name/>
-                <line>14980</line>
+                <line>5770</line>
                 <key/>
             </bookmark>
         </file>
@@ -171,12 +156,12 @@
             <url>php/api/hotelspecialoffers/savespo.php</url>
             <bookmark id="312">
                 <name/>
-                <line>573</line>
+                <line>576</line>
                 <key/>
             </bookmark>
             <bookmark id="480">
                 <name/>
-                <line>3229</line>
+                <line>3232</line>
                 <key/>
             </bookmark>
         </file>
@@ -185,6 +170,14 @@
             <bookmark id="636">
                 <name/>
                 <line>968</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>php/api/ratescalculator/_rates_calculator.php</url>
+            <bookmark id="660">
+                <name/>
+                <line>4082</line>
                 <key/>
             </bookmark>
         </file>
@@ -199,8 +192,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/soliserp/sql/karvesh%20db%20changes/allchanges.sql</file>
-            <file>file:/var/www/html/soliserp/js/companytype/companytype.js</file>
+            <file>file:/var/www/html/soliserp/js/ratescalculator/ratescalculator.js</file>
+            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/test_free_nights.php</file>
+            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/_spo.php</file>
             <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_calculator.php</file>
         </group>
     </open-files>

@@ -346,7 +346,7 @@ function ratescalculator() {
             }
         },
 
-        {type: "input", name: "spo_party_pax", label: "Additional of Pax in Party:", labelWidth: "170",
+        {type: "input", name: "spo_party_pax", label: "Additional Num Pax in Party:", labelWidth: "170",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
         },

@@ -5,17 +5,99 @@ function _rates_calculator($con, $arr_params) {
 
         $time_pre = microtime(true);
 
-        
-        //=============== get array of spos ===============
-        $arr_spo_discounts = SPO($arr_params, $con);
-        //=================================================
-                
+        //================================================================
+        ////TEMP ========================================================
+        //temporarily create a discount array for testing
+        $arr_spo_discounts = array();
 
-        
+        $discount_percnt_room = $arr_params["spo_discount_room_percentage"];
+        $discount_percnt_all = $arr_params["spo_discount_all_percentage"];
+        $discount_flat_pppn = $arr_params["spo_discount_PPPN"];
+        $discount_flat_pni = $arr_params["spo_discount_PNI"];
+        $free_nights_num_nights = $arr_params["spo_free_nights_num_nights"];
+        $spo_free_nights_start_end = $arr_params["spo_free_nights_start_end"];
+
+
+        $arr_item = array(
+            "SPO_ID" => 1, "SPO_NAME" => "TESTING 1", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "%ALL", "VALUE" => $discount_percnt_all,
+            "APPLY_TO_DATES" => array("ALL"),
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
+        $arr_spo_discounts[] = $arr_item;
+
+        $arr_item = array(
+            "SPO_ID" => 2, "SPO_NAME" => "TESTING 2", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => $discount_percnt_room,
+            "APPLY_TO_DATES" => array("ALL"),
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
+        $arr_spo_discounts[] = $arr_item;
+
+        $arr_item = array(
+            "SPO_ID" => 3, "SPO_NAME" => "TESTING 3", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "FLAT_PPPN", "VALUE" => $discount_flat_pppn,
+            "APPLY_TO_DATES" => array("ALL"),
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
+        $arr_spo_discounts[] = $arr_item;
+
+        $arr_item = array(
+            "SPO_ID" => 4, "SPO_NAME" => "TESTING 4", "SPO_TYPE" => "DISCOUNT",
+            "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+            "AGE_FROM" => -1, "AGE_TO" => -1,
+            "ROOM_ALL_FLAT" => "FLAT_PNI", "VALUE" => $discount_flat_pni,
+            "APPLY_TO_DATES" => array("ALL"),
+            "FREE_NIGHTS" => 0, "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => array());
+
+        $arr_spo_discounts[] = $arr_item;
+
+        if ($free_nights_num_nights > 0) {
+            $arr_item = array(
+                "SPO_ID" => 5, "SPO_NAME" => "TESTING 5", "SPO_TYPE" => "FREE_NIGHTS",
+                "AD_CH" => "BOTH", "BRIDE_GROOM" => "",
+                "AGE_FROM" => -1, "AGE_TO" => -1,
+                "ROOM_ALL_FLAT" => "%ROOM", "VALUE" => 100,
+                "APPLY_TO_DATES" => array(), //to be changed later on for filters
+                "FREE_NIGHTS" => $free_nights_num_nights, "FREE_NIGHTS_START_END" => $spo_free_nights_start_end,
+                "FLAT_RATE_CAPACITY_ARRAY" => array());
+
+            $arr_spo_discounts[] = $arr_item;
+        }
+
+
+
+        $arr_fr = _spo_loadspo($con, 58, $arr_params["hotel"]);
+        $arr_item = array(
+            "SPO_ID" => 58, "SPO_NAME" => "TESTING 6", "SPO_TYPE" => "FLAT_RATES",
+            "AD_CH" => "", "BRIDE_GROOM" => "",
+            "AGE_FROM" => "", "AGE_TO" => "",
+            "ROOM_ALL_FLAT" => "", "VALUE" => "0",
+            //these dates are chosen after passing following tests:
+            //1. dates match Flat Rates criteria
+            "APPLY_TO_DATES" => array(
+                array("DATE" => "2019-04-03", "IDX" => 0),
+                array("DATE" => "2019-04-04", "IDX" => 1),
+                array("DATE" => "2019-04-05", "IDX" => 2)),
+            "FREE_NIGHTS" => "", "FREE_NIGHTS_START_END" => "",
+            "FLAT_RATE_CAPACITY_ARRAY" => $arr_fr["FLAT_RATES_CAPACITY"]);
+
+        $arr_spo_discounts[] = $arr_item;
+
+
+        ////TEMP END ======================================================
+        //=================================================================        
+
 
         $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
         $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
-        
         //cleanup:
         $arr_params["contractids"] = trim($arr_params["contractids"]);
 
@@ -3991,30 +4073,9 @@ function SPO($arr_params, $con) {
 
 
     //create SPO objects from merged spos
-    $arr_final_single_spos = _rates_calculator_create_merged_spos($arr_merged_spos, $con, $arr_spos);
-    $arr_final_spos = array_merge($arr_final_spos, $arr_final_single_spos);
-
+    
     
     return $arr_final_spos;
-}
-
-function _rates_calculator_create_merged_spos($arr_merged_spos, $con, $arr_spos)
-{
-    $arr_final_merged_spos = array();
-    
-    //remember, merged spos are of type:
-    
-    //discount + is percentage
-    //early_booking + is percentage
-    //family_offer + is percentage <-- careful, may need to further split by age groups
-    //honeymoon + is percentage <-- careful, may need to further split if bride and groom different basis
-    //long_stay + is percentage
-    //senior_offer + is percentage
-    //wedding_anniversary + is percentage <-- careful, may need to further split if bride and groom different basis
-    //wedding_party + is percentage <-- careful, may need to further split if bride and groom different basis
-
-    
-    return $arr_final_merged_spos;
 }
 
 function _rates_calculator_create_single_spos($arr_single_spos, $con, $num_nights) {
@@ -4348,7 +4409,6 @@ function _rates_calculator_getSPO_cumulative_eligible($spo_rw, $con) {
 
     return false;
 }
-
 
 function _rates_calculator_getSPO_cumulative_eligible_wedding($spo_rw) {
     $wedding_apply_discount_both = $spo_rw["wedding_apply_discount_both"];
@@ -5162,7 +5222,7 @@ function _rates_calculator_spo_calculate_num_free_nights($rw, $con, $num_nights)
     
     $cumulative = $rw["free_nights_cumulative"];
     
-    $sql = "SELECT * FROM tblspecial_offer_freenights 
+    $sql = "select * from tblspecial_offer_freenights 
             WHERE spo_fk = :spoid order by stay_nights, pay_nights";
 
     $id = $rw["id"];

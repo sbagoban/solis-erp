@@ -38,7 +38,7 @@ try {
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    $stmt = $con->prepare("UPDATE FROM tbltouroperator SET deleted=1 WHERE id = :id");
+    $stmt = $con->prepare("UPDATE tbltouroperator SET deleted=1 WHERE id = :id");
     $stmt->execute(array(":id"=>$id));
     
 } catch (Exception $ex) {

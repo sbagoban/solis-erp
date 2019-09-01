@@ -83,7 +83,7 @@ try {
 
 
     //check duplicates for Hotel Name
-    $sql = "SELECT * FROM tblhotels WHERE hotelname = :hotelname AND id <> :id ";
+    $sql = "SELECT * FROM tblhotels WHERE hotelname = :hotelname AND id <> :id AND deleted=0";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":hotelname" => $hotelname, ":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {

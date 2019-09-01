@@ -42,6 +42,8 @@ require_once("../../connector/data_connector.php");
 
 $con = pdo_con();
 
+//get all spos for that hotel that are not already in a link
+
 $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
         A.active_external, A.spo_type,A.ratecodes,
         B.validities, C.tour_operator_names FROM
@@ -49,8 +51,13 @@ $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
         select spo.*, rc.ratecodes
         from tblspecial_offer spo
         left join tblratecodes rc on spo.rate_fk = rc.id
-        where spo.hotel_fk = :hotel_fk and spo.deleted = 0 
-        AND spo.id NOT IN (SELECT spofk from tblspecial_offer_link_spos WHERE linkfk = :linkfk)
+        WHERE spo.hotel_fk = :hotel_fk AND spo.deleted = 0 
+        AND spo.id NOT IN 
+        (
+            -- get lists of spos that have not already been attached to links of this hotel
+            SELECT a.spofk from tblspecial_offer_link_spos a
+            inner join tblspecial_offer_link  b on a.linkfk = b.id
+            WHERE b.hotel_fk = 19 and b.deleted = 0 )
         ) A,
         (
         select spo_fk, 
