@@ -57,7 +57,7 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="css/editor.css">
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
         <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
-        
+
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -104,7 +104,7 @@ if (isset($_GET["m"])) {
 
         <!-- Google Font -->
         <link rel="stylesheet"
-              href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     </head>
     <body class="hold-transition <?php echo $_SESSION["solis_skin"]; ?> sidebar-mini">
         <div class="wrapper">
@@ -666,13 +666,14 @@ if (isset($_GET["m"])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
-        <script src "https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
+        <script src="https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src='http://static.jstree.com/3.2.1/assets/dist/jstree.js'></script>
         <!-- Sandeep End -->
 
         <!-- Bootstrap 3.3.7 -->

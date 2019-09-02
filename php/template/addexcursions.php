@@ -993,32 +993,60 @@
 
                                 <!-- Start Seven Tab -->
                                 <div class="tab-pane fade" id="ratesDetails">
-                                    <div class="row">
-                                        <div class="col-md-12">
+                                    <div id="insertRate">
+                                        <div class="row">
                                             <div class="col-md-12">
-                                                <h3>Insert Rate</h3>
+                                                <div class="col-md-12">
+                                                    <h3>Insert Rate</h3>
+                                                </div>
                                             </div>
-
-                                            <div class="col-md-6">
-                                                <!-- Row 2 -->
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <h5>Service Date From / To</h5>
-                                                        <div class="input-group date datepicker-in">
-                                                            <input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
-                                                            <div class="input-group-addon">
-                                                                <span class="glyphicon glyphicon-calendar"></span>
-                                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-6">
+                                                    <h5>Service Date From / To</h5>
+                                                    <div class="input-group date datepicker-in">
+                                                        <input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                        <div class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- Row 2 -->
+                                                <div class="col-md-12">
+                                                    <div class="col-md-12">
+                                                        <br>
+                                                        <div class="row" id="rateServiceDateDetails">
+                                                            <table class="table responsive" id="rateServiceDateSort">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th scope="col">Service From</th>
+                                                                        <th scope="col">Service To</th>
+                                                                        <th scope="col">Edit</th>
+                                                                        <th scope="col">Delete</th>
+                                                                    </tr>
+                                                                </thead>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <!-- Row 1 -->
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <h5>Market</h5>
-                                                            <select id="multiselectRate22" name="multiselectRate22" class="multiselectRate22" onchange="multiselectMarket()" multiple="multiple">
+                                                        <select id="multiselectRate22" name="multiselectRate22" class="multiselectRate22" multiple="multiple">
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <h5>Countries</h5>
+                                                        <select id="multiselectRate25" name="multiselectRate25" class="multiselectRate25" multiple="multiple">
+                                                            <option value="0">Select</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-6">
@@ -1026,7 +1054,7 @@
                                                         <select id="multiselectRate24" name="multiselectRate24" class="multiselectRate24" multiple="multiple" style="display: none;">
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-6">
                                                         <h5>Rates Types</h5>
                                                         <select id="multiselectRate23" name="multiselectRate23" class="multiselectRate23" multiple="multiple" style="display: none;">
                                                         </select>
@@ -1034,8 +1062,6 @@
                                                 </div>
                                                 <!-- Row 1 -->
                                             </div>
-
-                                            
                                             <div class="col-md-6">
                                                 <!-- Row 3 -->
                                                 <div class="row">
@@ -1049,12 +1075,6 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12">
-                                                        <!-- <fieldset class="form-group">
-                                                            <h5>Selected Closed Date</h5>
-                                                            <div class="filterBlock resize form-control">
-                                                                <div id="selectedClosedDate"></div>
-                                                            </div>
-                                                        </fieldset> -->
                                                         <div class="col-md-12">
                                                             <div class="row" id="searchRateDetails">
                                                                 <table class="table responsive" id="rateDetailsSort">
@@ -1075,32 +1095,8 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <hr>
-                                                <button id="createRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
+                                                <button id="updateRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
                                             </div>
-
-                                            <div class="col-md-4">
-                                                &nbsp;
-                                            </div>
-
-                                            <div class="col-md-12">
-                                                <div id="row rateInsertDetails">
-                                                    <table class="table responsive" id="rateInsertDetailsSort">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col">Date</th>
-                                                                <th scope="col">Market</th>
-                                                                <th scope="col">Tour Operator</th>
-                                                                <th scope="col">Rate Type</th>
-                                                                <th scope="col">Description</th>
-                                                                <th scope="col">Edit</th>
-                                                                <th scope="col">Delete</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-
                                         </div>
                                     </div>
                                 </div>

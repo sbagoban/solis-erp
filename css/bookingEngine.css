@@ -617,7 +617,7 @@ a.remove_field {
 }
 
 div#ratesDetails {
-  height: 528px;
+  height: 112vh;
 }
 
 a.remove_field1 {
@@ -640,6 +640,11 @@ a.remove_field1 {
 ul.multiselect-container.dropdown-menu {
   height: 149px;
   overflow-y: scroll;
+}
+
+div#insertRate {
+  background: #ececec;
+  border: 5px solid #ffffff;
 }
 
 @keyframes spin {
