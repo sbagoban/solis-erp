@@ -28,43 +28,48 @@ try {
     
     $id = $_POST["id"];
     $idservicesfk = trim($_POST["idservicesfk"]);
-    $servicedatefrom = trim($_POST["servicedatefrom"]);
-    $servicedateto = trim($_POST["servicedateto"]);
+    $idrates_fk = trim($_POST["idrates_fk"]);
+    $country_id = trim($_POST["country_id"]);
+    $country_name = trim($_POST["country_name"]);
 
     $con = pdo_con();
 
     // check duplicates for services
-    $sql = "SELECT * FROM tblexcursion_services_rates_insertrates WHERE id = :id ";
+    $sql = "SELECT * FROM tblexcursion_services_rates_countries WHERE id = :id ";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        throw new Exception("DUPLICATE SERVICES RATE DATE!");
+        throw new Exception("DUPLICATE COUNTRIES!");
     }
 
     if ($id == "-1") {
-        $sql = "INSERT INTO tblexcursion_services_rates_insertrates (idservicesfk, servicedatefrom, servicedateto) 
-                VALUES (:idservicesfk, :servicedatefrom, :servicedateto)";
+        $sql = "INSERT INTO tblexcursion_services_rates_countries (idservicesfk, idrates_fk, country_id, country_name) 
+                VALUES (:idservicesfk, :idrates_fk, :country_id, :country_name)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":idservicesfk" => $idservicesfk, 
-            ":servicedatefrom" => $servicedatefrom,
-            ":servicedateto" => $servicedateto));
+            ":idrates_fk" => $idrates_fk,
+            ":country_id" => $country_id,
+            ":country_name" => $country_name));
         
         $id = $con->lastInsertId();
         echo $id;
     } else {
-        $sql = "UPDATE tblexcursion_services_rates_insertrates SET 
+        $sql = "UPDATE tblexcursion_services_rates_countries SET 
                 idservicesfk=:idservicesfk, 
-                servicedatefrom=:servicedatefrom, 
-                servicedateto=:servicedateto,
+                idrates_fk=:idrates_fk, 
+                country_id=:country_id,
+                country_name=:country_name,
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
+            ":id" => $id,
             ":idservicesfk" => $idservicesfk, 
-            ":servicedatefrom" => $servicedatefrom,
-            ":servicedateto" => $servicedateto));
+            ":idrates_fk" => $idrates_fk,
+            ":country_id" => $country_id,
+            ":country_name" => $country_name));
     }
     echo json_encode(array("OUTCOME" => "OK", "ID"=>$id));
 } catch (Exception $ex) {

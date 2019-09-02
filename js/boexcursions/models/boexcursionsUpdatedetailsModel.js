@@ -27,6 +27,7 @@
         var idQuoteDetails = document.getElementById('idBlock').innerHTML;
         quoteDetailsEditRows(data, idQuoteDetails);
         rateDetailsEditRows(idQuoteDetails);
+        insertRateGrid(idQuoteDetails);
 
         $('html, body').animate({
             scrollTop: $("#OptionCodeDisplay").offset().top

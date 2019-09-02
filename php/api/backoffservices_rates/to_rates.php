@@ -13,17 +13,18 @@ if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
 
-if (!isset($_GET["id"])) {
-    throw new Exception("INVALID ID". $_GET["id"]);
-}
-
-$id = $_GET["id"];
-
 require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT id, toname FROM tbltouroperator WHERE active=1 AND id IN (SELECT tofk FROM tblto_countries WHERE countryfk IN (SELECT countryfk from tblmarket_countries WHERE marketfk = $id))  ORDER BY toname ASC");
+$condition = "";
+
+if(isset($_GET["toid"]))
+{
+    $condition .= " OR id = " . $_GET["toid"];
+}
+
+$query_c = $con->prepare("SELECT id, toname FROM tbltouroperator WHERE active=1 $condition  ORDER BY toname ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
