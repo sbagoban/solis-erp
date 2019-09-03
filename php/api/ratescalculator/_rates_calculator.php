@@ -6,13 +6,14 @@ function _rates_calculator($con, $arr_params) {
         $time_pre = microtime(true);
 
         
-        //=============== get array of spos ===============
-        $arr_spo = SPO($arr_params, $con);
+        //=============== get array of valid and invalid spos ===============
+        $arr_spo = _rates_calculator_spo_search($arr_params, $con);
         if($arr_spo["OUTCOME"] !="OK")
         {
             throw new Exception($arr_spo["OUTCOME"]);
         }
         $arr_spo_discounts = $arr_spo["ARR_SPOS"];
+        $arr_invalid_spos = $arr_spo["ARR_INVALID_SPOS"];
         //=================================================
         
 
@@ -172,7 +173,8 @@ function _rates_calculator($con, $arr_params) {
 
 
         return array("OUTCOME" => "OK", "NUM NIGHTS" => $num_nights, "DAILY" => $arr_daily,
-            "EXEC_TIME" => $exec_time, "COLUMNS" => $arr_columns);
+            "EXEC_TIME" => $exec_time, "COLUMNS" => $arr_columns,
+            "INVALID_SPOS"=>$arr_invalid_spos);
     } catch (Exception $ex) {
         return array("OUTCOME" => "_RATES_CALCULATOR: " . $ex->getMessage());
     }
@@ -3955,32 +3957,58 @@ function _rates_calculator_getSPO_remove_duplicates($arr_spos, $types) {
     return $arr_final_spos;
 }
 
-function SPO($arr_params, $con) {
+function _rates_calculator_spo_search($arr_params, $con) {
 try {
-
-    $arr_spos = _rates_calculator_getSPO_first_test($arr_params, $con);
+    
+    //will return a list of valid spos and a list of invalid spos with reasons why they failed
+    
+    $arr_spos = array();
+    $arr_invalid_spos = array();
+    
+    //TODO: 
+    //1. MINIMUM STAY OVERWRITING
+    //2. SHOW MESSAGES FOR SPO
+    
+    $arr_test_spos = _rates_calculator_getSPO_first_test($arr_params, $con);    
+    $arr_spos = array_merge($arr_spos, $arr_test_spos["VALID_SPOS"]);
+    $arr_invalid_spos = array_merge($arr_invalid_spos, $arr_test_spos["INVALID_SPOS"]);
 
     if (count($arr_spos) == 0) {
-        return $arr_spos; //there are no SPOs for that booking
+        //there are no SPOs for that booking
+        return array("OUTCOME" => "OK", "ARR_SPOS"=>$arr_spos, "ARR_INVALID_SPOS"=>$arr_invalid_spos);
     }
 
+    
+    //=======================================================================================
+    //=======================================================================================
+    
+    
     //there is at least one SPO! continue with 2nd check
 
-    $arr_spos = _rates_calculator_getSPO_second_test($arr_params, $con, $arr_spos);
+    $arr_test_spos = _rates_calculator_getSPO_second_test($arr_params, $con, $arr_spos);
+    $arr_spos = array_merge($arr_spos, $arr_test_spos["VALID_SPOS"]);
+    $arr_invalid_spos = array_merge($arr_invalid_spos, $arr_test_spos["INVALID_SPOS"]);
 
+    if (count($arr_spos) == 0) {
+        //there are no SPOs followng 2nd test
+        return array("OUTCOME" => "OK", "ARR_SPOS"=>$arr_spos, "ARR_INVALID_SPOS"=>$arr_invalid_spos);
+    }
+    
+    
     //finally got list of all valid spos
     //last processing
     //1. can have at most one 1 free night spo in the list. other free nights spo are discarded
     $types = array("free_nights");
     $arr_spos = _rates_calculator_getSPO_remove_duplicates($arr_spos, $types);
+    
 
     //2. get array of single spo and array of spos to be merged
     $arr_single_merged = _rates_calculator_getSPO_merge_cumulative($arr_spos, $con);
     $arr_single_spos = $arr_single_merged["SINGLE"];
     $arr_merged_spos = $arr_single_merged["MERGED"];
 
-    //3. present SPO in array of objects as:
     
+    //3. present SPO in array of objects as:    
     $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
     $checkout_date = $arr_params["checkout_date"]; //yyyy-mm-dd
     $num_nights = _rates_calculator_get_numnights($checkin_date, $checkout_date);
@@ -3992,11 +4020,11 @@ try {
 
 
     //create SPO objects from merged spos
-    $arr_final_single_spos = _rates_calculator_create_merged_spos($arr_merged_spos, $con, $arr_spos);
-    $arr_final_spos = array_merge($arr_final_spos, $arr_final_single_spos);
+    $arr_final_merged_spos = _rates_calculator_create_merged_spos($arr_merged_spos, $con, $arr_spos);
+    $arr_final_spos = array_merge($arr_final_spos, $arr_final_merged_spos);
 
     
-    return array("OUTCOME" => "OK", "ARR_SPOS"=>$arr_final_spos);
+    return array("OUTCOME" => "OK", "ARR_SPOS"=>$arr_final_spos, "ARR_INVALID_SPOS"=>$arr_invalid_spos);
     
     } catch (Exception $ex) {
         return array("OUTCOME" => "SPO_RATES_CALCULATOR: " . $ex->getMessage());
@@ -5090,10 +5118,12 @@ function _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_mi
 function _rates_calculator_getSPO_second_test($arr_params, $con, $arr_spos) {
 
     $arr_final_spos = array();
-
+    $arr_invalid_spos = array();
+    
     for ($i = 0; $i < count($arr_spos); $i++) {
         $spo_rw = $arr_spos[$i]["SPO_RW"];
         $spoid = $spo_rw["id"];
+        $sponame = $spo_rw["sponame"];
         $spotemplate = $spo_rw["template"];
         $spo_minstay_from = $spo_rw["min_stay_from"];
         $spo_minstay_to = $spo_rw["min_stay_to"];
@@ -5103,63 +5133,193 @@ function _rates_calculator_getSPO_second_test($arr_params, $con, $arr_spos) {
 
         $flg_passed = false;
 
+        //=======================================================
         if ($spotemplate == "discount") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "early_booking") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        } 
+        //=======================================================
+        else if ($spotemplate == "early_booking") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "family_offer") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        } 
+        //=======================================================
+        else if ($spotemplate == "family_offer") {
             $flg_num_night = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
             $flg_applicable_on_room = _rates_calculator_validate_SPO_family_offer_applicable_room($arr_params, $spo_rw["family_offer_room_applicable"]);
             $flg_adults_check = _rates_calculator_validate_SPO_family_offer_adults($arr_params, $spo_rw["family_offer_adult_min"], $spo_rw["family_offer_adult_max"]);
             $flg_children_check = _rates_calculator_validate_SPO_family_offer_children($arr_params, $spo_rw["family_offer_children_min"], $spo_rw["family_offer_children_max"]);
-
-            if ($flg_num_night && $flg_applicable_on_room && $flg_adults_check && $flg_children_check) {
-                $flg_passed = true;
+            
+            if ($flg_num_night) {
+                if($flg_applicable_on_room)
+                {
+                    if($flg_adults_check)
+                    {
+                        if($flg_children_check)
+                        {
+                            $arr_final_spos[] = $arr_spos[$i];
+                        }
+                        else
+                        {
+                            $arr_invalid_spos[] = "$sponame : CHILDREN CHECK FAILED";
+                        }
+                        
+                    }
+                    else
+                    {
+                        $arr_invalid_spos[] = "$sponame : ADULT CHECK FAILED";
+                    }
+                }
+                else
+                {
+                    $arr_invalid_spos[] = "$sponame : APPLICABLE ON ROOM FAILED";
+                }
             }
-        } else if ($spotemplate == "flat_rate") {
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        } 
+        //=======================================================
+        else if ($spotemplate == "flat_rate") {
             $arr_dates = _rates_calculator_validate_SPO_flat_rate_grpvalidity($spoid, $arr_dates, $con);
             $arr_dates = _rates_calculator_validate_SPO_flat_rate_validate_capacity($spoid, $arr_params, $arr_dates, $con);
             $flg_num_night = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-
-            if (count($arr_dates) > 0 && $flg_num_night) {
-                $flg_passed = true;
+            
+            if (count($arr_dates) > 0) {
+                if ($flg_num_night) {
+                    $arr_final_spos[] = $arr_spos[$i];
+                }
+                else
+                {
+                    $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+                }
             }
-        } else if ($spotemplate == "free_nights") {
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : GROUP VALIDITY FAILED";
+            }
+        } 
+        //=======================================================
+        else if ($spotemplate == "free_nights") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "free_upgrade") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "free_upgrade") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "honeymoon") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "honeymoon") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "long_stay") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "long_stay") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "meals_upgrade") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "meals_upgrade") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "senior_offer") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "senior_offer") {
             $flg_min_guests = _rates_calculator_validate_SPO_min_max_guests($arr_params, $spo_rw["senior_min_guests"], "");
             $flg_num_night = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-
-            if ($flg_min_guests && $flg_num_night) {
-                $flg_passed = true;
+            
+            if ($flg_num_night) {
+                if($flg_min_guests)
+                {
+                    $arr_final_spos[] = $arr_spos[$i];
+                }
+                else {
+                    $arr_invalid_spos[] = "$sponame : MIN GUESTS FAILED";
+                }
             }
-        } else if ($spotemplate == "wedding_anniversary") {
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "wedding_anniversary") {
             $flg_passed = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
-        } else if ($spotemplate == "wedding_party") {
+            if ($flg_passed) {
+                $arr_final_spos[] = $arr_spos[$i];
+            }
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
+        }
+        //=======================================================
+        else if ($spotemplate == "wedding_party") {
 
             $flg_min_guests = _rates_calculator_validate_SPO_min_max_guests($arr_params, $spo_rw["wedding_min_guests"], $spo_rw["wedding_max_guests"]);
             $flg_num_night = _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_minstay_from, $spo_minstay_to, $arr_dates);
 
-            if ($flg_min_guests && $flg_num_night) {
-                $flg_passed = true;
+            if ($flg_num_night) {
+                if($flg_min_guests)
+                {
+                    $arr_final_spos[] = $arr_spos[$i];
+                }
+                else {
+                    $arr_invalid_spos[] = "$sponame : MIN GUESTS FAILED";
+                }
             }
-        }
-
-
-        if ($flg_passed) {
-            $arr_final_spos[] = $arr_spos[$i];
+            else
+            {
+                $arr_invalid_spos[] = "$sponame : MIN NIGHTS FAILED";
+            }
         }
     }
 
-    return $arr_final_spos;
+    return array("VALID_SPOS"=>$arr_final_spos,"INVALID_SPOS"=>$arr_invalid_spos);
 }
 
 function _rates_calculator_validate_SPO_flat_rate_validate_capacity($spoid, $arr_params, $spo_arr_dates, $con) {
@@ -5372,7 +5532,7 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
 
     //======================= SPO TYPE =================================
     if ($spo_type != "BOTH") {
-        $sql .= " AND spo_type= '$spo_type' ";
+        $sql .= " AND spo_type = '$spo_type' ";
     }
 
     $query = $con->prepare($sql);
@@ -5381,6 +5541,8 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
         ":countryfk" => $country, ":roomfk" => $hotelroom));
 
     $arr_spos = array();
+    $arr_invalid_spos = array();
+    
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
 
         //================================================================
@@ -5397,14 +5559,46 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
         $arr_spo_dates = _rates_calculator_spo_validity_dates($arr_params, $rw, $con);
         $flg_spo_dates_valid = (count($arr_spo_dates) > 0 ? true : false);
 
-        if ($flg_book_date_chk && $flg_book_days_chk && $flg_child_age_sharing && $flg_child_age_own &&
-                $flg_spo_dates_valid) {
-            $arr_spos[] = array("SPO_RW" => $rw,
-                "TEMPLATE" => $rw["template"], "DATES" => $arr_spo_dates); //spo passed initial tests! remember it
+        if ($flg_book_date_chk) {
+            if($flg_book_days_chk)
+            {
+                if($flg_child_age_sharing)
+                {
+                    if($flg_child_age_own)
+                    {
+                        if($flg_spo_dates_valid)
+                        {
+                            $arr_spos[] = array("SPO_RW" => $rw,
+                                                "TEMPLATE" => $rw["template"], 
+                                                "DATES" => $arr_spo_dates); //spo passed initial tests! remember it
+                        }
+                        else
+                        {
+                            $arr_invalid_spos[] = $rw["sponame"] . " : NO DATES WITHIN VALIDITY PERIODS";
+                        }
+                    }
+                    else
+                    {
+                        $arr_invalid_spos[] = $rw["sponame"] . " : CHILD OWN ROOM - AGE FAILED";
+                    }
+                }
+                else
+                {
+                    $arr_invalid_spos[] = $rw["sponame"] . " : CHILD SHARING ROOM - AGE FAILED";
+                }
+            }
+            else
+            {
+                $arr_invalid_spos[] = $rw["sponame"]  . " : BOOKING DAYS FAILED";
+            }
+        }
+        else
+        {
+            $arr_invalid_spos[] = $rw["sponame"] . ": BOOKING DATE FAILED";
         }
     }
 
-    return $arr_spos;
+    return array("VALID_SPOS"=>$arr_spos,"INVALID_SPOS"=>$arr_invalid_spos);
 }
 
 function _rates_calculator_spo_validity_dates($arr_params, $rw, $con) {

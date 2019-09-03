@@ -349,8 +349,11 @@ function ratescalculator() {
         {type: "input", name: "spo_party_pax", label: "Additional Num Pax in Party:", labelWidth: "170",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
+        },
+        {type: "checkbox", name: "chk_show_invalid_spos", label: "Show Invalid SPOS:", labelWidth: "170",
+            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10"
         }
-        
     ];
 
     var form_spo = accordConSPO.cells("spo").attachForm(str_frm_spo);
@@ -680,6 +683,7 @@ function ratescalculator() {
             var final_status = true;
             var arr = json_obj.RESULT.DAILY;
             var columns = json_obj.RESULT.COLUMNS;
+            var invalid_spos = json_obj.RESULT.INVALID_SPOS;
             var currency_sell_code = "";
             var currency_buy_code = "";
             var rwid = 1;
@@ -689,7 +693,11 @@ function ratescalculator() {
             initialiseResultGrid(columns);
             var arr_grand_total = initialiseGrandTotal(columns);
 
-
+            if(form_spo.isItemChecked("chk_show_invalid_spos"))
+            {
+                rwid = append_invalid_spos(rwid,invalid_spos);
+            }
+                
             //now display for each date by date
             for (var i = 0; i < arr.length; i++)
             {
@@ -727,6 +735,7 @@ function ratescalculator() {
                         grid_results.setRowTextStyle(rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;" + row_style);
 
                     }
+
 
                     grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue(message);
 
@@ -798,6 +807,22 @@ function ratescalculator() {
                 }
             });
         }
+    }
+    
+    function append_invalid_spos(rwid,invalid_spos)
+    {
+        for(var i = 0; i < invalid_spos.length; i++)
+        {
+            grid_results.addRow(rwid, "");
+            
+            grid_results.setRowTextStyle(rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid black; border-right:1px solid #A4A4A4;");
+            grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue("<b><font color='red'>" + invalid_spos[i] + "</font></b>");
+            
+            rwid ++;
+            
+        }
+        
+        return rwid;
     }
 
 
