@@ -32,9 +32,6 @@ try {
         throw new Exception("INVALID TOKEN");
     }
 
-
-
-
     //DETAILS 
 
     $details = json_decode($_POST["details"], true); //+
@@ -71,6 +68,11 @@ try {
         $autho_reserve_date_to = date("Y-m-d", strtotime($autho_reserve_date_to));
     }
     
+    //===========================================================================
+    //CHECK FOR OVERLAPPING RECORDS:
+    //ROOM + MARKET
+    
+
     //===========================================================================
 
     if ($id == "-1") {

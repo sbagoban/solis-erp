@@ -22,13 +22,13 @@ function hotelinventory()
 
     var grid_inventory = inventorylayout.cells("a").attachGrid();
     grid_inventory.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_inventory.setHeader("Type,Market Title,Rooms,Tour Operator,Dates");
-    grid_inventory.setColumnIds("inventory_type,title,rooms,toname,dates");
-    grid_inventory.setColTypes("ro,ro,ro,ro,ro");
-    grid_inventory.setInitWidths("100,400,200,200,150");
-    grid_inventory.setColAlign("center,center,center,center,center");
-    grid_inventory.setColSorting("str,str,str,str,str");
-    grid_inventory.attachHeader("#select_filter,#text_filter,#text_filter,#select_filter,#text_filter");
+    grid_inventory.setHeader("Type,Market Title,Rooms");
+    grid_inventory.setColumnIds("inventory_type,title,rooms");
+    grid_inventory.setColTypes("ro,ro,ro");
+    grid_inventory.setInitWidths("100,400,200");
+    grid_inventory.setColAlign("center,center,center");
+    grid_inventory.setColSorting("str,str,str");
+    grid_inventory.attachHeader("#select_filter,#text_filter,#text_filter");
     grid_inventory.setEditable(false);
     grid_inventory.enableMultiline(true);
     grid_inventory.init();

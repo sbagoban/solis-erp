@@ -5623,7 +5623,8 @@ function hotelcontracts()
     }
 
     function populateCboRoomsFilter()
-    {
+    {   
+        comboRoomFilter.enableOptionAutoWidth(true);
         comboRoomFilter.clearAll(true);
         comboRoomFilter.addOption([{value: "-1", text: "--No Filter--", img_src: "images/room_32.png"}]);
 

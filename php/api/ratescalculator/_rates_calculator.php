@@ -2481,12 +2481,23 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
     $num_children = count($children);
     $basis = "";
-
-    while ($basis == "" && $num_children > 1) {
+    $category = "";
+    $value = 0;
+    
+    if($num_children == 1)
+    {
         $basis = _rates_calculator_lookup_single_parent_rules_cells($rules, "basis", $num_children);
         $category = _rates_calculator_lookup_single_parent_rules_cells($rules, "category", $num_children);
         $value = _rates_calculator_lookup_single_parent_rules_cells($rules, "value", $num_children);
-        $num_children --;
+    }
+    else
+    {
+        while ($basis == "" && $num_children > 1) {
+            $basis = _rates_calculator_lookup_single_parent_rules_cells($rules, "basis", $num_children);
+            $category = _rates_calculator_lookup_single_parent_rules_cells($rules, "category", $num_children);
+            $value = _rates_calculator_lookup_single_parent_rules_cells($rules, "value", $num_children);
+            $num_children --;
+        }
     }
 
     $single_pax = $arr_params["adults"][0];
