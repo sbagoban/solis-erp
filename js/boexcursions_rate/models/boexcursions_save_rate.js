@@ -117,13 +117,19 @@ function deleteRowRateDetailschk(data) {
 ///////////////////////////////////////
 $(document).ready(function () {
     loadMarketMultiselect();
-    $("select#multiselectRate22").change(function(){
-        var selectedMarket = $(this).children("option:selected").val();
-        loadCountries(selectedMarket);
-    });
+    // $("select#multiselectRate22").change(function(){
+    //     var selectedMarket = $(this).children("option:selected").val();
+    //     //loadCountries(selectedMarket);
+    // });
     $("select#multiselectRate25").change(function(){
         var selectedCountry = $(this).children("option:selected").val();
         loadTourOperator(selectedCountry);
+        // var brands = $('#multiselectRate25 option:selected');
+        // $(brands).each(function(index, brand){
+        //     var test = $(this).val();
+        // });
+        // console.log(test);
+        // updateRateCountries(testtt);
     });
     $("select#multiselectRate24").change(function(){
         var selectedTourOperator = $(this).children("option:selected").val();
@@ -182,7 +188,16 @@ function loadMarketMultiselect() {
                     enableFiltering: true,
                     enableHTML: true,
                     buttonClass: 'btn large btn-primary',
-                    enableCaseInsensitiveFiltering: true
+                    enableCaseInsensitiveFiltering: true,
+                    onChange: function(element, checked) {
+                        var brands = $('#multiselectRate22 option:selected');
+                        var selected = [];
+                        $(brands).each(function(index, brand){
+                            selected.push($(this).val());
+                            selectedMarket = selected.join();
+                            loadCountries(selectedMarket);
+                        });
+                    }
                 });
             }
         }
@@ -213,23 +228,46 @@ function loadCountries(selectedMarket) {
                     enableCaseInsensitiveFiltering: true,
                     onChange: function(element, checked) {
                         var brands = $('#multiselectRate25 option:selected');
-                        var selected = [];
+                        var selectedCountriesArr = [];
                         $(brands).each(function(index, brand){
-                            selected.push($(this).val());
+                            selectedCountriesArr.push($(this).val());
+                            updateRateCountries(selectedCountriesArr, index);
                         });
-                
-                        updateRateCountries(selected);
                     }
                 });
                 
+                $('#multiselectRate25').multiselect('rebuild');
             }
         }
     );
 }
 
-function updateRateCountries(selected) {
-    $('#updateRateDetails').click(function () {
-        console.log('buzz',selected);
+function updateRateCountries(selectedCountriesArr, index) {
+    var total = $(selectedCountriesArr).length;
+    if (index === total - 1) { 
+        $('#updateRateDetails').click(function () {
+            saveCountriesMultiselect(selectedCountriesArr);
+        });
+    }
+}
+
+function saveCountriesMultiselect(selectedCountriesArr) { 
+    var idBlock = document.getElementById('idBlock').innerHTML;
+    const url_save_countries = "php/api/backoffservices_rates/ratescountries_multiselect_save.php?t=" + encodeURIComponent(global_token); 
+    var jsonString = JSON.stringify(selectedCountriesArr);
+    objSelectedCountries = {
+        id: -1,
+        idservicesfk: idBlock,
+        countriesData: jsonString
+    };
+    $.ajax({
+        type: "POST",
+        url: url_save_countries,
+        data: objSelectedCountries,
+        cache: false,
+        success: function(data) {
+            console.log("OK", data);
+        }
     });
 }
 
@@ -287,4 +325,6 @@ function loadTourOperator(countryId) {
 //             oldarr = newarr;
 //         }
 //     }
+//     updateRateCountries(oldarr);
+//     console.log('>> 5 old', oldarr);
 // }

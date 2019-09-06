@@ -673,7 +673,6 @@ if (isset($_GET["m"])) {
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
-        <script type="text/javascript" src='http://static.jstree.com/3.2.1/assets/dist/jstree.js'></script>
         <!-- Sandeep End -->
 
         <!-- Bootstrap 3.3.7 -->
@@ -838,6 +837,7 @@ if (isset($_GET["m"])) {
         <script src="js/boexcursions/scriptBackOffExcursions.js"></script>
         <script src="js/boexcursions_rate/models/boexcursions_save_rate.js"></script>
         <script src="js/boexcursions_rate/models/boexcursions_rate_grid.js"></script>
+        <script src="js/boexcursions_rate/models/boexcursions_rate_details.js"></script>
         <script src="js/booking_engine/script.js"></script>';
 }
 ?>
