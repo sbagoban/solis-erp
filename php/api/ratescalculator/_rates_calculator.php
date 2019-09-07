@@ -4,8 +4,7 @@ function _rates_calculator($con, $arr_params) {
     try {
 
         $time_pre = microtime(true);
-
-        
+                
         //=============== get array of valid and invalid spos ===============
         $arr_spo = _rates_calculator_spo_search($arr_params, $con);
         if($arr_spo["OUTCOME"] !="OK")
@@ -688,6 +687,12 @@ function _rates_calculator_adch_capacity($arr_params, $this_date) {
         }
 
         $adult = count($arr_params["adults"]);
+        
+        if($adult == 0 && count($children) == 0)
+        {
+            //means that we are going towards child in OWN room
+            return array("MSG" => "OK", "INDEX" => "<font color='green'>GOING TO CHILD IN OWN ROOM...</font>");
+        }
 
         $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
 
@@ -735,20 +740,27 @@ function _rates_calculator_test_capacity_adch_combii_combo($combo, $adult, $chil
     //return true if combination a valid one
     //return false otherwise
     //deduct adult first
-    $found = false;
-    for ($i = 0; $i < count($combo); $i++) {
-        $agfrom = $combo[$i]["AGEFROM"];
-        $agto = $combo[$i]["AGETO"];
+    $found = true;
+    
+    if($adult > 0)
+    {
+        $found = false;
+        
+        for ($i = 0; $i < count($combo); $i++) {
+            $agfrom = $combo[$i]["AGEFROM"];
+            $agto = $combo[$i]["AGETO"];
 
-        if ($agfrom == -1 && $agto == -1) {
-            //adult
-            if ($combo[$i]["No"] >= $adult) {
-                $combo[$i]["No"] -= $adult;
-                $found = true;
+            if ($agfrom == -1 && $agto == -1) {
+                //adult
+                if ($combo[$i]["No"] >= $adult) {
+                    $combo[$i]["No"] -= $adult;
+                    $found = true;
+                }
             }
         }
-    }
 
+    }
+    
     if (!$found) {
         return false; //adult check failed
     }
@@ -776,8 +788,6 @@ function _rates_calculator_test_capacity_adch_combii_combo($combo, $adult, $chil
             return false;
         }
     }
-
-
 
 
     //now assess the combo: the total pax should be zero
@@ -1056,8 +1066,13 @@ function _rates_calculator_lookup_rates_units($arr_params, $this_date, $con, $ar
             $num_persons = count($arr_params["adults"]) + count($arr_params["children"]);
         }
 
-
-        $per_person_buyprice = round($normal_rates / $num_persons);
+        
+        $per_person_buyprice = 0;
+        if($num_persons > 0)
+        {
+            $per_person_buyprice = round($normal_rates / $num_persons);
+        }
+        
         $cumul_buyprice = 0;
 
         for ($adinx = 1; $adinx <= $num_persons; $adinx++) {
@@ -1570,8 +1585,13 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
         $arr_adult_workings = _rates_calculator_calc_adult_recur($adult, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
         $rates = $arr_adult_workings["RATES_ADULT"];
         $workings = $arr_adult_workings["WORKINGS_ADULT"];
-
-        $adult_buyprice = round($rates / $adult); //split the adult rates per person
+        
+        $adult_buyprice = 0;
+        if($adult > 0)
+        {
+            $adult_buyprice = round($rates / $adult); //split the adult rates per person
+        }
+        
         $cumul_buyprice = 0;
 
         for ($adinx = 1; $adinx <= $adult; $adinx++) {
@@ -2662,7 +2682,11 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
 
                     $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
                     //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
-                } else if ($category == "DOUBLE" || $category == "1/2 DBL") {
+                } else if ($category == "1/2 DBL") {
+                    $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
+                    //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
+                }
+                else if ($category == "DOUBLE") {
                     $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 2);
                     break;
                 } else if ($category == "TRPL") {
@@ -2698,9 +2722,36 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
 
                     //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
-                } else if ($category == "DOUBLE" || $category == "1/2 DBL") {
+                }
+                else if ($category == "1/2 DBL") {
                     //get price from adult for that index and category
                     $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+                    $adult_index = 2;
+                    $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
+                    $rates_adult = $arr_adult_workings["RATES_ADULT"];
+                    $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
+
+
+                    $workings .= "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
+                    if (trim($workings_adult) != "") {
+                        $workings .= "$workings_adult";
+                    }
+
+                    $fees = 0;
+                    if ($value > 0) {
+                        $fees = round(($value / 100) * $rates_adult, 2);
+                    }
+                    $rates = $fees;
+                    $workings .= " = $currency_buy $fees)";
+
+                    $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
+
+                    //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
+                } 
+                else if ($category == "DOUBLE") {
+                    //get price from adult for that index and category
+                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+                    if($category == "DOUBLE")
                     $adult_index = 2;
                     $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];

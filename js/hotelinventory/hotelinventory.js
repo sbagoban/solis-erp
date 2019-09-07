@@ -18,8 +18,7 @@ function hotelinventory()
     var dsInventory = new dhtmlXDataStore();
 
     var _dsRooms = new dhtmlXDataStore();
-    var _dsTO = new dhtmlXDataStore();
-
+    
     var grid_inventory = inventorylayout.cells("a").attachGrid();
     grid_inventory.setIconsPath('libraries/dhtmlx/imgs/');
     grid_inventory.setHeader("Type,Market Title,Rooms");
@@ -374,7 +373,7 @@ function hotelinventory()
             showPopUp(form_details, "Rooms", "rooms_display", "rooms_ids", _dsRooms, null);
         } else if (name == "cmdLoadTOs")
         {
-            showPopUp(form_details, "Tour Operators", "to_display", "to_ids", _dsTO, null);
+            showPopUpTourOperators(form_details, "Tour Operators", "to_display", "to_ids", "MULTIPLE", null);
         }
     });
 
@@ -919,8 +918,6 @@ function hotelinventory()
     function loadPopupDs()
     {
         _dsRooms.load("php/api/hotelinventory/hotelroomsgrid.php?t=" + global_token + "&hid=" + global_hotel_id, "json", function () {});
-        _dsTO.load("php/api/hotelinventory/to_grid.php?t=" + global_token + "&hid=" + global_hotel_id, "json", function () {});
-
     }
 
     function showPopUp(form, caller, inputdisplay, inputid, ds, callback)
@@ -1087,7 +1084,11 @@ function hotelinventory()
 
                 var strvalues = "";
                 var strids = "";
-
+                
+                //clear tour operators because they are linked to countries
+                form.setItemValue("to_display","");
+                form.setItemValue("to_ids","");
+                
                 if (checkedids != "")
                 {
                     var first = true;
@@ -1681,7 +1682,175 @@ function hotelinventory()
            return "RN.png";
        }
     }
+    
+    
+    function showPopUpTourOperators(form, caller, inputdisplay, inputid, single_multiple, callback)
+    {
+        popupwin = null;
+        popupwin = dhxWins.createWindow("popupwin", 50, 50, 400, 400);
+        popupwin.setText("");
+        popupwin.denyResize();
+        popupwin.denyPark();
 
+        pop_layout = null;
+        pop_layout = popupwin.attachLayout("2E");
+        pop_layout.cells("a").hideHeader();
+        pop_layout.cells("b").hideHeader();
+        pop_layout.cells("a").setHeight(300);
+        pop_layout.cells("a").fixSize(true, true);
+        pop_layout.cells("b").fixSize(true, true);
+
+        pop_form = null;
+        pop_form = pop_layout.cells("b").attachForm([
+            {type: "settings", position: "label-center", id: "pop_form"},
+            {type: "button", name: "cmdApply", tooltip: "Select Checked Items", value: "Select Checked Items", width: "200", height: "40"}
+
+        ]);
+        pop_form.attachEvent("onButtonClick", function (name, command) {
+            if (name == "cmdApply")
+            {
+                for (var i = 0; i < pop_grid.getColumnCount(); i++) {
+                    var filter = pop_grid.getFilterElement(i);
+                    if (filter)
+                        filter.value = '';
+                }
+                pop_grid.filterByAll();
+
+
+                var checkedids = pop_grid.getCheckedRows(pop_grid.getColIndexById("X"));
+                var strvalues = "";
+
+                if (checkedids != "")
+                {
+                    var first = true;
+                    var arr_ids = checkedids.split(",");
+
+                    for (var i = 0; i < arr_ids.length; i++)
+                    {
+                        var id = arr_ids[i];
+
+                        var value = pop_grid.cells(id, pop_grid.getColIndexById("value")).getValue();
+                        if (!first)
+                        {
+                            strvalues += " , ";
+                        }
+                        strvalues += value;
+
+                        first = false;
+                    }
+                }
+
+                form.setItemValue(inputdisplay, strvalues);
+                form.setItemValue(inputid, checkedids);
+                $("[name='" + inputdisplay + "']").prop('title', strvalues);
+                popupwin.close();
+
+                if (callback)
+                {
+                    callback();
+                }
+            }
+        });
+
+
+        pop_grid = null;
+        pop_grid = pop_layout.cells("a").attachGrid(300, 200);
+        pop_grid.setIconsPath('libraries/dhtmlx/imgs/');
+        pop_grid.setHeader(",Select Items");
+        pop_grid.setColumnIds("X,value");
+        pop_grid.setColTypes("ch,ro");
+        pop_grid.setInitWidths("40,300");
+        pop_grid.setColAlign("center,left");
+        pop_grid.setColSorting('int,str');
+        pop_grid.enableStableSorting(true);
+        pop_grid.attachHeader("#master_checkbox,#text_filter");
+        pop_grid.attachEvent("onRowSelect", function (rid, cid) {
+            var selected = pop_grid.cells(rid, pop_grid.getColIndexById("X")).getValue();
+            if (selected == 0)
+            {
+                selected = 1;
+            } else
+            {
+                selected = 0;
+            }
+
+            pop_grid.cells(rid, pop_grid.getColIndexById("X")).setValue(selected);
+
+            if (single_multiple == "SINGLE")
+            {
+                //set all over rows to 0
+                for (var i = 0; i < pop_grid.getRowsNum(); i++)
+                {
+                    var rowid = pop_grid.getRowId(i);
+                    if (rowid != rid)
+                    {
+                        pop_grid.cells(rowid, pop_grid.getColIndexById("X")).setValue("0");
+                    }
+                }
+            }
+        });
+
+
+        if (single_multiple == "SINGLE")
+        {
+            pop_grid.attachEvent("onCheck", function (rId, cInd, state) {
+                if (state)
+                {
+                    state = 1;
+                } else
+                {
+                    state = 0;
+                }
+
+                if (state == 1)
+                {
+                    //set all over rows to 0
+                    for (var i = 0; i < pop_grid.getRowsNum(); i++)
+                    {
+                        var rowid = pop_grid.getRowId(i);
+                        if (rowid != rId)
+                        {
+                            pop_grid.cells(rowid, cInd).setValue("0");
+                        }
+                    }
+                }
+
+                return true;
+            });
+        }
+
+        pop_grid.init();
+
+        //load all TOs that belong to the selected countries
+        pop_layout.progressOn();
+        var _dsTOs = new dhtmlXDataStore();
+        var countries_ids = form.getItemValue("market_countries_ids");
+        _dsTOs.load("php/api/hotelinventory/to_grid.php?t=" + encodeURIComponent(global_token) + "&countries_ids=" + encodeURIComponent(countries_ids), "json", function () {
+            pop_layout.progressOff();
+            pop_grid.sync(_dsTOs);
+
+
+            var selectedids = utils_trim(form.getItemValue(inputid), " ");
+            var arr_ids = selectedids.split(",");
+            for (var i = 0; i < arr_ids.length; i++)
+            {
+                var id = arr_ids[i];
+                if (id != "" && pop_grid.getRowIndex(id) != "-1")
+                {
+                    pop_grid.cells(id, pop_grid.getColIndexById("X")).setValue(1);
+                }
+            }
+            pop_grid.sortRows(1, "int", "asc");
+            pop_grid.sortRows(0, "int", "des");
+
+        });
+
+        popupwin.show();
+        popupwin.center();
+        popupwin.setText(caller);
+        popupwin_inventory.setModal(false);
+        popupwin.setModal(true);
+    }
 
 
     //===============================================================

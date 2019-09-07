@@ -2596,7 +2596,11 @@ function hotelcontracts()
 
                 var strvalues = "";
                 var strids = "";
-
+                
+                //clear tour operators because they are linked to countries
+                form.setItemValue("tour_operators_display","");
+                form.setItemValue("tour_operators_ids","");
+                
                 if (checkedids != "")
                 {
                     var first = true;
@@ -2621,10 +2625,7 @@ function hotelcontracts()
                             count_selected++;
                             first = false;
                         }
-
-
                     }
-
                 }
 
                 form.setItemValue(inputdisplay, strvalues);
@@ -5994,19 +5995,20 @@ function hotelcontracts()
         contract_activeto = utils_date_to_str(utils_createDateObjFromString(contract_activeto, "dd-mm-yyyy"));
 
 
-        if (contract_activefrom == date_dtfrom)
+        
+        if (date_dtfrom == "")
         {
-            date_dtfrom = "";
+            date_dtfrom = contract_activefrom;
         }
-        if (contract_activeto == date_dtto)
+        if (date_dtto == "")
         {
-            date_dtto = "";
+            date_dtto = contract_activeto;
         }
 
         var display_from = utils_formatDate(date_dtfrom, "DATE MON YY");
         var display_to = utils_formatDate(date_dtto, "DATE MON YY");
 
-
+        
         if (display_from == "")
         {
             display_from = "Contract Start"; //contract_activefrom;
@@ -6017,7 +6019,8 @@ function hotelcontracts()
         }
 
         var display_caption = display_from + " - " + display_to;
-
+        
+        
         return display_caption;
     }
 

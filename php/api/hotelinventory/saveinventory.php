@@ -72,7 +72,41 @@ try {
     //CHECK FOR OVERLAPPING RECORDS:
     //ROOM + MARKET
     
+    //get all the countries as comma separated
+    //for each room
+    //check if there is another record of inventory for that room with a subset of countries
+    
+    
+    
+    $arr_room_ids = explode(",", $rooms_ids);
+    for($i = 0; $i < count($arr_room_ids); $i++)
+    {
+        $roomid = trim($arr_room_ids[$i]);
+        if($roomid != "")
+        {
+            $sql = "select inv.id, group_concat(c.country_name SEPARATOR ',') as bad_countries,
+            hr.roomname
+            from tblinventory inv
+            inner join tblinventory_countries ic on inv.id = ic.inventoryfk
+            inner join tblcountries c on ic.countryfk = c.id
+            inner join tblinventory_rooms ir on ic.inventoryfk = inv.id
+            inner join tblhotel_rooms hr on ir.roomfk = hr.id
+            where inv.id <> :id and inv.hotelfk = :hotelfk 
+            and inv.deleted = 0 and ir.roomfk = :roomid
+            and ic.countryfk in ($market_countries_ids)
+            group by inv.id, hr.roomname";
+            
+            $stmt = $con->prepare($sql);
+            $stmt->execute(array(":hotelfk" => $hotelfk, ":roomid" => $roomid, ":id"=>$id));
 
+            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $countries = $rw["bad_countries"];
+                $roomname = $rw["roomname"];
+                
+                throw new Exception("<font color='red'><b>OVERLAPPING MARKETS</b></font> FOR ROOM: <b>$roomname</b><br> IN COUNTRIES: <b>$countries</b>!<br>SAVE DENIED");
+            } 
+        }
+    }
     //===========================================================================
 
     if ($id == "-1") {

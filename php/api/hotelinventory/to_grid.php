@@ -13,11 +13,11 @@ if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
 
-if (!isset($_GET["hid"])) {
-    die("INVALID HOTEL ID");
+if (!isset($_GET["countries_ids"])) {
+    die("INVALID COUNTRIES IDS");
 }
 
-$hotelid = $_GET["hid"];
+$countries_ids = $_GET["countries_ids"];
 
 
 require_once("../../connector/pdo_connect_main.php");
@@ -26,7 +26,11 @@ require_once("../../connector/data_connector.php");
 
 $con = pdo_con();
 
-$sql = "select *, 0 AS X, toname AS value from tbltouroperator where deleted = 0 order by toname asc";
+$sql = "SELECT id, toname AS value, 0 AS X FROM tbltouroperator 
+        WHERE deleted = 0 
+        AND id IN 
+        (SELECT tofk FROM tblto_countries WHERE countryfk IN ($countries_ids))
+        ORDER BY toname ASC;";
 
 $data = new JSONDataConnector($con, "PDO");
 

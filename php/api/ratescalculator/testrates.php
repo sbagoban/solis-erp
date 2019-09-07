@@ -43,6 +43,7 @@ try {
     require_once("../hotelcontracts/_contract_taxcommi.php");
     require_once("../hotelcontracts/_contract_combinations_rooms.php");
     require_once("../../globalvars/globalvars.php");
+    require_once("../../utils/utilities.php");
     
     
     $con = pdo_con();

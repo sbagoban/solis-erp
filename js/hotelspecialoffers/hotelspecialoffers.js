@@ -3804,6 +3804,10 @@ function hotelspecialoffers()
 
                 var strvalues = "";
                 var strids = "";
+                
+                //clear tour operators
+                form.setItemValue("tour_operators_display","");
+                form.setItemValue("tour_operators_ids","");
 
                 if (checkedids != "")
                 {
