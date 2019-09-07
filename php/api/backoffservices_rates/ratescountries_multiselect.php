@@ -25,9 +25,9 @@ $con = pdo_con();
 
 $query_c = $con->prepare("SELECT tmc.id, tmc.marketfk, tmc.countryfk, tc.country_name 
 FROM tblmarket_countries tmc 
-join tblcountries tc on tmc.countryfk = tc.id where tmc.marketfk = :marketfk  
+join tblcountries tc on tmc.countryfk = tc.id where tmc.marketfk IN ( " . $marketfk . "  )
 ORDER BY `tmc`.`marketfk` ASC");
-$query_c->execute(array(":marketfk"=>$marketfk));
+$query_c->execute();
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {

@@ -28,48 +28,40 @@ try {
     
     $id = $_POST["id"];
     $idservicesfk = trim($_POST["idservicesfk"]);
-    $idrates_fk = trim($_POST["idrates_fk"]);
-    $country_id = trim($_POST["country_id"]);
-    $country_name = trim($_POST["country_name"]);
+    $countriesData = trim($_POST["countriesData"]);
+    
 
     $con = pdo_con();
 
     // check duplicates for services
-    $sql = "SELECT * FROM tblexcursion_services_rates_countries WHERE id = :id ";
+    $sql = "SELECT * FROM test WHERE id = :id ";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        throw new Exception("DUPLICATE COUNTRIES!");
+        throw new Exception("DUPLICATE SERVICES !");
     }
 
     if ($id == "-1") {
-        $sql = "INSERT INTO tblexcursion_services_rates_countries (idservicesfk, idrates_fk, country_id, country_name) 
-                VALUES (:idservicesfk, :idrates_fk, :country_id, :country_name)";
+        $sql = "INSERT INTO test (idservicesfk, countriesData) 
+                VALUES (:idservicesfk, :countriesData)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":idservicesfk" => $idservicesfk, 
-            ":idrates_fk" => $idrates_fk,
-            ":country_id" => $country_id,
-            ":country_name" => $country_name));
+            ":countriesData" => $countriesData));
         
         $id = $con->lastInsertId();
         echo $id;
     } else {
-        $sql = "UPDATE tblexcursion_services_rates_countries SET 
+        $sql = "UPDATE test SET 
                 idservicesfk=:idservicesfk, 
-                idrates_fk=:idrates_fk, 
-                country_id=:country_id,
-                country_name=:country_name,
+                countriesData=:countriesData,
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":id" => $id,
             ":idservicesfk" => $idservicesfk, 
-            ":idrates_fk" => $idrates_fk,
-            ":country_id" => $country_id,
-            ":country_name" => $country_name));
+            ":countriesData" => $countriesData));
     }
     echo json_encode(array("OUTCOME" => "OK", "ID"=>$id));
 } catch (Exception $ex) {

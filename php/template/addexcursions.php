@@ -160,7 +160,7 @@
         &nbsp; &nbsp;
         <!-- Row Search Service Details -->
         <!-- Row start - Service Details  -->
-        <div class="row" id="serviceDetails" style="display: none;">
+        <div class="row" id="serviceDetails" style="display: block;">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
@@ -178,7 +178,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-12" id="editServiceBlock" style="display: none;">
+            <div class="col-lg-12" id="editServiceBlock" style="display: block;">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="board">
@@ -186,7 +186,7 @@
                                 <ul class="nav nav-tabs nav-underline" id="myTab">
                                     <div class="liner"></div>
                                     <!-- First Tab -->
-                                    <li class="active">
+                                    <li class="">
                                         <a href="#costDetails" data-toggle="tab" title="Cost Details" aria-expanded="true">
                                             <span class="round-tabs one">
                                         <i class="fa fa-money fa-lg"></i><br>Cost Details                                    
@@ -236,7 +236,7 @@
                                         </a>
                                     </li>
                                     <!-- Seven Tab -->
-                                    <li class="">
+                                    <li class="active">
                                         <a href="#ratesDetails" data-toggle="tab" title="Rates" aria-expanded="true">
                                             <span class="round-tabs one">
                                                 <i class="fa fa-balance-scale fa-lg"></i><br>Rates
@@ -248,7 +248,7 @@
 
                             <!-- Start First Tab -->
                             <div class="tab-content">
-                                <div class="tab-pane active in fade" id="costDetails">
+                                <div class="tab-pane fade" id="costDetails">
                                     <form action="#" onsubmit="return false">
                                         <div class="row">
                                             <div class="col-md-12">
@@ -992,7 +992,7 @@
 
 
                                 <!-- Start Seven Tab -->
-                                <div class="tab-pane fade" id="ratesDetails">
+                                <div class="tab-pane active in fade" id="ratesDetails">
                                     <div id="insertRate">
                                         <div class="row">
                                             <div class="col-md-12">
@@ -1045,7 +1045,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <h5>Countries</h5>
-                                                        <select id="multiselectRate25" name="multiselectRate25" class="multiselectRate25" multiple="multiple">
+                                                        <select id="multiselectRate25" name="multiselectRate25[]" class="multiselectRate25" multiple="multiple">
                                                             <option value="0">Select</option>
                                                         </select>
                                                     </div>
@@ -1093,9 +1093,41 @@
                                                 </div>
                                                 <!-- Row 3 -->
                                             </div>
+
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h5>Description</h5>
+                                                        <input type="text" placeholder="Enter Description" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-12">
                                                 <hr>
                                                 <button id="updateRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-12">
+                                                <div id="row displayRateDetailsSort">
+                                                    <table class="table responsive" id="displayRateDetailsSort">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col">Closed Date From</th>
+                                                                <th scope="col">Closed Date To</th>
+                                                                <th scope="col">Market / Countries</th>
+                                                                <th scope="col">Tour Operator</th>
+                                                                <th scope="col">Rate Type</th>
+                                                                <th scope="col">Description</th>                                                                   
+                                                                <th scope="col">Edit</th>
+                                                                <th scope="col">Delete</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
