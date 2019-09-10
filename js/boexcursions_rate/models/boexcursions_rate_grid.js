@@ -44,7 +44,8 @@ function insertRateGrid(idBlock) {
     $('#rateServiceDateSort tbody').on( 'click', 'a', function () {
         var table = $('#rateServiceDateSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        //editRowQuoteDetailschk(data);
+        editRowRate(data);
+        console.log('df',data);     
     });
     
     $('#rateServiceDateSort tbody').on( 'click', 'i', function () {

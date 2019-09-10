@@ -55,6 +55,9 @@ function quoteDetailsPaxBreaks() {
 function dateRangePicker() {
     var counterClose = 0;
     $('#dateRangeClosedDate').daterangepicker({
+        locale: {
+            format: 'DD/MMM/YYYY'
+        },
         opens: 'left'
     }, function(start, end, label) {
         counterClose++;
@@ -70,6 +73,9 @@ function dateRangePicker() {
 
 function dateRangePickerServiceFromTo() {
     $('#daterangeServiceFromTo').daterangepicker({
+        locale: {
+            format: 'DD/MMM/YYYY'
+        },
         opens: 'left'
     }, function(start, end, label) {
         var serviceStartDate = start.format('YYYY-MM-DD');

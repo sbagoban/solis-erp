@@ -150,6 +150,7 @@
                                 <th scope="col">Description</th>
                                 <th scope="col">Comments</th>
                                 <th scope="col">Edit</th>
+                                <th scope="col">Duplicate</th>
                             </tr>
                         </thead>
                     </table>
@@ -1053,6 +1054,9 @@
                                                         <h5>Tour Operator</h5>
                                                         <select id="multiselectRate24" name="multiselectRate24" class="multiselectRate24" multiple="multiple" style="display: none;">
                                                         </select>
+                                                        <div id="errorPanel" style="display: none;">
+                                                            <p>No Tour Operator Found</p>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <h5>Rates Types</h5>

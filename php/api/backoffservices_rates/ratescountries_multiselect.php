@@ -34,7 +34,8 @@ if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
         $countries[] = array(
             'id' => $row['id'],
-            'country_name' => $row['country_name']
+            'country_name' => $row['country_name'], 
+            'countryfk' => $row['countryfk']
         );
     }
     $myData = $countries;
