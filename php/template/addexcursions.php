@@ -1002,21 +1002,22 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- 1 Add Row 12 -->
+                                        <!-- 2 Add col 6 and 6 -->
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="col-md-6">
-                                                    <h5>Service Date From / To</h5>
-                                                    <div class="input-group date datepicker-in">
-                                                        <input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
-                                                        <div class="input-group-addon">
-                                                            <span class="glyphicon glyphicon-calendar"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="col-md-12">
-                                                    <div class="col-md-12">
-                                                        <br>
-                                                        <div class="row" id="rateServiceDateDetails">
+                                                    <!-- Row 1 - Col 6 -->
+                                                    <div class="col-md-5 serviceDateFrom">
+                                                        <h5>Service Date From / To</h5>
+                                                        <div class="input-group date datepicker-in">
+                                                            <input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="" id="rateServiceDateDetails">
                                                             <table class="table responsive" id="rateServiceDateSort">
                                                                 <thead>
                                                                     <tr>
@@ -1029,89 +1030,102 @@
                                                             </table>
                                                         </div>
                                                     </div>
+                                                    <!-- Row 1 - Col 6 -->
+
+
+                                                    <!-- Row 2 - Col 6 -->
+                                                    <div class="col-md-7 editRateBlock">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <h5 id="serviceDateDisplay"></h5>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <h5>Description</h5>
+                                                                <input type="text" placeholder="Enter Description" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                            <!-- Row 1 -->
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <h5>Market</h5>
+                                                                    <select id="multiselectRate22" name="multiselectRate22" class="multiselectRate22" multiple="multiple">
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <h5>Countries</h5>
+                                                                    <select id="multiselectRate25" name="multiselectRate25[]" class="multiselectRate25" multiple="multiple">
+                                                                        <option value="0">Select</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <h5>Tour Operator</h5>
+                                                                    <select id="multiselectRate24" name="multiselectRate24" class="multiselectRate24" multiple="multiple" style="display: none;">
+                                                                    </select>
+                                                                    <div id="errorPanel" style="display: none;">
+                                                                        <p>No Tour Operator Found</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <h5>Rates Types</h5>
+                                                                    <select id="multiselectRate23" name="multiselectRate23" class="multiselectRate23" multiple="multiple" style="display: none;">
+                                                                    </select>
+                                                                </div>
+                                                            <!-- Row 1 -->
+
+                                                                <!-- Row 3 -->
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="col-md-12">
+                                                                            <h5>Closed Date</h5>
+                                                                            <div class="input-group date datepicker-in">
+                                                                                <input type="text" name="daterange" id="dateRangeClosedDate" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                                                <div class="input-group-addon">
+                                                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-12">
+                                                                            <div class="col-md-12">
+                                                                                <div class="row" id="searchRateDetails">
+                                                                                    <table class="table responsive" id="rateDetailsSort">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th scope="col">Closed Date From</th>
+                                                                                                <th scope="col">Closed Date To</th>
+                                                                                                <!-- <th scope="col">Edit</th> -->
+                                                                                                <th scope="col">Delete</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- Row 3 -->
+
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                <!-- col -->
                                             </div>
+                                        <!-- row -->
                                         </div>
                                     </div>
-
-                                    <div class="row">
+                                    <!-- Close last tag -->
+                                    <!-- EDIT RATE -->
+                                    <div class="row editRate">
                                         <div class="col-md-12">
-                                            <div class="col-md-6">
-                                                <!-- Row 1 -->
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <h5>Market</h5>
-                                                        <select id="multiselectRate22" name="multiselectRate22" class="multiselectRate22" multiple="multiple">
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <h5>Countries</h5>
-                                                        <select id="multiselectRate25" name="multiselectRate25[]" class="multiselectRate25" multiple="multiple">
-                                                            <option value="0">Select</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <h5>Tour Operator</h5>
-                                                        <select id="multiselectRate24" name="multiselectRate24" class="multiselectRate24" multiple="multiple" style="display: none;">
-                                                        </select>
-                                                        <div id="errorPanel" style="display: none;">
-                                                            <p>No Tour Operator Found</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <h5>Rates Types</h5>
-                                                        <select id="multiselectRate23" name="multiselectRate23" class="multiselectRate23" multiple="multiple" style="display: none;">
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <!-- Row 1 -->
-                                            </div>
-                                            <div class="col-md-6">
-                                                <!-- Row 3 -->
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <h5>Closed Date</h5>
-                                                        <div class="input-group date datepicker-in">
-                                                            <input type="text" name="daterange" id="dateRangeClosedDate" class="form-control" placeholder="dd-mm-yyyy"/>
-                                                            <div class="input-group-addon">
-                                                                <span class="glyphicon glyphicon-calendar"></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="col-md-12">
-                                                            <div class="row" id="searchRateDetails">
-                                                                <table class="table responsive" id="rateDetailsSort">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th scope="col">Closed Date From</th>
-                                                                            <th scope="col">Closed Date To</th>
-                                                                            <!-- <th scope="col">Edit</th> -->
-                                                                            <th scope="col">Delete</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Row 3 -->
-                                            </div>
+                                            
+                                            
 
-                                            <div class="col-md-12">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <h5>Description</h5>
-                                                        <input type="text" placeholder="Enter Description" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="col-md-12">
                                                 <hr>
                                                 <button id="updateRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- Edit Rate -->
                                     <hr>
                                     <div class="row">
                                         <div class="col-md-12">

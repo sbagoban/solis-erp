@@ -10,7 +10,6 @@ try {
         throw new Exception($errstr . " " . $errno);
     });
 
-
     session_start();
     
     if (!isset($_SESSION["solis_userid"])) {
@@ -29,12 +28,12 @@ try {
     $id = $_POST["id"];
     $idservicesfk = trim($_POST["idservicesfk"]);
     $idrates_fk = trim($_POST["idrates_fk"]);
-    $country_id = trim($_POST["country_id"]);
+    $to_id = trim($_POST["to_id"]);
     
     $con = pdo_con();
 
     // check duplicates for services
-    $sql = "SELECT * FROM tblexcursion_services_rates_countries WHERE id = :id ";
+    $sql = "SELECT * FROM tblexcursion_services_rates_to WHERE id = :id ";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -42,29 +41,29 @@ try {
     }
 
     if ($id == "-1") {
-        $sql = "INSERT INTO tblexcursion_services_rates_countries (idservicesfk, idrates_fk, country_id) 
-                VALUES (:idservicesfk, :idrates_fk, :country_id)";
+        $sql = "INSERT INTO tblexcursion_services_rates_to (idservicesfk, idrates_fk, to_id) 
+                VALUES (:idservicesfk, :idrates_fk, :to_id)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":idservicesfk" => $idservicesfk, 
             ":idrates_fk" => $idrates_fk,
-            ":country_id" => $country_id));
+            ":to_id" => $to_id));
         
         $id = $con->lastInsertId();
         echo $id;
     } else {
-        $sql = "UPDATE tblexcursion_services_rates_countries SET 
+        $sql = "UPDATE tblexcursion_services_rates_to SET 
                 idservicesfk=:idservicesfk, 
                 idrates_fk=:idrates_fk,
-                country_id=:country_id,
+                to_id=:to_id,
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":idservicesfk" => $idservicesfk, 
             ":idrates_fk" => $idrates_fk,
-            ":country_id" => $country_id));
+            ":to_id" => $to_id));
     }
     echo json_encode(array("OUTCOME" => "OK", "ID"=>$id));
 } catch (Exception $ex) {

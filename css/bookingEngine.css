@@ -642,9 +642,18 @@ ul.multiselect-container.dropdown-menu {
   overflow-y: scroll;
 }
 
-div#insertRate {
-  background: #ececec;
-  border: 5px solid #ffffff;
+/* div#insertRate {
+  
+} */
+
+div.serviceDateFrom {
+  background: #f8f8f8;
+  border: 1px solid #c7c7c7;
+}
+
+div.editRateBlock {
+  background: #eaeaea;
+  border: 1px solid #c7c7c7;
 }
 
 div#errorPanel { 
@@ -656,6 +665,13 @@ div#errorPanel {
 
 div#errorPanel p {
   padding: 10px;
+}
+
+h5#serviceDateDisplay {
+  background: #337ab7;
+  color: white;
+  padding: 12px;
+  border: 5px solid #ffffffc2;
 }
 
 @keyframes spin {
