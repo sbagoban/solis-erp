@@ -28,13 +28,13 @@ try {
     
     $id = $_POST["id"];
     $idservicesfk = trim($_POST["idservicesfk"]);
-    $countriesData = trim($_POST["countriesData"]);
+    $idrates_fk = trim($_POST["idrates_fk"]);
+    $country_id = trim($_POST["country_id"]);
     
-
     $con = pdo_con();
 
     // check duplicates for services
-    $sql = "SELECT * FROM test WHERE id = :id ";
+    $sql = "SELECT * FROM tblexcursion_services_rates_countries WHERE id = :id ";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -42,26 +42,29 @@ try {
     }
 
     if ($id == "-1") {
-        $sql = "INSERT INTO test (idservicesfk, countriesData) 
-                VALUES (:idservicesfk, :countriesData)";
+        $sql = "INSERT INTO tblexcursion_services_rates_countries (idservicesfk, idrates_fk, country_id) 
+                VALUES (:idservicesfk, :idrates_fk, :country_id)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":idservicesfk" => $idservicesfk, 
-            ":countriesData" => $countriesData));
+            ":idrates_fk" => $idrates_fk,
+            ":country_id" => $country_id));
         
         $id = $con->lastInsertId();
         echo $id;
     } else {
-        $sql = "UPDATE test SET 
+        $sql = "UPDATE tblexcursion_services_rates_countries SET 
                 idservicesfk=:idservicesfk, 
-                countriesData=:countriesData,
+                idrates_fk=:idrates_fk,
+                country_id=:country_id,
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
             ":idservicesfk" => $idservicesfk, 
-            ":countriesData" => $countriesData));
+            ":idrates_fk" => $idrates_fk,
+            ":country_id" => $country_id));
     }
     echo json_encode(array("OUTCOME" => "OK", "ID"=>$id));
 } catch (Exception $ex) {

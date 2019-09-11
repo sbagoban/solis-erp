@@ -1,5 +1,4 @@
 function callDataNewServiceGrid() {
-    //$('#searchServiceDetails').load(document.URL +  ' #searchServiceDetails');
     // Request call everything from database
     $('#sort').DataTable({       
         "processing" : true,
@@ -77,9 +76,10 @@ function callDataNewServiceGrid() {
         },
             {
                 "targets": -1,
-                "data": null,
+                "data": null,                
+                "class": 'editBtnCol',
                 "defaultContent": "<a class='btn btnEdit'><i aria-hidden='true' class='fa fa-external-link'></i> Edit</a>"
-            } 
+            }
         ]
     });
     $('#sort tbody').on( 'click', 'a', function () {

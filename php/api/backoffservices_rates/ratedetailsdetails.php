@@ -23,32 +23,37 @@ require_once("../../connector/data_connector.php");
 $idrates_fk = $_GET["idrates_fk"];
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT * FROM tblexcursion_services_rates_insertclosedate WHERE idrates_fk = :idrates_fk");
-$query_c->execute(array(":idrates_fk"=>$idrates_fk));
+$query_c = $con->prepare("SSELECT sri.id, sri.servicedatefrom, sri.servicedateto, src.serviceclosedstartdate, src.serviceclosedenddate 
+FROM tblexcursion_services_rates_insertrates sri 
+join tblexcursion_services_rates_insertclosedate src on sri.id = src.idrates_fk
+
+
+
+
+WHERE idrates_fk = :idrates_fk");
+$query_c->execute(array(":idservicesfk"=>$idservicesfk));
 
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
-        $rateCloseDateDetails[] = array(
+        $rateServiceDateDetails[] = array(
             'id'                => $row['id'],
             'idservicesfk'      => $row['idservicesfk'],
-            'idrates_fk'      => $row['idrates_fk'],
-            'serviceclosedstartdate' => $row['serviceclosedstartdate'],
-            'serviceclosedenddate'  => $row['serviceclosedenddate']
+            'servicedatefrom' => $row['servicedatefrom'],
+            'servicedateto'  => $row['servicedateto']
         );
     }
-    $myData = $rateCloseDateDetails;
+    $myData = $rateServiceDateDetails;
     echo json_encode($myData);
 } else {
     //echo "NO DATA";
-    $rateCloseDateDetails[] = array(
+    $rateServiceDateDetails[] = array(
         'id' => '-',
         'idservicesfk' => '-',
-        'idrates_fk' => '-',
-        'serviceclosedstartdate' => '-',
-        'serviceclosedenddate' => '-'
+        'servicedatefrom' => '-',
+        'servicedateto' => '-'
     );
-    $myData = $rateCloseDateDetails;
+    $myData = $rateServiceDateDetails;
     echo json_encode($myData);
 }

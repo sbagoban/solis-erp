@@ -25,12 +25,14 @@
         
     }
 
-    function selectedClosedDateFunc(closedStartDate, closedEndDate) {
+    function selectedClosedDateFunc(closedStartDate, closedEndDate, idBlockRates) {
+        
         var idBlock = document.getElementById('idBlock').innerHTML;
         console.log(idBlock, closedStartDate, closedEndDate);
         var objRateClosedDate = {
             id:-1, //for new items, id is always -1
             idservicesfk: idBlock, //please make sure the names match in JS and PHP
+            idrates_fk: idBlockRates.id,
             serviceclosedstartdate: closedStartDate,
             serviceclosedenddate: closedEndDate
         };
@@ -46,15 +48,16 @@
                 console.log('Error ${error}');
             }
         });
-        rateDetailsEditRows(idBlock);
+        
+        rateDetailsEditRows(idBlockRates.id);
     }
 
-    function rateDetailsEditRows(idBlock) {
+    function rateDetailsEditRows(idBlockRates) {
         $('#rateDetailsSort').DataTable({       
             "processing" : true,
     
             "ajax" : {
-                "url" : "php/api/backoffservices_rates/rateclosedatetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + idBlock,
+                "url" : "php/api/backoffservices_rates/rateclosedatetable.php?t=" + encodeURIComponent(global_token) + "&idrates_fk=" + idBlockRates,
                 dataSrc : ''
             },
             "destroy": true,
@@ -116,14 +119,9 @@ function deleteRowRateDetailschk(data) {
 /////////// MARKET DROPDOWN ///////////
 ///////////////////////////////////////
 $(document).ready(function () {
-    loadMarketMultiselect();
-    // $("select#multiselectRate22").change(function(){
-    //     var selectedMarket = $(this).children("option:selected").val();
-    //     //loadCountries(selectedMarket);
-    // });
+    
     $("select#multiselectRate25").change(function(){
         var selectedCountry = $(this).children("option:selected").val();
-        loadTourOperator(selectedCountry);
         // var brands = $('#multiselectRate25 option:selected');
         // $(brands).each(function(index, brand){
         //     var test = $(this).val();
@@ -131,43 +129,19 @@ $(document).ready(function () {
         // console.log(test);
         // updateRateCountries(testtt);
     });
-    $("select#multiselectRate24").change(function(){
-        var selectedTourOperator = $(this).children("option:selected").val();
-        loadRatesTypeMultiselect(selectedTourOperator);
-    });
+    // $("select#multiselectRate24").change(function(){
+    //     var selectedTourOperator = $(this).children("option:selected").val();
+    //     loadRatesTypeMultiselect(selectedTourOperator);
+    // });
 });
 
-
-function loadRatesTypeMultiselect(selectedTourOperator) {
-    const url_ratecode = "php/api/backoffservices_rates/ratestype_combo.php?t=" + encodeURIComponent(global_token) + "&toid=" + selectedTourOperator; 
-    $.ajax({
-        type: "POST",
-        url: url_ratecode,
-        cache: false,
-        dataType: "json",
-        success: function(data)
-            {
-                $("#multiselectRate23").empty();
-                $.each(data, function (key, val) {
-                    console.log(val);
-                $("#multiselectRate23").append('<option value="' + val.value + '">' + val.text + '</option>');
-            });
-                $("#multiselectRate23").attr('multiple', 'multiple'); 
-                $("#multiselectRate23").multiselect({
-                    buttonWidth: '313px',
-                    includeSelectAllOption: true,
-                    nonSelectedText: 'Select an Option',
-                    enableFiltering: true,
-                    enableHTML: true,
-                    buttonClass: 'btn large btn-primary',
-                    enableCaseInsensitiveFiltering: true
-                });
-            }
-        }
-    );
+function editRowRate(idBlockRates) {
+    loadMarketMultiselect(idBlockRates);
+    dateRangePicker(idBlockRates); 
 }
 
-function loadMarketMultiselect() {
+// Load Market By Default - On Button Edit click
+function loadMarketMultiselect(idBlockRates) {
     const url_market = "php/api/combos/market_combo.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
         type: "POST",
@@ -195,7 +169,7 @@ function loadMarketMultiselect() {
                         $(brands).each(function(index, brand){
                             selected.push($(this).val());
                             selectedMarket = selected.join();
-                            loadCountries(selectedMarket);
+                            loadCountries(selectedMarket, idBlockRates);
                         });
                     }
                 });
@@ -204,7 +178,8 @@ function loadMarketMultiselect() {
     );
 }
 
-function loadCountries(selectedMarket) {
+// Load Countries Depending on market
+function loadCountries(selectedMarket, idBlockRates) {
     const url_countries = "php/api/backoffservices_rates/ratescountries_multiselect.php?t=" + encodeURIComponent(global_token) + "&marketfk=" + selectedMarket; 
     $.ajax({
         type: "POST",
@@ -215,8 +190,8 @@ function loadCountries(selectedMarket) {
             {
                 $("#multiselectRate25").empty();
                 $.each(data, function (key, val) {
-                $("#multiselectRate25").append('<option value="' + val.id + '">' + val.country_name + '</option>'); 
-            });                
+                    $("#multiselectRate25").append('<option value="' + val.countryfk + '">' + val.country_name + '</option>'); 
+                });                
                 $("#multiselectRate25").attr('multiple', 'multiple'); 
                 $("#multiselectRate25").multiselect({
                     buttonWidth: '313px',
@@ -230,101 +205,193 @@ function loadCountries(selectedMarket) {
                         var brands = $('#multiselectRate25 option:selected');
                         var selectedCountriesArr = [];
                         $(brands).each(function(index, brand){
+                            selectedCountries = $(this).val();
+                            // Push to array selectedCountriesArr
                             selectedCountriesArr.push($(this).val());
-                            updateRateCountries(selectedCountriesArr, index);
+                            selectedCountriesTo = selectedCountriesArr.join();
+                            loadTourOperator(selectedCountriesTo, idBlockRates);
                         });
+                        if (checked) {
+                            console.log('test', element);
+                            saveCountriesMultiselect(selectedCountries, idBlockRates);
+                        } else {
+                            saveCountriesMultiselect(null, idBlockRates);
+                        }
                     }
                 });
-                
                 $('#multiselectRate25').multiselect('rebuild');
             }
         }
     );
 }
-
-function updateRateCountries(selectedCountriesArr, index) {
-    var total = $(selectedCountriesArr).length;
-    if (index === total - 1) { 
-        $('#updateRateDetails').click(function () {
-            saveCountriesMultiselect(selectedCountriesArr);
-        });
-    }
-}
-
-function saveCountriesMultiselect(selectedCountriesArr) { 
-    var idBlock = document.getElementById('idBlock').innerHTML;
-    const url_save_countries = "php/api/backoffservices_rates/ratescountries_multiselect_save.php?t=" + encodeURIComponent(global_token); 
-    var jsonString = JSON.stringify(selectedCountriesArr);
-    objSelectedCountries = {
-        id: -1,
-        idservicesfk: idBlock,
-        countriesData: jsonString
-    };
+// Load Tour Operator depending on country ID
+function loadTourOperator(selectedCountriesTo, idBlockRates) {
+    const url_to = "php/api/backoffservices_rates/to_rates.php?t=" + encodeURIComponent(global_token) + "&phy_countryfk=" + selectedCountriesTo; 
     $.ajax({
         type: "POST",
-        url: url_save_countries,
-        data: objSelectedCountries,
+        url: url_to,
+        dataType: "json",
         cache: false,
-        success: function(data) {
-            console.log("OK", data);
+        success: function(data)
+            {
+                $.each(data, function (key, val) {
+                    $("#multiselectRate24").append('<option value="' + val.id + '">' + val.toname + '</option>');
+                });
+                $("#multiselectRate24").attr('multiple', 'multiple'); 
+                $("#multiselectRate24").multiselect({
+                    buttonWidth: '313px',
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Select an Option',
+                    enableFiltering: true,
+                    enableHTML: true,
+                    buttonClass: 'btn large btn-primary',
+                    enableCaseInsensitiveFiltering: true,
+                    onChange: function(element, checked) {
+                        var brands = $('#multiselectRate24 option:selected');
+                        var selectedRatesTypeArr = [];
+                        $(brands).each(function(index, brand){
+                            selectedTo = $(this).val();
+                            // Push to array selectedCountriesArr
+                            selectedRatesTypeArr.push($(this).val());
+                            selectedToRatesType = selectedRatesTypeArr.join();
+                            loadRatesTypeMultiselect(selectedToRatesType, idBlockRates);
+                        });
+                        if (checked) {
+                            console.log('test', element);
+                            saveTourOperatorMultiselect(selectedTo, idBlockRates);
+                        } else {
+                            saveTourOperatorMultiselect(null, idBlockRates);
+                        }
+                    }
+                });
+                $('#multiselectRate24').multiselect('rebuild');
+                document.getElementById("errorPanel").style.display = "none";
+            }, 
+            error: function (error) 
+                {
+                    console.log('chk error', error);
+                    document.getElementById("errorPanel").style.display = "block";
+                }
+            },
+    );
+
+}
+
+// Load Rates type
+function loadRatesTypeMultiselect(selectedTourOperator, idBlockRates) {
+    const url_ratecode = "php/api/backoffservices_rates/ratestype_combo.php?t=" + encodeURIComponent(global_token) + "&toid=" + selectedTourOperator; 
+    $.ajax({
+        type: "POST",
+        url: url_ratecode,
+        cache: false,
+        dataType: "json",
+        success: function(data)
+            {
+                $("#multiselectRate23").empty();
+                $.each(data, function (key, val) {
+                    console.log('-->', data);
+                    $("#multiselectRate23").append('<option value="' + val.value + '">' + val.text + '</option>');
+                });
+                $("#multiselectRate23").attr('multiple', 'multiple'); 
+                $("#multiselectRate23").multiselect({
+                    buttonWidth: '313px',
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Select an Option',
+                    enableFiltering: true,
+                    enableHTML: true,
+                    buttonClass: 'btn large btn-primary',
+                    enableCaseInsensitiveFiltering: true,
+                    onChange: function(element, checked) {
+                        var brands = $('#multiselectRate23 option:selected');
+                        $(brands).each(function(index, brand){
+                            selectedRatesType = $(this).val();
+                        });
+                        if (checked) {
+                            saveRatesTypeMultiselect(selectedRatesType, idBlockRates);
+                        } else {
+                            saveRatesTypeMultiselect(null, idBlockRates);
+                        }
+                    }
+                });
+            }
+        }
+    );
+}
+
+// Save Countries
+function saveCountriesMultiselect(selectedCountries, idBlockRates) {
+    $('#updateRateDetails').click(function () {
+        if (!null) {
+            var idBlock = document.getElementById('idBlock').innerHTML;
+            const url_save_countries = "php/api/backoffservices_rates/ratescountries_multiselect_save.php?t=" + encodeURIComponent(global_token); 
+            //var jsonString = JSON.stringify(selectedCountriesArr);
+            objSelectedCountries = {
+                id: -1,
+                idservicesfk: idBlock,
+                idrates_fk: idBlockRates.id,                
+                country_id: selectedCountries
+            };
+            $.ajax({
+                type: "POST",
+                url: url_save_countries,
+                data: objSelectedCountries,
+                cache: false,
+                success: function(data) {
+                    console.log("OK", data);
+                }
+            });
         }
     });
 }
 
-function loadTourOperator(countryId) {
-        const url_to = "php/api/backoffservices_rates/to_rates.php?t=" + encodeURIComponent(global_token) + "&id=" + countryId; 
-        $.ajax({
-            type: "POST",
-            url: url_to,
-            data: countryId,
-            dataType: "json",
-            cache: false,
-            success: function(data)
-                {
-                    $.each(data, function (key, val) {
-                        $("#multiselectRate24").append('<option value="' + val.value + '">' + val.text + '</option>');
-                    });
-                    $("#multiselectRate24").attr('multiple', 'multiple'); 
-                    $("#multiselectRate24").multiselect({
-                        buttonWidth: '313px',
-                        includeSelectAllOption: true,
-                        nonSelectedText: 'Select an Option',
-                        enableFiltering: true,
-                        enableHTML: true,
-                        buttonClass: 'btn large btn-primary',
-                        enableCaseInsensitiveFiltering: true
-                    });
-                }, 
-                
-            error: function (error) 
-                {
-                    console.log('chk error', error);
+// Save TourOperator
+function saveTourOperatorMultiselect(selectedTo, idBlockRates) {
+    $('#updateRateDetails').click(function () {
+        if (!null) {
+            var idBlock = document.getElementById('idBlock').innerHTML;
+            const url_save_to = "php/api/backoffservices_rates/ratesto_multiselect_save.php?t=" + encodeURIComponent(global_token); 
+            //var jsonString = JSON.stringify(selectedCountriesArr);
+            objSelectedTo = {
+                id: -1,
+                idservicesfk: idBlock,
+                idrates_fk: idBlockRates.id,                
+                to_id: selectedTo
+            };
+            $.ajax({
+                type: "POST",
+                url: url_save_to,
+                data: objSelectedTo,
+                cache: false,
+                success: function(data) {
+                    console.log("OK", data);
                 }
-            },
-        );
-    
+            });
+        }
+    });
 }
 
-// var oldarr = [];
-// var newarr = [];
-// function multiselectCountries() {
-//     if ($("#multiselectRate25 option:selected").length == 1) {
-//         oldarr = [];
-//         oldarr.push($("#multiselectRate25 option:selected").val());
-//     }
-//     else {
-//         newarr = [];
-//         $("#multiselectRate25 option:selected").each(function(i){
-//             newarr.push($(this).val());
-//         });
-//         newitem = $(newarr).not(oldarr).get();
-//         if (newitem.length > 0) {
-//             oldarr.push(newitem[0]);
-//         }
-//         else {
-//             oldarr = newarr;
-//         }
-//     }
-//     updateRateCountries(oldarr);
-//     console.log('>> 5 old', oldarr);
-// }
+// Save TourOperator
+function saveRatesTypeMultiselect(selectedRatesType, idBlockRates) {
+    $('#updateRateDetails').click(function () {
+        if (!null) {
+            var idBlock = document.getElementById('idBlock').innerHTML;
+            const url_save_ratetypes = "php/api/backoffservices_rates/ratestype_multiselect_save.php?t=" + encodeURIComponent(global_token); 
+            //var jsonString = JSON.stringify(selectedCountriesArr);
+            objSelectedRatesType = {
+                id: -1,
+                idservicesfk: idBlock,
+                idrates_fk: idBlockRates.id,                
+                ratestype_id: selectedRatesType
+            };
+            $.ajax({
+                type: "POST",
+                url: url_save_ratetypes,
+                data: objSelectedRatesType,
+                cache: false,
+                success: function(data) {
+                    console.log("OK", data);
+                }
+            });
+        }
+    });
+}

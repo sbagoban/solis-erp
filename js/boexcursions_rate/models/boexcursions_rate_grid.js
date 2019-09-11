@@ -4,7 +4,7 @@ function insertRateGrid(idBlock) {
 
         "ajax" : {
             "url" : "php/api/backoffservices_rates/rateservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + idBlock,
-            dataSrc : ''
+            "dataSrc" : ""
         },
         "destroy": true,
         "bProcessing": true,
@@ -26,14 +26,14 @@ function insertRateGrid(idBlock) {
             "data" : "servicedateto"
         },   
         
-        {
-            "targets": -1,
-            "data": null,
-            "class": 'editBtnCol',
-            "defaultContent": "<a class='btn'><i aria-hidden='true' class='fa fa-external-link btnEditRateDetails'></i> Edit</a>"
-        },      
-        {
-                "targets": -2,
+            {
+                "targets": -3,
+                "data": null,
+                "class": 'editBtnCol',
+                "defaultContent": "<a class='btn'><i aria-hidden='true' class='fa fa-external-link btnEditRateDetails'></i> Edit</a>"
+            },      
+            {
+                "targets": -4,
                 "data": null,
                 "class": 'deleteBtnCol',
                 "defaultContent": "<i aria-hidden='true' class='fa fa-trash-o fa-lg deleteBtn'></i>"
@@ -41,16 +41,19 @@ function insertRateGrid(idBlock) {
         ]
     });
 
-    $('#rateServiceDateSort tbody').on( 'click', 'a', function () {
-        var table = $('#rateServiceDateSort').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        //editRowQuoteDetailschk(data);
+    $('#rateServiceDateSort tbody').on( 'click', '.btn', function () {
+        var tableEdit = $('#rateServiceDateSort').DataTable();
+        var data = tableEdit.row($(this).parents('tr')).data();
+        editRowRate(data);
+        rateDetailsEditRows(data.id);
+        document.getElementById("serviceDateDisplay").innerHTML = 'From : ' + data.servicedatefrom + '&nbsp;&nbsp;To : ' + data.servicedateto;
     });
     
-    $('#rateServiceDateSort tbody').on( 'click', 'i', function () {
+    $('#rateServiceDateSort tbody').on( 'click', '.deleteBtn', function () {
         var table = $('#rateServiceDateSort').DataTable();
-        var data = table.row( $(this).parents('tr')).data();
+        var data = table.row($(this).parents('tr')).data();
         deleteRowRateServiceDetails(data);
+        rateDetailsEditRows(data.id);
     });
 }
 

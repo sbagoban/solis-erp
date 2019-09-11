@@ -1,5 +1,5 @@
 function insertRateGridAllDetails(idBlock) {
-    $('#rateServiceDateSort').DataTable({       
+    $('#displayRateDetailsSort').DataTable({       
         "processing" : true,
 
         "ajax" : {
@@ -50,32 +50,15 @@ function insertRateGridAllDetails(idBlock) {
         ]
     });
 
-    $('#rateServiceDateSort tbody').on( 'click', 'a', function () {
-        var table = $('#rateServiceDateSort').DataTable();
+    $('#displayRateDetailsSort tbody').on( 'click', 'a', function () {
+        var table = $('#displayRateDetailsSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         //editRowQuoteDetailschk(data);
     });
     
-    $('#rateServiceDateSort tbody').on( 'click', 'i', function () {
-        var table = $('#rateServiceDateSort').DataTable();
+    $('#displayRateDetailsSort tbody').on( 'click', 'i', function () {
+        var table = $('#displayRateDetailsSort').DataTable();
         var data = table.row( $(this).parents('tr')).data();
         //deleteRowRateServiceDetails(data);
     });
 }
-
-// function deleteRowRateServiceDetails(data) {
-//     var idBlock = document.getElementById('idBlock').innerHTML;
-//     var objDel = {id: data.id};
-//     const url_delete_rateDetails = "php/api/backoffservices_rates/rateservicetable_delete.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
-//     $.ajax({
-//         url: url_delete_rateDetails,
-//         method: "POST",
-//         data: objDel,
-//         success: function (data) {
-//         },
-//         error: function (error) {
-//             console.log('Error ${error}');
-//         }
-//     });
-//     insertRateGrid(idBlock);
-// }

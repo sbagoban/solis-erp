@@ -29,7 +29,6 @@ $(document).ready(function () {
     });
     
     quoteDetailsPaxBreaks();
-    dateRangePicker();
     dateRangePickerServiceFromTo();
     $('.checkerBtn').hide();
 });
@@ -52,9 +51,12 @@ function quoteDetailsPaxBreaks() {
     });
 }
 
-function dateRangePicker() {
+function dateRangePicker(idBlockRates) {
     var counterClose = 0;
     $('#dateRangeClosedDate').daterangepicker({
+        locale: {
+            format: 'DD/MMM/YYYY'
+        },
         opens: 'left'
     }, function(start, end, label) {
         counterClose++;
@@ -64,12 +66,15 @@ function dateRangePicker() {
 
         var chkkk = start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
         //$('#selectedClosedDate').append('<div class="col-md-4"><input type="text" class="closedatetxt" id="closeData'+ counterClose +'" value="' + chkkk + '"><a href="#" class="remove_field1"  onclick = "selectedClosedDateDelete('+ counterClose +')"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a></div>');
-        selectedClosedDateFunc(closedStartDate, closedEndDate);
+        selectedClosedDateFunc(closedStartDate, closedEndDate, idBlockRates);
     });
 }
 
 function dateRangePickerServiceFromTo() {
     $('#daterangeServiceFromTo').daterangepicker({
+        locale: {
+            format: 'DD/MMM/YYYY'
+        },
         opens: 'left'
     }, function(start, end, label) {
         var serviceStartDate = start.format('YYYY-MM-DD');
