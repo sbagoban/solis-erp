@@ -2495,7 +2495,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
     }
     //=============================================================================
 
-    $workings .= " SINGLE PRNT: ";
+    $workings .= " SINGLE PARENT: AD: ";
 
     $currency_buy = $arr_params["currency_buy_code"];
 
@@ -2512,7 +2512,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
     }
     else
     {
-        while ($basis == "" && $num_children > 1) {
+        while ($basis == "" && $num_children >= 1) {
             $basis = _rates_calculator_lookup_single_parent_rules_cells($rules, "basis", $num_children);
             $category = _rates_calculator_lookup_single_parent_rules_cells($rules, "category", $num_children);
             $value = _rates_calculator_lookup_single_parent_rules_cells($rules, "value", $num_children);
@@ -2651,7 +2651,8 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
 
     //for each child in $arr_group_children, get the agerange and the index
     //for that age range and index, lookup the category, basis and value
-
+    $child_count_index = 1;
+    
     for ($a = 0; $a < count($arr_group_children); $a++) {
 
 
@@ -2673,7 +2674,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
 
 
             if ($basis == "FLAT") {
-                $workings .= "SINGLE PARENT: (CH #$index {$child_age}yr $category $currency_buy $value)";
+                $workings = "SINGLE PARENT: (CH #$child_count_index {$child_age}yr $category $currency_buy $value)";
 
                 //take price as it is
                 $rates = $value;
@@ -2697,7 +2698,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
                 }
             } else if ($basis == "%") {
-
+                $workings = "";
                 if ($category == "SINGLE") {
 
                     //get price from adult for that index and category
@@ -2707,7 +2708,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
-                    $workings .= "SINGLE PARENT: (CH #$index $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH #$child_count_index $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2725,14 +2726,15 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                 }
                 else if ($category == "1/2 DBL") {
                     //get price from adult for that index and category
-                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+                    //get the price of adult 1/2 DBL
                     $adult_index = 2;
-                    $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
+                    $adult_basis = "1/n";
+                    $arr_adult_workings = _rates_calculator_lookup_single_parent_children_adult_rates($arr_adultpolicies_rules, $adult_index, $arr_params, $adult_basis,"1/2 DBL");
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
 
-                    $workings .= "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH #$child_count_index $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2750,15 +2752,16 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                 } 
                 else if ($category == "DOUBLE") {
                     //get price from adult for that index and category
-                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
-                    if($category == "DOUBLE")
+
                     $adult_index = 2;
-                    $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
+                    $adult_basis = "n";
+                    $arr_adult_workings = _rates_calculator_lookup_single_parent_children_adult_rates($arr_adultpolicies_rules, $adult_index, $arr_params, $adult_basis,"DBL");
+                    
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
 
-                    $workings .= "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH #$child_count_index $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2770,20 +2773,21 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $rates = $fees;
                     $workings .= " = $currency_buy $fees)";
 
-                    $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 2);
+                    $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
 
-                    //BREAK HERE, NO NEED TO CONTINUE FURTHER
-                    break;
+                    //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
+                    
                 } else if ($category == "TRPL") {
 
                     //get price from adult for that index and category
-                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
                     $adult_index = 3;
-                    $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
+                    $adult_basis = "n";
+                    $arr_adult_workings = _rates_calculator_lookup_single_parent_children_adult_rates($arr_adultpolicies_rules, $adult_index, $arr_params, $adult_basis,"TRPL");
+                    
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
                     $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
 
-                    $workings .= "SINGLE PARENT: (CH $category {$child_age}yr : {$value}% of ";
+                    $workings .= "SINGLE PARENT: (CH #$child_count_index $category {$child_age}yr : {$value}% of ";
                     if (trim($workings_adult) != "") {
                         $workings .= "$workings_adult";
                     }
@@ -2795,18 +2799,19 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $rates = $fees;
                     $workings .= " = $currency_buy $fees)";
 
-                    $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 3);
+                    $_arr[] = array("WORKINGS" => $workings, "RATES" => $rates, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
 
-                    //BREAK HERE, NO NEED TO CONTINUE FURTHER
-                    break;
+                   //NO BREAK, MAY NEED TO CONTINUE IF MORE CHILDREN LEFT...
+                    
                 } else if ($category == "SHARING") {
                     //this is not possible
-                    $workings .= "SINGLE PARENT: (CH #$index {$child_age}yr : SHARING % IS NOT POSSIBLE)";
+                    $workings .= "SINGLE PARENT: (CH #$child_count_index {$child_age}yr : SHARING % IS NOT POSSIBLE)";
                     $_arr[] = array("WORKINGS" => $workings, "RATES" => 0, "CHILDINDEX" => $index, "TO_SPLIT_BETWEEN" => 0);
                 }
             }
 
             $index --;
+            $child_count_index ++;
         }
 
         //now need to know if there is a splitting of children fees between DOUBLE,1/2 DBL or TRIPLE children
@@ -2867,6 +2872,30 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
     }
 
     return $arr_final;
+}
+
+
+function _rates_calculator_lookup_single_parent_children_adult_rates($arr_adultpolicies_rules, $adultcount, $arr_params, $adult_basis, $description) {
+    $rates = 0;
+    $workings = "";
+
+    $currency_buy = $arr_params["currency_buy_code"];
+
+    for ($i = 0; $i < count($arr_adultpolicies_rules); $i++) {
+        if ($adultcount == $arr_adultpolicies_rules[$i]["rule_category"]) {
+            $arr_rule_policy = $arr_adultpolicies_rules[$i]["rule_policy"];
+
+            $value = _rates_calculator_lookup_rates_valuebasis($arr_rule_policy, "value");
+            $basis = _rates_calculator_lookup_rates_valuebasis($arr_rule_policy, "basis");
+
+            if ($basis == $adult_basis) {                
+                $rates = $value;
+                $workings = "(AD $description = $currency_buy $value)";
+            } 
+        }
+    }
+
+    return array("RATES_ADULT" => $rates, "WORKINGS_ADULT" => $workings);
 }
 
 function _rates_calculator_lookup_single_parent_rules_cells($rules, $cat_basis_val, $num_children) {
@@ -3332,7 +3361,8 @@ function _rates_calculator_apply_spo_discount_PPPN(&$rates, &$msg, $arr_params, 
 
         if ($apply_discounts) {
             if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
-                    $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
+                    $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN") ||
+                    $disc_ad_ch == "") {
                 //passed check for adult or children applicable discounts
 
                 if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
@@ -3410,7 +3440,8 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
         if ($apply_discounts) {
             if ($flg_date_check_passed) {
                 if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
-                        $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN")) {
+                        $adult_children == "CHILDREN" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "CHILDREN") ||
+                        $disc_ad_ch == "") {
                     //passed check for adult or children applicable discounts
 
                     if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
@@ -4032,8 +4063,8 @@ try {
     //2. SHOW MESSAGES FOR SPO
     
     $arr_test_spos = _rates_calculator_getSPO_first_test($arr_params, $con);    
-    $arr_spos = array_merge($arr_spos, $arr_test_spos["VALID_SPOS"]);
-    $arr_invalid_spos = array_merge($arr_invalid_spos, $arr_test_spos["INVALID_SPOS"]);
+    $arr_spos = $arr_test_spos["VALID_SPOS"];
+    $arr_invalid_spos = $arr_test_spos["INVALID_SPOS"];
 
     if (count($arr_spos) == 0) {
         //there are no SPOs for that booking
@@ -4048,8 +4079,8 @@ try {
     //there is at least one SPO! continue with 2nd check
 
     $arr_test_spos = _rates_calculator_getSPO_second_test($arr_params, $con, $arr_spos);
-    $arr_spos = array_merge($arr_spos, $arr_test_spos["VALID_SPOS"]);
-    $arr_invalid_spos = array_merge($arr_invalid_spos, $arr_test_spos["INVALID_SPOS"]);
+    $arr_spos = $arr_test_spos["VALID_SPOS"];
+    $arr_invalid_spos = $arr_test_spos["INVALID_SPOS"];
 
     if (count($arr_spos) == 0) {
         //there are no SPOs followng 2nd test
@@ -5556,7 +5587,7 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
 
 
     $sql = "SELECT * FROM tblspecial_offer WHERE deleted = 0 
-            and active_internal = 1 ";
+            and active_internal = 1 and id = 56";
 
 
     //======================= HOTEL =========================

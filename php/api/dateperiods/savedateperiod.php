@@ -41,7 +41,7 @@ try {
     $con = pdo_con();
     $con->beginTransaction();
 
-    
+    /*
     $sql = "SELECT * FROM tbldateperiods
                 WHERE hotelfk=:hotelfk                 
                 AND active=1
@@ -54,6 +54,8 @@ try {
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("OVERLAPPING DATES!");
     }
+     
+    */
 
 
     if ($id == "-1") {

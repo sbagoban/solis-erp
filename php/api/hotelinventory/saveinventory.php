@@ -74,7 +74,7 @@ try {
     
     //get all the countries as comma separated
     //for each room
-    //check if there is another record of inventory for that room with a subset of countries
+    //check if there is another record of inventory of same type for that room with a subset of countries
     
     
     
@@ -91,13 +91,15 @@ try {
             inner join tblcountries c on ic.countryfk = c.id
             inner join tblinventory_rooms ir on ic.inventoryfk = inv.id
             inner join tblhotel_rooms hr on ir.roomfk = hr.id
-            where inv.id <> :id and inv.hotelfk = :hotelfk 
+            WHERE inv.id <> :id AND inv.inventory_type =:inventory_type 
+            AND inv.hotelfk = :hotelfk 
             and inv.deleted = 0 and ir.roomfk = :roomid
             and ic.countryfk in ($market_countries_ids)
             group by inv.id, hr.roomname";
             
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":hotelfk" => $hotelfk, ":roomid" => $roomid, ":id"=>$id));
+            
+            $stmt->execute(array(":hotelfk" => $hotelfk, ":roomid" => $roomid, ":id"=>$id,":inventory_type"=>$inventory_type));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $countries = $rw["bad_countries"];

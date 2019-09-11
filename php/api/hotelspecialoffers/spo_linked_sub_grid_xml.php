@@ -44,9 +44,9 @@ FROM
         left join tbltouroperator tp on sot.tofk = tp.id
 	WHERE sol.hotel_fk = :hotel_fk AND sol.deleted = 0
         AND sol.id IN (SELECT linkfk FROM tblspecial_offer_link_spos WHERE spofk=:spofk)
-        GROUP BY sol.active, sol.deleted, sol.description, sol.id as sol_id,
-	sols.id as sols_id, sols.cumulative, 
-	so.id as spoid, so.active_external, so.active_internal,
+        GROUP BY sol.active, sol.deleted, sol.description, sol.id,
+	sols.id, sols.cumulative, 
+	so.id, so.active_external, so.active_internal,
 	so.spocode, so.sponame, so.template, so.spo_type
 	ORDER BY so.date_created asc
 ) A,

@@ -38,7 +38,7 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
-        A.active_external, A.spo_type,A.ratecodes, C.numlinks,
+        A.active_external, A.spo_type,A.ratecodes,
         B.validities,
         D.tour_operator_names
         FROM
@@ -56,14 +56,7 @@ $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
             inner join tblspecial_offer spo on spv.spo_fk = spo.id
             WHERE spo.hotel_fk = $hotelfk
             group by spo_fk
-        ) B,
-        (
-            select spo.id, count(linkfk) as numlinks
-            from tblspecial_offer spo
-            left join tblspecial_offer_link_spos sols on spo.id = sols.spofk
-            where spo.hotel_fk = $hotelfk and spo.deleted = 0 
-            group by spo.id
-        ) C,
+        ) B,        
         (
                 select spo.id,
                 group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR '<br>') as tour_operator_names,
@@ -76,47 +69,61 @@ $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
                 group by spo.id
         ) D
 
-        WHERE A.id = B.spo_fk AND A.id = C.id AND A.id = D.id ORDER BY B.validities";
+        WHERE A.id = B.spo_fk AND A.id = D.id ORDER BY B.validities";
 
 
 
 $xml = "<rows>";
 
-    $query_parent = $con->prepare($sql);
-    $query_parent->execute();
+$query_parent = $con->prepare($sql);
+$query_parent->execute();
 
-    while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
-        
-        $subgrid_type = "sub_row_grid";
-        $url = "php/api/hotelspecialoffers/spo_linked_sub_grid_xml.php?hoid=$hotelfk&spoid=" . $rw["id"];
-        
-        if($rw["numlinks"] == 0)
-        {
-            $subgrid_type = "ro";
-            $url = "";
-        }
-        
-        $xml .= "<row id=\"" . $rw["id"] . "\"  >";            
-            $xml .= "<cell type=\"$subgrid_type\" ><![CDATA[$url]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["sponame"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["active_internal"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["active_external"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["spo_type"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["spocode"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["template"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["tour_operator_names"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["ratecodes"]) . "]]></cell>";
-            $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["validities"]) . "]]></cell>";            
-        $xml .= "</row>";
+while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
+
+    $subgrid_type = "sub_row_grid";
+    $url = "php/api/hotelspecialoffers/spo_linked_sub_grid_xml.php?hoid=$hotelfk&spoid=" . $rw["id"];
+
+    //check if the spo is linked?
+    if (!_spo_is_linked($con, $rw["id"])) {
+        $subgrid_type = "ro";
+        $url = "";
     }
-    
+
+    $xml .= "<row id=\"" . $rw["id"] . "\"  >";
+    $xml .= "<cell type=\"$subgrid_type\" ><![CDATA[$url]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["sponame"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["active_internal"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["active_external"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["spo_type"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["spocode"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["template"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["tour_operator_names"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["ratecodes"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["validities"]) . "]]></cell>";
+    $xml .= "</row>";
+}
+
 $xml .= "</rows>";
 
 print $xml;
 
+function _spo_is_linked($con, $spoid) {
+    $sql = "select * 
+            from tblspecial_offer_link sol
+            inner join tblspecial_offer_link_spos sols on sol.id = sols.linkfk
+            where sols.spofk = :spoid and deleted = 0";
 
+    $query_parent = $con->prepare($sql);
+    $query_parent->execute(array(":spoid"=>$spoid));
+
+    if ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
+        return true;
+    }
+
+    return false;
+}
 ?>
 
 
-    
+
 
