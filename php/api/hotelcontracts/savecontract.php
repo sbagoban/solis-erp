@@ -1443,8 +1443,15 @@ function saveTaxCommiValues($setting_rwid, $arr_values) {
             $value_currency_fk = $arr_values[$i]["value_currency_fk"];
             $value_value = $arr_values[$i]["value_value"];
             $value_action = $arr_values[$i]["value_action"];
-
-            $sql = "SELECT * FROM tblservice_contract_taxcomm_values WHERE
+            
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblservice_contract_taxcomm_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                
+                $sql = "SELECT * FROM tblservice_contract_taxcomm_values WHERE
                 service_contract_taxcomm_fk=:service_contract_taxcomm_fk
                 AND currency_fk=:currency_fk";
 
@@ -1478,6 +1485,7 @@ function saveTaxCommiValues($setting_rwid, $arr_values) {
             }
 
             $arr_needed_ids[] = $value_rwid;
+            }
         }
 
 
@@ -2039,9 +2047,15 @@ function saveRmAdultPolicyDtRulesAgesValues($policy_rwid, $arr_values) {
             $value_value = $arr_values[$i]["value_value"];
             $value_action = $arr_values[$i]["value_action"];
 
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblservice_contract_adult_policy_room_dates_rules_ages_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
 
-            if ($value_rwid < 0) {
-                $sql = "INSERT INTO 
+                if ($value_rwid < 0) {
+                    $sql = "INSERT INTO 
                         tblservice_contract_adult_policy_room_dates_rules_ages_values
                         (service_contract_adult_policy_room_dates_rules_ages_fk,
                          currencyfk,basis,value)
@@ -2049,29 +2063,30 @@ function saveRmAdultPolicyDtRulesAgesValues($policy_rwid, $arr_values) {
                         (:service_contract_adult_policy_room_dates_rules_ages_fk,
                          :currencyfk,:basis,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":service_contract_adult_policy_room_dates_rules_ages_fk" => $policy_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":service_contract_adult_policy_room_dates_rules_ages_fk" => $policy_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            } else {
+                    $value_rwid = $con->lastInsertId();
+                } else {
 
-                $sql = "UPDATE tblservice_contract_adult_policy_room_dates_rules_ages_values 
+                    $sql = "UPDATE tblservice_contract_adult_policy_room_dates_rules_ages_values 
                         SET currencyfk=:currencyfk, basis=:basis,
                         value=:value WHERE id=:id";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
-            }
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
+                }
 
-            $arr_needed_ids[] = $value_rwid;
+                $arr_needed_ids[] = $value_rwid;
+            }
         }
 
         //clean ups
@@ -2272,9 +2287,14 @@ function saveRmChildPolicyDtRulesAgesValues($policy_rwid, $arr_policy_values) {
             $value_value = $arr_policy_values[$i]["value_value"];
             $value_action = $arr_policy_values[$i]["value_action"];
 
-
-            if ($value_rwid < 0) {
-                $sql = "INSERT INTO 
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblservice_contract_child_policy_room_dates_rules_ages_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                if ($value_rwid < 0) {
+                    $sql = "INSERT INTO 
                         tblservice_contract_child_policy_room_dates_rules_ages_values
                         (service_contract_child_policy_room_dates_rules_ages_fk,
                          currencyfk,basis,value)
@@ -2282,29 +2302,30 @@ function saveRmChildPolicyDtRulesAgesValues($policy_rwid, $arr_policy_values) {
                         (:service_contract_child_policy_room_dates_rules_ages_fk,
                          :currencyfk,:basis,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":service_contract_child_policy_room_dates_rules_ages_fk" => $policy_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":service_contract_child_policy_room_dates_rules_ages_fk" => $policy_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            } else {
+                    $value_rwid = $con->lastInsertId();
+                } else {
 
-                $sql = "UPDATE tblservice_contract_child_policy_room_dates_rules_ages_values 
+                    $sql = "UPDATE tblservice_contract_child_policy_room_dates_rules_ages_values 
                         SET currencyfk=:currencyfk, basis=:basis,
                         value=:value WHERE id=:id";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
-            }
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
+                }
 
-            $arr_needed_ids[] = $value_rwid;
+                $arr_needed_ids[] = $value_rwid;
+            }
         }
 
 
@@ -2514,8 +2535,14 @@ function saveRmSngPrntPolicyDtRulesAgesValues($policy_rwid, $arr_policy_values) 
             $value_action = $arr_policy_values[$i]["value_action"];
 
 
-            if ($value_rwid < 0) {
-                $sql = "INSERT INTO 
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblservice_contract_snglprntpolicy_room_dates_rules_ages_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                if ($value_rwid < 0) {
+                    $sql = "INSERT INTO 
                         tblservice_contract_snglprntpolicy_room_dates_rules_ages_values
                         (service_contract_snglprntpolicy_room_dates_rules_ages_fk,
                          currencyfk,basis,value)
@@ -2523,29 +2550,30 @@ function saveRmSngPrntPolicyDtRulesAgesValues($policy_rwid, $arr_policy_values) 
                         (:service_contract_snglprntpolicy_room_dates_rules_ages_fk,
                          :currencyfk,:basis,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":service_contract_snglprntpolicy_room_dates_rules_ages_fk" => $policy_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":service_contract_snglprntpolicy_room_dates_rules_ages_fk" => $policy_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            } else {
+                    $value_rwid = $con->lastInsertId();
+                } else {
 
-                $sql = "UPDATE tblservice_contract_snglprntpolicy_room_dates_rules_ages_values 
+                    $sql = "UPDATE tblservice_contract_snglprntpolicy_room_dates_rules_ages_values 
                         SET currencyfk=:currencyfk, basis=:basis,
                         value=:value WHERE id=:id";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
-            }
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
+                }
 
-            $arr_needed_ids[] = $value_rwid;
+                $arr_needed_ids[] = $value_rwid;
+            }
         }
 
 

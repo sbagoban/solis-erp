@@ -372,8 +372,6 @@ function hotelspecialoffers()
                     {
 
                         _json_capacity = json_obj.SPO.FLAT_RATES_CAPACITY;
-                        console.log(_json_capacity);
-
                         _flat_rate_tax_commi_obj = json_obj.SPO.FLAT_RATES_TAX_COMMI;
 
                         loadFlatRateGroupValidity(json_obj.SPO.FLAT_RATES_VALIDY_PERIOD_GROUP);
@@ -384,7 +382,6 @@ function hotelspecialoffers()
                         loadFlatRateExgRates(json_obj.SPO.FLAT_RATES_EXCHANGE_RATES);
                         loadFlatRateMapping(json_obj.SPO.FLAT_RATES_MAPPING);
 
-                        console.log(_json_capacity);
                     }
 
                     var template_name = cboTemplate.getComboText();
@@ -4347,8 +4344,6 @@ function hotelspecialoffers()
                         "&linkid=" + linkid +
                         "&linklineid=" + linklineid;
 
-                console.log(params);
-
                 spolayout_link.cells("a").progressOn();
 
                 dhtmlxAjax.post("php/api/hotelspecialoffers/updatelink.php", params, function (loader) {
@@ -6286,6 +6281,12 @@ function hotelspecialoffers()
                                 {
                                     date_adultpolicies_rules[ad].rule_action = "DELETE";
                                 }
+                                
+                                //clean up the values of adults if currency no longer in use
+                                if(date_adultpolicies_rules[ad].rule_action != "DELETE")
+                                {
+                                    cleanAdultOrChildValuesCurrency(date_adultpolicies_rules[ad].rule_policy);
+                                }
                             }
                         }
                     }
@@ -6309,6 +6310,12 @@ function hotelspecialoffers()
                                 if (ruleaction != "DELETE" && rule_category > adult_max)
                                 {
                                     date_adultpolicies_rules[ad].rule_action = "DELETE";
+                                }
+                                
+                                //clean up the values of adults if currency no longer in use
+                                if(date_adultpolicies_rules[ad].rule_action != "DELETE")
+                                {
+                                    cleanAdultOrChildValuesCurrency(date_adultpolicies_rules[ad].rule_policy);
                                 }
                             }
                         }
@@ -6429,6 +6436,12 @@ function hotelspecialoffers()
                     if (flg_delete)
                     {
                         arr_rules[i].rule_action = "DELETE";
+                    }
+                    
+                    //clean up the values of adults if currency no longer in use
+                    if(arr_rules[i].rule_action != "DELETE")
+                    {
+                        cleanAdultOrChildValuesCurrency(arr_rules[i].rule_policy);
                     }
                 }
             }
@@ -6552,14 +6565,20 @@ function hotelspecialoffers()
     {
         for (var i = 0; i < arr_rules.length; i++)
         {
+            //clean up values of the wrong currency
+            
+                
             var rule_category = arr_rules[i].rule_category;
             var arr_rule_policy = arr_rules[i].rule_policy;
+            
+            cleanAdultOrChildValuesCurrency(arr_rule_policy);
+            
             for (var j = 0; j < arr_rule_policy.length; j++)
             {
                 var policy_adult_child = arr_rule_policy[j].policy_adult_child;
                 var agfrom = arr_rule_policy[j].policy_child_agefrom;
                 var agto = arr_rule_policy[j].policy_child_ageto;
-
+                
                 if (policy_adult_child == "CHILD" && ag_from == agfrom && ag_to == agto)
                 {
                     if (parseInt(rule_category, 10) > parseInt(max_pax, 10))
@@ -6567,6 +6586,7 @@ function hotelspecialoffers()
                         arr_rule_policy[j].policy_action = "DELETE";
                     }
                 }
+                
             }
         }
     }
@@ -10191,10 +10211,38 @@ function hotelspecialoffers()
         flat_rate_cleanJsonChildren("sharing");
         flat_rate_cleanJsonChildren("single");
         flat_rate_cleanJsonSingleParent();
+        flat_rate_cleanJsonTaxCommi();
         
-        console.log(_json_capacity);
         saveSPO();
 
+    }
+    
+    function flat_rate_cleanJsonTaxCommi()
+    {
+        var buying_settings = _flat_rate_tax_commi_obj.buying_settings;
+        var selling_settings = _flat_rate_tax_commi_obj.selling_settings;
+        
+        
+        flat_rate_cleanJsonTaxCommi_buy_sell(buying_settings);
+        flat_rate_cleanJsonTaxCommi_buy_sell(selling_settings);
+        
+    }
+    
+    function flat_rate_cleanJsonTaxCommi_buy_sell(buy_sell_settings)
+    {
+        for(var i = 0; i < buy_sell_settings.length; i++)
+        {
+            var setting_values = buy_sell_settings[i].setting_values;
+            for(var j = 0; j < setting_values.length; j++)
+            {   
+                var selected_currency_buy_ids = utils_trim(form_flat_rate_currency.getItemValue("selected_currency_buy_ids"), " ");
+                var value_currency_fk = setting_values[j].value_currency_fk;
+                if(value_currency_fk != "" && value_currency_fk != selected_currency_buy_ids)
+                {
+                    setting_values[j].value_action = "DELETE";
+                }
+            }
+        }
     }
 
     function onGridCapacityAgeEdit(stage, rId, cInd, nValue, oValue) {
@@ -11842,8 +11890,6 @@ function hotelspecialoffers()
             return;
         }
 
-        console.log(cindx);
-
         //call the function for each selling currency
         var selected_currency_sell_ids = form_flat_rate_currency.getItemValue("selected_currency_sell_ids");
         var arr_currency_sell = selected_currency_sell_ids.split(",");
@@ -12562,7 +12608,6 @@ function hotelspecialoffers()
                 } else if (variant == "UNITS")
                 {
                     child_stats = getUnitsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
-                    console.log(child_stats);
                 }
 
 
@@ -12595,8 +12640,7 @@ function hotelspecialoffers()
                 "&selected_currency_sell_ids=" + selected_currency_sell_ids +
                 "&costprice_currencyid=" + costprice_currencyid;
 
-        console.log(url);
-
+        
         grid_childpolicy_sharing_age.loadXML(url, function () {
             //fill in values
             fillChildPolicyGridValues(roomid, date_rwid, grid_childpolicy_sharing_age, "SHARING");
@@ -15012,7 +15056,6 @@ function hotelspecialoffers()
                 }
             }
 
-            console.log(_json_capacity);
             //============================================
 
             var buying_settings = _flat_rate_tax_commi_obj.buying_settings;
@@ -15359,6 +15402,31 @@ function hotelspecialoffers()
         return;
     }
         
+    function cleanAdultOrChildValuesCurrency(arr_rule_policy)
+    {
+        for(var i = 0; i < arr_rule_policy.length; i++)
+        {
+            var policy_action = arr_rule_policy[i].arr_rule_policy;
+            if(policy_action != "DELETE")
+            {
+                var arr_policy_values = arr_rule_policy[i].policy_values;
+                
+                for(var j = 0; j < arr_policy_values.length; j++)
+                {
+                    var value_currencyfk = arr_policy_values[j].value_currencyfk;
+                    var value_action = arr_policy_values[j].value_action;
+                    if(value_action != "DELETE")
+                    {
+                        var selected_currency_buy_ids = utils_trim(form_flat_rate_currency.getItemValue("selected_currency_buy_ids"), " ");
+                        if(value_currencyfk != "" && value_currencyfk != selected_currency_buy_ids)
+                        {
+                            arr_policy_values[j].value_action = "DELETE";
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     //=======================================================
     popupwin_spo.hide();

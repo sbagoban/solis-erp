@@ -1927,8 +1927,14 @@ function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_
             $value_value = $arr_policy_values[$i]["value_value"];
             $value_action = $arr_policy_values[$i]["value_action"];
 
-
-            if ($value_rwid < 0) {
+            
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                if ($value_rwid < 0) {
                 $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values
                         (spo_flatrate_snglprnt_rm_dt_rules_ages_fk,
@@ -1960,6 +1966,7 @@ function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_
             }
 
             $arr_needed_ids[] = $value_rwid;
+            }
         }
 
 
@@ -2168,9 +2175,14 @@ function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_va
             $value_basis = $arr_policy_values[$i]["value_basis"];
             $value_value = $arr_policy_values[$i]["value_value"];
             $value_action = $arr_policy_values[$i]["value_action"];
-
-
-            if ($value_rwid < 0) {
+            
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                if ($value_rwid < 0) {
                 $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values
                         (spo_flatrate_child_policy_room_dates_rules_ages_fk,
@@ -2202,6 +2214,7 @@ function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_va
             }
 
             $arr_needed_ids[] = $value_rwid;
+            }
         }
 
 
@@ -2402,8 +2415,13 @@ function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values) {
             $value_value = $arr_values[$i]["value_value"];
             $value_action = $arr_values[$i]["value_action"];
 
-
-            if ($value_rwid < 0) {
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblspecial_offer_flatrate_ad_rm_dt_rules_ages_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                if ($value_rwid < 0) {
                 $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_ad_rm_dt_rules_ages_values
                         (spo_fte_ad_rm_dt_rules_ag_fk,
@@ -2435,6 +2453,9 @@ function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values) {
             }
 
             $arr_needed_ids[] = $value_rwid;
+            }
+            
+            
         }
 
         //clean ups
@@ -2729,8 +2750,15 @@ function saveFlatRateTaxCommiValues($setting_rwid, $arr_values) {
             $value_currency_fk = $arr_values[$i]["value_currency_fk"];
             $value_value = $arr_values[$i]["value_value"];
             $value_action = $arr_values[$i]["value_action"];
-
-            $sql = "SELECT * FROM 
+            
+            if ($value_action == "DELETE") {
+                $sql = "DELETE FROM tblspecial_offer_flatrate_taxcomm_values 
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $value_rwid));
+            } else {
+                
+                $sql = "SELECT * FROM 
                 tblspecial_offer_flatrate_taxcomm_values WHERE
                 special_offer_taxcomm_fk=:special_offer_taxcomm_fk
                 AND currency_fk=:currency_fk";
@@ -2765,6 +2793,8 @@ function saveFlatRateTaxCommiValues($setting_rwid, $arr_values) {
             }
 
             $arr_needed_ids[] = $value_rwid;
+            
+            }
         }
 
 

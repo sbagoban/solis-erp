@@ -1670,7 +1670,7 @@ function hotelcontracts()
         {type: "settings", position: "label-left", id: "form_currency"},
         {type: "block", width: 900, list: [
                 {type: "combo", name: "mycostprice_currencyfk", label: "Default Currency:",
-                    labelWidth: "80",
+                    labelWidth: "120",
                     labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
@@ -1678,7 +1678,7 @@ function hotelcontracts()
                 }]},
         {type: "block", width: 900, list: [
                 {type: "input", name: "selected_currency_buy_display",
-                    label: "Buying:", labelWidth: "80",
+                    label: "Buying:", labelWidth: "120",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     readonly: true, rows: 1
@@ -2901,7 +2901,8 @@ function hotelcontracts()
                 if (json_obj.OUTCOME == "OK")
                 {
                     _json_capacity = json_obj.CAPACITY;
-
+                    
+                    
                     console.log("loading contract:", _json_capacity);
 
                     if (callback)
@@ -2964,6 +2965,8 @@ function hotelcontracts()
                     _json_taxcommi = json_obj.TAXCOMMI;
                     loadInitialRowsTaxCommi();
                     loadDefaultTaxCommiValues();
+                    
+                    console.log("loading taxcomm:", _json_taxcommi);
 
                     if (callback)
                     {
@@ -10924,6 +10927,7 @@ function hotelcontracts()
             cleanJsonChildren("sharing");
             cleanJsonChildren("single");
             cleanJsonSingleParent();
+            cleanJsonTaxCommi();
 
             //then save
             saveContractCore();
@@ -10941,6 +10945,36 @@ function hotelcontracts()
 
 
     }
+    
+    function cleanJsonTaxCommi()
+    {
+        for(var i = 0; i < _json_taxcommi.length; i++)
+        {
+            var buying_settings = _json_taxcommi[i].buying_settings;
+            var selling_settings = _json_taxcommi[i].selling_settings;
+            
+            cleanJsonTaxCommi_buy_sell(buying_settings);
+            cleanJsonTaxCommi_buy_sell(selling_settings);
+        }
+    }
+    
+    function cleanJsonTaxCommi_buy_sell(buy_sell_settings)
+    {
+        for(var i = 0; i < buy_sell_settings.length; i++)
+        {
+            var setting_values = buy_sell_settings[i].setting_values;
+            for(var j = 0; j < setting_values.length; j++)
+            {   
+                var selected_currency_buy_ids = utils_trim(form_currency.getItemValue("selected_currency_buy_ids"), " ");
+                var value_currency_fk = setting_values[j].value_currency_fk;
+                if(value_currency_fk != "" && value_currency_fk != selected_currency_buy_ids)
+                {
+                    setting_values[j].value_action = "DELETE";
+                }
+            }
+        }
+    }
+    
 
     function cleanJsonSingleParent()
     {
@@ -11082,6 +11116,9 @@ function hotelcontracts()
         {
             var rule_category = arr_rules[i].rule_category;
             var arr_rule_policy = arr_rules[i].rule_policy;
+            
+            cleanAdultOrChildValuesCurrency(arr_rule_policy);
+            
             for (var j = 0; j < arr_rule_policy.length; j++)
             {
                 var policy_adult_child = arr_rule_policy[j].policy_adult_child;
@@ -11301,6 +11338,12 @@ function hotelcontracts()
                     {
                         arr_rules[i].rule_action = "DELETE";
                     }
+                    
+                    //clean up the values of adults if currency no longer in use
+                    if(arr_rules[i].rule_action != "DELETE")
+                    {
+                        cleanAdultOrChildValuesCurrency(arr_rules[i].rule_policy);
+                    }
                 }
             }
         }
@@ -11348,12 +11391,19 @@ function hotelcontracts()
                             var date_adultpolicies_rules = room_dates[d].date_adultpolicies_rules;
                             for (var ad = 0; ad < date_adultpolicies_rules.length; ad++)
                             {
+                                
                                 var ruleaction = date_adultpolicies_rules[ad].rule_action;
                                 var rule_category = parseInt(date_adultpolicies_rules[ad].rule_category, 10);
 
                                 if (ruleaction != "DELETE" && rule_category > adult_max)
                                 {
                                     date_adultpolicies_rules[ad].rule_action = "DELETE";
+                                }
+                                
+                                //clean up the values of adults if currency no longer in use
+                                if(date_adultpolicies_rules[ad].rule_action != "DELETE")
+                                {
+                                    cleanAdultOrChildValuesCurrency(date_adultpolicies_rules[ad].rule_policy);
                                 }
                             }
                         }
@@ -11379,7 +11429,39 @@ function hotelcontracts()
                                 {
                                     date_adultpolicies_rules[ad].rule_action = "DELETE";
                                 }
+                                
+                                //clean up the values of adults if currency no longer in use
+                                if(date_adultpolicies_rules[ad].rule_action != "DELETE")
+                                {
+                                    cleanAdultOrChildValuesCurrency(date_adultpolicies_rules[ad].rule_policy);
+                                }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    function cleanAdultOrChildValuesCurrency(arr_rule_policy)
+    {
+        for(var i = 0; i < arr_rule_policy.length; i++)
+        {
+            var policy_action = arr_rule_policy[i].arr_rule_policy;
+            if(policy_action != "DELETE")
+            {
+                var arr_policy_values = arr_rule_policy[i].policy_values;
+                
+                for(var j = 0; j < arr_policy_values.length; j++)
+                {
+                    var value_currencyfk = arr_policy_values[j].value_currencyfk;
+                    var value_action = arr_policy_values[j].value_action;
+                    if(value_action != "DELETE")
+                    {
+                        var selected_currency_buy_ids = utils_trim(form_currency.getItemValue("selected_currency_buy_ids"), " ");
+                        if(value_currencyfk != "" && value_currencyfk != selected_currency_buy_ids)
+                        {
+                            arr_policy_values[j].value_action = "DELETE";
                         }
                     }
                 }
@@ -13149,7 +13231,12 @@ function hotelcontracts()
 
         var date_objfrom = lookupCapacityRoomDateObj(roomidfrom, daterwidfrom);
         var date_objto = lookupCapacityRoomDateObj(roomidto, daterwidto);
-
+        
+        if(!date_objfrom || !date_objto)
+        {
+            return true;
+        }
+        
         var arrfrom = utils_deepCopy(date_objfrom.date_capacity_rules);
         var arrto = utils_deepCopy(date_objto.date_capacity_rules);
 
