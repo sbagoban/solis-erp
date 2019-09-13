@@ -161,7 +161,7 @@ while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
     $rowspan = "";
     $spo_count = $rw["spo_count"];
 
-    $bgcolor = "";
+    $bgcolor = "background-color:#DCFAE7;";
     $topborder = "";
 
     if ($spo_count == 0) {
