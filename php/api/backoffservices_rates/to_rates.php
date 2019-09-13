@@ -22,7 +22,7 @@ $phy_countryfk = $_GET["phy_countryfk"];
 require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
-// To add Where Active 1 in sql query ???
+
 $query_c = $con->prepare("SELECT id, toname
 FROM tbltouroperator where phy_countryfk IN ( " . $phy_countryfk . "  )");
 $query_c->execute();

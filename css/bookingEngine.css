@@ -616,10 +616,6 @@ a.remove_field {
   right: 29px;
 }
 
-div#ratesDetails {
-  height: 112vh;
-}
-
 a.remove_field1 {
   position: relative;
   color: #ff0000;
@@ -672,6 +668,11 @@ h5#serviceDateDisplay {
   color: white;
   padding: 12px;
   border: 5px solid #ffffffc2;
+}
+
+div#verticalSeparator {
+  border-right: 1px solid #000000;
+  height: 231px;
 }
 
 @keyframes spin {

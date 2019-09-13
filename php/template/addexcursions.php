@@ -548,7 +548,7 @@
 
                                     <form action="#" onsubmit="return false">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <!-- <div class="col-md-12">
                                                 <div class="col-lg-1">
                                                     <h5>Pax Breaks</h5>
                                                 </div>
@@ -557,8 +557,8 @@
                                                         <i class="fa fa-plus fa-lg add_more_button" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
                                                     </span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12">
+                                            </div> -->
+                                            <!-- <div class="col-md-12">
                                                 <br>
                                                 <form name="add_paxbreaks">
                                                     <div class="input_fields_container_part">
@@ -574,11 +574,10 @@
                                                                         <input type="number" max="9999" min="1" class="form-control" id="addedIdFirst" name="paxBreaksEnd">
                                                                     </div>
                                                                 </form>
-                                                                    <!-- <a href="#" class="remove_field" style="margin-left:10px;"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a> -->
                                                             </div>
                                                     </div>
                                                 </form>
-                                            </div>
+                                            </div> -->
                                         </div>
                                         &nbsp;
                                         <hr>
@@ -1038,6 +1037,7 @@
                                                         <div class="row">
                                                             <div class="col-md-12">
                                                                 <h5 id="serviceDateDisplay"></h5>
+                                                                <h5 id="serviceDateDisplayId" style="display: none"></h5>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <h5>Description</h5>
@@ -1116,9 +1116,6 @@
                                     <!-- EDIT RATE -->
                                     <div class="row editRate">
                                         <div class="col-md-12">
-                                            
-                                            
-
                                             <div class="col-md-12">
                                                 <hr>
                                                 <button id="updateRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
@@ -1150,6 +1147,79 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Alert Modal Edit Add Tarif -->
+                                <div class="modal fade" id="rateModal" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Rates Detail</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h5>Sales From / To</h5>
+                                                        <div class="input-group date datepicker-in">
+                                                            <input type="text" name="daterange" id="daterangeSalesFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </div>
+                                                        </div>
+                                                        <h5>Buy Currency</h5>
+                                                        <div class="form-group selectValidation" id="serviceType">
+                                                            <select class="custom-select form-control form-control-sm inputValidation" 
+                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                                            </select>
+                                                        </div>
+                                                        <h5>Sell Currency</h5>
+                                                        <div class="form-group selectValidation" id="serviceType">
+                                                            <select class="custom-select form-control form-control-sm inputValidation" 
+                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                                            </select>
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="col-md-1" id="verticalSeparator">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <h5>Rate Status</h5>
+                                                        <!-- Filter Two Locations -->
+                                                        <fieldset class="form-group">
+                                                                <p>
+                                                                    <input type="radio" id="confiredStatus" value="confirmed" name="radioCreationVoucher" checked>
+                                                                    <label for="confiredStatus"><span>Confirmed</span></label>
+                                                                </p>
+                                                                <p>
+                                                                    <input type="radio" id="closedStatus" value="closed" name="radioCreationVoucher">
+                                                                    <label for="closedStatus"><span>Closed</span></label>
+                                                                </p>
+                                                        </fieldset>
+                                                        <!-- Filter One Locations -->
+                                                        
+                                                        <h5>Stay Length</h5>
+                                                        <div class="col-md-6">
+                                                            <h5>Min</h5>
+                                                            <input type="number" min='1' max='100' class="form-control" id="minStayLength">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h5>Max</h5>
+                                                            <input type="number" min='1' max='9999' class="form-control" id="maxStayLength">
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                                 <!-- End Seven Tab -->
                                 <div class="toast jam toast_updated" aria-hidden="true" style="display:none;">
                                     <span class="close" aria-role="button" tabindex="0">&times;</span> Service Updated.
