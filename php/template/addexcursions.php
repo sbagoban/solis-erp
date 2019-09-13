@@ -548,7 +548,7 @@
 
                                     <form action="#" onsubmit="return false">
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <!-- <div class="col-md-12">
                                                 <div class="col-lg-1">
                                                     <h5>Pax Breaks</h5>
                                                 </div>
@@ -557,8 +557,8 @@
                                                         <i class="fa fa-plus fa-lg add_more_button" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
                                                     </span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12">
+                                            </div> -->
+                                            <!-- <div class="col-md-12">
                                                 <br>
                                                 <form name="add_paxbreaks">
                                                     <div class="input_fields_container_part">
@@ -574,11 +574,10 @@
                                                                         <input type="number" max="9999" min="1" class="form-control" id="addedIdFirst" name="paxBreaksEnd">
                                                                     </div>
                                                                 </form>
-                                                                    <!-- <a href="#" class="remove_field" style="margin-left:10px;"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a> -->
                                                             </div>
                                                     </div>
                                                 </form>
-                                            </div>
+                                            </div> -->
                                         </div>
                                         &nbsp;
                                         <hr>
@@ -1038,6 +1037,7 @@
                                                         <div class="row">
                                                             <div class="col-md-12">
                                                                 <h5 id="serviceDateDisplay"></h5>
+                                                                <h5 id="serviceDateDisplayId" style="display: none"></h5>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <h5>Description</h5>
@@ -1116,9 +1116,6 @@
                                     <!-- EDIT RATE -->
                                     <div class="row editRate">
                                         <div class="col-md-12">
-                                            
-                                            
-
                                             <div class="col-md-12">
                                                 <hr>
                                                 <button id="updateRateDetails" class="btn btn-primary pull-right">Create Rate &raquo;</button>
@@ -1150,6 +1147,31 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Alert Modal Edit Add Tarif -->
+                                <div class="modal fade" id="rateModal" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <!-- <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">
+                                        <i class="fa fa-info" style="color: #337ab7;"></i> 
+                                        Flag Service As Deleted</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p id="error">Are you sure you want to delete ?</p>
+                                            </div> -->
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                                 <!-- End Seven Tab -->
                                 <div class="toast jam toast_updated" aria-hidden="true" style="display:none;">
                                     <span class="close" aria-role="button" tabindex="0">&times;</span> Service Updated.

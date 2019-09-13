@@ -57,7 +57,7 @@ try {
         $sql = "UPDATE tblexcursion_services_rates_countries SET 
                 idservicesfk=:idservicesfk, 
                 idrates_fk=:idrates_fk,
-                country_id=:country_id,
+                country_id=:country_id
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);

@@ -15,14 +15,13 @@
             method : "POST",
             data : objRateDate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
             success : function(data){
+                var idBlock = document.getElementById('idBlock').innerHTML;
+                insertRateGrid(idBlock);
             },
             error: function(error) {
                 console.log('Error ${error}');
             }
         });
-        var idBlock = document.getElementById('idBlock').innerHTML;
-        insertRateGrid(idBlock);
-        
     }
 
     function selectedClosedDateFunc(closedStartDate, closedEndDate, idBlockRates) {
@@ -115,29 +114,10 @@ function deleteRowRateDetailschk(data) {
     rateDetailsEditRows(idBlock);
 }
 
-///////////////////////////////////////
-/////////// MARKET DROPDOWN ///////////
-///////////////////////////////////////
-$(document).ready(function () {
-    
-    $("select#multiselectRate25").change(function(){
-        var selectedCountry = $(this).children("option:selected").val();
-        // var brands = $('#multiselectRate25 option:selected');
-        // $(brands).each(function(index, brand){
-        //     var test = $(this).val();
-        // });
-        // console.log(test);
-        // updateRateCountries(testtt);
-    });
-    // $("select#multiselectRate24").change(function(){
-    //     var selectedTourOperator = $(this).children("option:selected").val();
-    //     loadRatesTypeMultiselect(selectedTourOperator);
-    // });
-});
 
 function editRowRate(idBlockRates) {
     loadMarketMultiselect(idBlockRates);
-    dateRangePicker(idBlockRates); 
+    dateRangePicker(idBlockRates);
 }
 
 // Load Market By Default - On Button Edit click
@@ -190,7 +170,7 @@ function loadCountries(selectedMarket, idBlockRates) {
             {
                 $("#multiselectRate25").empty();
                 $.each(data, function (key, val) {
-                    $("#multiselectRate25").append('<option value="' + val.countryfk + '">' + val.country_name + '</option>'); 
+                    $("#multiselectRate25").append('<option value="' + val.countryfk + '">' + val.country_name + '</option>');
                 });                
                 $("#multiselectRate25").attr('multiple', 'multiple'); 
                 $("#multiselectRate25").multiselect({
@@ -236,6 +216,8 @@ function loadTourOperator(selectedCountriesTo, idBlockRates) {
             {
                 $.each(data, function (key, val) {
                     $("#multiselectRate24").append('<option value="' + val.id + '">' + val.toname + '</option>');
+                    console.log('ops', val.toname);
+                    toname = val.toname;
                 });
                 $("#multiselectRate24").attr('multiple', 'multiple'); 
                 $("#multiselectRate24").multiselect({
@@ -251,6 +233,7 @@ function loadTourOperator(selectedCountriesTo, idBlockRates) {
                         var selectedRatesTypeArr = [];
                         $(brands).each(function(index, brand){
                             selectedTo = $(this).val();
+                            console.log('test 0- name', $(this).val());
                             // Push to array selectedCountriesArr
                             selectedRatesTypeArr.push($(this).val());
                             selectedToRatesType = selectedRatesTypeArr.join();
@@ -258,9 +241,9 @@ function loadTourOperator(selectedCountriesTo, idBlockRates) {
                         });
                         if (checked) {
                             console.log('test', element);
-                            saveTourOperatorMultiselect(selectedTo, idBlockRates);
+                            saveTourOperatorMultiselect(selectedTo, idBlockRates, toname);
                         } else {
-                            saveTourOperatorMultiselect(null, idBlockRates);
+                            saveTourOperatorMultiselect(null, idBlockRates, toname);
                         }
                     }
                 });
@@ -300,7 +283,7 @@ function loadRatesTypeMultiselect(selectedTourOperator, idBlockRates) {
                     enableFiltering: true,
                     enableHTML: true,
                     buttonClass: 'btn large btn-primary',
-                    enableCaseInsensitiveFiltering: true,
+                    enableCaseInsensitiveFiltering: true, 
                     onChange: function(element, checked) {
                         var brands = $('#multiselectRate23 option:selected');
                         $(brands).each(function(index, brand){
@@ -345,7 +328,7 @@ function saveCountriesMultiselect(selectedCountries, idBlockRates) {
 }
 
 // Save TourOperator
-function saveTourOperatorMultiselect(selectedTo, idBlockRates) {
+function saveTourOperatorMultiselect(selectedTo, idBlockRates, toname) {
     $('#updateRateDetails').click(function () {
         if (!null) {
             var idBlock = document.getElementById('idBlock').innerHTML;
@@ -355,7 +338,8 @@ function saveTourOperatorMultiselect(selectedTo, idBlockRates) {
                 id: -1,
                 idservicesfk: idBlock,
                 idrates_fk: idBlockRates.id,                
-                to_id: selectedTo
+                to_id: selectedTo, 
+                toname: toname
             };
             $.ajax({
                 type: "POST",
@@ -372,6 +356,7 @@ function saveTourOperatorMultiselect(selectedTo, idBlockRates) {
 
 // Save TourOperator
 function saveRatesTypeMultiselect(selectedRatesType, idBlockRates) {
+    console.log('.... Chk', selectedRatesType);
     $('#updateRateDetails').click(function () {
         if (!null) {
             var idBlock = document.getElementById('idBlock').innerHTML;
@@ -390,8 +375,17 @@ function saveRatesTypeMultiselect(selectedRatesType, idBlockRates) {
                 cache: false,
                 success: function(data) {
                     console.log("OK", data);
+                    saveToGridFunc();
                 }
             });
         }
     });
 }
+
+function saveToGridFunc() {
+    var serviceDateDisplayId = document.getElementById("serviceDateDisplayId").innerHTML;
+    insertRateGridAllDetails(serviceDateDisplayId);
+    // set default multiselect
+}
+
+

@@ -1,10 +1,11 @@
-function insertRateGridAllDetails(idBlock) {
+function insertRateGridAllDetails(idBlockRates) {
+    
     $('#displayRateDetailsSort').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backoffservices_rates/rateservicetable.php?t=" + encodeURIComponent(global_token) + "&idservicesfk=" + idBlock,
-            dataSrc : ''
+            "url" : "php/api/backoffservices_rates/ratedetailsgrid.php?t=" + encodeURIComponent(global_token) + "&idrates_fk=" + idBlockRates,
+            dataSrc: ""
         },
         "destroy": true,
         "bProcessing": true,
@@ -21,17 +22,15 @@ function insertRateGridAllDetails(idBlock) {
         ],
         "columns" : [
         {
-            "data" : "servicedatefrom"
+            "data" : "serviceclosedstartdate"
         }, {
-            "data" : "servicedateto"
-        },   
-        {
-            "data" : "servicedatefrom"
+            "data" : "serviceclosedenddate"
         }, {
-            "data" : "servicedateto"
-        },
-        {
-            "data" : "servicedatefrom"
+            "data" : "country_name"
+        }, {
+            "data" : "toname"
+        }, {
+            "data" : "ratecodes"
         }, {
             "data" : "servicedateto"
         },
@@ -53,7 +52,7 @@ function insertRateGridAllDetails(idBlock) {
     $('#displayRateDetailsSort tbody').on( 'click', 'a', function () {
         var table = $('#displayRateDetailsSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        //editRowQuoteDetailschk(data);
+        editRowRateDetailsSort(data);
     });
     
     $('#displayRateDetailsSort tbody').on( 'click', 'i', function () {
@@ -61,4 +60,9 @@ function insertRateGridAllDetails(idBlock) {
         var data = table.row( $(this).parents('tr')).data();
         //deleteRowRateServiceDetails(data);
     });
+}
+
+function editRowRateDetailsSort (data) {
+    $('#rateModal').modal();
+    console.log('--->>> ', data);
 }

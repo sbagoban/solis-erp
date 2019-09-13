@@ -29,31 +29,35 @@ function insertRateGrid(idBlock) {
             {
                 "targets": -3,
                 "data": null,
-                "class": 'editBtnCol',
-                "defaultContent": "<a class='btn'><i aria-hidden='true' class='fa fa-external-link btnEditRateDetails'></i> Edit</a>"
+                "class": 'btnEditRateDetails',
+                "defaultContent": "<a class='btnEditRateDetails'><i aria-hidden='true' class='fa fa-external-link'></i> Edit</a>"
             },      
             {
                 "targets": -4,
                 "data": null,
                 "class": 'deleteBtnCol',
-                "defaultContent": "<i aria-hidden='true' class='fa fa-trash-o fa-lg deleteBtn'></i>"
+                "defaultContent": "<i aria-hidden='true' class='fa fa-trash-o fa-lg deleteBtnCol'></i>"
             }
         ]
     });
 
-    $('#rateServiceDateSort tbody').on( 'click', '.btn', function () {
+    $('#rateServiceDateSort tbody').on( 'click', '.btnEditRateDetails', function () {
         var tableEdit = $('#rateServiceDateSort').DataTable();
         var data = tableEdit.row($(this).parents('tr')).data();
         editRowRate(data);
         rateDetailsEditRows(data.id);
+        insertRateGridAllDetails(data.id);
         document.getElementById("serviceDateDisplay").innerHTML = 'From : ' + data.servicedatefrom + '&nbsp;&nbsp;To : ' + data.servicedateto;
+        document.getElementById("serviceDateDisplayId").innerHTML = data.id;
+
     });
     
-    $('#rateServiceDateSort tbody').on( 'click', '.deleteBtn', function () {
+    $('#rateServiceDateSort tbody').on( 'click', '.deleteBtnCol', function () {
         var table = $('#rateServiceDateSort').DataTable();
         var data = table.row($(this).parents('tr')).data();
         deleteRowRateServiceDetails(data);
         rateDetailsEditRows(data.id);
+        insertRateGridAllDetails(data.id);
     });
 }
 

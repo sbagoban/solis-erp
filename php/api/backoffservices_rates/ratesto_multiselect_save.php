@@ -29,7 +29,7 @@ try {
     $idservicesfk = trim($_POST["idservicesfk"]);
     $idrates_fk = trim($_POST["idrates_fk"]);
     $to_id = trim($_POST["to_id"]);
-    
+
     $con = pdo_con();
 
     // check duplicates for services

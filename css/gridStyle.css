@@ -109,8 +109,8 @@ td.deleteBtnCol {
 
 .fa.fa-trash-o {
   color: red;
-  padding-top: 15px;
-  transition: all .5s ease-in-out;
+  padding-top: 5px;
+  font-size: 25px;
 }
 
 .fa.fa-trash-o:hover {
