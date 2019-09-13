@@ -670,6 +670,11 @@ h5#serviceDateDisplay {
   border: 5px solid #ffffffc2;
 }
 
+div#verticalSeparator {
+  border-right: 1px solid #000000;
+  height: 231px;
+}
+
 @keyframes spin {
   from {
       transform:rotate(0deg);

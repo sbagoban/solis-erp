@@ -43,7 +43,8 @@ AND SRI.id = SRC.idrates_fk
 AND SRC.country_id = C.id 
 AND SRT.to_id = TR.id 
 AND SRR.ratestype_id = TRC.id 
-AND SRI.id = :idrates_fk");
+AND SRI.id = :idrates_fk
+GROUP BY SRI.id");
 $query_c->execute(array(":idrates_fk"=>$idrates_fk));
 
 $row_count_c = $query_c->rowCount();

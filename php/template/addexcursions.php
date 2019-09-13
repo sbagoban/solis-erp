@@ -1154,15 +1154,63 @@
 
                                         <!-- Modal content-->
                                         <div class="modal-content">
-                                            <!-- <div class="modal-header">
+                                            <div class="modal-header">
                                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                <h4 class="modal-title">
-                                        <i class="fa fa-info" style="color: #337ab7;"></i> 
-                                        Flag Service As Deleted</h4>
+                                                <h4 class="modal-title">Rates Detail</h4>
                                             </div>
                                             <div class="modal-body">
-                                                <p id="error">Are you sure you want to delete ?</p>
-                                            </div> -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h5>Sales From / To</h5>
+                                                        <div class="input-group date datepicker-in">
+                                                            <input type="text" name="daterange" id="daterangeSalesFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+                                                            <div class="input-group-addon">
+                                                                <span class="glyphicon glyphicon-calendar"></span>
+                                                            </div>
+                                                        </div>
+                                                        <h5>Buy Currency</h5>
+                                                        <div class="form-group selectValidation" id="serviceType">
+                                                            <select class="custom-select form-control form-control-sm inputValidation" 
+                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                                            </select>
+                                                        </div>
+                                                        <h5>Sell Currency</h5>
+                                                        <div class="form-group selectValidation" id="serviceType">
+                                                            <select class="custom-select form-control form-control-sm inputValidation" 
+                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                                            </select>
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="col-md-1" id="verticalSeparator">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <h5>Rate Status</h5>
+                                                        <!-- Filter Two Locations -->
+                                                        <fieldset class="form-group">
+                                                                <p>
+                                                                    <input type="radio" id="confiredStatus" value="confirmed" name="radioCreationVoucher" checked>
+                                                                    <label for="confiredStatus"><span>Confirmed</span></label>
+                                                                </p>
+                                                                <p>
+                                                                    <input type="radio" id="closedStatus" value="closed" name="radioCreationVoucher">
+                                                                    <label for="closedStatus"><span>Closed</span></label>
+                                                                </p>
+                                                        </fieldset>
+                                                        <!-- Filter One Locations -->
+                                                        
+                                                        <h5>Stay Length</h5>
+                                                        <div class="col-md-6">
+                                                            <h5>Min</h5>
+                                                            <input type="number" min='1' max='100' class="form-control" id="minStayLength">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <h5>Max</h5>
+                                                            <input type="number" min='1' max='9999' class="form-control" id="maxStayLength">
+                                                        </div>
+                                                </div>
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                                                 <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>

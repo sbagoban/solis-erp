@@ -30,6 +30,7 @@ $(document).ready(function () {
     
     quoteDetailsPaxBreaks();
     dateRangePickerServiceFromTo();
+    dateRangePickerSalesFromTo();
     $('.checkerBtn').hide();
 });
 
@@ -80,5 +81,17 @@ function dateRangePickerServiceFromTo() {
         var serviceStartDate = start.format('YYYY-MM-DD');
         var serviceEndDate = end.format('YYYY-MM-DD');
         servicedatefunc(serviceStartDate, serviceEndDate);
+    });
+}
+
+function dateRangePickerSalesFromTo() {
+    $('#daterangeSalesFromTo').daterangepicker({
+        locale: {
+            format: 'DD/MMM/YYYY'
+        },
+        opens: 'left'
+    }, function(start, end, label) {
+        var serviceSalesStartDate = start.format('YYYY-MM-DD');
+        var serviceSalesEndDate = end.format('YYYY-MM-DD');
     });
 }
