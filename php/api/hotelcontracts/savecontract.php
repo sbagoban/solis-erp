@@ -1592,6 +1592,8 @@ function saveRoomCapacityDates($room_rwid, $arr_room_dates) {
             $date_rwid = $arr_room_dates[$i]["date_rwid"];
             $date_dtfrom = utils_stringBlank($arr_room_dates[$i]["date_dtfrom"], "");
             $date_dtto = utils_stringBlank($arr_room_dates[$i]["date_dtto"], "");
+            $date_season_id = utils_stringBlank($arr_room_dates[$i]["date_season_id"], null);
+            
             $date_action = $arr_room_dates[$i]["date_action"];
 
             $arr_minstay = $arr_room_dates[$i]["date_minstay_rules"];
@@ -1636,6 +1638,13 @@ function saveRoomCapacityDates($room_rwid, $arr_room_dates) {
                 if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $arr_needed_ids[] = $rw["id"];
                     $date_rwid = $rw["id"];
+                    
+                    $sql = "UPDATE tblservice_contract_roomcapacity_dates 
+                            SET season_fk=:season_fk WHERE id=:id";
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(":season_fk"=>$date_season_id,
+                        ":id" => $room_rwid));
+                    
                 } else {
 
                     if ($date_dtfrom == "") {
@@ -1646,14 +1655,14 @@ function saveRoomCapacityDates($room_rwid, $arr_room_dates) {
                     }
 
                     $sql = "INSERT INTO tblservice_contract_roomcapacity_dates 
-                            (override_dtfrom,override_dtto,
+                            (override_dtfrom,override_dtto,season_fk,
                              service_contract_roomcapacity_fk)
                             VALUES
-                            (:override_dtfrom,:override_dtto,
+                            (:override_dtfrom,:override_dtto,:season_fk,
                              :service_contract_roomcapacity_fk)";
                     $stmt = $con->prepare($sql);
                     $stmt->execute(array(":override_dtfrom" => $date_dtfrom,
-                        ":override_dtto" => $date_dtto,
+                        ":override_dtto" => $date_dtto,":season_fk"=>$date_season_id,
                         ":service_contract_roomcapacity_fk" => $room_rwid));
 
                     $date_rwid = $con->lastInsertId();

@@ -362,7 +362,7 @@ function ratescalculator() {
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
 
-   
+
     //======================================================================
     var results_layout = tabViews.cells("results").attachLayout("1C");
     results_layout.cells("a").hideHeader();
@@ -546,6 +546,38 @@ function ratescalculator() {
             return;
         }
 
+        //validate that children cannot be sharing or mixed at the same time
+
+        if (grid_children.getRowsNum() > 0)
+        {
+            var last_sharing_own = "";
+            for (var i = 0; i < grid_children.getRowsNum(); i++)
+            {
+                var rowid = grid_children.getRowId(i);
+                var sharing_own = grid_children.cells(rowid, grid_children.getColIndexById("sharing_own")).getValue();
+                if (last_sharing_own == "")
+                {
+                    last_sharing_own = sharing_own;
+                } else if (last_sharing_own != sharing_own)
+                {
+                    dhtmlx.alert({
+                        text: "Please note that Children cannot be both <b>SHARING</b> and <b>OWN</b> Room in the same calculations",
+                        type: "alert-warning",
+                        title: "Test Rates Calculator",
+                        callback: function () {
+                            grid_children.selectRowById(rowid, false, true, false);
+                        }
+                    });
+
+                    return;
+                }
+            }
+
+        }
+
+
+
+
         if (!validate_filter_contractids())
         {
 
@@ -693,11 +725,11 @@ function ratescalculator() {
             initialiseResultGrid(columns);
             var arr_grand_total = initialiseGrandTotal(columns);
 
-            if(form_spo.isItemChecked("chk_show_invalid_spos"))
+            if (form_spo.isItemChecked("chk_show_invalid_spos"))
             {
-                rwid = append_invalid_spos(rwid,invalid_spos);
+                rwid = append_invalid_spos(rwid, invalid_spos);
             }
-                
+
             //now display for each date by date
             for (var i = 0; i < arr.length; i++)
             {
@@ -808,20 +840,20 @@ function ratescalculator() {
             });
         }
     }
-    
-    function append_invalid_spos(rwid,invalid_spos)
+
+    function append_invalid_spos(rwid, invalid_spos)
     {
-        for(var i = 0; i < invalid_spos.length; i++)
+        for (var i = 0; i < invalid_spos.length; i++)
         {
             grid_results.addRow(rwid, "");
-            
+
             grid_results.setRowTextStyle(rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid black; border-right:1px solid #A4A4A4;");
             grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue("<b><font color='red'>" + invalid_spos[i] + "</font></b>");
-            
-            rwid ++;
-            
+
+            rwid++;
+
         }
-        
+
         return rwid;
     }
 

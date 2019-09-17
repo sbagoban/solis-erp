@@ -39,12 +39,14 @@ function _contract_capacityarr($con, $contractid) {
 function _contract_getRoomDates($con, $room_rwid) {
     $arr_dates = array();
     $sql = "SELECT 
-            IFNULL(override_dtfrom,'') as override_dtfrom,
-            IFNULL(override_dtto,'') as override_dtto,
-            service_contract_roomcapacity_fk,id
-            FROM tblservice_contract_roomcapacity_dates 
-            WHERE service_contract_roomcapacity_fk=:room_rwid 
-            ORDER BY override_dtfrom ASC, override_dtto ASC";
+            IFNULL(scrd.override_dtfrom,'') as override_dtfrom,
+            IFNULL(scrd.override_dtto,'') as override_dtto,
+            scrd.service_contract_roomcapacity_fk,
+            scrd.id, s.season, s.id as seasonid
+            FROM tblservice_contract_roomcapacity_dates scrd
+            LEFT JOIN tblseasons s ON scrd.season_fk = s.id
+            WHERE scrd.service_contract_roomcapacity_fk=:room_rwid 
+            ORDER BY scrd.override_dtfrom ASC, scrd.override_dtto ASC, s.season ASC";
 
     $stmtdates = $con->prepare($sql);
     $stmtdates->execute(array(":room_rwid" => $room_rwid));
@@ -52,10 +54,12 @@ function _contract_getRoomDates($con, $room_rwid) {
         $date_rwid = $rwdates["id"];
         $date_dtfrom = $rwdates["override_dtfrom"];
         $date_dtto = $rwdates["override_dtto"];
+        $season_id = $rwdates["seasonid"];
 
         $arr_dates[] = array("date_rwid" => $date_rwid,
             "date_dtfrom" => $date_dtfrom,
             "date_dtto" => $date_dtto,
+            "date_season_id" => $season_id,
             "date_action" => "",
             "date_minstay_rules" => _contract_getRoomDatesMinStayRules($con, $date_rwid),
             "date_mealsupplement_rules" => _contract_getRoomDatesMealSupplementRules($con, $date_rwid),

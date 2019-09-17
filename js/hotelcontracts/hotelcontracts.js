@@ -1,5 +1,7 @@
 var hotelcontracts_obj = new hotelcontracts();
 
+//todo: maritim + ebo 
+
 function hotelcontracts()
 {
     var popupwin = null;
@@ -275,7 +277,7 @@ function hotelcontracts()
 
     //=============
 
-    var popupwin_capacitydates = dhxWins.createWindow("popupwin_capacitydates", 50, 50, 600, 200);
+    var popupwin_capacitydates = dhxWins.createWindow("popupwin_capacitydates", 50, 50, 600, 250);
     popupwin_capacitydates.setText("Room Capacity Dates:");
     popupwin_capacitydates.denyResize();
     popupwin_capacitydates.denyPark();
@@ -770,7 +772,11 @@ function hotelcontracts()
 
                 form_capacitydates.setItemValue("contract_active_from", form_main.getItemValue("active_from", true));
                 form_capacitydates.setItemValue("contract_active_to", form_main.getItemValue("active_to", true));
-
+                
+                
+                //populate the season combo with all seasons for that hotel
+                populateSeasonCombo();
+                
                 popupwin_contracts.setModal(false);
                 popupwin_capacitydates.center();
                 popupwin_capacitydates.setModal(true);
@@ -812,10 +818,15 @@ function hotelcontracts()
                             var date_rwid = tree_roomdates.getUserData(nodeid, "DATE_RWID");
                             var date_roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
                             deleteCapacityDate(date_roomid, date_rwid);
-                            tree_roomdates.deleteItem(nodeid, true);
                             toolbar_capacity_rules.hideItem("new");
                             toolbar_capacity_rules.hideItem("delete");
                             grid_capacity_age.clearAll();
+                            
+                            tree_roomdates.deleteItem(nodeid, false);
+                            clearDateTreeSeasonNodes();
+                            
+                            tree_roomdates.selectItem("ROOM_" + date_roomid, true, false);
+                            
                         }
                     }
                 });
@@ -887,7 +898,27 @@ function hotelcontracts()
     grid_room_choices.addRow("single_parent", ["<img src=\"images/interview.png\" width=\"30px\" height=\"30px\">", "SINGLE PARENT"]);
 
 
-
+    function populateSeasonCombo()
+    {
+        cboDateSeason.clearAll(true);
+        for (var i = 0; i < _dsDatePeriods.dataCount(); i++)
+        {
+            var item = _dsDatePeriods.item(_dsDatePeriods.idByIndex(i));
+            var value = item.seasonfk;
+            var txt = item.season;
+            
+            if(!utils_isIdInCombo(cboDateSeason,value))
+            {
+                cboDateSeason.addOption([{value: value, text: txt, img_src: "images/season.png"}]);
+            }
+        }
+        
+        cboDateSeason.readonly(true);
+        cboDateSeason.addOption([{value: "CUSTOM_SEASON_ID", text: "CUSTOM", img_src: "images/season.png"}]);
+    }
+                
+                
+                
 
     function onRoomChoicesSelect(rid, cid)
     {
@@ -1064,13 +1095,23 @@ function hotelcontracts()
                     }
                 }]},
         {type: "block", width: 550, list: [
+                {type: "combo", name: "season", label: "Season:", labelWidth: "120",
+                    labelHeight: "22", inputWidth: "300", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }]},
+        {type: "block", width: 550, list: [
                 {type: "button", name: "cmdSave", value: "Save", width: "80", offsetLeft: 0},
                 {type: "newcolumn"},
                 {type: "button", name: "cmdCancel", value: "Cancel", width: "80", offsetLeft: 0}]}
     ];
 
     var form_capacitydates = popupwin_capacitydates.attachForm(str_frm_capacitydates);
-
+    
+    var cboDateSeason = form_capacitydates.getCombo("season");
+    cboDateSeason.enableOptionAutoPositioning(true);
+    
     form_capacitydates.getInput("contract_active_from").style.backgroundColor = "#F3E2A9";
     form_capacitydates.getInput("contract_active_to").style.backgroundColor = "#F3E2A9";
 
@@ -3864,7 +3905,6 @@ function hotelcontracts()
                                 grid_capacity_age.setRowTextStyle(rule_rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
 
                                 fillGridCapacityAgeAcross(rule_rwid, arrcapactity, variant);
-
                             }
                         }
 
@@ -4369,8 +4409,6 @@ function hotelcontracts()
                 {
                     xobj.children_ages.push(capacityobj);
                 }
-
-
             }
         }
 
@@ -5688,7 +5726,8 @@ function hotelcontracts()
             return;
         }
 
-        var arr_seasons = groupSeasons(); //get an array of seasons for that contract
+        //get an array of seasons for that contract
+        var arr_seasons = groupSeasons(); 
 
         var arr_ids = roomids.split(",");
 
@@ -5711,7 +5750,6 @@ function hotelcontracts()
                     obj = insertJsonRoom(room_id, room_name, room_numbedrooms, "PERSONS");
                 }
 
-
                 //append the room node to the tree
                 appendTreeRoom(room_id, room_name, room_numbedrooms, obj.room_rwid, obj.room_variants)
 
@@ -5719,8 +5757,6 @@ function hotelcontracts()
                 var arr_dates_ids_added = []; //will record a list of date ids recorded 
 
                 //for that room, append the seasons where necessary
-
-
                 for (var s = 0; s < arr_seasons.length; s++)
                 {
                     var season = arr_seasons[s].season;
@@ -5728,7 +5764,7 @@ function hotelcontracts()
 
                     //for that season, get all date nodes that fall within it
 
-                    var arr_dateperiods = filterDatePeriodsBySeason(arr_seasons[s], arrdates);
+                    var arr_dateperiods = filterDatePeriodsBySeason(seasonid, arrdates);
 
                     //===== ok, does this season have dates within it =============
                     if (arr_dateperiods.length > 0)
@@ -5750,7 +5786,6 @@ function hotelcontracts()
                             {
                                 first_date_node_selected = "DATE_" + date_rwid;
                             }
-
                         }
                     }
                 }
@@ -5778,7 +5813,6 @@ function hotelcontracts()
                         {
                             first_date_node_selected = "DATE_" + date_rwid;
                         }
-
                     }
                 }
 
@@ -5789,7 +5823,7 @@ function hotelcontracts()
                 if (arr_dates_ids_added.length == 0)
                 {
                     _capacity_room_date_id--;
-                    insertJsonDate(_capacity_room_date_id, room_id, "", "");
+                    insertJsonDate(_capacity_room_date_id, room_id, "", "", "");
                     appendTreeRoomSeason(room_id, "CUSTOM", "CUSTOM_SEASON_ID");
                     appendTreeRoomDateNode(room_id, _capacity_room_date_id, "", "", "CUSTOM_SEASON_ID");
 
@@ -6029,7 +6063,7 @@ function hotelcontracts()
 
 
 
-    function updateDateNode(roomid, date_rwid, dtfrom, dtto)
+    function updateTreeDateNode(roomid, date_rwid, dtfrom, dtto, seasonid)
     {
         var display_caption = decideNodeDateCaption(dtfrom, dtto);
 
@@ -6038,13 +6072,13 @@ function hotelcontracts()
         tree_roomdates.setUserData(node_id, "DATE_FROM", dtfrom);
         tree_roomdates.setUserData(node_id, "DATE_TO", dtto);
 
-        //need to know in what season does the new date fall into
-        var arr_seasons = groupSeasons(); //get an array of seasons for that contract
+        //get an array of seasons for that contract
+        var arr_seasons = groupSeasons(); 
 
         dtfrom = utils_formatDate(dtfrom, "DD-MM-YYYY");
         dtto = utils_formatDate(dtto, "DD-MM-YYYY");
 
-        var season_obj = getSeasonDateNodeWithin(dtfrom, dtto, arr_seasons)
+        var season_obj = getSeasonDateNodeWithin(seasonid, arr_seasons)
 
         var current_seasonid = tree_roomdates.getUserData(node_id, "DATE_SEASONID");
 
@@ -6066,9 +6100,42 @@ function hotelcontracts()
             //move the date node from old season to new season node
             tree_roomdates.moveItem(node_id, "item_child", newseasonid);
             tree_roomdates.setUserData(node_id, "DATE_SEASONID", season_obj.seasonid)
+            
+            clearDateTreeSeasonNodes();
         }
 
         return;
+    }
+    
+    function clearDateTreeSeasonNodes()
+    {
+        //deletes all nodes in the dates tree where season node has no
+        //children
+        
+        //ROOM:" + roomid + "_SEASON:" + season_obj.seasonid
+        
+        if (tree_roomdates)
+        {
+            var ids = tree_roomdates.getAllSubItems("0");
+            var arrids = ids.split(",");
+
+            for (var i = 0; i < arrids.length; i++)
+            {
+                var nodeid = utils_trim(arrids[i], " ");
+                if (nodeid != "")
+                {
+                    var node = tree_roomdates.getUserData(nodeid, "ROOM_SEASON_DATE");
+                    if(node == "SEASON")
+                    {
+                        if(tree_roomdates.hasChildren(nodeid) == 0)
+                        {
+                            tree_roomdates.deleteItem(nodeid,false);
+                        }
+                    }
+                }
+            }
+        }
+        
     }
 
 
@@ -6367,7 +6434,20 @@ function hotelcontracts()
         var dtfrom = form_capacitydates.getItemValue("override_dtfrom", true);
         var dtto = form_capacitydates.getItemValue("override_dtto", true);
         var roomid = form_capacitydates.getItemValue("roomid");
+        var seasonid = form_capacitydates.getItemValue("season");
+        
+        if(!form_capacitydates.validate())
+        {
+            dhtmlx.alert({
+                text: "Please enter missing fields!",
+                type: "alert-warning",
+                title: "Validate Capacity Dates",
+                callback: function () {}
+            });
 
+            return;
+        }
+        
         var msg = validateCapacityDates(dtfrom, dtto, roomid, daterwid);
 
         if (msg != "OK")
@@ -6405,18 +6485,23 @@ function hotelcontracts()
         }
 
 
-
+        
         if (daterwid == "-1")
         {
             //add new record
-            addNewDateRecord(roomid, dtfrom, dtto);
+            addNewDateNode(roomid, dtfrom, dtto, seasonid);
 
         } else
-        {
+        {   
             //modify record
-            updateJsonCapacityDateRecord(daterwid, roomid, dtfrom, dtto);
-            updateDateNode(roomid, daterwid, dtfrom, dtto);
+            updateTreeDateNode(roomid, daterwid, dtfrom, dtto, seasonid);
             tree_roomdates.selectItem("DATE_" + daterwid, true, false);
+            
+            if(seasonid == "CUSTOM_SEASON_ID")
+            {
+                seasonid = ""; //to be saved as null in db
+            }
+            updateJsonCapacityDate(daterwid, roomid, dtfrom, dtto, seasonid);
         }
 
 
@@ -6457,7 +6542,7 @@ function hotelcontracts()
 
 
 
-    function insertJsonDate(newid, roomid, dtfrom, dtto)
+    function insertJsonDate(newid, roomid, dtfrom, dtto, seasonid)
     {
         for (var i = 0; i < _json_capacity.length; i++)
         {
@@ -6466,6 +6551,7 @@ function hotelcontracts()
                 var obj = {date_rwid: newid,
                     date_dtfrom: dtfrom,
                     date_dtto: dtto,
+                    date_season_id: seasonid,
                     date_action: "INSERT",
                     date_minstay_rules: [],
                     date_policies_checkinout: [],
@@ -6506,7 +6592,7 @@ function hotelcontracts()
         return;
     }
 
-    function updateJsonCapacityDateRecord(daterwid, roomid, dtfrom, dtto)
+    function updateJsonCapacityDate(daterwid, roomid, dtfrom, dtto, seasonid)
     {
         for (var i = 0; i < _json_capacity.length; i++)
         {
@@ -6520,6 +6606,7 @@ function hotelcontracts()
                     {
                         _json_capacity[i].room_dates[j].date_dtfrom = dtfrom;
                         _json_capacity[i].room_dates[j].date_dtto = dtto;
+                        _json_capacity[i].room_dates[j].date_season_id = seasonid;
                         _json_capacity[i].room_dates[j].date_action = "UPDATE";
                         return true;
                     }
@@ -9061,6 +9148,24 @@ function hotelcontracts()
                 });
 
             }
+            
+            //now load the season of that date
+            var seasonid = "CUSTOM_SEASON_ID"; //custom
+            var daterwid = tree_roomdates.getUserData(nodeid, "DATE_RWID");
+            var roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
+            var dateroomobj = lookupCapacityRoomDateObj(roomid, daterwid);
+            if(dateroomobj)
+            {
+                var _seasonid = dateroomobj.date_season_id;
+                if(utils_trim(_seasonid," ") != "")
+                {
+                    seasonid = _seasonid;
+                }
+            }
+            
+            populateSeasonCombo();            
+            form_capacitydates.setItemValue("season", seasonid);
+            
 
             popupwin_contracts.setModal(false);
             popupwin_capacitydates.center();
@@ -11589,6 +11694,7 @@ function hotelcontracts()
         //=========================================================================
         try
         {
+            console.log(_json_capacity);
 
             var params = "token=" + encodeURIComponent(global_token);
 
@@ -12125,6 +12231,7 @@ function hotelcontracts()
                         var item = _dsDatePeriods.item(periodid);
                         var checkin = item.checkin;
                         var checkout = item.checkout;
+                        var seasonid = item.seasonfk;
 
                         var checkin_dmy = item.checkin_dmy;
                         var checkout_dmy = item.checkout_dmy;
@@ -12147,7 +12254,7 @@ function hotelcontracts()
 
                         if (validateCapacityDates(checkin_dmy, checkout_dmy, roomid, null) == "OK")
                         {
-                            addNewDateRecord(roomid, checkin, checkout);
+                            addNewDateNode(roomid, checkin, checkout, seasonid);
                         } else
                         {
                             overlapcount++;
@@ -12706,34 +12813,25 @@ function hotelcontracts()
 
     }
 
-    function addNewDateRecord(roomid, dtfrom, dtto)
+    function addNewDateNode(roomid, dtfrom, dtto, seasonid)
     {
         //dtfrom, dtto in yyyy-mm-dd
 
-        //lookup the season that the dates fall into
-        //if there is a season then 
+        
         //  check if season node is present for that room
         //  if season not node present then
         //      insert season node
         //  end if
         //  append date node to that season
         //
-        //else it is a custom date
-        //  check if custom season node is present for that room
-        //  if custom node not present then
-        //      insert custom node
-        //  end if
-        //  append date node to custom season
         //end if
 
         _capacity_room_date_id--;
-        insertJsonDate(_capacity_room_date_id, roomid, dtfrom, dtto);
-
+        
 
         var arr_seasons = groupSeasons(); //get an array of seasons for that contract
-        var season_obj = getSeasonDateNodeWithin(dtfrom, dtto, arr_seasons)
+        var season_obj = getSeasonDateNodeWithin(seasonid, arr_seasons)
 
-        //date falls into a season
         //next, check if season is present in tree
         var node_id = "ROOM:" + roomid + "_SEASON:" + season_obj.seasonid;
         var idx = tree_roomdates.getIndexById(node_id);
@@ -12746,6 +12844,15 @@ function hotelcontracts()
         //append the date to the season node
         appendTreeRoomDateNode(roomid, _capacity_room_date_id, dtfrom, dtto, season_obj.seasonid);
         tree_roomdates.selectItem("DATE_" + _capacity_room_date_id, true, false);
+        
+        //push date node into _json_capacity
+        if(seasonid == "CUSTOM_SEASON_ID")
+        {
+            seasonid = ""; //to be saved as null in db
+        }
+        insertJsonDate(_capacity_room_date_id, roomid, dtfrom, dtto, seasonid);
+
+
         return;
     }
 
@@ -14662,45 +14769,22 @@ function hotelcontracts()
         return arr;
     }
 
-    function filterDatePeriodsBySeason(season_obj, arr_dateperiods)
+    function filterDatePeriodsBySeason(seasonid, arr_dateperiods)
     {
         var arr = [];
 
-        //get all date periods from arr_dateperiods where dates from and to are within checkin and checkout
+        //get all date periods from arr_dateperiods that belong to that season
         for (var j = 0; j < arr_dateperiods.length; j++)
         {
-            var date_dtfrom = utils_formatDate(arr_dateperiods[j].date_dtfrom, "DD-MM-YYYY");
-            var date_dtto = utils_formatDate(arr_dateperiods[j].date_dtto, "DD-MM-YYYY");
-
-            if (date_dtfrom == "")
-            {
-                //set to contract start
-                date_dtfrom = form_main.getItemValue("active_from", true);
-
-            }
-            if (date_dtto == "")
-            {
-                //set to contract end
-                date_dtto = form_main.getItemValue("active_to", true);
-            }
-
+            
             var date_action = arr_dateperiods[j].date_action;
+            var _seasonid = arr_dateperiods[j].date_season_id;
             if (date_action != "DELETE")
-            {
-                //now get each checkin and checkout dates for that season
-                for (var k = 0; k < season_obj.arr_season_dates.length; k++)
+            {                
+                if (seasonid == _seasonid)
                 {
-                    var checkin = season_obj.arr_season_dates[k].checkin;
-                    var checkout = season_obj.arr_season_dates[k].checkout;
-
-                    if (utils_validateDateOrder(checkin, date_dtfrom) &&
-                            utils_validateDateOrder(date_dtto, checkout))
-                    {
-                        arr.push(arr_dateperiods[j]);
-                    }
-
+                    arr.push(arr_dateperiods[j]);
                 }
-
             }
         }
 
@@ -14708,47 +14792,25 @@ function hotelcontracts()
     }
 
 
-    function getSeasonDateNodeWithin(dtfrom, dtto, arr_seasons)
+    function getSeasonDateNodeWithin(seasonid, arr_seasons)
     {
-        //get the season id where dtfrom and dtto fall within
-        //return CUSTOM season if date outside season ranges
-        //dtfrom and dtto in dd-mm-yyyy format
+        //get the season obj for that season id
 
-        if (dtfrom == "")
-        {
-            dtfrom = form_main.getItemValue("active_from", true);
-        }
-
-        if (dtto == "")
-        {
-            dtto = form_main.getItemValue("active_to", true);
-        }
-
-
+        
         for (var s = 0; s < arr_seasons.length; s++)
         {
-            var season = arr_seasons[s].season;
-            var seasonid = arr_seasons[s].seasonid;
+            var _season = arr_seasons[s].season;
+            var _seasonid = arr_seasons[s].seasonid;
 
-
-            for (var k = 0; k < arr_seasons[s].arr_season_dates.length; k++)
+            if (seasonid == _seasonid)
             {
-                var checkin = arr_seasons[s].arr_season_dates[k].checkin;
-                var checkout = arr_seasons[s].arr_season_dates[k].checkout;
-
-                if (utils_validateDateOrder(checkin, dtfrom) &&
-                        utils_validateDateOrder(dtto, checkout))
-                {
-                    return {seasonid: seasonid, season: season,
-                        checkin: checkin, checkout: checkout};
-                }
-            }
+                return {seasonid: seasonid, season: _season};
+            }            
         }
 
         //no seasons found for the date
         //return custom season
-        return {seasonid: "CUSTOM_SEASON_ID", season: "CUSTOM",
-            checkin: "", checkout: ""};
+        return {seasonid: "CUSTOM_SEASON_ID", season: "CUSTOM"};
 
     }
 
@@ -14770,7 +14832,7 @@ function hotelcontracts()
             {
                 var obj = {season: season, seasonid: seasonid, arr_season_dates: []};
                 obj.arr_season_dates.push({checkin: checkin, checkout: checkout});
-                arr.push(obj)
+                arr.push(obj);
             } else
             {
                 season_obj.arr_season_dates.push({checkin: checkin, checkout: checkout});
