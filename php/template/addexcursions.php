@@ -95,7 +95,7 @@
                                     <a id="generate" style="display: none;" data-toggle="tooltip" title="Click to Generate Option Code"><i class="fa fa-refresh fa-spin-hover fa-lg" aria-hidden="true"></i></a>
                                 </div> -->
                             </div>
-                            <div class="form-group has-warning">
+                            <div class="form-group">
                                 <label class="col-md-2 control-label">Description</label>
                                 <div class="col-md-10">
                                     <textarea class="form-control textAreaDesc" rows="5" id="addedDescription"></textarea>
@@ -1036,8 +1036,8 @@
                                                     <div class="col-md-7 editRateBlock">
                                                         <div class="row">
                                                             <div class="col-md-12">
+                                                                <h5 id="serviceDateDisplayId"></h5>
                                                                 <h5 id="serviceDateDisplay"></h5>
-                                                                <h5 id="serviceDateDisplayId" style="display: none"></h5>
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <h5>Description</h5>
@@ -1053,7 +1053,7 @@
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <h5>Countries</h5>
-                                                                    <select id="multiselectRate25" name="multiselectRate25[]" class="multiselectRate25" multiple="multiple">
+                                                                    <select id="multiselectRate25" name="multiselectRate25[]" class="multiselectRate25" multiple="multiple" style="display: none;">
                                                                         <option value="0">Select</option>
                                                                     </select>
                                                                 </div>
@@ -1131,8 +1131,8 @@
                                                     <table class="table responsive" id="displayRateDetailsSort">
                                                         <thead>
                                                             <tr>
-                                                                <th scope="col">Closed Date From</th>
-                                                                <th scope="col">Closed Date To</th>
+                                                                <th scope="col">Service From</th>
+                                                                <th scope="col">Service To</th>
                                                                 <th scope="col">Market / Countries</th>
                                                                 <th scope="col">Tour Operator</th>
                                                                 <th scope="col">Rate Type</th>
@@ -1169,15 +1169,15 @@
                                                             </div>
                                                         </div>
                                                         <h5>Buy Currency</h5>
-                                                        <div class="form-group selectValidation" id="serviceType">
-                                                            <select class="custom-select form-control form-control-sm inputValidation" 
-                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                                        <div class="form-group selectValidation" id="currencyBuy">
+                                                            <select class="custom-select form-control form-control-sm inputValidationCurrency" 
+                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="currencyBuy[currencyBuy]" id="ddlBuyCurrency">
                                                             </select>
                                                         </div>
                                                         <h5>Sell Currency</h5>
-                                                        <div class="form-group selectValidation" id="serviceType">
-                                                            <select class="custom-select form-control form-control-sm inputValidation" 
-                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="serviceType[serviceType]" id="ddlSelectServiceType">
+                                                        <div class="form-group selectValidation" id="currencySell">
+                                                            <select class="custom-select form-control form-control-sm inputValidationCurrency" 
+                                                                data-toggle="tooltip" title="Compulsory field" style="width: 100%;" name="currencySell[currencySell]" id="ddlSellCurrency">
                                                             </select>
                                                         </div>
 

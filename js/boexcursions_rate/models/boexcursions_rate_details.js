@@ -5,7 +5,7 @@ function insertRateGridAllDetails(idBlockRates) {
 
         "ajax" : {
             "url" : "php/api/backoffservices_rates/ratedetailsgrid.php?t=" + encodeURIComponent(global_token) + "&idrates_fk=" + idBlockRates,
-            dataSrc: ""
+            "dataSrc" : ""
         },
         "destroy": true,
         "bProcessing": true,
@@ -22,9 +22,9 @@ function insertRateGridAllDetails(idBlockRates) {
         ],
         "columns" : [
         {
-            "data" : "serviceclosedstartdate"
+            "data" : "servicedatefrom"
         }, {
-            "data" : "serviceclosedenddate"
+            "data" : "servicedateto"
         }, {
             "data" : "country_name"
         }, {
@@ -32,7 +32,10 @@ function insertRateGridAllDetails(idBlockRates) {
         }, {
             "data" : "ratecodes"
         }, {
-            "data" : "servicedateto"
+            "data" : "ratecodes"
+        },
+        {
+            "data" : "ratecodes"
         },
         {
             "targets": -1,
@@ -67,22 +70,4 @@ function editRowRateDetailsSort (data) {
         backdrop: 'static',
         keyboard: false
     });
-    console.log('--->>> ', data);
 }
-
-// function deleteRowRateServiceDetails(data) {
-//     var idBlock = document.getElementById('idBlock').innerHTML;
-//     var objDel = {id: data.id};
-//     const url_delete_rateDetails = "php/api/backoffservices_rates/rateservicetable_delete.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
-//     $.ajax({
-//         url: url_delete_rateDetails,
-//         method: "POST",
-//         data: objDel,
-//         success: function (data) {
-//         },
-//         error: function (error) {
-//             console.log('Error ${error}');
-//         }
-//     });
-//     insertRateGrid(idBlock);
-// }

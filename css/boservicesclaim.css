@@ -1,0 +1,21 @@
+@media (min-width: 768px) {
+    .modal-xl {
+        width: 90%;
+        max-width:1200px;
+    }
+}
+
+#btnSaveClaim {
+    margin-right: 10px;
+}
+
+label.col-md-2.control-label {
+    font-size: 13px;
+    width: 102px;
+    margin-right: 24px;
+}
+
+td.addBtnCol {
+    text-align: center;
+    width: 2px;
+}

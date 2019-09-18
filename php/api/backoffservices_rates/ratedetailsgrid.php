@@ -26,7 +26,7 @@ $con = pdo_con();
 $query_c = $con->prepare("
 SELECT DISTINCT SRI.id, SRI.servicedatefrom, SRI.servicedateto, 
 SRIC.serviceclosedstartdate, SRIC.serviceclosedenddate, 
-SRC.country_id, C.country_name, 
+SRC.country_id, SRC.ID, C.country_name, 
 SRT.to_id, TR.toname, 
 SRR.ratestype_id, 
 TRC.ratecodes 
@@ -43,8 +43,7 @@ AND SRI.id = SRC.idrates_fk
 AND SRC.country_id = C.id 
 AND SRT.to_id = TR.id 
 AND SRR.ratestype_id = TRC.id 
-AND SRI.id = :idrates_fk
-GROUP BY SRI.id");
+AND SRI.id = :idrates_fk");
 $query_c->execute(array(":idrates_fk"=>$idrates_fk));
 
 $row_count_c = $query_c->rowCount();

@@ -19,6 +19,11 @@ function insertRateGrid(idBlock) {
 
         "buttons":[
         ],
+        "select": {
+            style: 'os',
+            className: 'focusedRow',
+            selector: 'td:last-child a'
+        },
         "columns" : [
         {
             "data" : "servicedatefrom"

@@ -64,8 +64,10 @@ if (isset($_GET["m"])) {
             $menu = $_GET["m"];
         }
         if ($menu == "backoff_excursions") {
-            //load "css/gridStyle.css" only for "backoff_excursions" interface
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        } else if ($menu == "backoff_service_claim") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/boservicesclaim.css">';
         }
         ?>
 
@@ -436,9 +438,13 @@ if (isset($_GET["m"])) {
                         include 'php/template/norights.php';
                     } else if ($menu == "managebookings") {
                         include 'php/template/booking_engine.php';
+                    } else if ($menu == "backoff_service_claim") {
+                        include 'php/template/servicerate.php';
                     } else if ($menu == "backoff_excursions") {
                         include 'php/template/addexcursions.php';
-                    } else {
+                    } else if ($menu == "backoff_product") {
+                        include 'php/template/product.php';
+                    }  else {
                         echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
                     }
                     ?>
@@ -838,8 +844,12 @@ if (isset($_GET["m"])) {
         <script src="js/boexcursions_rate/models/boexcursions_save_rate.js"></script>
         <script src="js/boexcursions_rate/models/boexcursions_rate_grid.js"></script>
         <script src="js/boexcursions_rate/models/boexcursions_rate_details.js"></script>
+        <script src="js/boexcursions_rate/models/boexcursions_rate_tarif.js"></script>
         <script src="js/booking_engine/script.js"></script>';
-}
+        } else if ($menu == "backoff_service_claim") {
+            echo '<script src="js/boservice_claim/control/serviceclaimctrl.js"></script>
+            <script src="js/boservice_claim/models/boservicegrid.js"></script>';
+        }
 ?>
         <div id = "alert_placeholder"></div>
     </body>

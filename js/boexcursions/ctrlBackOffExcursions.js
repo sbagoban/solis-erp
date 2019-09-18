@@ -44,35 +44,3 @@ $(document).ready(function () {
                 }
             });
 });
-
-// function validateQuoteDetailsForm() {
-//     var a = document.forms["Form"]["addName"].value;
-//     var b = document.forms["Form"]["addDesc"].value;
-//     if (a == null || a == "", b == null || b == "") {
-//         alert("Please Fill All Required Field");
-//         return false;
-//     } else {        
-//         $('#btnCounter').removeAttr('disabled');
-//         addNewExtraService();
-//     }
-
-
-//     // $('.tax-wrap input').blur(function () {
-//     //     if (!$(this).val()) {
-//     //         $('.hide-tax').show('slow');
-//     //     }
-//     // });
-
-//     // // ExtraService Form Validation -
-//     // $(".addMain input").focus(function () {
-
-//     //     //return false;
-//     // });
-
-
-//     // $('.addPrefer input').blur(function () {
-//     //     if (!$(this).val()) {
-
-//     //     }
-//     // });
-// }

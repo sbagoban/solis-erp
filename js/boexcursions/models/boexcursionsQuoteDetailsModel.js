@@ -46,12 +46,12 @@ function quoteDetailsEditRows(data, idQuoteDetails) {
             }
         ]
     });
-    $('#quoteDetailsSort tbody').on( 'click', 'a', function () {
+    $('#quoteDetailsSort tbody').on( 'click', '.editBtnCol', function () {
         var table = $('#quoteDetailsSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         editRowQuoteDetailschk(data);
     });
-    $('#quoteDetailsSort tbody').on( 'click', 'i', function () {
+    $('#quoteDetailsSort tbody').on( 'click', '.deleteBtnCol', function () {
         var table = $('#quoteDetailsSort').DataTable();
         var data = table.row( $(this).parents('tr')).data();
         deleteRowQuoteDetailschk(data);
