@@ -444,7 +444,10 @@ if (isset($_GET["m"])) {
                         include 'php/template/addexcursions.php';
                     } else if ($menu == "backoff_product") {
                         include 'php/template/product.php';
-                    }  else {
+                    }  else if ($menu == "backoff_product_services") {
+                        include 'php/template/productservices.php';
+                    } 
+                    else {
                         echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
                     }
                     ?>
