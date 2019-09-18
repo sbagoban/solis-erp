@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="724">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="736">
         <file>
             <url>js/bckoffhotels/bckoffhotels.js</url>
             <bookmark id="30">
@@ -67,7 +67,7 @@
             </bookmark>
             <bookmark id="313">
                 <name/>
-                <line>516</line>
+                <line>508</line>
                 <key/>
             </bookmark>
         </file>
@@ -104,11 +104,6 @@
         </file>
         <file>
             <url>js/hotelcontracts/hotelcontracts.js</url>
-            <bookmark id="723">
-                <name/>
-                <line>5715</line>
-                <key/>
-            </bookmark>
             <bookmark id="724">
                 <name/>
                 <line>5722</line>
@@ -144,14 +139,6 @@
             </bookmark>
         </file>
         <file>
-            <url>js/hotelspecialoffers/hotelspecialoffers.js</url>
-            <bookmark id="707">
-                <name/>
-                <line>1968</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>index.php</url>
             <bookmark id="587">
                 <name/>
@@ -173,6 +160,19 @@
             </bookmark>
         </file>
         <file>
+            <url>js/hotelspecialoffers/hotelspecialoffers.js</url>
+            <bookmark id="735">
+                <name/>
+                <line>10824</line>
+                <key/>
+            </bookmark>
+            <bookmark id="736">
+                <name/>
+                <line>11093</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>php/api/hotelspecialoffers/savespo.php</url>
             <bookmark id="312">
                 <name/>
@@ -181,7 +181,7 @@
             </bookmark>
             <bookmark id="480">
                 <name/>
-                <line>3262</line>
+                <line>3275</line>
                 <key/>
             </bookmark>
         </file>
@@ -194,35 +194,40 @@
             </bookmark>
             <bookmark id="720">
                 <name/>
-                <line>2263</line>
+                <line>2265</line>
                 <key/>
             </bookmark>
             <bookmark id="721">
                 <name/>
-                <line>2321</line>
+                <line>2323</line>
                 <key/>
             </bookmark>
             <bookmark id="722">
                 <name/>
-                <line>2810</line>
+                <line>2812</line>
                 <key/>
             </bookmark>
             <bookmark id="718">
                 <name/>
-                <line>3390</line>
+                <line>3392</line>
                 <key/>
             </bookmark>
         </file>
         <file>
             <url>js/ratescalculator/ratescalculator.js</url>
+            <bookmark id="725">
+                <name/>
+                <line>312</line>
+                <key/>
+            </bookmark>
             <bookmark id="680">
                 <name/>
-                <line>703</line>
+                <line>710</line>
                 <key/>
             </bookmark>
             <bookmark id="681">
                 <name/>
-                <line>815</line>
+                <line>822</line>
                 <key/>
             </bookmark>
         </file>
@@ -237,7 +242,9 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/soliserp/js/hotelcontracts/hotelcontracts.js</file>
+            <file>file:/var/www/html/soliserp/js/hotelspecialoffers/hotelspecialoffers.js</file>
+            <file>file:/var/www/html/soliserp/sql/karvesh%20db%20changes/notes.txt</file>
+            <file>file:/var/www/html/soliserp/php/api/hotelspecialoffers/savespo.php</file>
         </group>
     </open-files>
 </project-private>

@@ -312,6 +312,7 @@ function ratescalculator() {
         $("[name='checkout_date']").mask("99-99-9999");
         $("[name='checkin_time']").mask("99:99");
         $("[name='checkout_time']").mask("99:99");
+        
     });
 
     main_layout.cells("a").setHeight(900);
@@ -361,6 +362,12 @@ function ratescalculator() {
     form_spo.getCombo("spo_type").addOption([{value: "contractual", text: "CONTRACTUAL"}, {value: "tactical", text: "TACTICAL"}, {value: "both", text: "BOTH"}]);
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
+
+    
+    jQuery(function ($) {
+        $("[name='spo_booking_date']").mask("99-99-9999");
+        $("[name='spo_travel_date']").mask("99-99-9999");
+    });
 
 
     //======================================================================

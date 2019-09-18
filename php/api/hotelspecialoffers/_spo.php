@@ -15,7 +15,7 @@ function _spo_loadspo($con, $spoid, $hotelfk) {
     $arr_spo["ROOMS"] = _load_rooms($con,$spoid);
     $arr_spo["UPGRADE_MEALS"] = _load_upgrade_meal($con,$spoid);
     $arr_spo["UPGRADE_ROOMS"] = _load_upgrade_rooms($con,$spoid);
-    $arr_spo["VALIDITY_PERIODS"] = _load_validity_periods($con,$spoid, $hotelfk);
+    $arr_spo["VALIDITY_PERIODS"] = _load_validity_periods($con,$spoid);
     $arr_spo["FLAT_RATES_TAX_COMMI"] = _load_flat_rate_tax_commi($con,$spoid);
     $arr_spo["FLAT_RATES_VALIDY_PERIOD_GROUP"] = _load_flat_rate_validity_period_group($con,$spoid);
     $arr_spo["FLAT_RATES_CHECKINOUT"] = _load_flat_rate_checkinout($con,$spoid);
@@ -305,26 +305,18 @@ function _load_upgrade_rooms($con,$spoid)
     return $arr; 
 }
 
-function _load_validity_periods($con,$spoid,$hotel_fk)
+function _load_validity_periods($con,$spoid)
 {
    $arr = array();
     
-    $sql = "SELECT *,
-            (
-            select s.season 
-            from tbldateperiods dp
-            inner join tblseasons s on dp.seasonfk = s.id
-            where hotelfk = :hotel_fk 
-            and valid_from between checkin and checkout 
-            and valid_to between checkin and checkout
-            ) as season
-
-            FROM tblspecial_offer_validityperiods
-            WHERE spo_fk=:id
-            order by valid_from desc";
+    $sql = "SELECT vp.*, s.season
+            FROM tblspecial_offer_validityperiods vp
+            INNER JOIN tblseasons s ON vp.season_fk = s.id
+            WHERE vp.spo_fk=:id
+            order by vp.valid_from desc";
     
     $query_parent = $con->prepare($sql);
-    $query_parent->execute(array(":id" => $spoid, ":hotel_fk"=>$hotel_fk));
+    $query_parent->execute(array(":id" => $spoid));
 
     while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
         $arr[] =  $rw;

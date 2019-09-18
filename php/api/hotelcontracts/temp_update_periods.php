@@ -35,9 +35,7 @@ try {
         $hotelfk = $rw["hotelfk"];
         $contract_from = $rw["active_from"];
         $contract_to = $rw["active_to"];
-        
-        echo $contractid . "<br>";
-            
+                   
         //for that contract get the season periods
         $arr_seasons = loaddateseasons($con, $hotelfk, $contract_from, $contract_to);
 

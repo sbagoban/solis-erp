@@ -262,7 +262,7 @@ try {
             ":wedding_apply_discount_bride" => $wedding_apply_discount_bride,
             ":wedding_apply_discount_both_basis" => $wedding_apply_discount_both_basis,
             ":wedding_apply_discount_both_value" => $wedding_apply_discount_both_value,
-            ":wedding_apply_discount_both_sngl_dbl" => $wedding_apply_discount_bride_sngl_dbl,
+            ":wedding_apply_discount_both_sngl_dbl" => $wedding_apply_discount_both_sngl_dbl,
             ":wedding_apply_discount_groom_basis" => $wedding_apply_discount_groom_basis,
             ":wedding_apply_discount_groom_value" => $wedding_apply_discount_groom_value,
             ":wedding_apply_discount_groom_sngl_dbl" => $wedding_apply_discount_groom_sngl_dbl,
@@ -376,7 +376,7 @@ try {
             ":wedding_apply_discount_bride" => $wedding_apply_discount_bride,
             ":wedding_apply_discount_both_basis" => $wedding_apply_discount_both_basis,
             ":wedding_apply_discount_both_value" => $wedding_apply_discount_both_value,
-            ":wedding_apply_discount_both_sngl_dbl" => $wedding_apply_discount_bride_sngl_dbl,
+            ":wedding_apply_discount_both_sngl_dbl" => $wedding_apply_discount_both_sngl_dbl,
             ":wedding_apply_discount_groom_basis" => $wedding_apply_discount_groom_basis,
             ":wedding_apply_discount_groom_value" => $wedding_apply_discount_groom_value,
             ":wedding_apply_discount_groom_sngl_dbl" => $wedding_apply_discount_groom_sngl_dbl,
@@ -471,7 +471,7 @@ try {
             ":wedding_apply_discount_bride" => $wedding_apply_discount_bride,
             ":wedding_apply_discount_both_basis" => $wedding_apply_discount_both_basis,
             ":wedding_apply_discount_both_value" => $wedding_apply_discount_both_value,
-            ":wedding_apply_discount_both_sngl_dbl" => $wedding_apply_discount_bride_sngl_dbl,
+            ":wedding_apply_discount_both_sngl_dbl" => $wedding_apply_discount_both_sngl_dbl,
             ":wedding_apply_discount_groom_basis" => $wedding_apply_discount_groom_basis,
             ":wedding_apply_discount_groom_value" => $wedding_apply_discount_groom_value,
             ":wedding_apply_discount_groom_sngl_dbl" => $wedding_apply_discount_groom_sngl_dbl,
@@ -829,24 +829,37 @@ function saveperiodvalidity($period_validity) {
 
             $valid_from = $period_validity[$i]["cells"]["valid_from"];
             $valid_to = $period_validity[$i]["cells"]["valid_to"];
+            $seasonid = $period_validity[$i]["cells"]["season"];
 
             //check if exists
             $sql = "SELECT * FROM tblspecial_offer_validityperiods
                     WHERE spo_fk=:spo_fk AND 
                     valid_from=:valid_from AND valid_to=:valid_to";
+            
             $stmt = $con->prepare($sql);
             $stmt->execute(array(":spo_fk" => $id, ":valid_from" => $valid_from,
                 ":valid_to" => $valid_to));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                
+                //update
+                $sql = "UPDATE tblspecial_offer_validityperiods 
+                        SET season_fk = :season_fk WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $rw["id"], 
+                                     ":season_fk" => $seasonid));
+                    
                 $arr_needed_ids[] = $rw["id"];
             } else {
                 //insert
                 $sql = "INSERT INTO tblspecial_offer_validityperiods 
-                        (spo_fk, valid_from, valid_to) VALUES 
-                        (:spo_fk, :valid_from, :valid_to)";
+                        (spo_fk, valid_from, valid_to, season_fk) VALUES 
+                        (:spo_fk, :valid_from, :valid_to, :season_fk)";
                 $stmt = $con->prepare($sql);
-                $stmt->execute(array(":spo_fk" => $id, ":valid_from" => $valid_from, ":valid_to" => $valid_to));
+                $stmt->execute(array(":spo_fk" => $id, 
+                                     ":valid_from" => $valid_from, 
+                                     ":valid_to" => $valid_to,
+                                     ":season_fk" => $seasonid));
                 $arr_needed_ids[] = $con->lastInsertId();
             }
         }

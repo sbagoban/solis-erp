@@ -62,7 +62,6 @@ try {
     $cellstylelocked = "background-color:#FDEBD0;";
 
 
-    $con = pdo_con();
 
     print '<rows>';
     print '<head>';

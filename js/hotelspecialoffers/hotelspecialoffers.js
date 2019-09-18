@@ -344,9 +344,9 @@ function hotelspecialoffers()
                     form_senior_discounts.setFormData(json_obj.SPO.GENERAL);
                     form_familydiscounts.setFormData(json_obj.SPO.GENERAL);
                     form_free_nights.setFormData(json_obj.SPO.GENERAL);
-                    
-                    triggerConditionsChange("min_stay_priority","");
-                    
+
+                    triggerConditionsChange("min_stay_priority", "");
+
                     toggleSPOTabsVisible(json_obj.SPO.GENERAL.template);
                     toggleSPOTabsEnable("name");
 
@@ -439,33 +439,7 @@ function hotelspecialoffers()
         toggleSPOTabsEnable("name");
 
         //=============================================
-        //temp.
-        /*
-         form_name.setItemValue("template", "flat_rate");
-         form_name.setItemValue("sponame", "ABC");
-         form_name.setItemValue("spocode", "ABC");
-         form_name.setItemValue("rooms_ids", "1");
-         form_name.setItemValue("rooms_display", "1");
-         
-         form_name.setItemValue("market_countries_ids", "772,775,792,798,805,806,808,810,812,813,819,821,820,824,831,835,837,838,840,849,850,853,862,863,825,885,895,896,898,897,904,905,908,912,913,914,922,923,926,934,935,954,1026,958,959,968,970,972,973,978,979,983,986,993,996,1001,1006,1022,1024,1025");
-         form_name.setItemValue("market_countries_display", "772,775,792,798,805,806,808,810,812,813,819,821,820,824,831,835,837,838,840,849,850,853,862,863,825,885,895,896,898,897,904,905,908,912,913,914,922,923,926,934,935,954,1026,958,959,968,970,972,973,978,979,983,986,993,996,1001,1006,1022,1024,1025");
-         
-         grid_period.addRow(1, ["PEAK", "2019-07-01", "2019-07-31"]);
-         grid_period.setRowTextStyle(1, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
-         grid_period.addRow(2, ["HIGH", "2019-06-01", "2019-06-30"]);
-         grid_period.setRowTextStyle(2, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
-         
-         form_conditions.setItemValue("meals_ids", "6,4,1,5,2,8,3,7");
-         
-         form_flat_rate_currency.setItemValue("selected_currency_buy_ids", "6");
-         form_flat_rate_currency.setItemValue("selected_currency_sell_ids", "7");
-         updateFlatRateExchangeRatesJson();
-         
-         nextStepName();
-         toggleSPOTabsEnable("flat_rate_currency");
-         tabSpo.setTabActive("flat_rate_currency");
-         */
-        //=============================================
+       
 
     }
 
@@ -1147,7 +1121,7 @@ function hotelspecialoffers()
     grid_period.setIconsPath('libraries/dhtmlx/imgs/');
     grid_period.setHeader("Season,Valid From,Valid To");
     grid_period.setColumnIds("season,valid_from,valid_to");
-    grid_period.setColTypes("ro,dhxCalendar,dhxCalendar");
+    grid_period.setColTypes("combo,dhxCalendar,dhxCalendar");
     grid_period.setInitWidths("200,100,100");
     grid_period.setColAlign("left,center,center");
     grid_period.setColSorting('str,date,date');
@@ -1156,6 +1130,7 @@ function hotelspecialoffers()
     grid_period.enableEditEvents(true, true, true);
     grid_period.setDateFormat("%d-%m-%Y", "%Y-%m-%d");
     grid_period.attachEvent("onEditCell", onGridPeriodEdit);
+    grid_period.enableUndoRedo();
     grid_period.init();
 
 
@@ -1313,16 +1288,16 @@ function hotelspecialoffers()
             showPopUp(form_conditions, "Meals", "meal_display", "meals_ids", _dsMealPlans, "MULTIPLE", null);
         }
     });
-    
+
     var cboMinStay = form_conditions.getCombo("min_stay_priority");
     cboMinStay.addOption([{value: "NONE", text: "NONE", img_src: "images/rollover.png"}]);
     cboMinStay.addOption([{value: "SPO ONLY", text: "SPO ONLY", img_src: "images/rollover.png"}]);
     cboMinStay.addOption([{value: "SPO THEN CONTRACT", text: "SPO THEN CONTRACT", img_src: "images/rollover.png"}]);
     cboMinStay.readonly(true);
-    
-    form_conditions.attachEvent("onChange", function (id, value){
-        triggerConditionsChange(id,value);
-   });
+
+    form_conditions.attachEvent("onChange", function (id, value) {
+        triggerConditionsChange(id, value);
+    });
 
 
     var str_frm_settings_condtion_buttons = [
@@ -1919,13 +1894,13 @@ function hotelspecialoffers()
                 {type: "newcolumn"},
                 {type: "input", name: "family_offer_children_min",
                     label: "Min Children",
-                    validate: "ValidNumeric", 
+                    validate: "ValidNumeric",
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "family_offer_children_max",
                     label: "Max Children",
-                    validate: "ValidNumeric", 
+                    validate: "ValidNumeric",
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"}
 
@@ -3405,7 +3380,9 @@ function hotelspecialoffers()
     function loadPopupDs()
     {
         _dsMealPlans.load("php/api/hotelspecialoffers/loadmealplans.php?t=" + global_token, "json", function () {});
-        _dsDatePeriods.load("php/api/hotelspecialoffers/loadseasons.php?t=" + global_token + "&hid=" + global_hotel_id, "json", function () {});
+        _dsDatePeriods.load("php/api/hotelspecialoffers/loadseasons.php?t=" + global_token + "&hid=" + global_hotel_id, "json", function () {
+            loadPeriodGridSeasonCombo();
+        });
         _dsRooms.load("php/api/hotelspecialoffers/hotelroomsgrid.php?t=" + global_token + "&hid=" + global_hotel_id, "json", function () {});
         _dsChildPolicy.load("php/api/hotelspecialoffers/childrenagegrid.php?t=" + global_token, "json", function () {});
         _dsRatesCombo.load("php/api/hotelspecialoffers/rates_combo.php?t=" + global_token, "json", function () {
@@ -3801,10 +3778,10 @@ function hotelspecialoffers()
 
                 var strvalues = "";
                 var strids = "";
-                
+
                 //clear tour operators
-                form.setItemValue("tour_operators_display","");
-                form.setItemValue("tour_operators_ids","");
+                form.setItemValue("tour_operators_display", "");
+                form.setItemValue("tour_operators_ids", "");
 
                 if (checkedids != "")
                 {
@@ -4180,6 +4157,31 @@ function hotelspecialoffers()
             return;
         }
 
+        //check if there are rows without seasons or dates
+        for (var i = 0; i < grid_period.getRowsNum(); i++) {
+
+            var rwid = grid_period.getRowId(i);
+
+            var date_dtfrom = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("valid_from")).getValue(), " ");
+            var date_dtto = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("valid_to")).getValue(), " ");
+            var season = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("season")).getValue(), " ");
+
+            if (date_dtfrom == "" ||
+                    date_dtto == "" ||
+                    season == "")
+            {
+                dhtmlx.alert({
+                    text: "Dates and Season cannot be blank!",
+                    type: "alert-warning",
+                    title: "Special Offer",
+                    callback: function () {
+                        grid_period.selectRowById(rwid, false, true, false);
+                    }
+                });
+                return;
+            }
+        }
+
 
         tabSpo.setTabActive("conditions");
         toggleSPOTabsEnable("conditions");
@@ -4248,15 +4250,14 @@ function hotelspecialoffers()
                 var checkin = item.checkin;
                 var checkout = item.checkout;
 
-                var season = item.season;
-
+                var seasonid = item.seasonfk;
 
                 var outcome = validateSpecificPeriodDate(checkin_dmy, checkout_dmy, "-1");
 
                 if (outcome == true)
                 {
                     _period_id--;
-                    grid_period.addRow(_period_id, [season, checkin, checkout]);
+                    grid_period.addRow(_period_id, [seasonid, checkin, checkout]);
                     grid_period.setRowTextStyle(_period_id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
 
                 } else if (outcome == "OVL")
@@ -4268,6 +4269,7 @@ function hotelspecialoffers()
 
         grid_period.groupBy(grid_period.getColIndexById("season"));
         grid_period.sortRows(grid_period.getColIndexById("valid_from"), "date", "asc");
+        
 
         popupwin_loadperiods.setModal(false);
         popupwin_spo.setModal(true);
@@ -4406,19 +4408,13 @@ function hotelspecialoffers()
 
     function onGridPeriodEdit(stage, rid, cInd, nValue, oValue)
     {
-        if (stage == 2)
+        
+        if (stage == 2 && nValue != oValue)
         {
-            //get season in which period date is located
-            //other wise set to custom
-
             var dtfrom = utils_formatDate(grid_period.cells(rid, grid_period.getColIndexById("valid_from")).getValue(), "DD-MM-YYYY");
             var dtto = utils_formatDate(grid_period.cells(rid, grid_period.getColIndexById("valid_to")).getValue(), "DD-MM-YYYY");
 
-            if (dtfrom == "" || dtto == "")
-            {
-                grid_period.cells(rid, grid_period.getColIndexById("season")).setValue("");
-                return true;
-            } else
+            if (dtfrom != "" && dtto != "")
             {
                 var outcome = validateSpecificPeriodDate(dtfrom, dtto, rid);
                 if (outcome == "OVL")
@@ -4428,6 +4424,7 @@ function hotelspecialoffers()
                         type: "alert-warning",
                         title: "Load Periods",
                         callback: function () {
+                            grid_period.doUndo();
                         }
                     });
                     return false;
@@ -4438,43 +4435,23 @@ function hotelspecialoffers()
                         type: "alert-warning",
                         title: "Load Periods",
                         callback: function () {
+                            grid_period.doUndo();
                         }
                     });
                     return false;
                 }
             }
 
-            var season = getSeasonName(dtfrom, dtto);
-            grid_period.cells(rid, grid_period.getColIndexById("season")).setValue(season);
-
             grid_period.groupBy(grid_period.getColIndexById("season"));
             grid_period.sortRows(grid_period.getColIndexById("valid_from"), "date", "asc");
+            grid_period.selectRowById(rid, false, true, false);
 
         }
+        
 
         return true;
     }
 
-    function getSeasonName(dtfrom, dtto)
-    {
-        for (var i = 0; i < _dsDatePeriods.dataCount(); i++)
-        {
-            var item = _dsDatePeriods.item(_dsDatePeriods.idByIndex(i));
-            var season = item.season;
-            var checkin = item.checkin_dmy;
-            var checkout = item.checkout_dmy;
-
-            var chk1 = utils_validateDateOrder(checkin, dtfrom);
-            var chk2 = utils_validateDateOrder(dtto, checkout);
-
-            if (chk1 && chk2)
-            {
-                return season;
-            }
-        }
-
-        return "CUSTOM";
-    }
 
     function nextStepConditions()
     {
@@ -4492,12 +4469,12 @@ function hotelspecialoffers()
         }
 
         //validate min stay
-        
-        var min_stay_from = utils_trim(form_conditions.getItemValue("min_stay_from")," ");
-        var min_stay_to = utils_trim(form_conditions.getItemValue("min_stay_to")," ");
+
+        var min_stay_from = utils_trim(form_conditions.getItemValue("min_stay_from"), " ");
+        var min_stay_to = utils_trim(form_conditions.getItemValue("min_stay_to"), " ");
         var min_stay_priority = form_conditions.getItemValue("min_stay_priority");
-        
-        if(min_stay_priority != "NONE" && min_stay_from == "" && min_stay_to == "")
+
+        if (min_stay_priority != "NONE" && min_stay_from == "" && min_stay_to == "")
         {
             dhtmlx.alert({
                 text: "Please enter at least a value for Minimum Stay if Priority is not NONE",
@@ -4507,10 +4484,10 @@ function hotelspecialoffers()
                     form_conditions.setItemFocus("min_stay_from");
                 }
             });
-            
+
             return;
         }
-        
+
         if (min_stay_from != "" && isNaN(min_stay_from))
         {
             dhtmlx.alert({
@@ -5536,7 +5513,7 @@ function hotelspecialoffers()
         cbo.addOption([{value: "%ALL", text: "Percentage All"}]);
         cbo.addOption([{value: "FLAT_PNI", text: "Flat PNI"}]);
         cbo.addOption([{value: "FLAT_PPPN", text: "Flat PPPN"}]);
-    
+
         cbo.readonly(true);
     }
 
@@ -5622,28 +5599,28 @@ function hotelspecialoffers()
         }
 
 
-        var family_offer_adult_min = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_min")," ");
-        var family_offer_adult_max = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_max")," ");
-        var family_offer_children_min = utils_trim(form_familydiscounts.getItemValue("family_offer_children_min")," ");
-        var family_offer_children_max = utils_trim(form_familydiscounts.getItemValue("family_offer_children_max")," ");
-        
-        if(family_offer_adult_min == "")
+        var family_offer_adult_min = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_min"), " ");
+        var family_offer_adult_max = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_max"), " ");
+        var family_offer_children_min = utils_trim(form_familydiscounts.getItemValue("family_offer_children_min"), " ");
+        var family_offer_children_max = utils_trim(form_familydiscounts.getItemValue("family_offer_children_max"), " ");
+
+        if (family_offer_adult_min == "")
         {
             family_offer_adult_min = 0;
         }
-        if(family_offer_adult_max == "")
+        if (family_offer_adult_max == "")
         {
             family_offer_adult_max = 0;
         }
-        if(family_offer_children_min == "")
+        if (family_offer_children_min == "")
         {
             family_offer_children_min = 0;
         }
-        if(family_offer_children_max == "")
+        if (family_offer_children_max == "")
         {
             family_offer_children_max = 0;
         }
-        
+
 
         family_offer_adult_min = parseInt(family_offer_adult_min, 10);
         family_offer_adult_max = parseInt(family_offer_adult_max, 10);
@@ -5724,7 +5701,7 @@ function hotelspecialoffers()
                 return;
             }
         }
-        
+
         //validate age overlappings
         //TODO
         for (var i = 0; i < grid_family_discount_childrenage.getRowsNum(); i++)
@@ -5732,8 +5709,8 @@ function hotelspecialoffers()
             var rwid = grid_family_discount_childrenage.getRowId(i);
             var child_age_from = grid_family_discount_childrenage.cells(rwid, grid_family_discount_childrenage.getColIndexById("child_age_from")).getValue();
             var child_age_to = grid_family_discount_childrenage.cells(rwid, grid_family_discount_childrenage.getColIndexById("child_age_to")).getValue();
-            
-            if(!validate_family_discounts_age_overlapping(child_age_from,child_age_to,rwid))
+
+            if (!validate_family_discounts_age_overlapping(child_age_from, child_age_to, rwid))
             {
                 dhtmlx.alert({
                     text: "Overlapping Age Ranges Detected!",
@@ -5743,33 +5720,33 @@ function hotelspecialoffers()
                         grid_family_discount_childrenage.selectRowById(rwid, false, true, false);
                     }
                 });
-                
+
                 return;
             }
         }
-        
-        
+
+
         saveSPO();
 
     }
-    
-    function validate_family_discounts_age_overlapping(agfrom,agto,rwid_skip)
+
+    function validate_family_discounts_age_overlapping(agfrom, agto, rwid_skip)
     {
         for (var i = 0; i < grid_family_discount_childrenage.getRowsNum(); i++)
         {
             var rwid_inner = grid_family_discount_childrenage.getRowId(i);
             var agfrom_inner = grid_family_discount_childrenage.cells(rwid_inner, grid_family_discount_childrenage.getColIndexById("child_age_from")).getValue();
             var agto_inner = grid_family_discount_childrenage.cells(rwid_inner, grid_family_discount_childrenage.getColIndexById("child_age_to")).getValue();
-            
+
             if (agfrom <= agto_inner && agfrom_inner <= agto && rwid_skip != rwid_inner)
             {
                 return false;
-            }      
-            
+            }
+
         }
-          
+
         return true;
-        
+
     }
 
     function saveSPO_wedding_party()
@@ -6281,9 +6258,9 @@ function hotelspecialoffers()
                                 {
                                     date_adultpolicies_rules[ad].rule_action = "DELETE";
                                 }
-                                
+
                                 //clean up the values of adults if currency no longer in use
-                                if(date_adultpolicies_rules[ad].rule_action != "DELETE")
+                                if (date_adultpolicies_rules[ad].rule_action != "DELETE")
                                 {
                                     cleanAdultOrChildValuesCurrency(date_adultpolicies_rules[ad].rule_policy);
                                 }
@@ -6311,9 +6288,9 @@ function hotelspecialoffers()
                                 {
                                     date_adultpolicies_rules[ad].rule_action = "DELETE";
                                 }
-                                
+
                                 //clean up the values of adults if currency no longer in use
-                                if(date_adultpolicies_rules[ad].rule_action != "DELETE")
+                                if (date_adultpolicies_rules[ad].rule_action != "DELETE")
                                 {
                                     cleanAdultOrChildValuesCurrency(date_adultpolicies_rules[ad].rule_policy);
                                 }
@@ -6437,9 +6414,9 @@ function hotelspecialoffers()
                     {
                         arr_rules[i].rule_action = "DELETE";
                     }
-                    
+
                     //clean up the values of adults if currency no longer in use
-                    if(arr_rules[i].rule_action != "DELETE")
+                    if (arr_rules[i].rule_action != "DELETE")
                     {
                         cleanAdultOrChildValuesCurrency(arr_rules[i].rule_policy);
                     }
@@ -6566,19 +6543,19 @@ function hotelspecialoffers()
         for (var i = 0; i < arr_rules.length; i++)
         {
             //clean up values of the wrong currency
-            
-                
+
+
             var rule_category = arr_rules[i].rule_category;
             var arr_rule_policy = arr_rules[i].rule_policy;
-            
+
             cleanAdultOrChildValuesCurrency(arr_rule_policy);
-            
+
             for (var j = 0; j < arr_rule_policy.length; j++)
             {
                 var policy_adult_child = arr_rule_policy[j].policy_adult_child;
                 var agfrom = arr_rule_policy[j].policy_child_agefrom;
                 var agto = arr_rule_policy[j].policy_child_ageto;
-                
+
                 if (policy_adult_child == "CHILD" && ag_from == agfrom && ag_to == agto)
                 {
                     if (parseInt(rule_category, 10) > parseInt(max_pax, 10))
@@ -6586,7 +6563,7 @@ function hotelspecialoffers()
                         arr_rule_policy[j].policy_action = "DELETE";
                     }
                 }
-                
+
             }
         }
     }
@@ -7393,10 +7370,11 @@ function hotelspecialoffers()
         {
             var id = json_arr[i].id;
             var season = json_arr[i].season;
+            var seasonid = json_arr[i].season_fk;
             var valid_from = json_arr[i].valid_from;
             var valid_to = json_arr[i].valid_to;
 
-            grid_period.addRow(id, [season, valid_from, valid_to]);
+            grid_period.addRow(id, [seasonid, valid_from, valid_to]);
             grid_period.setRowTextStyle(id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
         }
 
@@ -10212,32 +10190,32 @@ function hotelspecialoffers()
         flat_rate_cleanJsonChildren("single");
         flat_rate_cleanJsonSingleParent();
         flat_rate_cleanJsonTaxCommi();
-        
+
         saveSPO();
 
     }
-    
+
     function flat_rate_cleanJsonTaxCommi()
     {
         var buying_settings = _flat_rate_tax_commi_obj.buying_settings;
         var selling_settings = _flat_rate_tax_commi_obj.selling_settings;
-        
-        
+
+
         flat_rate_cleanJsonTaxCommi_buy_sell(buying_settings);
         flat_rate_cleanJsonTaxCommi_buy_sell(selling_settings);
-        
+
     }
-    
+
     function flat_rate_cleanJsonTaxCommi_buy_sell(buy_sell_settings)
     {
-        for(var i = 0; i < buy_sell_settings.length; i++)
+        for (var i = 0; i < buy_sell_settings.length; i++)
         {
             var setting_values = buy_sell_settings[i].setting_values;
-            for(var j = 0; j < setting_values.length; j++)
-            {   
+            for (var j = 0; j < setting_values.length; j++)
+            {
                 var selected_currency_buy_ids = utils_trim(form_flat_rate_currency.getItemValue("selected_currency_buy_ids"), " ");
                 var value_currency_fk = setting_values[j].value_currency_fk;
-                if(value_currency_fk != "" && value_currency_fk != selected_currency_buy_ids)
+                if (value_currency_fk != "" && value_currency_fk != selected_currency_buy_ids)
                 {
                     setting_values[j].value_action = "DELETE";
                 }
@@ -10890,15 +10868,14 @@ function hotelspecialoffers()
                 var arrdates = obj.room_dates;
                 var arr_dates_ids_added = []; //will record a list of date ids recorded 
 
-                //for that room, append the seasons where necessary                
+                
                 for (var s = 0; s < arr_seasons.length; s++)
                 {
                     var season = arr_seasons[s].season;
                     var seasonid = arr_seasons[s].seasonid;
 
-
                     //for that season, get all date nodes that fall within it
-                    var arr_dateperiods = filterDatePeriodsBySeason(arr_seasons[s], arrdates);
+                    var arr_dateperiods = filterDatePeriodsBySeason(seasonid, arrdates);
 
                     //===== ok, does this season have dates within it =============
                     if (arr_dateperiods.length > 0)
@@ -10920,38 +10897,23 @@ function hotelspecialoffers()
                             {
                                 first_date_node_selected = "DATE_" + date_rwid;
                             }
-
                         }
                     }
                 }
-
-                //now see if there are dates that should fall for custom season
-                arr_dateperiods = filterDatePeriodsForCustom(arr_dates_ids_added, arrdates);
-
-                //===== ok, there are custom dates =============
-                if (arr_dateperiods.length > 0)
+                
+                
+                for(var r = 0; r < arrdates.length; r++)
                 {
-                    appendTreeRoomSeason(room_id, "CUSTOM", "CUSTOM_SEASON_ID");
-
-                    //now insert all dates that belong to CUSTOM
-                    for (var j = 0; j < arr_dateperiods.length; j++)
+                    var rwid = arrdates[r].date_rwid;
+                    if(!arr_dates_ids_added.includes(rwid))
                     {
-                        var date_rwid = arr_dateperiods[j].date_rwid;
-                        var date_dtfrom = arr_dateperiods[j].date_dtfrom;
-                        var date_dtto = arr_dateperiods[j].date_dtto;
-
-                        arr_dates_ids_added.push(date_rwid); //recall that date rwid 
-
-                        appendTreeRoomDateNode(room_id, date_rwid, date_dtfrom, date_dtto, "CUSTOM_SEASON_ID");
-
-                        if (first_date_node_selected == "")
-                        {
-                            first_date_node_selected = "DATE_" + date_rwid;
-                        }
-
+                        arrdates[r].date_action = "DELETE";
                     }
                 }
+            
+                //delete the other dates not used for that room
             }
+            
         }
 
         //select the first date node
@@ -11075,60 +11037,56 @@ function hotelspecialoffers()
     }
 
 
-    function filterDatePeriodsForCustom(arr_dates_ids_added, arr_dateperiods)
+    
+    function filterDatePeriodsBySeason(seasonid, arr_dateperiods)
     {
         var arr = [];
 
-        //get all date periods from arr_dateperiods where dates from and to are within checkin and checkout
+        //for each date in arr_dateperiods,
+        //check if datefrom and dateto in grid_periods and season is same for that date
+        //if yes, then push the date into the array
+                
         for (var j = 0; j < arr_dateperiods.length; j++)
         {
-            var date_rwid = arr_dateperiods[j].date_rwid;
+            var date_dtfrom = arr_dateperiods[j].date_dtfrom;
+            var date_dtto = arr_dateperiods[j].date_dtto;
             var date_action = arr_dateperiods[j].date_action;
+            
             if (date_action != "DELETE")
             {
-                if (!arr_dates_ids_added.includes(date_rwid))
+                //get the season of that date range from grid_periods
+                var _seasonid = getSeasonFromDateValidityByDates(date_dtfrom,date_dtto);
+                if(_seasonid == seasonid)
                 {
                     arr.push(arr_dateperiods[j]);
                 }
-
             }
         }
 
         return arr;
     }
-
-    function filterDatePeriodsBySeason(season_obj, arr_dateperiods)
+    
+    function getSeasonFromDateValidityByDates(date_dtfrom,date_dtto)
     {
-        var arr = [];
+        //get the season id from grid_period for that datefrom and dateto
+        
+        for (var i = 0; i < grid_period.getRowsNum(); i++) {
 
-        //get all date periods from arr_dateperiods where dates from and to are within checkin and checkout
-        for (var j = 0; j < arr_dateperiods.length; j++)
-        {
-            var date_dtfrom = utils_formatDate(arr_dateperiods[j].date_dtfrom, "DD-MM-YYYY");
-            var date_dtto = utils_formatDate(arr_dateperiods[j].date_dtto, "DD-MM-YYYY");
+            var rwid = grid_period.getRowId(i);
 
-            var date_action = arr_dateperiods[j].date_action;
-            if (date_action != "DELETE")
+            var _date_dtfrom = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("valid_from")).getValue(), " ");
+            var _date_dtto = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("valid_to")).getValue(), " ");
+            var season = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("season")).getValue(), " ");
+                        
+            if(date_dtfrom == _date_dtfrom && date_dtto == _date_dtto)
             {
-
-                //now get each checkin and checkout dates for that season
-                for (var k = 0; k < season_obj.arr_season_dates.length; k++)
-                {
-                    var checkin = season_obj.arr_season_dates[k].checkin;
-                    var checkout = season_obj.arr_season_dates[k].checkout;
-
-                    if (utils_validateDateOrder(checkin, date_dtfrom) &&
-                            utils_validateDateOrder(date_dtto, checkout))
-                    {
-                        arr.push(arr_dateperiods[j]);
-                    }
-                }
+                return season;
             }
         }
-
-        return arr;
+        
+        return null;
     }
-
+    
     function groupSeasons()
     {
         var arr = [];
@@ -12640,7 +12598,7 @@ function hotelspecialoffers()
                 "&selected_currency_sell_ids=" + selected_currency_sell_ids +
                 "&costprice_currencyid=" + costprice_currencyid;
 
-        
+
         grid_childpolicy_sharing_age.loadXML(url, function () {
             //fill in values
             fillChildPolicyGridValues(roomid, date_rwid, grid_childpolicy_sharing_age, "SHARING");
@@ -14729,15 +14687,15 @@ function hotelspecialoffers()
                 }
                 if (json_obj.OUTCOME == "OK")
                 {
-                    
+
                     /*
-                    dhtmlx.alert({
-                        text: "Save Successful",
-                        type: "alert",
-                        title: "SAVE",
-                        callback: function () {
-                        }
-                    });
+                     dhtmlx.alert({
+                     text: "Save Successful",
+                     type: "alert",
+                     title: "SAVE",
+                     callback: function () {
+                     }
+                     });
                      */
 
                     popupwin_newspolink.hide();
@@ -15378,52 +15336,71 @@ function hotelspecialoffers()
             return false;
         }
     }
-    
-    function triggerConditionsChange(id,value)
+
+    function triggerConditionsChange(id, value)
     {
-        if(id == "min_stay_priority")
+        if (id == "min_stay_priority")
         {
             var priority = form_conditions.getItemValue("min_stay_priority");
-            if(priority == "NONE")
+            if (priority == "NONE")
             {
-                form_conditions.setItemValue("min_stay_from","");
-                form_conditions.setItemValue("min_stay_to","");
-                
+                form_conditions.setItemValue("min_stay_from", "");
+                form_conditions.setItemValue("min_stay_to", "");
+
                 form_conditions.disableItem("min_stay_from");
                 form_conditions.disableItem("min_stay_to");
-            }
-            else
+            } else
             {
                 form_conditions.enableItem("min_stay_from");
                 form_conditions.enableItem("min_stay_to");
             }
         }
-        
+
         return;
     }
-        
+
     function cleanAdultOrChildValuesCurrency(arr_rule_policy)
     {
-        for(var i = 0; i < arr_rule_policy.length; i++)
+        for (var i = 0; i < arr_rule_policy.length; i++)
         {
             var policy_action = arr_rule_policy[i].arr_rule_policy;
-            if(policy_action != "DELETE")
+            if (policy_action != "DELETE")
             {
                 var arr_policy_values = arr_rule_policy[i].policy_values;
-                
-                for(var j = 0; j < arr_policy_values.length; j++)
+
+                for (var j = 0; j < arr_policy_values.length; j++)
                 {
                     var value_currencyfk = arr_policy_values[j].value_currencyfk;
                     var value_action = arr_policy_values[j].value_action;
-                    if(value_action != "DELETE")
+                    if (value_action != "DELETE")
                     {
                         var selected_currency_buy_ids = utils_trim(form_flat_rate_currency.getItemValue("selected_currency_buy_ids"), " ");
-                        if(value_currencyfk != "" && value_currencyfk != selected_currency_buy_ids)
+                        if (value_currencyfk != "" && value_currencyfk != selected_currency_buy_ids)
                         {
                             arr_policy_values[j].value_action = "DELETE";
                         }
                     }
                 }
+            }
+        }
+    }
+
+    function loadPeriodGridSeasonCombo()
+    {
+
+        var cbo = grid_period.getColumnCombo(grid_period.getColIndexById("season"));
+        cbo.clearAll();
+        cbo.readonly(true);
+        
+        for (var i = 0; i < _dsDatePeriods.dataCount(); i++)
+        {
+            var item = _dsDatePeriods.item(_dsDatePeriods.idByIndex(i));
+            var seasonid = item.seasonfk;
+            var season = item.season;
+
+            if (!utils_isIdInCombo(cbo, seasonid))
+            {
+                cbo.addOption([{value: seasonid, text: season}]);
             }
         }
     }

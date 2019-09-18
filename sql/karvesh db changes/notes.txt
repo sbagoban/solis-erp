@@ -1,0 +1,4 @@
+Solis:
+1. add new column to db
+2. run php script
+

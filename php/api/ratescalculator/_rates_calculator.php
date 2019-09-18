@@ -2079,9 +2079,11 @@ function _rates_calculator_extra_meal_supp($arr_params, $this_date, $con) {
                 $workings = "<font color='blue'><b>EXTRA MANDATORY MEAL</b>: $extra_extra_name : </font>";
 
                 //============= now adult ==========
-                $extra_adult = $rules["extra_adult_count"];
+                
                 for ($a = 1; $a <= $adult; $a++) {
-
+                    
+                    $extra_adult = $rules["extra_adult_count"];
+                    
                     $ad_pax = $arr_params["adults"][$a - 1];
 
                     $msg = "$workings Ad #{$a} = $currency_buy $extra_adult";
