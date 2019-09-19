@@ -885,7 +885,12 @@ function hotelspecialoffers()
     var str_frm_settings_name = [
         {type: "settings", position: "label-left", id: "form_name"},
         {type: "hidden", name: "hotel_fk"},
-        {type: "hidden", name: "id"},
+        {type: "block", width: 900, list: [
+             {type: "input", name: "id", label: "SPO ID:", labelWidth: "110",
+                labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                labelTop: "10", inputLeft: "10", inputTop: "10", readonly: true
+            }  
+        ]},
         {type: "block", width: 900, list: [
                 {type: "checkbox", name: "active_internal", label: "Active Internal"},
                 {type: "newcolumn"},
@@ -4167,11 +4172,10 @@ function hotelspecialoffers()
             var season = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("season")).getValue(), " ");
 
             if (date_dtfrom == "" ||
-                    date_dtto == "" ||
-                    season == "")
+                    date_dtto == "")
             {
                 dhtmlx.alert({
-                    text: "Dates and Season cannot be blank!",
+                    text: "Dates cannot be blank!",
                     type: "alert-warning",
                     title: "Special Offer",
                     callback: function () {
@@ -4181,7 +4185,6 @@ function hotelspecialoffers()
                 return;
             }
         }
-
 
         tabSpo.setTabActive("conditions");
         toggleSPOTabsEnable("conditions");
@@ -7373,7 +7376,7 @@ function hotelspecialoffers()
             var seasonid = json_arr[i].season_fk;
             var valid_from = json_arr[i].valid_from;
             var valid_to = json_arr[i].valid_to;
-
+            
             grid_period.addRow(id, [seasonid, valid_from, valid_to]);
             grid_period.setRowTextStyle(id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
         }
@@ -11090,7 +11093,7 @@ function hotelspecialoffers()
     function groupSeasons()
     {
         var arr = [];
-
+        
         for (var i = 0; i < _dsDatePeriods.dataCount(); i++)
         {
             var item = _dsDatePeriods.item(_dsDatePeriods.idByIndex(i));
@@ -11111,6 +11114,11 @@ function hotelspecialoffers()
                 season_obj.arr_season_dates.push({checkin: checkin, checkout: checkout});
             }
         }
+        
+        //push CUSTOM season
+        var obj = {season: "CUSTOM", seasonid: "", arr_season_dates: []};
+        arr.push(obj)
+
 
         arr.sort(function (a, b) {
             if (a.season < b.season)
@@ -15413,6 +15421,8 @@ function hotelspecialoffers()
                 cbo.addOption([{value: seasonid, text: season}]);
             }
         }
+        
+        cbo.addOption([{value: "", text: "CUSTOM"}]);
     }
 
     //=======================================================

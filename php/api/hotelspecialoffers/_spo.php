@@ -309,9 +309,11 @@ function _load_validity_periods($con,$spoid)
 {
    $arr = array();
     
-    $sql = "SELECT vp.*, s.season
+    $sql = "SELECT vp.id, vp.spo_fk, vp.valid_from, vp.valid_to, 
+            ifnull(s.season,'CUSTOM') as season, 
+            ifnull(vp.season_fk,'') as season_fk
             FROM tblspecial_offer_validityperiods vp
-            INNER JOIN tblseasons s ON vp.season_fk = s.id
+            LEFT JOIN tblseasons s ON vp.season_fk = s.id
             WHERE vp.spo_fk=:id
             order by vp.valid_from desc";
     

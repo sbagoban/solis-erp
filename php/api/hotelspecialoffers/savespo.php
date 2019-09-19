@@ -829,7 +829,7 @@ function saveperiodvalidity($period_validity) {
 
             $valid_from = $period_validity[$i]["cells"]["valid_from"];
             $valid_to = $period_validity[$i]["cells"]["valid_to"];
-            $seasonid = $period_validity[$i]["cells"]["season"];
+            $seasonid = utils_stringBlank($period_validity[$i]["cells"]["season"],null);
 
             //check if exists
             $sql = "SELECT * FROM tblspecial_offer_validityperiods
