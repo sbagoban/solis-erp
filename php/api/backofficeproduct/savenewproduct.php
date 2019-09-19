@@ -23,50 +23,54 @@ try {
     if ($_GET["t"] != $_SESSION["token"]) {
         throw new Exception("INVALID TOKEN");
     }
-    
+
     require_once("../../connector/pdo_connect_main.php");
     
-    $id = $_POST["id"];
-    $countryfk = trim($_POST["countryfk"]);
-    $servicetypefk = trim($_POST["servicetypefk"]);
-    $supplierfk = trim($_POST["supplierfk"]);
+    $id_product = $_POST["id_product"];
+    $id_product_type = trim($_POST["id_product_type"]);
+    $id_service_type = trim($_POST["id_service_type"]);
+    $product_name = trim($_POST["product_name"]);
+    $active = trim($_POST["active"]);
 
     $con = pdo_con();
 
     //check duplicates for services
-    $sql = "SELECT * FROM product WHERE optioncode = :optioncode AND id <> :id ";
+    $sql = "SELECT * FROM product WHERE id_product = :id_product ";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id" => $id));
+    $stmt->execute(array(":id_product" => $id_product));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES!");
     }
 
-    if ($id == "-1") {
-        $sql = "INSERT INTO tblexcursion_services (countryfk, servicetypefk, supplierfk) 
-                VALUES (:countryfk, :servicetypefk, :supplierfk)";
+    if ($id_product == "-1") {
+        $sql = "INSERT INTO product (id_product_type, id_service_type, product_name, active) 
+                VALUES (:id_product_type, :id_service_type, :product_name, :active)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":countryfk" => $countryfk, 
-            ":servicetypefk" => $servicetypefk,
-            ":supplierfk" => $supplierfk));
+            ":id_product_type" => $id_product_type, 
+            ":id_service_type" => $id_service_type,
+            ":product_name" => $product_name,
+            ":active" => $active));
         
-        $id = $con->lastInsertId();
+        $id_product = $con->lastInsertId();
     } else {
-        $sql = "UPDATE tblexcursion_services SET 
-                countryfk=:countryfk, 
-                servicetypefk=:servicetypefk, 
-                supplierfk=:supplierfk,
-                WHERE id=:id";
+        $sql = "UPDATE product SET 
+                id_product_type=:id_product_type, 
+                id_service_type=:id_service_type, 
+                product_name=:product_name,
+                active=:active,
+                WHERE id_product=:id_product";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":id" => $id,
-            ":countryfk" => $countryfk, 
-            ":servicetypefk" => $servicetypefk,
-            ":supplierfk" => $supplierfk));
+            ":id_product" => $id_product,
+            ":id_product_type" => $id_product_type, 
+            ":id_service_type" => $id_service_type,
+            ":product_name" => $product_name, 
+            "active" => $active));
     }
-    echo json_encode(array("OUTCOME" => "OK", "ID"=>$id));
+    echo json_encode(array("OUTCOME" => "OK", "id_product"=>$id_product));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

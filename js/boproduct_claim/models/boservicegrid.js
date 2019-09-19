@@ -47,13 +47,13 @@ function allServiceGridCost() {
                 "targets": -1,
                 "data": null,                
                 "class": 'addBtnCol',
-                "defaultContent": "<a class='btn btnEdit'><i class='fa fa-plus-circle' aria-hidden='true'></i></a>"
+                "defaultContent": '<div class="btn-group"><button type="button" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i></button><button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i><button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
             }
         ]
     });
     $('#productServiceRateSort tbody').on( 'click', '.addBtnCol', function () {
         var table = $('#productServiceRateSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        editRowService(data);
+        //editRowService(data);
     } );
 }

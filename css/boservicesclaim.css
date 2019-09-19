@@ -15,7 +15,6 @@ label.col-md-2.control-label {
     margin-right: 24px;
 }
 
-td.addBtnCol {
-    text-align: center;
-    width: 2px;
+td.btnCol {
+    width: 141px;
 }

@@ -7,14 +7,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
                         <i class="icon-calendar"></i>
-                        <h3 class="panel-title">Product </h3>
+                        <h3 class="panel-title">Product <span id="productId">0</span></h3>
                     </div>
 
                     <div class="panel-body">
                         <!-- Row 1 -->
                         <div class="col-md-12">
                             <div class="col-md-6">
-                                <label class="col-md-2 control-label">Type</label>
+                                <label class="col-md-2 control-label">Service Type</label>
                                 <div class="col-md-9">
                                     <select type="text" class="form-control" id="ddlType">
                                         <!-- To modify - select from db -->
@@ -26,7 +26,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="col-md-6">
-                                <label class="col-md-2 control-label">Product</label>
+                                <label class="col-md-2 control-label">Product Name</label>
                                 <div class="col-md-9">
                                     <input type="text" class="form-control" id="productName">
                                 </div>
@@ -46,7 +46,6 @@
                         </div>
                         <div class="col-md-12">
                             <button type="button" class="btn btn-primary pull-right" id="btnSaveProduct">Save</button>
-                            <button type="button" class="btn btn-default pull-right" id="btnDeleteProduct" data-dismiss="modal">Delete</button>
                         </div>
                         <!-- Row 1 -->
                     </div>
@@ -65,12 +64,9 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Product Id</th>
-                                    <th scope="col">Type</th>
+                                    <th scope="col">Service Type</th>
                                     <th scope="col">Product</th>
-                                    <th scope="col">Product Type</th>
-                                    <th scope="col">Add</th>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">Delete</th>
+                                    <!-- <th scope="col">Product Type</th> -->
                                 </tr>
                             </thead>
                         </table>

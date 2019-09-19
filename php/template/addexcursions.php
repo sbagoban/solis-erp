@@ -369,7 +369,7 @@
                                                     <h5>Duration</h5>
                                                     <input type="text" class="form-control" id="duration">
                                                 </div>
-                                                <!-- <div class="col-md-3">
+                                                <div class="col-md-3">
                                                     <h5>Tax Basis</h5>
                                                     <p>
                                                         <input type="radio" id="inclusive" value="inclusive" name="radioGroupTax" checked>
@@ -379,7 +379,7 @@
                                                         <input type="radio" id="exclusive" value="exclusive" name="radioGroupTax">
                                                         <label for="exclusive">Exclusive</label>
                                                     </p>
-                                                </div> -->
+                                                </div>
                                             </div>
                                         </div>
                                         <hr>
