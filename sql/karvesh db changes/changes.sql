@@ -8,3 +8,7 @@ ADD CONSTRAINT `fk_tblspecial_offer_validityperiods_2`
   REFERENCES `dbsolis`.`tblseasons` (`id`)
   ON DELETE RESTRICT
   ON UPDATE NO ACTION;
+
+
+delete from tblservice_contract_snglprntpolicy_room_dates_rules where id >= 1;
+
