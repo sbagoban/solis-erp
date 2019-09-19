@@ -703,9 +703,9 @@ function hotelcontracts()
     roomslayout.cells("b").setWidth(135);
 
 
-    roomslayout.cells("a").fixSize(true, false);
-    roomslayout.cells("b").fixSize(true, false);
-    roomslayout.cells("c").fixSize(true, false);
+    //roomslayout.cells("a").fixSize(true, false);
+   roomslayout.cells("b").fixSize(true, false);
+    //roomslayout.cells("c").fixSize(true, false);
 
 
     var tree_roomdates = null;
@@ -1325,12 +1325,55 @@ function hotelcontracts()
 
     //SINGLE PARENT POLICY
     var singleparent_layout = tabRoomViews.cells("single_parent").attachLayout("1C");
+    singleparent_layout.cells('a').setText("Single Parent Rates");
     singleparent_layout.cells('a').hideHeader();
 
     var toolbar_single_parent = singleparent_layout.cells('a').attachToolbar();
     toolbar_single_parent.setIconsPath("images/");
-    toolbar_single_parent.setIconSize(32);
+    toolbar_single_parent.setIconSize(16);
     toolbar_single_parent.addText("text1", 1, "Priority to Adults Min:1 Max:1; If NOT found, look for Adults Min:1");
+    toolbar_single_parent.addSpacer("text1");
+    
+    /*
+    var flg_single_prnt_docked = true;
+    
+    toolbar_single_parent.addButton("undock", 1, "", "exit.png", "exit.png");
+    toolbar_single_parent.attachEvent("onClick", function (id) {
+        if (id == "undock")
+        {
+            
+            if(flg_single_prnt_docked)
+            {
+                flg_single_prnt_docked = false;
+                
+                singleparent_layout.cells("a").undock();
+                singleparent_layout.dhxWins.window("a").denyPark();
+                singleparent_layout.dhxWins.window("a").button("close").hide();
+                singleparent_layout.dhxWins.window("a").button("dock").hide();
+                singleparent_layout.dhxWins.window("a").button("minmax1").hide();
+
+                var dimensions = popupwin_contracts.getDimension();
+
+                singleparent_layout.dhxWins.window("a").setDimension(dimensions[0] - 10,dimensions[1] - 10);
+
+                singleparent_layout.dhxWins.window("a").center();
+
+                popupwin_contracts.setModal(false);
+                popupwin_contracts.bringToBottom();
+
+
+                singleparent_layout.dhxWins.window("a").bringToTop();
+                singleparent_layout.dhxWins.window("a").setModal(true);
+            }
+            else
+            {
+                singleparent_layout.cells("a").dock();
+                flg_single_prnt_docked = true;
+            }
+        }
+    });
+    */
+    
 
     var grid_singleparentpolicy_age = null;
 
@@ -4273,7 +4316,6 @@ function hotelcontracts()
                 "&selected_currency_buy_ids=" + selected_currency_buy_ids +
                 "&selected_currency_sell_ids=" + selected_currency_sell_ids +
                 "&costprice_currencyid=" + costprice_currencyid;
-
 
 
         singleparent_layout.cells("a").progressOn();
@@ -11090,7 +11132,6 @@ function hotelcontracts()
         //now for each ruleranges, assess if they are outside or within scope
         for (var i = 0; i < arr_ruleranges.length; i++)
         {
-
             cleanSingleParentRuleRange(arr_ruleranges[i].rule_ageranges,
                     arr_ruleranges[i].room_id,
                     arr_ruleranges[i].date_rwid);
@@ -11142,39 +11183,49 @@ function hotelcontracts()
     {
         var copy_children_ages = utils_deepCopy(children_ages);
 
-
-        //rule_ageranges example: ;0_1;2_3;
+        //rule_ageranges example: ; 0_1:0^2 ; 2_3:1^3 ;
+        //it means: age range 0-1 with capacity 0-2
+        //          age range 2-3 with capacity 1-3
         //explode rule_ageranges and check if each of the ages are in children_ages
 
         var arr_age_ranges = rule_ageranges.split(";");
         for (var i = 0; i < arr_age_ranges.length; i++)
         {
-            var age_value = arr_age_ranges[i];
-            if (utils_trim(age_value, " ") != "")
+            var _the_range = utils_trim(arr_age_ranges[i], " ");
+            
+            if(_the_range != "")
             {
-                var arr_age_from_to = age_value.split("_");
-                var age_from = arr_age_from_to[0];
-                var age_to = arr_age_from_to[1];
-                var found = false;
+                var _the_ages = _the_range.split(":");
+                var age_value = arr_age_ranges[0];
+                
+                if (utils_trim(age_value, " ") != "")
+                {
+                    var arr_age_from_to = age_value.split("_");
+                    var age_from = arr_age_from_to[0];
+                    var age_to = arr_age_from_to[1];
+                    var found = false;
 
-                //now for this age range, search into copy_children_ages
-                var j = copy_children_ages.length;
+                    //now for this age range, search into copy_children_ages
+                    var j = copy_children_ages.length;
 
-                while (j--) {
+                    while (j--) {
 
-                    if (copy_children_ages[j].capacity_child_agefrom == age_from &&
-                            copy_children_ages[j].capacity_child_ageto == age_to)
+                        if (copy_children_ages[j].capacity_child_agefrom == age_from &&
+                                copy_children_ages[j].capacity_child_ageto == age_to)
+                        {
+                            copy_children_ages.splice(j, 1);
+                            found = true;
+                        }
+                    }
+
+                    if (!found)
                     {
-                        copy_children_ages.splice(j, 1);
-                        found = true;
+                        return false;
                     }
                 }
-
-                if (!found)
-                {
-                    return false;
-                }
             }
+            
+            
         }
 
         //now check if array is empty
@@ -11186,6 +11237,7 @@ function hotelcontracts()
             return false;
         }
     }
+    
     function cleanSingleParentRuleRange(rule_ageranges, roomid, date_rwid)
     {
 
@@ -11694,7 +11746,7 @@ function hotelcontracts()
         //=========================================================================
         try
         {
-            console.log(_json_capacity);
+            console.log("saving:", _json_capacity);
 
             var params = "token=" + encodeURIComponent(global_token);
 

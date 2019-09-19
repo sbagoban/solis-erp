@@ -1489,8 +1489,10 @@ function _rates_calculator_lookup_rates_single_parent($arr_params, $this_date, $
     }
     //=============================================================================
 
-
+    //for each age group, get the children that fall within that range
     $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con, $spo_contract);
+    
+    //get the date rules for that date
     $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
 
     if (!is_null($rules)) {
@@ -1498,16 +1500,26 @@ function _rates_calculator_lookup_rates_single_parent($arr_params, $this_date, $
         $arr_adultpolicies_rules = $rules["date_adultpolicies_rules"];
 
         $arr_age_ranges = _rates_calculator_group_single_parent_ageranges($arr_singleparent_rules);
-
+        
+        
         //for each age_range in arr_age_ranges, check if children ages match        
-        //first check for exact match
-        $the_age_range = _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $arr_group_children);
+        
+        //=================================================
+        //first check for EXACT match
+        $the_age_range = _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $children);
+        
         if ($the_age_range == "") {
-            //if no exact match found, look for next best match
-            $the_age_range = _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $arr_group_children);
+            //if no EXACT match found, look for NEXT BEST match
+            $the_age_range = _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $children);
+            
+            if ($the_age_range == "") {
+                //if no NEXT BEST match found, look for ALLOWABLE match
+                $the_age_range = _rates_calculator_single_parent_allowable_match_children($arr_age_ranges, $children);
+            }
         }
-
-
+        
+        //================================================
+        
         if ($the_age_range == "") {
             //really no rates defined for single parent!
             $flg_got_rates = false;
@@ -2377,6 +2389,7 @@ function _rates_calculator_single_parent_get_rules_by_agerange($rules, $ag) {
 }
 
 function _rates_calculator_regroup_children_by_age($arr_params, $children, $con, $spo_contract) {
+    
     //for each age group, get children that fall within that range
     $arr_group_children = array();
 
@@ -2403,23 +2416,127 @@ function _rates_calculator_regroup_children_by_age($arr_params, $children, $con,
     return $arr_group_children;
 }
 
-function _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $arr_group_children) {
+function _rates_calculator_single_parent_process_age_range($this_age_range)
+{
+    //converts a string like:
+    //0_1:0^2 ; 2_3:1^3
+    
+    //into an array like:
+    //[0][agefrom] = 0
+    //   [ageto] = 1
+    //   [min] = 0
+    //   [max] = 2
+    
+    //[1][agefrom] = 2
+    //   [ageto] = 3
+    //   [min] = 1
+    //   [max] = 3
+    
+    $arr = array();
+    
+    $arr_ranges = explode(";", $this_age_range);
+    for($i = 0; $i < count($arr_ranges); $i++)
+    {
+        $str_age_range = trim($arr_ranges[$i]);
+        
+        if($str_age_range != "")
+        {
+            $arr_age_and_minmax = explode(":", $str_age_range);
+            $arr_ages = explode("_", $arr_age_and_minmax[0]);
+            $arr_minmax = explode("^", $arr_age_and_minmax[1]);
+            
+            $age_from = $arr_ages[0];
+            $age_to = $arr_ages[1];
+            
+            $min = $arr_minmax[0];
+            $max = $arr_minmax[1];
+            
+            $arr[] = array("agefrom"=>$age_from,"ageto"=>$age_to,"min"=>$min,"max"=>$max);
+        }
+    }
+    
+    return $arr;
+}
 
-    for ($i = 0; $i < count($arr_age_ranges); $i++) {
 
-        $this_age_range = $arr_age_ranges[$i];
-
-        $str = ";";
-        for ($g = 0; $g < count($arr_group_children); $g++) {
-            $arrchildren = $arr_group_children[$g]["CHILDREN"];
-            if (count($arrchildren) > 0) {
-                $agfrom = $arr_group_children[$g]["AGFROM"];
-                $agto = $arr_group_children[$g]["AGTO"];
-                $str .= "{$agfrom}_$agto;";
+function _rates_calculator_get_children_count_by_age(&$children, $age_from,$age_to, $destructive)
+{
+    //returns the count of children that fall within the age range provided
+    //if destructive is true, 
+    //then set the age of the children who have been accounted for to -1
+    
+    $count = 0;
+    for($i = 0; $i < count($children); $i++)
+    {
+        $age = $children[$i]["age"];
+        if($age_from <= $age && $age <= $age_to)
+        {
+            $count ++;
+            if($destructive)
+            {
+                $children[$i]["age"] = -1;
             }
         }
+    }
+    
+    return $count;
+}
 
-        if ($this_age_range == $str) {
+function _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $children) {
+    
+    //search for the exact allowable match
+    //an allowable match is:
+    
+    //booking has: child 1 yr + teen 15 yrs
+    //look for age_ranges with ranges that are exactly the ages in the booking
+    //age_ranges MUST NOT contain age ranges of children not in the booking
+    
+    
+    for ($i = 0; $i < count($arr_age_ranges); $i++) {
+
+        $arr_temp_children = $children;
+        
+        $this_age_range = $arr_age_ranges[$i]; //0_1:0^2 ; 2_3:1^3        
+        $this_age_range_passed_test = true;
+        
+        $arr_age_minmax = _rates_calculator_single_parent_process_age_range($this_age_range);
+        
+        //================================================================
+        //for each age_min_max range, get the count of children
+        for ($g = 0; $g < count($arr_age_minmax); $g++) {
+            $age_from = $arr_age_minmax[$g]["agefrom"];
+            $age_to = $arr_age_minmax[$g]["ageto"];
+            
+            $min = $arr_age_minmax[$g]["min"];
+            $max = $arr_age_minmax[$g]["max"];
+            
+            $count = _rates_calculator_get_children_count_by_age($arr_temp_children, $age_from,$age_to, true);
+            if($count == 0)
+            {
+                //there are no children in this age range in the booking
+                $this_age_range_passed_test = false;
+            }
+            else if($count != $min && $count != $max)
+            {
+                //there is no exact match
+                $this_age_range_passed_test = false;
+            }
+        }
+        
+        //================================================================
+        //now test that all children have been accounted for
+        for($c = 0; $c < count($arr_temp_children); $c++)
+        {
+            $age = $arr_temp_children[$c]["age"];
+            if($age != -1)
+            {
+                $this_age_range_passed_test = false;
+            }
+        }
+        //================================================================
+        
+        //now test if not failed
+        if ($this_age_range_passed_test) {
             return $this_age_range;
         }
     }
@@ -2427,24 +2544,120 @@ function _rates_calculator_single_parent_exact_match_children($arr_age_ranges, $
     return "";
 }
 
-function _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $arr_group_children) {
+function _rates_calculator_single_parent_allowable_match_children($arr_age_ranges, $children)
+{
+    //search for the nearest allowable match after next best match has failed
+    //an allowable match is:
+    
+    //booking has: child 1 yr + teen 15 yrs
+    //look for age_ranges with ranges that cover the ages in the booking
+    //age_ranges MAY contain age ranges of children not in the booking
+    
     for ($i = 0; $i < count($arr_age_ranges); $i++) {
-
+        
+        $arr_temp_children = $children;
+        
         $this_age_range = $arr_age_ranges[$i];
-
-        $flg_ok = true;
-        for ($g = 0; $g < count($arr_group_children); $g++) {
-            //for each children, check if the age range is satisfied in the $this_age_range
-
-            $agfrom = $arr_group_children[$g]["AGFROM"];
-            $agto = $arr_group_children[$g]["AGTO"];
-            if (count($arr_group_children[$g]["CHILDREN"]) > 0) {
-                //check if the agefrom and ageto are in $this_age_range
-                $flg_ok = _rates_calculator_single_parent_nextbest_match_children_in_range($agfrom, $agto, $this_age_range);
+        $this_age_range_passed_test = true;
+        
+        $arr_age_minmax = _rates_calculator_single_parent_process_age_range($this_age_range);
+        
+        //================================================================
+        //for each age_min_max range, get the count of children
+        for ($g = 0; $g < count($arr_age_minmax); $g++) {
+            $age_from = $arr_age_minmax[$g]["agefrom"];
+            $age_to = $arr_age_minmax[$g]["ageto"];
+            
+            $min = $arr_age_minmax[$g]["min"];
+            $max = $arr_age_minmax[$g]["max"];
+            
+            $count = _rates_calculator_get_children_count_by_age($arr_temp_children, $age_from,$age_to, true);
+            if(!($min <= $count && $count <= $max))
+            {
+                //check if the count match the range allowable
+                $this_age_range_passed_test = false;
+            }
+            
+        }
+        
+        //================================================================
+        //now test that all children have been accounted for
+        for($c = 0; $c < count($arr_temp_children); $c++)
+        {
+            $age = $arr_temp_children[$c]["age"];
+            if($age != -1)
+            {
+                $this_age_range_passed_test = false;
             }
         }
+        //================================================================
+        
+        //now test if not failed
+        if ($this_age_range_passed_test) {
+            return $this_age_range;
+        }
+    }
 
-        if ($flg_ok) {
+    return "";
+    
+}
+
+function _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges, $children) {
+    
+    //search for the next best match after exact match has failed
+    //next best match is:
+    
+    //booking has: child 1 yr + teen 15 yrs
+    //look for age_ranges with ranges that cover the ages in the booking
+    //age_ranges MUST NOT contain age ranges of children not in the booking
+    
+    
+    for ($i = 0; $i < count($arr_age_ranges); $i++) {
+        
+        $arr_temp_children = $children;
+        
+        $this_age_range = $arr_age_ranges[$i];
+        $this_age_range_passed_test = true;
+        
+        $arr_age_minmax = _rates_calculator_single_parent_process_age_range($this_age_range);
+        
+        //================================================================
+        //for each age_min_max range, get the count of children
+        for ($g = 0; $g < count($arr_age_minmax); $g++) {
+            $age_from = $arr_age_minmax[$g]["agefrom"];
+            $age_to = $arr_age_minmax[$g]["ageto"];
+            
+            $min = $arr_age_minmax[$g]["min"];
+            $max = $arr_age_minmax[$g]["max"];
+            
+            $count = _rates_calculator_get_children_count_by_age($arr_temp_children, $age_from,$age_to, true);
+            if($count == 0)
+            {
+                //there are no children in this age range
+                $this_age_range_passed_test = false;
+            }
+            else if(!($min <= $count && $count <= $max))
+            {
+                //check if the count match the range allowable
+                $this_age_range_passed_test = false;
+            }
+            
+        }
+        
+        //================================================================
+        //now test that all children have been accounted for
+        for($c = 0; $c < count($arr_temp_children); $c++)
+        {
+            $age = $arr_temp_children[$c]["age"];
+            if($age != -1)
+            {
+                $this_age_range_passed_test = false;
+            }
+        }
+        //================================================================
+        
+        //now test if not failed
+        if ($this_age_range_passed_test) {
             return $this_age_range;
         }
     }
@@ -2452,29 +2665,6 @@ function _rates_calculator_single_parent_nextbest_match_children($arr_age_ranges
     return "";
 }
 
-function _rates_calculator_single_parent_nextbest_match_children_in_range($agfrom, $agto, $this_age_range) {
-
-    //$this_age_range can be in format: ;0_2;3_11;
-
-    $arr_age_ranges = explode(";", $this_age_range);
-    for ($i = 0; $i < count($arr_age_ranges); $i++) {
-        $inner_age_range = trim($arr_age_ranges[$i]);
-        if ($inner_age_range != "") {
-            $arr_age_from_to = explode("_", $inner_age_range);
-            if (count($arr_age_from_to) == 2) {
-                $_agfrom = $arr_age_from_to[0];
-                $_agto = $arr_age_from_to[1];
-
-                if ($_agfrom <= $agfrom && $agto <= $_agto) {
-                    return true;
-                }
-            }
-        }
-    }
-
-
-    return false;
-}
 
 function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params, $arr_adultpolicies_rules, $children, $arr_eci, $this_date) {
 
@@ -2806,7 +2996,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
         $temp_arr = array();
         for ($i = 0; $i < count($_arr); $i++) {
             $work = $_arr[$i]["WORKINGS"];
-            $rates = $_arr[$i]["RATES"];
+            
             $childindex = $_arr[$i]["CHILDINDEX"];
             $split_between = $_arr[$i]["TO_SPLIT_BETWEEN"];
             $child_age = $arr_children[$childindex - 1]["age"];
@@ -2829,6 +3019,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                 $cumul_buyprice = 0;
 
                 for ($chinx = 1; $chinx <= $split_between; $chinx++) {
+                    
                     if ($chinx == $split_between) {
                         $ch_buyprice = $rates - $cumul_buyprice;
                     } else {

@@ -439,7 +439,7 @@ function hotelspecialoffers()
         toggleSPOTabsEnable("name");
 
         //=============================================
-       
+
 
     }
 
@@ -4269,7 +4269,7 @@ function hotelspecialoffers()
 
         grid_period.groupBy(grid_period.getColIndexById("season"));
         grid_period.sortRows(grid_period.getColIndexById("valid_from"), "date", "asc");
-        
+
 
         popupwin_loadperiods.setModal(false);
         popupwin_spo.setModal(true);
@@ -4408,7 +4408,7 @@ function hotelspecialoffers()
 
     function onGridPeriodEdit(stage, rid, cInd, nValue, oValue)
     {
-        
+
         if (stage == 2 && nValue != oValue)
         {
             var dtfrom = utils_formatDate(grid_period.cells(rid, grid_period.getColIndexById("valid_from")).getValue(), "DD-MM-YYYY");
@@ -4447,7 +4447,7 @@ function hotelspecialoffers()
             grid_period.selectRowById(rid, false, true, false);
 
         }
-        
+
 
         return true;
     }
@@ -10868,7 +10868,7 @@ function hotelspecialoffers()
                 var arrdates = obj.room_dates;
                 var arr_dates_ids_added = []; //will record a list of date ids recorded 
 
-                
+
                 for (var s = 0; s < arr_seasons.length; s++)
                 {
                     var season = arr_seasons[s].season;
@@ -10900,20 +10900,20 @@ function hotelspecialoffers()
                         }
                     }
                 }
-                
-                
-                for(var r = 0; r < arrdates.length; r++)
+
+
+                for (var r = 0; r < arrdates.length; r++)
                 {
                     var rwid = arrdates[r].date_rwid;
-                    if(!arr_dates_ids_added.includes(rwid))
+                    if (!arr_dates_ids_added.includes(rwid))
                     {
                         arrdates[r].date_action = "DELETE";
                     }
                 }
-            
+
                 //delete the other dates not used for that room
             }
-            
+
         }
 
         //select the first date node
@@ -11037,7 +11037,7 @@ function hotelspecialoffers()
     }
 
 
-    
+
     function filterDatePeriodsBySeason(seasonid, arr_dateperiods)
     {
         var arr = [];
@@ -11045,18 +11045,18 @@ function hotelspecialoffers()
         //for each date in arr_dateperiods,
         //check if datefrom and dateto in grid_periods and season is same for that date
         //if yes, then push the date into the array
-                
+
         for (var j = 0; j < arr_dateperiods.length; j++)
         {
             var date_dtfrom = arr_dateperiods[j].date_dtfrom;
             var date_dtto = arr_dateperiods[j].date_dtto;
             var date_action = arr_dateperiods[j].date_action;
-            
+
             if (date_action != "DELETE")
             {
                 //get the season of that date range from grid_periods
-                var _seasonid = getSeasonFromDateValidityByDates(date_dtfrom,date_dtto);
-                if(_seasonid == seasonid)
+                var _seasonid = getSeasonFromDateValidityByDates(date_dtfrom, date_dtto);
+                if (_seasonid == seasonid)
                 {
                     arr.push(arr_dateperiods[j]);
                 }
@@ -11065,11 +11065,11 @@ function hotelspecialoffers()
 
         return arr;
     }
-    
-    function getSeasonFromDateValidityByDates(date_dtfrom,date_dtto)
+
+    function getSeasonFromDateValidityByDates(date_dtfrom, date_dtto)
     {
         //get the season id from grid_period for that datefrom and dateto
-        
+
         for (var i = 0; i < grid_period.getRowsNum(); i++) {
 
             var rwid = grid_period.getRowId(i);
@@ -11077,16 +11077,16 @@ function hotelspecialoffers()
             var _date_dtfrom = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("valid_from")).getValue(), " ");
             var _date_dtto = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("valid_to")).getValue(), " ");
             var season = utils_trim(grid_period.cells(rwid, grid_period.getColIndexById("season")).getValue(), " ");
-                        
-            if(date_dtfrom == _date_dtfrom && date_dtto == _date_dtto)
+
+            if (date_dtfrom == _date_dtfrom && date_dtto == _date_dtto)
             {
                 return season;
             }
         }
-        
+
         return null;
     }
-    
+
     function groupSeasons()
     {
         var arr = [];
@@ -15292,39 +15292,49 @@ function hotelspecialoffers()
     {
         var copy_children_ages = utils_deepCopy(children_ages);
 
-
-        //rule_ageranges example: ;0_1;2_3;
+        //rule_ageranges example: ; 0_1:0^2 ; 2_3:1^3 ;
+        //it means: age range 0-1 with capacity 0-2
+        //          age range 2-3 with capacity 1-3
         //explode rule_ageranges and check if each of the ages are in children_ages
 
         var arr_age_ranges = rule_ageranges.split(";");
         for (var i = 0; i < arr_age_ranges.length; i++)
         {
-            var age_value = arr_age_ranges[i];
-            if (utils_trim(age_value, " ") != "")
+            var _the_range = utils_trim(arr_age_ranges[i], " ");
+
+            if (_the_range != "")
             {
-                var arr_age_from_to = age_value.split("_");
-                var age_from = arr_age_from_to[0];
-                var age_to = arr_age_from_to[1];
-                var found = false;
+                var _the_ages = _the_range.split(":");
+                var age_value = arr_age_ranges[0];
 
-                //now for this age range, search into copy_children_ages
-                var j = copy_children_ages.length;
+                if (utils_trim(age_value, " ") != "")
+                {
+                    var arr_age_from_to = age_value.split("_");
+                    var age_from = arr_age_from_to[0];
+                    var age_to = arr_age_from_to[1];
+                    var found = false;
 
-                while (j--) {
+                    //now for this age range, search into copy_children_ages
+                    var j = copy_children_ages.length;
 
-                    if (copy_children_ages[j].capacity_child_agefrom == age_from &&
-                            copy_children_ages[j].capacity_child_ageto == age_to)
+                    while (j--) {
+
+                        if (copy_children_ages[j].capacity_child_agefrom == age_from &&
+                                copy_children_ages[j].capacity_child_ageto == age_to)
+                        {
+                            copy_children_ages.splice(j, 1);
+                            found = true;
+                        }
+                    }
+
+                    if (!found)
                     {
-                        copy_children_ages.splice(j, 1);
-                        found = true;
+                        return false;
                     }
                 }
-
-                if (!found)
-                {
-                    return false;
-                }
             }
+
+
         }
 
         //now check if array is empty
@@ -15391,7 +15401,7 @@ function hotelspecialoffers()
         var cbo = grid_period.getColumnCombo(grid_period.getColIndexById("season"));
         cbo.clearAll();
         cbo.readonly(true);
-        
+
         for (var i = 0; i < _dsDatePeriods.dataCount(); i++)
         {
             var item = _dsDatePeriods.item(_dsDatePeriods.idByIndex(i));

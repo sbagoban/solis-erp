@@ -390,18 +390,24 @@ function printRuleCells($ruleindex) {
 
         $capacity_child_agefrom = $arr_result[$ruleindex]["children_ages"][$i]["capacity_child_agefrom"];
         $capacity_child_ageto = $arr_result[$ruleindex]["children_ages"][$i]["capacity_child_ageto"];
-        $rule_ageranges .= "{$capacity_child_agefrom}_{$capacity_child_ageto};";
+        
+        
         $child_max = $arr_result[$ruleindex]["children_ages"][$i]["capacity_maxpax"];
+        $child_min = $arr_result[$ruleindex]["children_ages"][$i]["capacity_minpax"];
+        
+        $rule_ageranges .= "{$capacity_child_agefrom}_{$capacity_child_ageto}:{$child_min}^{$child_max};";
+        
         if ($max_child < $child_max) {
             $max_child = $child_max;
         }
+        
     }
 
     for ($chindex = 1; $chindex <= $max_child; $chindex++) {
 
         $lower_border_style = "";
         if ($chindex == $max_child) {
-            $lower_border_style = " border-bottom: 3px solid #A4A4A4;";
+            $lower_border_style = " border-bottom: 3px solid black;";
         }
         print "<row id='id_{$ruleindex}_{$chindex}' >";
         
@@ -419,7 +425,6 @@ function printRuleCells($ruleindex) {
                 . "currencyid='' buy_sell='' "
                 . "adult_child='ADULT' "
                 . "rule_index='$ruleindex' "
-                //. "$rowspan "
                 . "rule_ageranges='$rule_ageranges'  "
                 . "xmlcontent=\"true\"  editable=\"0\" "
                 . "style='$cellstyle $lower_border_style'>$category_options_adult</cell>";
@@ -431,7 +436,6 @@ function printRuleCells($ruleindex) {
                 . "rule_index='$ruleindex' "
                 . "rule_ageranges='$rule_ageranges'  "
                 . "xmlcontent=\"true\" editable=\"0\" "
-                //. "$rowspan "
                 . "style='$cellstyle $lower_border_style'>$basis_options</cell>";
 
 
@@ -444,7 +448,6 @@ function printRuleCells($ruleindex) {
                     . "currencyid='" . $buycurrencyid . "' buy_sell='buy' "
                     . "adult_child='ADULT' "
                     . "rule_index='$ruleindex' "
-                    //. "$rowspan "
                     . "rule_ageranges='$rule_ageranges'  "
                     . "style='$cellstyle $lower_border_style'></cell>";
         }
@@ -458,7 +461,6 @@ function printRuleCells($ruleindex) {
                     . "currencyid='" . $sellcurrencyid . "' buy_sell='sell' "
                     . "adult_child='ADULT' "
                     . "rule_index='$ruleindex' "
-                    //. "$rowspan "
                     . "rule_ageranges='$rule_ageranges'  "
                     . "style='$cellstyle $cellstylelocked $lower_border_style'></cell>";
         }
