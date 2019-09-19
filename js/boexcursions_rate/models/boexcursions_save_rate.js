@@ -89,7 +89,7 @@
             ]
         });
 
-        $('#rateDetailsSort tbody').on( 'click', 'i', function () {
+        $('#rateDetailsSort tbody').on( 'click', '.deleteBtnCol', function () {
             var table = $('#rateDetailsSort').DataTable();
             var data = table.row( $(this).parents('tr')).data();
             deleteRowRateDetailschk(data);
@@ -98,7 +98,7 @@
     
 
 function deleteRowRateDetailschk(data) {
-    var idBlock = document.getElementById('idBlock').innerHTML;
+    var idBlockRates = document.getElementById('serviceDateDisplayId').innerHTML;
     var objDel = {id: data.id};
     const url_delete_rateDetails = "php/api/backoffservices_rates/deleterateclosed.php?t=" + encodeURIComponent(global_token) + "&id=" + data.id;
     $.ajax({
@@ -111,7 +111,7 @@ function deleteRowRateDetailschk(data) {
             console.log('Error ${error}');
         }
     });
-    rateDetailsEditRows(idBlock);
+    rateDetailsEditRows(idBlockRates);
 }
 
 
@@ -130,7 +130,7 @@ function loadMarketMultiselect(idBlockRates) {
         cache: false,
         success: function(data)
             {
-                $("#multiselectRate22").empty();
+                $("#").empty();
                 $.each(data, function (key, val) {
                 $("#multiselectRate22").append('<option value="' + val.id + '">' + val.market_name + '</option>');
             });                
@@ -213,10 +213,10 @@ function loadTourOperator(selectedCountriesTo, idBlockRates) {
         dataType: "json",
         cache: false,
         success: function(data)
-            {
+            { 
+                // Clear multiselect
                 $.each(data, function (key, val) {
                     $("#multiselectRate24").append('<option value="' + val.id + '">' + val.toname + '</option>');
-                    console.log('ops', val.toname);
                     toname = val.toname;
                 });
                 $("#multiselectRate24").attr('multiple', 'multiple'); 
@@ -230,13 +230,12 @@ function loadTourOperator(selectedCountriesTo, idBlockRates) {
                     enableCaseInsensitiveFiltering: true,
                     onChange: function(element, checked) {
                         var brands = $('#multiselectRate24 option:selected');
-                        var selectedRatesTypeArr = [];
+                        var selectedToArr = [];
                         $(brands).each(function(index, brand){
                             selectedTo = $(this).val();
-                            console.log('test 0- name', $(this).val());
                             // Push to array selectedCountriesArr
-                            selectedRatesTypeArr.push($(this).val());
-                            selectedToRatesType = selectedRatesTypeArr.join();
+                            selectedToArr.push($(this).val());
+                            selectedToRatesType = selectedToArr.join();
                             loadRatesTypeMultiselect(selectedToRatesType, idBlockRates);
                         });
                         if (checked) {
@@ -286,11 +285,14 @@ function loadRatesTypeMultiselect(selectedTourOperator, idBlockRates) {
                     enableCaseInsensitiveFiltering: true, 
                     onChange: function(element, checked) {
                         var brands = $('#multiselectRate23 option:selected');
+                        var selectedRatesTypeArr = [];
                         $(brands).each(function(index, brand){
                             selectedRatesType = $(this).val();
+                            selectedRatesTypeArr.push($(this).val());
+                            selectedRatesTypeArrJoin = selectedRatesTypeArr.join();
                         });
                         if (checked) {
-                            saveRatesTypeMultiselect(selectedRatesType, idBlockRates);
+                            saveRatesTypeMultiselect(selectedRatesTypeArrJoin, idBlockRates);
                         } else {
                             saveRatesTypeMultiselect(null, idBlockRates);
                         }
@@ -355,8 +357,7 @@ function saveTourOperatorMultiselect(selectedTo, idBlockRates, toname) {
 }
 
 // Save TourOperator
-function saveRatesTypeMultiselect(selectedRatesType, idBlockRates) {
-    console.log('.... Chk', selectedRatesType);
+function saveRatesTypeMultiselect(selectedRatesTypeArrJoin, idBlockRates) {
     $('#updateRateDetails').click(function () {
         if (!null) {
             var idBlock = document.getElementById('idBlock').innerHTML;
@@ -366,7 +367,7 @@ function saveRatesTypeMultiselect(selectedRatesType, idBlockRates) {
                 id: -1,
                 idservicesfk: idBlock,
                 idrates_fk: idBlockRates.id,                
-                ratestype_id: selectedRatesType
+                ratestype_id: selectedRatesTypeArrJoin
             };
             $.ajax({
                 type: "POST",
@@ -375,10 +376,10 @@ function saveRatesTypeMultiselect(selectedRatesType, idBlockRates) {
                 cache: false,
                 success: function(data) {
                     console.log("OK", data);
-                    saveToGridFunc();
                 }
             });
         }
+        saveToGridFunc();
     });
 }
 
@@ -386,6 +387,22 @@ function saveToGridFunc() {
     var serviceDateDisplayId = document.getElementById("serviceDateDisplayId").innerHTML;
     insertRateGridAllDetails(serviceDateDisplayId);
     // set default multiselect
+    $('#multiselectRate23').multiselect('deselectAll', true);
+    $('#multiselectRate23').multiselect('destroy');
+    $("#multiselectRate23").hide();
+
+    $('#multiselectRate24').multiselect('deselectAll', true);
+    $('#multiselectRate24').multiselect('destroy');
+    $("#multiselectRate24").hide();
+    
+    $('#multiselectRate25').multiselect('deselectAll', true);
+    $('#multiselectRate25').multiselect('destroy');
+    $("#multiselectRate25").hide();
+
+    $('#multiselectRate22').multiselect('deselectAll', true);
+    $('#multiselectRate22').multiselect('destroy');
+    $("#multiselectRate22").hide();
+
 }
 
 

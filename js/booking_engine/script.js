@@ -1,6 +1,6 @@
 document.getElementById("aTitle").innerHTML = "BOOKING SEARCH ENGINE";
 
-$(document).ready(function () {
+$(document).ready(function () {   
     var date = new Date();
     date.setDate(date.getDate() + 1);
     $('#datetimepicker').datepicker({
