@@ -68,7 +68,7 @@ try {
             ":id_product_type" => $id_product_type, 
             ":id_service_type" => $id_service_type,
             ":product_name" => $product_name, 
-            "active" => $active));
+            ":active" => $active));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product"=>$id_product));
 } catch (Exception $ex) {

@@ -26,18 +26,18 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    if (!isset($_GET["id_product"])) {
-        throw new Exception("INVALID ID". $_GET["id_product"]);
+    if (!isset($_GET["id_product_services"])) {
+        throw new Exception("INVALID ID". $_GET["id_product_services"]);
     }
     
-    $id_product = $_GET["id_product"];
+    $id_product_services = $_GET["id_product_services"];
     
     require_once("../../connector/pdo_connect_main.php");
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    $stmt = $con->prepare("UPDATE product SET active=0 WHERE id_product = :id_product");
-    $stmt->execute(array(":id_product"=>$id_product));
+    $stmt = $con->prepare("UPDATE product_services SET active=0 WHERE id_product_services = :id_product_services");
+    $stmt->execute(array(":id_product_services"=>$id_product_services));
     
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

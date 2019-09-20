@@ -51,15 +51,18 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="dist/css/AdminLTE.css?<?php echo time(); ?>">
 
         <!-- Sandeep Start -->
+        <link rel="stylesheet" href="css/bookingEngine.css">
+        <link rel="stylesheet" href="css/editor.css">
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
-        <!--<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="css/bookingEngine.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
         <link rel="stylesheet" href="css/editor.css">
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
-        <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>-->
-
+        <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
+        <link rel="stylesheet" href="css/boservicesclaim.css">
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -68,11 +71,8 @@ if (isset($_GET["m"])) {
         if ($menu == "backoff_excursions") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         } else if ($menu == "backoff_service_claim") {
-            echo '<link rel="stylesheet" href="css/gridStyle.css">
-            <link rel="stylesheet" href="css/boservicesclaim.css">';
-        } else if ($menu == "backoff_product") {
-            echo '<link rel="stylesheet" href="css/boservicesclaim.css">';
-        }
+            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        }  
         ?>
 
         <!-- Sandeep End -->
@@ -448,8 +448,10 @@ if (isset($_GET["m"])) {
                         include 'php/template/addexcursions.php';
                     } else if ($menu == "backoff_product") {
                         include 'php/template/product.php';
-                    }  else if ($menu == "backoff_product_services") {
+                    }  else if ($menu == "productservices") {
                         include 'php/template/productservices.php';
+                    }  else if ($menu == "productservicescost") {
+                        include 'php/template/productservicescost.php';
                     } 
                     else {
                         echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
@@ -691,7 +693,7 @@ if (isset($_GET["m"])) {
 		<!-- Select2 -->
 		
         <!-- Sandeep Start -->
-        <!-- <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+        <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.js"></script>
        <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js'></script>
@@ -705,7 +707,7 @@ if (isset($_GET["m"])) {
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>-->
+        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
         <!-- Sandeep End -->
 
         <!-- FastClick -->
@@ -877,6 +879,14 @@ if (isset($_GET["m"])) {
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>';
+        } else if ($menu == "productservices") {
+            echo '<script src="js/boproduct_services/models/bosaveservices.js"></script>
+            <script src="js/boproduct_services/models/boproductgrid.js"></script>
+            <script src="js/boproduct_services/product_script.js"></script>
+            <script src="js/boproduct_services/models/boservicesgrid.js"></script>';
+        } else if ($menu == "productservicescost") {
+            echo '<script src="js/boproduct_services/product_script.js"></script>
+            <script src="js/boproduct_services/models/boservicecost.js"></script>';
         }
 ?>
         <div id = "alert_placeholder"></div>

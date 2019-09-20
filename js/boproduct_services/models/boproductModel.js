@@ -3,7 +3,6 @@ $("#btnSaveProduct").click(function () {
     var ddlProductTypeSelected = $('#ddlProductType').val();
     var ddlTypeSelected = $('#ddlType').val();
     var productNameSelected = document.getElementById('productName').value;
-    console.log('sdfgdfg',id_product);
         if (id_product != 0) {
             const url_edit_product = "php/api/backofficeproduct/updateproduct.php?t=" + encodeURIComponent(global_token) + "&id_product=" + id_product;
             var objProductUpdate = {
@@ -32,7 +31,6 @@ $("#btnSaveProduct").click(function () {
                 product_name: productNameSelected,
                 active: 1
             };
-
             const url_save_product = "php/api/backofficeproduct/savenewproduct.php?t=" + encodeURIComponent(global_token);
             $.ajax({
                 url : url_save_product,
