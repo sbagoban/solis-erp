@@ -95,5 +95,5 @@ function productServiceClaimEdit(data) {
 
 // Add Product Services
 function addProductServices(data) { 
-    
+    window.location.href = "index.php?m=productservices&pid=" + data.id_product;
 }
