@@ -886,11 +886,11 @@ function hotelspecialoffers()
         {type: "settings", position: "label-left", id: "form_name"},
         {type: "hidden", name: "hotel_fk"},
         {type: "block", width: 900, list: [
-             {type: "input", name: "id", label: "SPO ID:", labelWidth: "110",
-                labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-                labelTop: "10", inputLeft: "10", inputTop: "10", readonly: true
-            }  
-        ]},
+                {type: "input", name: "id", label: "SPO ID:", labelWidth: "110",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", readonly: true
+                }
+            ]},
         {type: "block", width: 900, list: [
                 {type: "checkbox", name: "active_internal", label: "Active Internal"},
                 {type: "newcolumn"},
@@ -1138,6 +1138,22 @@ function hotelspecialoffers()
     grid_period.enableUndoRedo();
     grid_period.init();
 
+    grid_period.customGroupFormat = function (name, count) {
+
+        var arr_seasons = groupSeasons(); //get an array of seasons for that spo
+        for (var s = 0; s < arr_seasons.length; s++)
+        {
+            var season = arr_seasons[s].season;
+            var seasonid = arr_seasons[s].seasonid;
+            if (name == seasonid)
+            {
+                return season;
+            }
+        }
+
+        return "CUSTOM";
+
+    }
 
     var str_form_period_buttons = [
         {type: "settings", position: "label-left", id: "form_period_buttons"},
@@ -1275,6 +1291,47 @@ function hotelspecialoffers()
             ]},
 
         {type: "block", width: 900, list: [
+                {type: "input", name: "adult_min",
+                    label: "Min Adults:",labelWidth: "100",
+                    validate: "ValidNumeric",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10"},
+                {type: "newcolumn"},
+                {type: "input", name: "adult_max",
+                    label: "Max Adults:",labelWidth: "0",
+                    validate: "ValidNumeric",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10"},
+                {type: "newcolumn"},
+                {type: "combo", name: "adult_max_category", label: "Limit:",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }
+            ]},
+        {type: "block", width: 900, list: [
+                {type: "input", name: "children_min",
+                    label: "Min Children:",labelWidth: "100",
+                    validate: "ValidNumeric",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10"},
+                {type: "newcolumn"},
+                {type: "input", name: "children_max",
+                    label: "Max Children:",labelWidth: "0",
+                    validate: "ValidNumeric",
+                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10"},
+                {type: "newcolumn"},
+                {type: "combo", name: "children_max_category", label: "Limit:",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }
+            ]},
+
+        {type: "block", width: 900, list: [
                 {type: "editor", name: "conditions_text", label: "Conditions:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "700", inputHeight: "170", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"
@@ -1299,6 +1356,16 @@ function hotelspecialoffers()
     cboMinStay.addOption([{value: "SPO ONLY", text: "SPO ONLY", img_src: "images/rollover.png"}]);
     cboMinStay.addOption([{value: "SPO THEN CONTRACT", text: "SPO THEN CONTRACT", img_src: "images/rollover.png"}]);
     cboMinStay.readonly(true);
+    
+    var cboAdMaxCategory = form_conditions.getCombo("adult_max_category");
+    cboAdMaxCategory.addOption([{value: "LIMIT", text: "LIMIT", img_src: "images/rollover.png"}]);
+    cboAdMaxCategory.addOption([{value: "APPLICABLE", text: "APPLICABLE", img_src: "images/rollover.png"}]);
+    cboAdMaxCategory.readonly(true);
+    
+    var cboChMaxCategory = form_conditions.getCombo("children_max_category");
+    cboChMaxCategory.addOption([{value: "LIMIT", text: "LIMIT", img_src: "images/rollover.png"}]);
+    cboChMaxCategory.addOption([{value: "APPLICABLE", text: "APPLICABLE", img_src: "images/rollover.png"}]);
+    cboChMaxCategory.readonly(true);
 
     form_conditions.attachEvent("onChange", function (id, value) {
         triggerConditionsChange(id, value);
@@ -1882,34 +1949,7 @@ function hotelspecialoffers()
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
                     comboImagePath: "../../images/"
-                }]},
-        {type: "block", width: 900, list: [
-                {type: "input", name: "family_offer_adult_min",
-                    label: "Min Adults",
-                    validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10"},
-                {type: "newcolumn"},
-                {type: "input", name: "family_offer_adult_max",
-                    label: "Max Adults",
-                    validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10"},
-                {type: "newcolumn"},
-                {type: "newcolumn"},
-                {type: "input", name: "family_offer_children_min",
-                    label: "Min Children",
-                    validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10"},
-                {type: "newcolumn"},
-                {type: "input", name: "family_offer_children_max",
-                    label: "Max Children",
-                    validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10"}
-
-            ]}];
+                }]}];
 
     var form_familydiscounts = family_discount_layout.cells("a").attachForm(str_frm_familydiscount);
 
@@ -4538,6 +4578,107 @@ function hotelspecialoffers()
             }
         }
 
+        var adult_min = utils_trim(form_conditions.getItemValue("adult_min"), " ");
+        var adult_max = utils_trim(form_conditions.getItemValue("adult_max"), " ");
+        
+        
+        if (adult_min != "" && isNaN(adult_min))
+        {
+            dhtmlx.alert({
+                text: "Invalid Adult Minimum numeric value!",
+                type: "alert-warning",
+                title: "Special Offer",
+                callback: function () {
+                    form_conditions.setItemFocus("adult_min");
+                }
+            });
+
+            return;
+        }
+
+        if (adult_max != "" && isNaN(adult_max))
+        {
+            dhtmlx.alert({
+                text: "Invalid Adult Maximum numeric value!",
+                type: "alert-warning",
+                title: "Special Offer",
+                callback: function () {
+                    form_conditions.setItemFocus("adult_max");
+                }
+            });
+
+            return;
+        }
+
+        if (adult_min != "" && adult_max != "")
+        {
+            adult_min = parseInt(adult_min, 10);
+            adult_max = parseInt(adult_max, 10);
+
+            if (adult_max < adult_min)
+            {
+                dhtmlx.alert({
+                    text: "Invalid Adult Ordering!",
+                    type: "alert-warning",
+                    title: "Special Offer",
+                    callback: function () {
+                        form_conditions.setItemFocus("adult_min");
+                    }
+                });
+                return;
+            }
+        }
+        
+        var children_min = utils_trim(form_conditions.getItemValue("children_min"), " ");
+        var children_max = utils_trim(form_conditions.getItemValue("children_max"), " ");
+        
+        if (children_min != "" && isNaN(children_max))
+        {
+            dhtmlx.alert({
+                text: "Invalid Children Minimum numeric value!",
+                type: "alert-warning",
+                title: "Special Offer",
+                callback: function () {
+                    form_conditions.setItemFocus("children_min");
+                }
+            });
+
+            return;
+        }
+
+        if (children_max != "" && isNaN(children_max))
+        {
+            dhtmlx.alert({
+                text: "Invalid Children Maximum numeric value!",
+                type: "alert-warning",
+                title: "Special Offer",
+                callback: function () {
+                    form_conditions.setItemFocus("children_max");
+                }
+            });
+
+            return;
+        }
+
+        if (children_min != "" && children_max != "")
+        {
+            children_min = parseInt(children_min, 10);
+            children_max = parseInt(children_max, 10);
+
+            if (children_max < children_min)
+            {
+                dhtmlx.alert({
+                    text: "Invalid Children Ordering!",
+                    type: "alert-warning",
+                    title: "Special Offer",
+                    callback: function () {
+                        form_conditions.setItemFocus("children_min");
+                    }
+                });
+                return;
+            }
+        }
+       
 
         //============================
 
@@ -5596,63 +5737,6 @@ function hotelspecialoffers()
                 type: "alert-warning",
                 title: "Special Offer",
                 callback: function () {}
-            });
-
-            return;
-        }
-
-
-        var family_offer_adult_min = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_min"), " ");
-        var family_offer_adult_max = utils_trim(form_familydiscounts.getItemValue("family_offer_adult_max"), " ");
-        var family_offer_children_min = utils_trim(form_familydiscounts.getItemValue("family_offer_children_min"), " ");
-        var family_offer_children_max = utils_trim(form_familydiscounts.getItemValue("family_offer_children_max"), " ");
-
-        if (family_offer_adult_min == "")
-        {
-            family_offer_adult_min = 0;
-        }
-        if (family_offer_adult_max == "")
-        {
-            family_offer_adult_max = 0;
-        }
-        if (family_offer_children_min == "")
-        {
-            family_offer_children_min = 0;
-        }
-        if (family_offer_children_max == "")
-        {
-            family_offer_children_max = 0;
-        }
-
-
-        family_offer_adult_min = parseInt(family_offer_adult_min, 10);
-        family_offer_adult_max = parseInt(family_offer_adult_max, 10);
-        family_offer_children_min = parseInt(family_offer_children_min, 10);
-        family_offer_children_max = parseInt(family_offer_children_max, 10);
-
-        if (family_offer_adult_min > family_offer_adult_max)
-        {
-            dhtmlx.alert({
-                text: "Invalid Adult Order!",
-                type: "alert-warning",
-                title: "Special Offer",
-                callback: function () {
-                    form_familydiscounts.setItemFocus("family_offer_adult_max")
-                }
-            });
-
-            return;
-        }
-
-        if (family_offer_children_min > family_offer_children_max)
-        {
-            dhtmlx.alert({
-                text: "Invalid Children Order!",
-                type: "alert-warning",
-                title: "Special Offer",
-                callback: function () {
-                    form_familydiscounts.setItemFocus("family_offer_children_max")
-                }
             });
 
             return;
@@ -7376,7 +7460,7 @@ function hotelspecialoffers()
             var seasonid = json_arr[i].season_fk;
             var valid_from = json_arr[i].valid_from;
             var valid_to = json_arr[i].valid_to;
-            
+
             grid_period.addRow(id, [seasonid, valid_from, valid_to]);
             grid_period.setRowTextStyle(id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
         }
@@ -11093,7 +11177,7 @@ function hotelspecialoffers()
     function groupSeasons()
     {
         var arr = [];
-        
+
         for (var i = 0; i < _dsDatePeriods.dataCount(); i++)
         {
             var item = _dsDatePeriods.item(_dsDatePeriods.idByIndex(i));
@@ -11114,7 +11198,7 @@ function hotelspecialoffers()
                 season_obj.arr_season_dates.push({checkin: checkin, checkout: checkout});
             }
         }
-        
+
         //push CUSTOM season
         var obj = {season: "CUSTOM", seasonid: "", arr_season_dates: []};
         arr.push(obj)
@@ -15421,9 +15505,12 @@ function hotelspecialoffers()
                 cbo.addOption([{value: seasonid, text: season}]);
             }
         }
-        
+
         cbo.addOption([{value: "", text: "CUSTOM"}]);
     }
+    
+    
+    
 
     //=======================================================
     popupwin_spo.hide();

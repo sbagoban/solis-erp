@@ -312,7 +312,7 @@ function ratescalculator() {
         $("[name='checkout_date']").mask("99-99-9999");
         $("[name='checkin_time']").mask("99:99");
         $("[name='checkout_time']").mask("99:99");
-        
+
     });
 
     main_layout.cells("a").setHeight(900);
@@ -325,14 +325,14 @@ function ratescalculator() {
     var str_frm_spo = [
         {type: "settings", position: "label-left", id: "form_spo"},
 
-        {type: "combo", name: "spo_type", label: "SPO Type:", labelWidth: "170",
+        {type: "combo", name: "spo_type", label: "SPO Type:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", required: true
         },
 
         {type: "calendar", name: "spo_booking_date", label: "Booking Date:",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "170",
+            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "180",
             dateFormat: "%d-%m-%Y",
             note: {
                 text: "Format: dd-mm-yyyy"
@@ -340,18 +340,22 @@ function ratescalculator() {
         },
         {type: "calendar", name: "spo_travel_date", label: "Trave Date:",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "170",
+            labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "180",
             dateFormat: "%d-%m-%Y",
             note: {
                 text: "Format: dd-mm-yyyy"
             }
         },
 
-        {type: "input", name: "spo_party_pax", label: "Additional Num Pax in Party:", labelWidth: "170",
+        {type: "input", name: "spo_party_pax", label: "Additional Num Pax in Party:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
         },
-        {type: "checkbox", name: "chk_show_invalid_spos", label: "Show Invalid SPOS:", labelWidth: "170",
+        {type: "checkbox", name: "chk_is_wedding", label: "Interested in Wedding SPOS:", labelWidth: "180",
+            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10"
+        },
+        {type: "checkbox", name: "chk_show_invalid_spos", label: "Show Invalid SPOS:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10"
         }
@@ -363,7 +367,7 @@ function ratescalculator() {
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
 
-    
+
     jQuery(function ($) {
         $("[name='spo_booking_date']").mask("99-99-9999");
         $("[name='spo_travel_date']").mask("99-99-9999");
@@ -581,8 +585,6 @@ function ratescalculator() {
             }
 
         }
-
-
 
 
         if (!validate_filter_contractids())
@@ -855,7 +857,7 @@ function ratescalculator() {
             grid_results.addRow(rwid, "");
 
             grid_results.setRowTextStyle(rwid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid black; border-right:1px solid #A4A4A4;");
-            grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue("<b><font color='red'>" + invalid_spos[i] + "</font></b>");
+            grid_results.cells(rwid, grid_results.getColIndexById("comments")).setValue("<font color='red'>" + invalid_spos[i] + "</font>");
 
             rwid++;
 
@@ -994,6 +996,7 @@ function ratescalculator() {
         var spo_travel_date = form_spo.getItemValue("spo_travel_date", true);
 
         if (utils_isDate(spo_booking_date) && utils_isDate(spo_travel_date))
+        {
             if (!utils_validateDateOrder(spo_booking_date, spo_travel_date))
             {
                 tabViews.setTabActive("params");
@@ -1008,7 +1011,41 @@ function ratescalculator() {
                 });
                 return false;
             }
-
+        }
+        
+        
+        //if is wedding spo interested, make sure that there is a groom and bride in adults grid
+        if (form_spo.isItemChecked("chk_is_wedding"))
+        {
+            var flg_found_groom = false;
+            var flg_found_bride = false;
+            
+            for (var i = 0; i < grid_adult.getRowsNum(); i++)
+            {
+                var rowid = grid_adult.getRowId(i);
+                var bride_groom = grid_adult.cells(rowid, grid_adult.getColIndexById("bride_groom")).getValue();
+                if(bride_groom == "BRIDE")
+                {
+                    flg_found_bride = true;
+                }
+                else if(bride_groom == "GROOM")
+                {
+                    flg_found_groom = true;
+                }
+            }
+            
+            if(!flg_found_bride || !flg_found_groom)
+            {
+                dhtmlx.alert({
+                    text: "SPO: <b>Wedding SPO Interested</b>: Please select a <b>Bride</b> and a <b>Groom</b> in Adults!",
+                    type: "alert-warning",
+                    title: "Test Rates Calculator",
+                    callback: function () {
+                    }
+                });
+                return false;
+            }
+        }
 
         return true;
     }

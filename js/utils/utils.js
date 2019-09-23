@@ -124,17 +124,17 @@ function utils_addCommas(nStr)
 
 function utils_parseInt(val)
 {
-    if(val == "")
+    if (val == "")
     {
         return 0;
     }
-    
-    if(isNaN(val))
+
+    if (isNaN(val))
     {
         return 0;
     }
-    
-    return parseInt(val,10);
+
+    return parseInt(val, 10);
 }
 
 
@@ -179,15 +179,13 @@ function utils_formatDate(dt, format)
     } else if (format == "DD-MM-YYYY")
     {
         return dte_arr[2] + "-" + dte_arr[1] + "-" + dte_arr[0];
-    }
-    else if (format == "DD/MM/YYYY")
+    } else if (format == "DD/MM/YYYY")
     {
         return dte_arr[2] + "/" + dte_arr[1] + "/" + dte_arr[0];
-    }
-    else if (format == "DATE MON YY")
+    } else if (format == "DATE MON YY")
     {
         return dte_obj.getDate() + " " + global_months_abrv[dte_obj.getMonth()] + " " + dte_obj.getFullYear().toString().substr(-2);
-    } 
+    }
 
     return dt;
 }
@@ -658,7 +656,7 @@ function utils_formatGridRows(grid, css)
 
 
 function utils_toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt){
+    return str.replace(/\w\S*/g, function (txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }

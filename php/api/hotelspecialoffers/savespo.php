@@ -156,16 +156,35 @@ try {
     //CONDITIONS
     $conditions = json_decode($_POST["conditions"], true);
     $meals_ids = $conditions["meals_ids"];
+    
     $min_stay_from = utils_stringBlank($conditions["min_stay_from"], null);
     $min_stay_to = utils_stringBlank($conditions["min_stay_to"], null);
     $min_stay_priority = utils_stringBlank($conditions["min_stay_priority"], null);
+    
+    $adult_min = utils_stringBlank($conditions["adult_min"], null);
+    $adult_max = utils_stringBlank($conditions["adult_max"], null);
+    $adult_max_category = utils_stringBlank($conditions["adult_max_category"], null);
+    
+    $children_min = utils_stringBlank($conditions["children_min"], null);
+    $children_max = utils_stringBlank($conditions["children_max"], null);
+    $children_max_category = utils_stringBlank($conditions["children_max_category"], null);
+    
     $conditions_text = $conditions["conditions_text"];
     $added_values_text = $conditions["added_values_text"];
 
-    $sql = "UPDATE tblspecial_offer SET min_stay_priority=:min_stay_priority,
+    $sql = "UPDATE tblspecial_offer SET 
+            min_stay_priority=:min_stay_priority,
             min_stay_from=:min_stay_from, 
-            min_stay_to=:min_stay_to, conditions_text=:conditions_text, 
-            added_values_text=:added_values_text WHERE id=:id";
+            min_stay_to=:min_stay_to, 
+            adult_min=:adult_min, 
+            adult_max=:adult_max, 
+            adult_max_category=:adult_max_category, 
+            children_min=:children_min, 
+            children_max=:children_max, 
+            children_max_category=:children_max_category, 
+            conditions_text=:conditions_text, 
+            added_values_text=:added_values_text 
+            WHERE id=:id";
 
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id,
@@ -173,7 +192,13 @@ try {
         ":min_stay_from" => $min_stay_from,
         ":min_stay_to" => $min_stay_to,
         ":conditions_text" => $conditions_text,
-        ":added_values_text" => $added_values_text));
+        ":added_values_text" => $added_values_text,
+        ":adult_min" => $adult_min,
+        ":adult_max" => $adult_max,
+        ":children_min" => $children_min,
+        ":children_max" => $children_max,
+        ":adult_max_category" => $adult_max_category,
+        ":children_max_category" => $children_max_category));
 
 
     $outcome = savemeals($meals_ids);
@@ -391,27 +416,15 @@ try {
         $family_offer = json_decode($_POST["family_offer"], true);
 
         $family_offer_room_applicable = utils_stringBlank($family_offer["family_offer_room_applicable"], null);
-        $family_offer_adult_min = utils_stringBlank($family_offer["family_offer_adult_min"], null);
-        $family_offer_adult_max = utils_stringBlank($family_offer["family_offer_adult_max"], null);
-        $family_offer_children_min = utils_stringBlank($family_offer["family_offer_children_min"], null);
-        $family_offer_children_max = utils_stringBlank($family_offer["family_offer_children_max"], null);
-
+       
 
         $sql = "UPDATE tblspecial_offer SET 
-                family_offer_room_applicable=:family_offer_room_applicable, 
-                family_offer_adult_min=:family_offer_adult_min,
-                family_offer_adult_max=:family_offer_adult_max, 
-                family_offer_children_min=:family_offer_children_min,
-                family_offer_children_max=:family_offer_children_max
+                family_offer_room_applicable=:family_offer_room_applicable
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":id" => $id,
-            ":family_offer_room_applicable" => $family_offer_room_applicable,
-            ":family_offer_adult_min" => $family_offer_adult_min,
-            ":family_offer_adult_max" => $family_offer_adult_max,
-            ":family_offer_children_min" => $family_offer_children_min,
-            ":family_offer_children_max" => $family_offer_children_max));
+            ":family_offer_room_applicable" => $family_offer_room_applicable));
 
 
 
