@@ -52,6 +52,7 @@ try {
     $age_teen_to = trim($_POST["age_teen_to"]);
     $min_pax = trim($_POST["min_pax"]);
     $max_pax = trim($_POST["max_pax"]);
+    $id_creditor = trim($_POST["id_creditor"]);
 
     require_once("../../connector/pdo_connect_main.php");
 
@@ -93,10 +94,10 @@ try {
                     age_child_to,
                     age_teen_to,
                     min_pax,
-                    max_pax) 
+                    max_pax,id_creditor) 
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_countries, :id_coasts, 
                 :service_name, :id_tax, :charges, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
-                :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :min_pax, :max_pax)";
+                :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :min_pax, :max_pax, :id_creditor)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -125,7 +126,8 @@ try {
             ":age_child_to" => $age_child_to,
             ":age_teen_to" => $age_teen_to,
             ":min_pax" => $min_pax,
-            ":max_pax" => $max_pax));
+            ":max_pax" => $max_pax,
+            ":id_creditor" => $id_creditor));
         
         $id_product_services = $con->lastInsertId();
     } else {
@@ -155,7 +157,8 @@ try {
                 age_child_to =:age_child_to,
                 age_teen_to =:age_teen_to,
                 min_pax =:min_pax,
-                max_pax =:max_pax
+                max_pax =:max_pax,
+                id_creditor =:id_creditor
                 WHERE id_product_services=:id_product_services";
 
         $stmt = $con->prepare($sql);
@@ -185,7 +188,8 @@ try {
             ":age_child_to" => $age_child_to,
             ":age_teen_to" => $age_teen_to,
             ":min_pax" => $min_pax,
-            ":max_pax" => $max_pax));
+            ":max_pax" => $max_pax,
+            ":id_creditor" => $id_creditor));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_services"=>$id_product_services));
 } catch (Exception $ex) {

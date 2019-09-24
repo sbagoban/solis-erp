@@ -13,7 +13,7 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
+									<div id="id_product_services_cost_1" style="display: none"></div>
 									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_dept" style="display: none" value="0">
 									<input type="text" class="form-control" id="charges" style="display: none" value="0">
@@ -67,7 +67,7 @@
 							
 							<div class="pager">
 								<button type="button" class="btn btn-primary" id="btn-saveProductServicesCost">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-addProductServicesExtra" data-toggle="modal" data-target="#modal-extraServices">Add Extra</button>
+								<!-- <button type="button" class="btn btn-primary" id="btn-addProductServicesExtra" data-toggle="modal" data-target="#modal-extraServices">Add Extra</button> -->
 								<button type="button" class="btn btn-primary" id="btn-productServices" onclick="history.go(-1);">Back</button>
 							</div>
 							<!-- Main content -->
@@ -80,7 +80,7 @@
 											</div>
 											<!-- /.box-header -->
 											<div class="box-body">
-												<table id="tbl-productServices" class="table table-bordered table-hover">
+												<table id="tbl-extraServiceCost" class="table table-bordered table-hover">
 													<thead>
 														<tr>
 															<th class="col-sm-1">Code</th>
@@ -89,52 +89,19 @@
 															<th class="col-sm-2"></th>
 														</tr>
 													</thead>
-													<tbody>
+													<!-- <tbody>
 														<tr>
 															<td>100989</td>
 															<td>ACCESS FEE</td>
 															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
 															<td>
 																<div class="btn-group">
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit" data-toggle="modal" data-target="#modal-extraServices"></i></button>
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
+																	<button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit" data-toggle="modal" data-target="#modal-extraServices"></i></button>
+																	<button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
 																</div>
 															</td>
 														</tr>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-																  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-																</div>
-															</td>
-														</tr>
-													</tbody>
+													</tbody> -->
 												</table>	
 											</div>
 										</div>
@@ -166,131 +133,19 @@
 										<label class="col-sm-2 control-label">Product</label>
 										<div class="col-sm-6">
 											<input type="text" class="form-control" id="id_product" style="display: none">
-											<input type="text" class="form-control" id="product_name" placeholder="Name of the product">
+											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" disabled>
 										</div>
 									</div>
 							
-									<table id="tbl-productServices" class="table table-bordered table-hover">
+									<table id="tbl-productServicesCost" class="table table-bordered table-hover">
 										<thead>
 											<tr>
 												<th class="col-sm-1">Code</th>
 												<th class="col-sm-4">Date</th>
-												<th class="col-sm-5">Charges</th>
-												<th class="col-sm-2"></th>
+												<th class="col-sm-4">Charges</th>
+												<th class="col-sm-3"></th>
 											</tr>
 										</thead>
-										<tbody>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-											<tr>
-												<td>100989</td>
-												<td>01/10/2019 - 10/10/2020</td>
-												<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-												<td>
-													<div class="btn-group">
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i></button>
-													  <button type="button" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button>
-													</div>
-												</td>
-											</tr>
-										</tbody>
 									</table>
 									
 								</div>
@@ -322,7 +177,7 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
+									<div id="id_product_services_cost_extra" style="display: none">0</div>
 									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_service_type" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_type" style="display: none" value="0">
@@ -332,15 +187,6 @@
 								<label class="col-sm-2 control-label">Extra Name</label>
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_product_services_extra">
-										<!-- To modify - select from db -->
-										<option value="0">SELECT</option>
-									</select>
-								</div>
-								<label class="col-sm-2 control-label">Charges</label>
-								<div class="col-sm-4">
-									<select type="text" class="form-control" id="id_dept">
-										<option value="UNIT" selected="selected">UNIT</option>
-										<option value="PAX" selected="selected">PAX</option>
 									</select>
 								</div>
 							</div>
@@ -348,13 +194,13 @@
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
 									<div class="input-group">
-										<input type="text" class="form-control" id="ps_adult_cost">
+										<input type="number" class="form-control" id="ps_adult_cost_ex">
 										<span class="input-group-addon">Adult</span>
-										<input type="text" class="form-control" id="ps_teen_cost">
+										<input type="number" class="form-control" id="ps_teen_cost_ex">
 										<span class="input-group-addon">Teen</span>
-										<input type="text" class="form-control" id="ps_child_cost">
+										<input type="number" class="form-control" id="ps_child_cost_ex">
 										<span class="input-group-addon">Child</span>
-										<input type="text" class="form-control" id="ps_infant_cost">
+										<input type="number" class="form-control" id="ps_infant_cost_ex">
 										<span class="input-group-addon">Infant</span>
 									</div>
 									<br>
@@ -362,9 +208,7 @@
 							</div>
 							
 							<div class="pager">
-								<button type="button" class="btn btn-primary" id="btn-saveProductServicesExtraCost">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-deleteProductServicesExtraCost" data-dismiss="modal">Delete</button>
-								<button type="button" class="btn btn-primary" id="btn-clearProductServicesExtraCost" data-toggle="modal" data-target="#modal-extraServices">Add Extra</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraCost">Save</button>
 							</div>
 						</div>
 						<!-- /.box-body -->

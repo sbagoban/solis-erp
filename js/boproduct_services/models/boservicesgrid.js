@@ -50,6 +50,7 @@ function allServicesGrid() {
                 "defaultContent": 
                 '<div class="btn-group">' +
                 '<button type="button" id="btnAddProductServices" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i></button>' +
+                '<button type="button" id="btnAddProductServicesExtra" class="btn btn-primary"><i class="fa fa-gg-circle"></i></button>' + 
                 '<button type="button" id="btnEditProduct" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i>' +
                 '<button type="button" id="btnDeleteService" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
             }
@@ -59,6 +60,11 @@ function allServicesGrid() {
         var table = $('#tbl-productServices').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         serviceDelete(data);
+    });
+    $('#tbl-productServices tbody').on( 'click', '#btnAddProductServicesExtra', function () {
+        var table = $('#tbl-productServices').DataTable();
+        var data = table.row( $(this).parents('tr') ).data();
+        addServiceExtra(data);
     });
     $('#tbl-productServices tbody').on( 'click', '#btnEditProduct', function () {
         var table = $('#tbl-productServices').DataTable();
@@ -167,5 +173,10 @@ function serviceEdit(data) {
 // Add Product Cost Services
 function addProductServices(data) { 
     console.log(data);
-    window.location.href = "index.php?m=productservicescost&pid=" + data.id_product_services;
+    window.location.href = "index.php?m=productservicescost&psid=" + data.id_product_services + "&iddept=" + data.id_dept+ "&productname=" + data.product_name + "&servicename=" + data.service_name+ "&idcoast=" + data.id_coasts+ "&idcreditor=" + data.id_creditor;
+}
+
+function addServiceExtra(data) {
+    modalExtraService(data);
+    $('#modal-extraServices1').modal('show');
 }

@@ -268,7 +268,7 @@
 												<th>Dept</th>
 												<th>Charges</th>
 												<th>Date</th>
-												<th></th>
+												<th class="col-sm-4"></th>
 											</tr>
 										</thead>
 									</table>
@@ -286,6 +286,76 @@
 		</div>	
 	</div>
 </section>	
+<!-- 
+<!-- Modal -->
+<div class="modal fade" id="modal-extraServices1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Extra Services</h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-md-12">
+					<table class="table">
+						<thead>
+							<!-- <tr>
+								<th>Extra Name</th>
+								<th>Extra Description</th>
+								<th>Charge Per</th>
+								<th></th>
+							</tr> -->
+						</thead>
+						<tbody>
+							<tr id="addRow">
+								<td class="col-xs-3">
+									<select type="text" class="form-control" id="extra_name">
+									</select>
+								</td>
+
+								<td class="col-xs-3">
+									<input class="form-control addPrefer" id="extra_description" type="text" name="addDesc" placeholder="Enter Descrition" />
+								</td>
+								<td class="col-xs-5">
+									<div class="policiesGroup">
+										<select type="text" class="form-control" id="chargesExtra">
+											<option value="UNIT" name="UNIT">UNIT</option>
+											<option value="PAX" name="PAX">PAX</option>
+										</select>
+									</div>
+								</td>
+								<td class="col-xs-1 text-center">
+									<span class="addBtn" id="btnAddExtraService">
+										<i class="fa fa-plus fa-lg" data-toggle="tooltip" title="Add Extra Field"></i>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="row" id="extraService">
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<table class="table responsive" id="tbl-extraService">
+								<thead>
+									<tr>
+										<th scope="col">Name</th>
+										<th scope="col">Description</th>
+										<th scope="col">Charge Per Unit / Pax</th>
+										<th scope="col"></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="pager"></div>
+			</div>
+		</div>
+	</div>
+</div> -->
+
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
             <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
-        </div>
+		</div>
+		
