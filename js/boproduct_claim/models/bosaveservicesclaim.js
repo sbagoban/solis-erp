@@ -128,7 +128,9 @@ function loadCountriesClaim() {
     );
 }
 
-$("#btn-saveServicesClaim").click(function () {
+$("#btn-saveServicesClaim").click(function () {    
+    var id_product_services_claim = document.getElementById("id_product_services_claim").innerHTML;
+
     var valid_from = $('#valid_from').val();
     var valid_to = $('#valid_to').val();
     var ps_adult_claim = $('#ps_adult_claim').val();
@@ -190,47 +192,86 @@ $("#btn-saveServicesClaim").click(function () {
         ex_sunday = 0;
     }  
 
-    const url_save_productservice_claim = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token);
-    var objProductServiceClaim = {
-        id_product_service_claim: -1,
-        id_product_service_cost: id_product_service_cost,
-        id_product_service: id_product_service,
-        valid_from: valid_from,
-        valid_to: valid_to,
-        id_dept: id_dept,
-        specific_to: specific_to,
-        charges: charges,
-        ps_adult_claim: ps_adult_claim,
-        ps_teen_claim: ps_teen_claim,
-        ps_child_claim: ps_child_claim,
-        ps_infant_claim: ps_infant_claim,        
-        id_currency: id_currency,
-        currency: currency,
-        ex_monday: ex_monday,
-        ex_tuesday: ex_tuesday,
-        ex_wednesday: ex_wednesday,
-        ex_thursday: ex_thursday,
-        ex_friday: ex_friday,
-        ex_saturday: ex_saturday,
-        ex_sunday: ex_sunday
-    };
+    if (id_product_services_claim == 0) {
+        const url_save_productservice_claim = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token);
+        var objProductServiceClaim = {
+            id_product_service_claim: -1,
+            id_product_service_cost: id_product_service_cost,
+            id_product_service: id_product_service,
+            valid_from: valid_from,
+            valid_to: valid_to,
+            id_dept: id_dept,
+            specific_to: specific_to,
+            charges: charges,
+            ps_adult_claim: ps_adult_claim,
+            ps_teen_claim: ps_teen_claim,
+            ps_child_claim: ps_child_claim,
+            ps_infant_claim: ps_infant_claim,        
+            id_currency: id_currency,
+            currency: currency,
+            ex_monday: ex_monday,
+            ex_tuesday: ex_tuesday,
+            ex_wednesday: ex_wednesday,
+            ex_thursday: ex_thursday,
+            ex_friday: ex_friday,
+            ex_saturday: ex_saturday,
+            ex_sunday: ex_sunday
+        };
 
-    console.log(objProductServiceClaim);
+        console.log(objProductServiceClaim);
 
-    $.ajax({
-        url : url_save_productservice_claim,
-        method : "POST",
-        data : objProductServiceClaim,                                                                                                                                                                                                                                                                                                                                                                                                                
-        success : function(data){
-            console.log('value', data);
-            resetProductServicesClaim();;
-            $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
-        },
-        error: function(error) {
-            console.log('Error ${error}');
-        }
-    });
-    allServicesGridClaim();
+        $.ajax({
+            url : url_save_productservice_claim,
+            method : "POST",
+            data : objProductServiceClaim,                                                                                                                                                                                                                                                                                                                                                                                                                
+            success : function(data){
+                console.log('value', data);
+                resetProductServicesClaim();;
+                $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        });
+    } else {
+        
+        var id_product_service_claim = document.getElementById("id_product_services_claim").innerHTML;
+        const url_update_productservice_claim = "php/api/backofficeserviceclaim/updateproductservicesclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
+        var objProductServiceClaimUpdate = {
+            valid_from: valid_from,
+            valid_to: valid_to,
+            specific_to: specific_to,
+            charges: charges,
+            ps_adult_claim: ps_adult_claim,
+            ps_teen_claim: ps_teen_claim,
+            ps_child_claim: ps_child_claim,
+            ps_infant_claim: ps_infant_claim,        
+            id_currency: id_currency,
+            currency: currency,
+            ex_monday: ex_monday,
+            ex_tuesday: ex_tuesday,
+            ex_wednesday: ex_wednesday,
+            ex_thursday: ex_thursday,
+            ex_friday: ex_friday,
+            ex_saturday: ex_saturday,
+            ex_sunday: ex_sunday
+        };
+
+        $.ajax({
+            url : url_update_productservice_claim,
+            method : "POST",
+            data : objProductServiceClaimUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                
+            success : function(data){
+                console.log('value', data);
+                resetProductServicesClaim();;
+                $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        });
+    }
+    allServicesGridClaim(id_product_service_cost);
 });
 
 function resetProductServicesClaim() {

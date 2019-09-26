@@ -284,7 +284,7 @@
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product_services_extra_claim" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_services_extra_cost" style="display: none" value="0">
-									<input type="text" class="form-control" id="id_product_services_claim" style="display: none" value="0">
+									<div id="id_product_services_claim" style="display: none">0</div>
 									<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
 								</div>
