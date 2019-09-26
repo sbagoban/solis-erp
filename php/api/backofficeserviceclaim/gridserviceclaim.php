@@ -20,15 +20,16 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("
-SELECT PRS.id_product_services_cost, PRS.id_product_services, PRS.valid_from, PRS.valid_to, PRS.charges, 
+SELECT PRS.id_product_services_cost, PRS.id_product_services, PRS.valid_from, PRS.valid_to, PS.charges, 
 PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency,
-PS.service_name, TD.deptname, TC.currency_code, PS.id_creditor, PS.id_coasts, TCO.coast, PRS.id_dept
+PS.service_name, TD.deptname, TC.currency_code, PS.id_creditor, PS.id_coasts, TCO.coast, PRS.id_dept, 
+PS.on_monday, PS.on_tuesday, PS.on_wednesday, PS.on_thursday, PS.on_friday, PS.on_saturday, PS.on_sunday, PR.product_name
 FROM product_services_cost PRS
 JOIN product_services PS on PRS.id_product_services = PS.id_product_services
 JOIN tblcoasts TCO on PS.id_coasts = TCO.id
 JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN tblcurrency TC on PRS.id_currency = TC.id
-WHERE PRS.active = 1");
+JOIN product PR on PS.id_product = PR.id_product");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
@@ -52,7 +53,15 @@ if ($row_count_c > 0) {
             'deptname' => $row['deptname'],
             'id_creditor' => $row['id_creditor'],
             'id_coasts' => $row['id_coasts'],
-            'coast' => $row['coast']
+            'coast' => $row['coast'],
+            'on_monday' => $row['on_monday'],
+            'on_tuesday' => $row['on_tuesday'],
+            'on_wednesday' => $row['on_wednesday'],
+            'on_thursday' => $row['on_thursday'],
+            'on_friday' => $row['on_friday'],
+            'on_saturday' => $row['on_saturday'],
+            'on_sunday' => $row['on_sunday'],
+            'product_name' => $row['product_name']
         );
     }
     $myData = $productServicesCost;
@@ -77,7 +86,15 @@ if ($row_count_c > 0) {
         'id_dept' => '-',
         'id_creditor' => '-',
         'id_coasts' => '-',
-        'coast' => '-'
+        'coast' => '-',
+        'on_monday' => '-',
+        'on_tuesday' => '-',
+        'on_wednesday' => '-',
+        'on_thursday' => '-',
+        'on_friday' => '-',
+        'on_saturday' => '-',
+        'on_sunday' => '-',
+        'product_name' => '-'
     );
     $myData = $productServicesCost;
     echo json_encode($myData);

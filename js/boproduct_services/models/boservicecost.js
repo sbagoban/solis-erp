@@ -1,8 +1,10 @@
 //$("#txtDateStart").datepicker({dateFormat:'mm/dd/yy', minDate: new Date(2010,11,12) });
     $('#btn-saveProductServicesCost').click(function () {
-        var id_product_services = window.location.href.split('psid=').pop();
-        var id_dept = window.location.href.split('deptid=').pop();
+        var allParams = window.location.href.split('productservicescost').pop();
+        const urlParams = new URLSearchParams(allParams);
 
+        var id_dept = urlParams.get("iddept"); 
+        var id_product_services = urlParams.get("psid"); 
         var valid_from = $('#valid_from').val();
         var valid_to = $('#valid_to').val();
         var ps_adult_cost = $('#ps_adult_cost').val();
@@ -14,6 +16,7 @@
 
         if (id_product_services_cost != 0) {
             var objServiceCostEdit = {
+                id_product_services: id_product_services,
                 valid_from: valid_from,
                 valid_to : valid_to,
                 ps_adult_cost: ps_adult_cost,

@@ -74,6 +74,8 @@ if (isset($_GET["m"])) {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         }   else if ($menu == "productservicescost") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        }   else if ($menu == "servicerate_claim") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">';
         } 
         ?>
 
@@ -879,6 +881,10 @@ if (isset($_GET["m"])) {
         <script src="js/booking_engine/script.js"></script>';
         } else if ($menu == "backoff_service_claim") {
             echo '<script src="js/boproduct_claim/models/boservicesclaimgrid.js"></script>';
+        } else if ($menu == "servicerate_claim") {
+            echo '<script src="js/boproduct_claim/claimScript.js"></script>
+            <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
+            <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>';

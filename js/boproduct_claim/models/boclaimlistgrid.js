@@ -1,13 +1,16 @@
 $(document).ready(function(){
-    allServicesGridClaim();
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product_service_cost = urlParams.get("id_product_services_cost"); 
+    allServicesGridClaim(id_product_service_cost);
 });
 
-function allServicesGridClaim() {
+function allServicesGridClaim(id_product_service_cost) {
     $('#tbl-productServicesClaim').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeserviceclaim/gridserviceclaim.php?t=" + encodeURIComponent(global_token),
+            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost,
             dataSrc : ''
         },
         "destroy": true,
@@ -31,19 +34,19 @@ function allServicesGridClaim() {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_services_cost"
+            "data" : "id_product_service_claim"
         }, {
-            "data" : "product_name"
-        }, {
-            "data" : "service_name"
-        }, {
-            "data" : "coast"
+            "data" : "allName"
         }, {
             "data" : "deptname"
         }, {
             "data" : "charges"
-        },  {
+        }, {
+            "data" : "currency"
+        }, {
             "data" : "allDate"
+        },  {
+            "data" : "specific_to"
         },  
             {
                 "targets": -1,
@@ -51,7 +54,9 @@ function allServicesGridClaim() {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServices"></i></div>'
+                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServices" data-toggle="modal" data-target="#modal-extraServicesClaim"></i></div>' +
+                '<i class="fa fa-fw fa-edit"></i>'+
+                '<i class="fa fa-fw fa-trash"></i>'
             }
         ]
     });
@@ -60,11 +65,4 @@ function allServicesGridClaim() {
         var data = table.row( $(this).parents('tr') ).data();
         serviceClaim(data);
     });
-}
-
-
-// Add Extra Service
-function serviceClaim(data) {
-    var params = jQuery.param(data)
-    window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_services_cost + "&data=" +params;
 }

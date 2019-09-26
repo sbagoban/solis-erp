@@ -40,19 +40,19 @@
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Charge</label>
 							<div class="col-sm-2">
-								<input type="text" class="form-control" id="charges" placeholder="UNIT/PAX">
+								<input type="text" class="form-control" id="charges" placeholder="UNIT/PAX" disabled>
 								<!-- for display only  --->
 							</div>
 							<div class="col-sm-8">
 								<div class="input-group">
-									<input type="text" class="form-control" id="ps_adult_claim">
-									<span class="input-group-addon">Adult</span>
-									<input type="text" class="form-control" id="ps_teen_claim">
-									<span class="input-group-addon">Teen</span>
-									<input type="text" class="form-control" id="ps_child_claim">
-									<span class="input-group-addon">Child</span>
-									<input type="text" class="form-control" id="ps_infant_claim">
-									<span class="input-group-addon">Infant</span>
+									<input type="number" class="form-control" id="ps_adult_claim">
+									<span class="input-group-addon" id="ps_adult_claim_addon">Adult</span>
+									<input type="number" class="form-control" id="ps_teen_claim">
+									<span class="input-group-addon" id="ps_teen_claim_addon">Teen</span>
+									<input type="number" class="form-control" id="ps_child_claim">
+									<span class="input-group-addon" id="ps_child_claim_addon">Child</span>
+									<input type="number" class="form-control" id="ps_infant_claim">
+									<span class="input-group-addon" id="ps_infant_claim_addon">Infant</span>
 								</div>
 								<br>
 							</div>
@@ -81,58 +81,77 @@
 									<option value="C">Market</option>
 								</select>
 							</div>
-							<div class="col-sm-7">
-								<select class="form-control select2" data-live-search="true" id="id_market" multiple>
-										<optgroup label="AFRICA">
+							<div class="col-sm-7" id="multiSpecificTo">
+								<select class="form-control select2" data-live-search="true" id="ddlMultiSpecificTo" multiple>
+										<!-- <optgroup label="AFRICA">
 											<option value="1">SOUTH AFRICA</option>
 											<option value="2">TANZANIA</option>
 											<option value="3">KENYA</option>
 											<option value="4">ZIMBABWE</option>
 											<option value="5">MALAWI</option>
-										</optgroup>
-										<optgroup label="EUROPE">
-											<option value="6">FRANCE</option>
-											<option value="7">BELGIUM</option>
-											<option value="8">ITALY</option>
-											<option value="9">SPAIN</option>
-											<option value="1O">GERMANY</option>
-										</optgroup>
+										</optgroup>-->
 								</select>
+							</div>
+							<div class="col-sm-7" id="multiSpecificMarket">
+								<!-- <select class="form-control select3" data-live-search="true" id="ddlmultiSpecificMarket" multiple>
+								</select> -->
+								<select id="ddlmultiSpecificMarket" name="ddlmultiSpecificMarket" class="ddlmultiSpecificMarket" multiple="multiple">
+                                </select>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-sm-2 control-label">Excluding</label>
-							<div class="col-sm-10">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" id="on_monday">Monday
-									</label>
-									<label>
-										<input type="checkbox" id="on_tuesday">Tuesday
-									</label>
-									<label>
-										<input type="checkbox" id="on_wednesday">Wednesday
-									</label>
-									<label>
-										<input type="checkbox" id="on_thursday">Thursday
-									</label>
-									<label>
-										<input type="checkbox" id="on_friday">Friday
-									</label>
-									<label>
-										<input type="checkbox" id="on_saturday">Saturday
-									</label>
-									<label>
-										<input type="checkbox" id="on_sunday">Sunday
-									</label>
+								<label class="col-sm-2 control-label">Excluding</label>
+								<div class="col-sm-10">
+									<div class="checkbox" style="display: flex">
+										<li class="checkBoxMain" id="ex_monday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_monday"/>
+												<span>Monday</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="ex_tuesday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_tuesday"/>
+												<span>Tuesday</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="ex_wednesday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_wednesday"/>
+												<span>Wednesday</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="ex_thursday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_thursday"/>
+												<span>Thursday</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="ex_friday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_friday"/>
+												<span>Friday</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="ex_saturday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_saturday"/>
+												<span>Saturday</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="ex_sunday1" style="display: none;">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="ex_sunday"/>
+												<span>Sunday</span>
+											</label>
+										</li>
+									</div>
 								</div>
 							</div>
-						</div>
 					
-						<div class="pager">
+						<div class="pager pull-right">
 							<button type="button" class="btn btn-primary" id="btn-saveServicesClaim">Save</button>
-							<button type="button" class="btn btn-primary" id="btn-deleteServicesClaim" data-dismiss="modal">Delete</button>
-							<button type="button" class="btn btn-primary" id="btn-backProductServices" onclick="history.go(-1);">Back</button>
+							<button type="button" class="btn btn-primary" id="btn-basckProductServices" onclick="history.go(-1);">Back</button>
 						</div>
 						
 							<!-- Main content -->
@@ -223,7 +242,6 @@
 						<label class="col-sm-2 control-label">Service</label>
 						<div class="col-sm-10">
 							<label class="control-label" id="product_name">product + service from product service + supplier name + Dept for + Coast</label>
-							<!-- To concat product name form product + service from product service + supplier name + Dept for + Coast display none editable --->
 						</div>
 					</div>
 					<table id="tbl-productServicesClaim" class="table table-bordered table-hover">
@@ -239,104 +257,7 @@
 								<th class="col-sm-2"></th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
-								<td>100989</td>
-								<td>CATAMARAN - DEEP INTO THE BLUE - VARANDA LTD</td>
-								<td>FIT</td>
-								<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-								<td>USD</td>
-								<td>01/10/2019 - 10/10/2020</td>
-								<td>WORLDWIDE</td>
-								<td>
-									<div class="btn-group">
-									  <i class="fa fa-fw fa-plus-circle" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-									  <i class="fa fa-fw fa-edit"></i>
-									  <i class="fa fa-fw fa-trash"></i>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>100999</td>
-								<td>CATAMARAN - SOUTH - BLUE ALIZEE</td>
-								<td>FIT</td>
-								<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-								<td>USD</td>
-								<td>01/10/2019 - 10/10/2020</td>
-								<td>SPECIFIC MARKET</td>
-								<td>
-									<div class="btn-group">
-									  <i class="fa fa-fw fa-plus-circle" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-									  <i class="fa fa-fw fa-edit"></i>
-									  <i class="fa fa-fw fa-trash"></i>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>100599</td>
-								<td>QUAD - CASELA - CASELA PARK</td>
-								<td>FIT</td>
-								<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-								<td>USD</td>
-								<td>01/10/2019 - 10/10/2020</td>
-								<td>SPECIFIC TOUR OPERATOR</td>
-								<td>
-									<div class="btn-group">
-									  <i class="fa fa-fw fa-plus-circle" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-									  <i class="fa fa-fw fa-edit"></i>
-									  <i class="fa fa-fw fa-trash"></i>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>100989</td>
-								<td>SPEED BOAT - ILE AUX CERF - VARANDA LTD</td>
-								<td>FIT</td>
-								<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-								<td>USD</td>
-								<td>01/10/2019 - 10/10/2020</td>
-								<td>WORLDWIDE</td>
-								<td>
-									<div class="btn-group">
-									  <i class="fa fa-fw fa-plus-circle" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-									  <i class="fa fa-fw fa-edit"></i>
-									  <i class="fa fa-fw fa-trash"></i>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>100999</td>
-								<td>ZIPLINE - SOUTH - TELFAIR</td>
-								<td>FIT</td>
-								<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-								<td>USD</td>
-								<td>01/10/2019 - 10/10/2020</td>
-								<td>SPECIFIC MARKET</td>
-								<td>
-									<div class="btn-group">
-									  <i class="fa fa-fw fa-plus-circle" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-									  <i class="fa fa-fw fa-edit"></i>
-									  <i class="fa fa-fw fa-trash"></i>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>100599</td>
-								<td>SUBMARINE - SCOOTER - BLUE SAFARI</td>
-								<td>FIT</td>
-								<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-								<td>USD</td>
-								<td>01/10/2019 - 10/10/2020</td>
-								<td>SPECIFIC TOUR OPERATOR</td>
-								<td>
-									<div class="btn-group">
-									  <i class="fa fa-fw fa-plus-circle" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-									  <i class="fa fa-fw fa-edit"></i>
-									  <i class="fa fa-fw fa-trash"></i>
-									</div>
-								</td>
-							</tr>
-						</tbody>
+						<tbody></tbody>
 					</table>
 				</div>
 				<!-- /.box-body -->
@@ -435,7 +356,6 @@ $(function () {
 	$('#valid_from,#valid_to').datepicker({
 		autoclose: true
 	});  
-	//Initialize Select2 Elements
-	$('.select2').select2();
+	$('.select2, .select3').select2(); 
 });
 </script>

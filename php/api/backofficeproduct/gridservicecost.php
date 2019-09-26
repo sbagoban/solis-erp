@@ -25,7 +25,7 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("
-SELECT PRS.id_product_services_cost, PRS.id_product_services, PRS.valid_from, PRS.valid_to, PRS.charges, 
+SELECT PRS.id_product_services_cost, PRS.id_product_services, PRS.valid_from, PRS.valid_to, PS.charges, 
 PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency,
 PS.service_name, TC.currency_code, PS.id_dept
 FROM product_services_cost PRS
