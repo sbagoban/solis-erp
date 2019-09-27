@@ -186,22 +186,39 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Extra Name</label>
 								<div class="col-sm-4">
-									<select type="text" class="form-control" id="id_product_services_extra">
+									<select type="text" class="form-control" id="id_product_services_extra_1">
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
+								<label class="col-sm-2 control-label">Cost Charge</label>
+									<div class="col-sm-2">
+										<select type="text" class="form-control" id="charges_1">
+											<option value="PAX">PAX</option>
+											<option value="UNIT">UNIT</option>
+										</select>
+									</div>
+							</div>
+							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
-									<div class="input-group">
-										<input type="number" class="form-control" id="ps_adult_cost_ex">
-										<span class="input-group-addon">Adult</span>
-										<input type="number" class="form-control" id="ps_teen_cost_ex">
-										<span class="input-group-addon">Teen</span>
-										<input type="number" class="form-control" id="ps_child_cost_ex">
-										<span class="input-group-addon">Child</span>
-										<input type="number" class="form-control" id="ps_infant_cost_ex">
-										<span class="input-group-addon">Infant</span>
+									<div id="blockPax" style="display: block">
+										<div class="input-group">
+											<input type="number" class="form-control" id="ps_adult_cost_ex">
+											<span class="input-group-addon">Adult</span>
+											<input type="number" class="form-control" id="ps_teen_cost_ex">
+											<span class="input-group-addon">Teen</span>
+											<input type="number" class="form-control" id="ps_child_cost_ex">
+											<span class="input-group-addon">Child</span>
+											<input type="number" class="form-control" id="ps_infant_cost_ex">
+											<span class="input-group-addon">Infant</span>
+										</div>
+									</div>
+									<div id="blockUnit" style="display: none">
+										<div class="input-group">
+											<input type="number" class="form-control" id="ps_adult_cost_ex">
+											<span class="input-group-addon">Unit</span>
+										</div>
 									</div>
 									<br>
 								</div>

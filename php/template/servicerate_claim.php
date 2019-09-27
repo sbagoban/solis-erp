@@ -82,14 +82,8 @@
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">
-								<select class="form-control select2" data-live-search="true" id="ddlMultiSpecificTo" multiple>
-										<!-- <optgroup label="AFRICA">
-											<option value="1">SOUTH AFRICA</option>
-											<option value="2">TANZANIA</option>
-											<option value="3">KENYA</option>
-											<option value="4">ZIMBABWE</option>
-											<option value="5">MALAWI</option>
-										</optgroup>-->
+								<select id="ddlMultiSpecificTo" name="ddlMultiSpecificTo" class="ddlMultiSpecificTo" multiple="multiple">
+                                </select>
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificMarket">
@@ -283,8 +277,9 @@
 							<div class="form-group"> 
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product_services_extra_claim" style="display: none" value="0">
-									<input type="text" class="form-control" id="id_product_services_extra_cost" style="display: none" value="0">
+									<div id="id_product_services_extra_cost" style="display: none">0</div>
 									<div id="id_product_services_claim" style="display: none">0</div>
+									<div id="product_services_claim_charges" style="display: none">0</div>
 									<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
 								</div>
@@ -294,7 +289,6 @@
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_product_services_extra">
 										<!-- To modify - select from db -->
-										<option value="0">SELECT</option>
 									</select>
 								</div>
 							</div>
@@ -302,22 +296,27 @@
 								<label class="col-sm-2 control-label">Claim</label>
 								<div class="col-sm-10">
 									<div class="input-group">
-										<input type="text" class="form-control" id="ps_adult_cost">
-										<span class="input-group-addon">Adult</span>
-										<input type="text" class="form-control" id="ps_teen_cost">
-										<span class="input-group-addon">Teen</span>
-										<input type="text" class="form-control" id="ps_child_cost">
-										<span class="input-group-addon">Child</span>
-										<input type="text" class="form-control" id="ps_infant_cost">
-										<span class="input-group-addon">Infant</span>
+										<div  id="blockPax">
+											<input type="number" class="form-control" id="ps_adult_cost">
+											<span class="input-group-addon">Adult</span>
+											<input type="number" class="form-control" id="ps_teen_cost">
+											<span class="input-group-addon">Teen</span>
+											<input type="number" class="form-control" id="ps_child_cost">
+											<span class="input-group-addon">Child</span>
+											<input type="number" class="form-control" id="ps_infant_cost">
+											<span class="input-group-addon">Infant</span>
+										</div>
+										<div id="blockUnit" style="display: none;">
+											<input type="number" class="form-control" id="ps_adult_cost">
+											<span class="input-group-addon">UNIT</span>
+										</div>
 									</div>
 									<br>
 								</div>
 							</div>
 							
 							<div class="pager">
-								<button type="button" class="btn btn-primary" id="btn-saveProductServicesExtraCost">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-deleteProductServicesExtraCost" data-dismiss="modal">Delete</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraCost">Save</button>
 							</div>
 						</div>
 						<!-- /.box-body -->

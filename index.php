@@ -883,6 +883,7 @@ if (isset($_GET["m"])) {
             echo '<script src="js/boproduct_claim/models/boservicesclaimgrid.js"></script>';
         } else if ($menu == "servicerate_claim") {
             echo '<script src="js/boproduct_claim/claimScript.js"></script>
+            <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
             <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>';
         } else if ($menu == "backoff_product") { 

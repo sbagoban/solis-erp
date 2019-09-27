@@ -17,6 +17,7 @@ function allServicesGridClaim(id_product_service_cost) {
         "bProcessing": true,
         "bAutoWidth": false,
         "responsive": true,
+        "pageLength": 5,
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"
@@ -63,7 +64,7 @@ function allServicesGridClaim(id_product_service_cost) {
     $('#tbl-productServicesClaim tbody').on( 'click', '#btnAddExtraServicesClaim', function () {
         var table = $('#tbl-productServicesClaim').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        serviceClaim(data);
+        addExtraServiceClaim(data);
     });    
     $('#tbl-productServicesClaim tbody').on( 'click', '#btnDeleteClaim', function () {
         var table = $('#tbl-productServicesClaim').DataTable();

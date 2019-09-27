@@ -32,12 +32,10 @@ var helpersDropdownExtraExist = {
         }
     }
 }
-
 /////////////////////////////////////////
 // model --> fetch Api extra created ////
 /////////////////////////////////////////
-var id_product_services = window.location.href.split('psid=').pop();
-const url_extra_created = "php/api/backofficeproduct/comboextraforservices.php?t=" + encodeURIComponent(global_token) + "&id_product_services=" + id_product_services; 
+const url_extra_created = "php/api/backofficeproduct/comboextraforservices.php?t=" + encodeURIComponent(global_token); 
 
 $.ajax({
     url : url_extra_created,
@@ -45,7 +43,7 @@ $.ajax({
     success : function(data) {
         helpersDropdownExtraCreated.buildDropdown(
             jQuery.parseJSON(data),
-            $('#id_product_services_extra'),
+            $('#id_product_services_extra_1'),
             'Select an option' 
         );
     }, 

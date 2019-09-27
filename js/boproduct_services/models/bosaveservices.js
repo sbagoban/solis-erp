@@ -96,7 +96,7 @@ $('#btn-saveProductServices').click(function () {
             age_teen_to : age_teen_to,
             min_pax : min_pax,
             max_pax : max_pax,
-            id_creditor : id_creditors
+            id_creditor : id_creditor
         };
     
         console.log(objService);
