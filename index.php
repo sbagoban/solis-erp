@@ -72,7 +72,11 @@ if (isset($_GET["m"])) {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         } else if ($menu == "backoff_service_claim") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
-        }  
+        }   else if ($menu == "productservicescost") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        }   else if ($menu == "servicerate_claim") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        } 
         ?>
 
         <!-- Sandeep End -->
@@ -452,6 +456,8 @@ if (isset($_GET["m"])) {
                         include 'php/template/productservices.php';
                     }  else if ($menu == "productservicescost") {
                         include 'php/template/productservicescost.php';
+                    }  else if ($menu == "servicerate_claim") {
+                        include 'php/template/servicerate_claim.php';
                     } 
                     else {
                         echo '<div id="main_body" style="position:relative; top:0px; left:0px; width: 1000px; height: 550px; "></div>';
@@ -874,8 +880,12 @@ if (isset($_GET["m"])) {
         <script src="js/boexcursions_rate/models/boexcursions_rate_tarif.js"></script>
         <script src="js/booking_engine/script.js"></script>';
         } else if ($menu == "backoff_service_claim") {
-            echo '<script src="js/boproduct_claim/control/serviceclaimctrl.js"></script>
-                <script src="js/boproduct_claim/models/boservicegrid.js"></script>';
+            echo '<script src="js/boproduct_claim/models/boservicesclaimgrid.js"></script>';
+        } else if ($menu == "servicerate_claim") {
+            echo '<script src="js/boproduct_claim/claimScript.js"></script>
+            <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
+            <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
+            <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>';
@@ -883,10 +893,17 @@ if (isset($_GET["m"])) {
             echo '<script src="js/boproduct_services/models/bosaveservices.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>
             <script src="js/boproduct_services/product_script.js"></script>
-            <script src="js/boproduct_services/models/boservicesgrid.js"></script>';
+            <script src="js/boproduct_services/models/boservicesgrid.js"></script>
+            <script src="js/boproduct_services/models/bosaveextraservice.js"></script>
+            <script src="js/boproduct_services/extraservices_script.js"></script>
+            <script src="js/boproduct_services/models/boextraservicegrid.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
-            <script src="js/boproduct_services/models/boservicecost.js"></script>';
+            <script src="js/boproduct_services/models/boservicecost.js"></script>            
+            <script src="js/boproduct_services/models/boservicecostgrid.js"></script>
+            <script src="js/boproduct_services/models/bosaveextraservicescost.js"></script>
+            <script src="js/boproduct_services/extraservices_script.js"></script>
+            <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>';
         }
 ?>
         <div id = "alert_placeholder"></div>

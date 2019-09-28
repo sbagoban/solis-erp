@@ -59,6 +59,7 @@
         $age_teen_to = trim($_POST["age_teen_to"]);
         $min_pax = trim($_POST["min_pax"]);
         $max_pax = trim($_POST["max_pax"]);
+        $id_creditor = trim($_POST["id_creditor"]);
 
         $con = pdo_con();
         $sql = "UPDATE product_services SET 
@@ -86,7 +87,8 @@
                 age_child_to =:age_child_to,
                 age_teen_to =:age_teen_to,
                 min_pax =:min_pax,
-                max_pax =:max_pax
+                max_pax =:max_pax,
+                id_creditor =:id_creditor
                 WHERE id_product_services=:id_product_services";
 
         $stmt = $con->prepare($sql);                        
@@ -116,7 +118,8 @@
                 ":age_child_to" => $age_child_to,
                 ":age_teen_to" => $age_teen_to,
                 ":min_pax" => $min_pax,
-                ":max_pax" => $max_pax));
+                ":max_pax" => $max_pax,
+                ":id_creditor" => $id_creditor));
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

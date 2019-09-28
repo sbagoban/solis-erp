@@ -28,6 +28,8 @@ $('#btn-saveProductServices').click(function () {
     var chksaturday = document.getElementById("on_saturday");
     var chksunday = document.getElementById("on_sunday");
 
+    var id_creditor = $('#id_creditor').val();
+
     if (chkmonday.checked) {
         on_monday = 1;
     } else if (chkmonday.checked == false) {
@@ -93,7 +95,8 @@ $('#btn-saveProductServices').click(function () {
             age_child_to : age_child_to,
             age_teen_to : age_teen_to,
             min_pax : min_pax,
-            max_pax : max_pax
+            max_pax : max_pax,
+            id_creditor : id_creditor
         };
     
         console.log(objService);
@@ -141,7 +144,8 @@ $('#btn-saveProductServices').click(function () {
             age_child_to : age_child_to,
             age_teen_to : age_teen_to,
             min_pax : min_pax,
-            max_pax : max_pax
+            max_pax : max_pax,
+            id_creditor : id_creditor
         };
         $.ajax({
             url : url_edit_service,
@@ -188,4 +192,5 @@ function resetServicesForm() {
     $("#on_friday").prop("checked", false);
     $("#on_saturday").prop("checked", false);
     $("#on_sunday").prop("checked", false);
+    $('#id_creditor').val('');
 }

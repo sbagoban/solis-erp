@@ -29,7 +29,7 @@ $query_c = $con->prepare("
 SELECT PRS.id_product_services, PRS.id_product, PRS.service_name, PRS.charges, PRS.valid_from, PRS.valid_to, PRS.transfer_included,
 PRS.id_dept, PRS.id_countries, PRS.id_coasts, PR.product_name, PRS.id_dept, DP.deptname, PRS.active, PRS.id_tax, PRS.charges, PRS.duration,
 PRS.comments, PRS.cancellation, PRS.description, PRS.age_child_to, PRS.age_inf_to, PRS.age_teen_to, PRS.min_pax, PRS.max_pax, 
-PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday
+PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday, PRS.id_creditor
 FROM product_services PRS
 JOIN product PR on PRS.id_product = PR.id_product
 JOIN tbldepartments DP on PRS.id_dept = DP.id
@@ -74,7 +74,8 @@ if ($row_count_c > 0) {
             'on_thursday' => $row['on_thursday'], 
             'on_friday' => $row['on_friday'],
             'on_saturday' => $row['on_saturday'],            
-            'on_sunday' => $row['on_sunday']
+            'on_sunday' => $row['on_sunday'],            
+            'id_creditor' => $row['id_creditor']
         );
     }
     $myData = $services;
@@ -111,7 +112,8 @@ if ($row_count_c > 0) {
         'on_thursday' => '-',
         'on_friday' => '-',
         'on_saturday' => '-', 
-        'on_sunday' => '-'
+        'on_sunday' => '-',
+        'id_creditor' => '-'
     );
     $myData = $services;
     echo json_encode($myData);
