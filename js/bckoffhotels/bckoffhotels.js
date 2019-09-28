@@ -45,7 +45,7 @@ function hotels()
             Array('dateperiods', 'obj', 'Manage <b>Date Periods</b>', 'gantt_chart.png'),
             Array('contracts', 'obj', 'Manage <b>Contracts</b>', 'contract.png'),
             Array('specialoffers', 'obj', 'Manage <b>Special Offers</b>', 'new_mail.png'),
-            Array('inventory', 'obj', 'Manage <b>Inventory</b>', 'new_mail.png'),
+            Array('inventory', 'obj', 'Manage <b>Inventory</b>', 'inventory.png'),
             Array('separator2', 'sep'),
             Array('delete', 'obj', 'Delete Selected Hotel', 'delete.png')
             );

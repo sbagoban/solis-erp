@@ -52,12 +52,13 @@ $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
         from tblspecial_offer spo
         left join tblratecodes rc on spo.rate_fk = rc.id
         WHERE spo.hotel_fk = :hotel_fk AND spo.deleted = 0 
-        AND spo.id NOT IN 
-        (
+        
+        -- AND spo.id NOT IN 
+        -- (
             -- get lists of spos that have not already been attached to links of this hotel
-            SELECT a.spofk from tblspecial_offer_link_spos a
-            inner join tblspecial_offer_link  b on a.linkfk = b.id
-            WHERE b.hotel_fk = 19 and b.deleted = 0 )
+        --    SELECT a.spofk from tblspecial_offer_link_spos a
+        --    inner join tblspecial_offer_link  b on a.linkfk = b.id
+        --    WHERE b.hotel_fk = 19 and b.deleted = 0 )
         ) A,
         (
         select spo_fk, 
