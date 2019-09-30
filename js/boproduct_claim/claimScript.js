@@ -78,29 +78,38 @@ var helpersDropdownExtraCreated = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_product_services_extra_cost + '" name="'+result.extra_name+result.charges+'">' + result.extra_name + '</option>');
-                
+                console.log(result, '<<<<----');
+                dropdown.append('<option value="' + result.id_product_services_extra_cost + ','+result.charges+'" name="'+result.extra_name+'">' + result.extra_name + '</option>');
                 $("#blockPax").css("display", "none");
                 $("#blockUnit").css("display", "none");
-
-                var charges = $('#id_product_services_extra').find(":selected").text();
-                console.log(charges);
             });
         }
+        
         $("#id_product_services_extra").on('change', function() {
-                    
-            document.getElementById("product_services_claim_charges").innerHTML = result.charges;
-            document.getElementById("id_product_services_extra_cost").innerHTML = result.id_product_services_extra_cost;
-            console.log(result.charges, 'sdsdgdfg');
-            if (result.charges == 'UNIT') { 
-                $("#blockPax").css("display", "none");
-                $("#blockUnit").css("display", "block");
+            var charges = $('#id_product_services_extra').val().split(',');
+            document.getElementById("product_services_claim_charges").innerHTML = charges[1];
+            document.getElementById("id_product_services_extra_cost").innerHTML = charges[0];
+            if (charges[1] == 'UNIT') {
+                $("#ps_teen_claim_1").css("display", "none");
+                $("#ps_child_claim_1").css("display", "none");                
+                $("#ps_infant_claim_1").css("display", "none");
+                $("#ps_adult_claim_1").css("display", "block");
+                $("#ps_teen_claim_11").css("display", "none");
+                $("#ps_child_claim_11").css("display", "none");                
+                $("#ps_infant_claim_11").css("display", "none");
+                $("#ps_adult_claim_11").css("display", "block");
+                document.getElementsByName('ps_adult_claim_1')[0].placeholder='Unit';
             } else {
-                $("#blockPax").css("display", "block");
-                $("#blockUnit").css("display", "none");
+                document.getElementsByName('ps_adult_claim_1')[0].placeholder='Adult';
+                $("#ps_teen_claim_1").css("display", "block");
+                $("#ps_child_claim_1").css("display", "block");                
+                $("#ps_infant_claim_1").css("display", "block");
+                $("#ps_adult_claim_1").css("display", "block");
+                $("#ps_teen_claim_11").css("display", "block");
+                $("#ps_child_claim_11").css("display", "block");                
+                $("#ps_infant_claim_11").css("display", "block");
+                $("#ps_adult_claim_11").css("display", "block");
             }
         });
     }
 }
-// var charges = $('#id_product_services_extra').find(":selected").text();
-// console.log(charges);

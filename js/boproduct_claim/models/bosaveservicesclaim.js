@@ -131,11 +131,17 @@ function loadCountriesClaim() {
                     enableCaseInsensitiveFiltering: true,
                     onChange: function(element, checked) {
                         var brands = $('#ddlmultiSpecificMarket option:selected');
-                        var selected = [];
+                        var selectedCountriesArr = [];
                         $(brands).each(function(index, brand){
-                            selected.push($(this).val());
-                            selectedMarket = selected.join();
+                            selectedRatesType = $(this).val();
+                            selectedCountriesArr.push(selectedRatesType);
+                            selectedCountriesArrJoin = selectedCountriesArr.join();
                         });
+                        if (checked) {
+                            saveCountriesMultiselectSpec(selectedCountriesArrJoin);
+                        } else {
+                            //saveCountriesMultiselect1(null);
+                        }
                     }
                 });
             }
@@ -286,6 +292,28 @@ $("#btn-saveServicesClaim").click(function () {
     }
     allServicesGridClaim(id_product_service_cost);
 });
+
+
+// Save Countries
+function saveCountriesMultiselectSpec(selectedMarket) {
+    $('#btn-saveServicesClaim').click(function () {
+            const url_save_countries = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token); 
+            //var jsonString = JSON.stringify(selectedCountriesArr);
+            objSelectedCountries = {
+                id_product_service_cost: -2,
+                id_countries: selectedMarket
+            };
+            $.ajax({
+                type: "POST",
+                url: url_save_countries,
+                data: objSelectedCountries,
+                cache: false,
+                success: function(data) {
+                    console.log("OK", data);
+                }
+            });
+    });
+}
 
 function resetProductServicesClaim() {
     $('#valid_from').val('');

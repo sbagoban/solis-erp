@@ -9,15 +9,14 @@ function addExtraServiceClaim(data) {
         var valid_to = data.valid_to;
         var id_dept = data.id_dept;
         var specific_to = data.specific_to;
-        // Charges should be charges for extra
-        var ps_adult_cost  = $('#ps_adult_cost').val();
-        var ps_teen_cost  = $('#ps_teen_cost').val();
-        var ps_child_cost  = $('#ps_child_cost').val();
-        var ps_infant_cost  = $('#ps_infant_cost').val();
+        var ps_adult_claim  = $('#ps_adult_claim_1').val();
+        var ps_teen_claim  = $('#ps_teen_claim_1').val();
+        var ps_child_claim  = $('#ps_child_claim_1').val();
+        var ps_infant_claim  = $('#ps_infant_claim_1').val();
         var id_currency = data.id_currency;
         var currency = data.currency;
     
-        const url_save_extraservice_claim = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token);
+        const url_save_extraservice_claim = "php/api/backofficeserviceclaim/saveextraserviceclaim.php?t=" + encodeURIComponent(global_token);
         var objExtraServiceClaim = {
             id_product_services_extra_claim: -1,
             id_product_services_claim: id_product_services_claim, 
@@ -27,10 +26,10 @@ function addExtraServiceClaim(data) {
             valid_to: valid_to, 
             id_dept: id_dept, 
             specific_to: specific_to, 
-            ps_adult_cost: ps_adult_cost, 
-            ps_teen_cost: ps_teen_cost, 
-            ps_child_cost: ps_child_cost, 
-            ps_infant_cost: ps_infant_cost, 
+            ps_adult_claim: ps_adult_claim, 
+            ps_teen_claim: ps_teen_claim, 
+            ps_child_claim: ps_child_claim, 
+            ps_infant_claim: ps_infant_claim, 
             id_currency: id_currency, 
             currency: currency, 
             id_product_services_extra_cost: id_product_services_extra_cost, 
@@ -42,21 +41,21 @@ function addExtraServiceClaim(data) {
             method : "POST",
             data : objExtraServiceClaim,                                                                                                                                                                                                                                                                                                                                                                                                                
             success : function(data){
-                resetExtraServicesClaim();;
+                resetExtraServicesClaim();
                 $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
             error: function(error) {
                 console.log('Error ${error}');
             }
         });
+        extraServiceGridClaim(data);
     });
 }
 
-
 function resetExtraServicesClaim() {
     $('#id_product_services_extra').val('');
-    $('#ps_adult_cost').val('');
-    $('#ps_teen_cost').val('');
-    $('#ps_child_cost').val('');
-    $('#ps_infant_cost').val('');
+    $('#ps_adult_claim').val('');
+    $('#ps_teen_claim ').val('');
+    $('#ps_child_claim').val('');
+    $('#ps_infant_claim').val('');
 }

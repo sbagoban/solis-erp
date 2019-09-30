@@ -126,7 +126,17 @@ try {
             ":ex_saturday" => $ex_saturday,
             ":ex_sunday" => $ex_sunday));
         
-        $id_product_service_claim = $con->lastInsertId();
+            $id_product_service_claim = $con->lastInsertId(); 
+
+            if ($id_product_service_cost == "-2") { 
+                    $sql1 = "INSERT INTO product_services_claim_countries (id_product_service_claim, id_countries) 
+                VALUES (1, ( " . $_POST["id_countries"] . "  ))";
+    
+                $stmt1 = $con->prepare($sql1);
+                $stmt1->execute(array(
+                    ":id_product_service_claim" => 1, 
+                    ":id_countries" => $_POST["id_countries"]));
+            }
     } else {
         $sql = "UPDATE product_service_claim SET 
                 id_product_service_cost=:id_product_service_cost, 

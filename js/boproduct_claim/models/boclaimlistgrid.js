@@ -75,6 +75,7 @@ function allServicesGridClaim(id_product_service_cost) {
         var table = $('#tbl-productServicesClaim').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         editServiceClaim(data);
+        extraServiceGridClaim(data);
     });
 }
 
@@ -102,7 +103,6 @@ function deleteServiceClaim(data) {
 
 function editServiceClaim(data) {
     document.getElementById("id_product_services_claim").innerHTML = data.id_product_service_claim;
-    console.log(data);
     $('#valid_from').val(data.valid_from);
     $('#valid_to').val(data.valid_to);
     $('#ps_adult_claim').val(data.ps_adult_claim);

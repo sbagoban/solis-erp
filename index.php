@@ -885,7 +885,8 @@ if (isset($_GET["m"])) {
             echo '<script src="js/boproduct_claim/claimScript.js"></script>
             <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
-            <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>';
+            <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>
+            <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>';
