@@ -62,6 +62,7 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="css/editor.css">
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
         <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
+        <!--<link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>-->
         <link rel="stylesheet" href="css/boservicesclaim.css">
         <?php
         $menu = "";
@@ -446,6 +447,8 @@ if (isset($_GET["m"])) {
                         include 'php/template/norights.php';
                     } else if ($menu == "managebookings") {
                         include 'php/template/booking_engine.php';
+                    } else if ($menu == "bookingSystem") {
+                        include 'php/application/booking/index.php';
                     } else if ($menu == "backoff_service_claim") {
                         include 'php/template/servicerate.php';
                     } else if ($menu == "backoff_excursions") {
