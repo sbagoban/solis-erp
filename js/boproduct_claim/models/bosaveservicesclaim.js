@@ -66,7 +66,6 @@ $("#specific_to").change(function () {
 
 // Load Tour Operator depending on country ID
 function loadTourOperatorClaim() {
-    
     $("#multiSpecificMarket").css("display", "none");
     const url_to = "php/api/backofficeserviceclaim/tocombo.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
@@ -75,17 +74,35 @@ function loadTourOperatorClaim() {
         dataType: "json",
         cache: false,
         success: function(data)
-            { 
-                // Clear multiselect
+            {
+                $("#").empty();
                 $.each(data, function (key, val) {
-                    $("#ddlMultiSpecificTo").append('<option value="' + val.id + '">' + val.toname + '</option>');
+                $("#ddlMultiSpecificTo").append('<option value="' + val.id + '">' + val.toname + '</option>');
+                toname = val.toname;
+            });                
+                $("#ddlMultiSpecificTo").attr('multiple', 'multiple'); 
+                $("#ddlMultiSpecificTo").multiselect({
+                    buttonWidth: '313px',
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Select an Option',
+                    enableFiltering: true,
+                    enableHTML: true,
+                    buttonClass: 'btn large btn-default',
+                    enableCaseInsensitiveFiltering: true,
+                    onChange: function(element, checked) {
+                        var brands = $('#ddlMultiSpecificTo option:selected');
+                        var selected = [];
+                        $(brands).each(function(index, brand){
+                            selected.push($(this).val());
+                            selectedTo = selected.join();
+                        });
+                        if (checked) {
+                            saveTourOperatorMultiselect(selectedTo, idBlockRates, toname);
+                        } 
+                    }
                 });
-            }, 
-            error: function (error) 
-                {
-                    console.log('chk error', error);
-                }
-            },
+            }
+        }
     );
 }
 
@@ -101,8 +118,7 @@ function loadCountriesClaim() {
             {
                 $("#").empty();
                 $.each(data, function (key, val) {
-                $("#ddlmultiSpecificMarket").append('<optgroup data-subtext="' + val.marketfk + '" label="' + val.market_name + '"></optgroup>');
-                $("#ddlmultiSpecificMarket").append('<option value="' + val.id + '"  data-subtext="' + val.marketfk + '">' + val.country_name + '</option>');
+                $("#ddlmultiSpecificMarket").append('<option value="' + val.id + '"  data-subtext="' + val.marketfk + '">'+ val.market_name + ' - ' + val.country_name + '</option>');
             });                
                 $("#ddlmultiSpecificMarket").attr('multiple', 'multiple'); 
                 $("#ddlmultiSpecificMarket").multiselect({
@@ -115,12 +131,17 @@ function loadCountriesClaim() {
                     enableCaseInsensitiveFiltering: true,
                     onChange: function(element, checked) {
                         var brands = $('#ddlmultiSpecificMarket option:selected');
-                        var selected = [];
+                        var selectedCountriesArr = [];
                         $(brands).each(function(index, brand){
-                            selected.push($(this).val());
-                            selectedMarket = selected.join();
-                            console.log('-->', selectedMarket);
+                            selectedRatesType = $(this).val();
+                            selectedCountriesArr.push(selectedRatesType);
+                            selectedCountriesArrJoin = selectedCountriesArr.join();
                         });
+                        if (checked) {
+                            saveCountriesMultiselectSpec(selectedCountriesArrJoin);
+                        } else {
+                            //saveCountriesMultiselect1(null);
+                        }
                     }
                 });
             }
@@ -225,7 +246,6 @@ $("#btn-saveServicesClaim").click(function () {
             method : "POST",
             data : objProductServiceClaim,                                                                                                                                                                                                                                                                                                                                                                                                                
             success : function(data){
-                console.log('value', data);
                 resetProductServicesClaim();;
                 $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
@@ -262,7 +282,6 @@ $("#btn-saveServicesClaim").click(function () {
             method : "POST",
             data : objProductServiceClaimUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                
             success : function(data){
-                console.log('value', data);
                 resetProductServicesClaim();;
                 $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
@@ -273,6 +292,28 @@ $("#btn-saveServicesClaim").click(function () {
     }
     allServicesGridClaim(id_product_service_cost);
 });
+
+
+// Save Countries
+function saveCountriesMultiselectSpec(selectedMarket) {
+    $('#btn-saveServicesClaim').click(function () {
+            const url_save_countries = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token); 
+            //var jsonString = JSON.stringify(selectedCountriesArr);
+            objSelectedCountries = {
+                id_product_service_cost: -2,
+                id_countries: selectedMarket
+            };
+            $.ajax({
+                type: "POST",
+                url: url_save_countries,
+                data: objSelectedCountries,
+                cache: false,
+                success: function(data) {
+                    console.log("OK", data);
+                }
+            });
+    });
+}
 
 function resetProductServicesClaim() {
     $('#valid_from').val('');

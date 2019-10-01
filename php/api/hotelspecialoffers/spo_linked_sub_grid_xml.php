@@ -58,7 +58,7 @@ FROM
 	where sol.deleted = 0
     group by sol.id
 ) B
-WHERE A.sol_id = B.sol_id";
+WHERE A.sol_id = B.sol_id ORDER BY A.sol_id ASC";
 
 $query_parent = $con->prepare($sql);
 $query_parent->execute(array(":hotel_fk" => $hotelfk, ":spofk"=>$spoid));
@@ -162,6 +162,13 @@ while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
     $spo_count = $rw["spo_count"];
 
     $bgcolor = "background-color:#DCFAE7;";
+    $forecolor = "color:black;";
+    
+    if($spoid == $spo_id)
+    {
+        $forecolor = "color:blue; font-weight:bold;";
+    }
+    
     $topborder = "";
 
     if ($spo_count == 0) {
@@ -185,14 +192,14 @@ while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
 
     $xml .= "<cell style='$cellstyle $topborder' $rowspan ><![CDATA[$link_description]]></cell>";
     $xml .= "<cell style='$cellstyle $topborder' $rowspan ><![CDATA[$link_active]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$spo_template]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$spo_spocode]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$spo_sponame]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$spo_touroperators]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$cumulative]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$activeinternal]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$activeexternal]]></cell>";
-    $xml .= "<cell style='$cellstyle $topborder $bgcolor'><![CDATA[$spo_spo_type]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_template]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_spocode]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_sponame]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_touroperators]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$cumulative]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$activeinternal]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$activeexternal]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_spo_type]]></cell>";
 
     $xml .= "</row>";
 

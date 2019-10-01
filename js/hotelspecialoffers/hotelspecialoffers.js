@@ -886,12 +886,6 @@ function hotelspecialoffers()
         {type: "settings", position: "label-left", id: "form_name"},
         {type: "hidden", name: "hotel_fk"},
         {type: "block", width: 900, list: [
-                {type: "input", name: "id", label: "SPO ID:", labelWidth: "110",
-                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", readonly: true
-                }
-            ]},
-        {type: "block", width: 900, list: [
                 {type: "checkbox", name: "active_internal", label: "Active Internal"},
                 {type: "newcolumn"},
                 {type: "checkbox", name: "active_external", label: "Active External"},
@@ -905,6 +899,11 @@ function hotelspecialoffers()
                 },
                 {type: "newcolumn"},
                 {type: "checkbox", name: "non_refundable", label: "Non Refundable"},
+                {type: "newcolumn"},
+                {type: "input", name: "id", label: "SPO ID:", 
+                    labelHeight: "22", inputWidth: "70", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", readonly: true
+                }
             ]},
         {type: "block", width: 900, list: [
                 {type: "input", name: "sponame", label: "Name:",
@@ -1298,7 +1297,7 @@ function hotelspecialoffers()
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "adult_max",
-                    label: "Max Adults:",labelWidth: "0",
+                    label: "Max Adults:",labelWidth: "100",
                     validate: "ValidNumeric",
                     labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
@@ -1318,7 +1317,7 @@ function hotelspecialoffers()
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "children_max",
-                    label: "Max Children:",labelWidth: "0",
+                    label: "Max Children:",labelWidth: "100",
                     validate: "ValidNumeric",
                     labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
@@ -1352,19 +1351,19 @@ function hotelspecialoffers()
     });
 
     var cboMinStay = form_conditions.getCombo("min_stay_priority");
-    cboMinStay.addOption([{value: "NONE", text: "NONE", img_src: "images/rollover.png"}]);
-    cboMinStay.addOption([{value: "SPO ONLY", text: "SPO ONLY", img_src: "images/rollover.png"}]);
-    cboMinStay.addOption([{value: "SPO THEN CONTRACT", text: "SPO THEN CONTRACT", img_src: "images/rollover.png"}]);
+    cboMinStay.addOption([{value: "NONE", text: "NONE", img_src: "images/priority.png"}]);
+    cboMinStay.addOption([{value: "SPO ONLY", text: "SPO ONLY", img_src: "images/priority.png"}]);
+    cboMinStay.addOption([{value: "SPO THEN CONTRACT", text: "SPO THEN CONTRACT", img_src: "images/priority.png"}]);
     cboMinStay.readonly(true);
     
     var cboAdMaxCategory = form_conditions.getCombo("adult_max_category");
-    cboAdMaxCategory.addOption([{value: "LIMIT", text: "LIMIT", img_src: "images/rollover.png"}]);
-    cboAdMaxCategory.addOption([{value: "APPLICABLE", text: "APPLICABLE", img_src: "images/rollover.png"}]);
+    cboAdMaxCategory.addOption([{value: "LIMIT", text: "LIMIT", img_src: "images/supply.png"}]);
+    cboAdMaxCategory.addOption([{value: "APPLICABLE", text: "APPLICABLE", img_src: "images/supply.png"}]);
     cboAdMaxCategory.readonly(true);
     
     var cboChMaxCategory = form_conditions.getCombo("children_max_category");
-    cboChMaxCategory.addOption([{value: "LIMIT", text: "LIMIT", img_src: "images/rollover.png"}]);
-    cboChMaxCategory.addOption([{value: "APPLICABLE", text: "APPLICABLE", img_src: "images/rollover.png"}]);
+    cboChMaxCategory.addOption([{value: "LIMIT", text: "LIMIT", img_src: "images/supply.png"}]);
+    cboChMaxCategory.addOption([{value: "APPLICABLE", text: "APPLICABLE", img_src: "images/supply.png"}]);
     cboChMaxCategory.readonly(true);
 
     form_conditions.attachEvent("onChange", function (id, value) {
@@ -1581,10 +1580,10 @@ function hotelspecialoffers()
     });
 
     var cboRollOverBasis = form_discounts.getCombo("discount_basis");
-    cboRollOverBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboRollOverBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboRollOverBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboRollOverBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboRollOverBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboRollOverBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboRollOverBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboRollOverBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboRollOverBasis.readonly(true);
 
     //=====================================================================================
@@ -1735,24 +1734,24 @@ function hotelspecialoffers()
     cboWeddingCertBasis.readonly(true);
 
     var cboWeddingDiscountBothBasis = form_wedding_discounts.getCombo("wedding_apply_discount_both_basis");
-    cboWeddingDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingDiscountBothBasis.readonly(true);
 
     var cboWeddingDiscountGroomBasis = form_wedding_discounts.getCombo("wedding_apply_discount_groom_basis");
-    cboWeddingDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingDiscountGroomBasis.readonly(true);
 
     var cboWeddingDiscountBrideBasis = form_wedding_discounts.getCombo("wedding_apply_discount_bride_basis");
-    cboWeddingDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingDiscountBrideBasis.readonly(true);
 
 
@@ -1954,9 +1953,9 @@ function hotelspecialoffers()
     var form_familydiscounts = family_discount_layout.cells("a").attachForm(str_frm_familydiscount);
 
     var cboFamilyDiscountAppRoom = form_familydiscounts.getCombo("family_offer_room_applicable");
-    cboFamilyDiscountAppRoom.addOption([{value: "both", text: "Both", img_src: "images/rollover.png"}]);
-    cboFamilyDiscountAppRoom.addOption([{value: "share", text: "Share", img_src: "images/rollover.png"}]);
-    cboFamilyDiscountAppRoom.addOption([{value: "own", text: "Own", img_src: "images/rollover.png"}]);
+    cboFamilyDiscountAppRoom.addOption([{value: "both", text: "Both", img_src: "images/room_32.png"}]);
+    cboFamilyDiscountAppRoom.addOption([{value: "share", text: "Share", img_src: "images/room_32.png"}]);
+    cboFamilyDiscountAppRoom.addOption([{value: "own", text: "Own", img_src: "images/room_32.png"}]);
     cboFamilyDiscountAppRoom.readonly(true);
 
 
@@ -2164,24 +2163,24 @@ function hotelspecialoffers()
     });
 
     var cboWeddingPartyDiscountBothBasis = form_wedding_party_discounts.getCombo("wedding_apply_discount_both_basis");
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingPartyDiscountBothBasis.readonly(true);
 
     var cboWeddingPartyDiscountGroomBasis = form_wedding_party_discounts.getCombo("wedding_apply_discount_groom_basis");
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingPartyDiscountGroomBasis.readonly(true);
 
     var cboWeddingPartyDiscountBrideBasis = form_wedding_party_discounts.getCombo("wedding_apply_discount_bride_basis");
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingPartyDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingPartyDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingPartyDiscountBrideBasis.readonly(true);
 
 
@@ -2377,24 +2376,24 @@ function hotelspecialoffers()
 
 
     var cboWeddingAnniversaryDiscountBothBasis = form_wedding_anniversary_discounts.getCombo("wedding_apply_discount_both_basis");
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountBothBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingAnniversaryDiscountBothBasis.readonly(true);
 
     var cboWeddingAnniversaryDiscountGroomBasis = form_wedding_anniversary_discounts.getCombo("wedding_apply_discount_groom_basis");
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountGroomBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingAnniversaryDiscountGroomBasis.readonly(true);
 
     var cboWeddingAnniversaryDiscountBrideBasis = form_wedding_anniversary_discounts.getCombo("wedding_apply_discount_bride_basis");
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboWeddingAnniversaryDiscountBrideBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboWeddingAnniversaryDiscountBrideBasis.readonly(true);
 
 
@@ -2493,10 +2492,10 @@ function hotelspecialoffers()
     });
 
     var cboSeniorBasis = form_senior_discounts.getCombo("senior_discount_basis");
-    cboSeniorBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/rollover.png"}]);
-    cboSeniorBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/rollover.png"}]);
-    cboSeniorBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/rollover.png"}]);
-    cboSeniorBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/rollover.png"}]);
+    cboSeniorBasis.addOption([{value: "%ROOM", text: "Percentage Room", img_src: "images/discount.png"}]);
+    cboSeniorBasis.addOption([{value: "%ALL", text: "Percentage All", img_src: "images/discount.png"}]);
+    cboSeniorBasis.addOption([{value: "FLAT_PNI", text: "Flat PNI", img_src: "images/discount.png"}]);
+    cboSeniorBasis.addOption([{value: "FLAT_PPPN", text: "Flat PPPN", img_src: "images/discount.png"}]);
     cboSeniorBasis.readonly(true);
 
     //===========================================================
@@ -2543,9 +2542,9 @@ function hotelspecialoffers()
     var form_free_nights = freenights_layout.cells("a").attachForm(str_frm_settings_free_nights);
 
     var cboFreeNightsPlaceAt = form_free_nights.getCombo("free_nights_placed_at");
-    cboFreeNightsPlaceAt.addOption([{value: "end", text: "End", img_src: "images/rollover.png"}]);
-    cboFreeNightsPlaceAt.addOption([{value: "start", text: "Start", img_src: "images/rollover.png"}]);
-    cboFreeNightsPlaceAt.addOption([{value: "lowest", text: "Nights with Lowest Rates", img_src: "images/rollover.png"}]);
+    cboFreeNightsPlaceAt.addOption([{value: "end", text: "End", img_src: "images/discount.png"}]);
+    cboFreeNightsPlaceAt.addOption([{value: "start", text: "Start", img_src: "images/discount.png"}]);
+    cboFreeNightsPlaceAt.addOption([{value: "lowest", text: "Nights with Lowest Rates", img_src: "images/discount.png"}]);
     cboFreeNightsPlaceAt.readonly(true);
 
 
@@ -14901,7 +14900,8 @@ function hotelspecialoffers()
                 }
 
                 if (json_obj.OUTCOME == "OK")
-                {
+                {   
+                    loadHotelSPOs("");
                     loadSpoLinkGrid(selectSPOLink_link, linkid);
                     popupwin_loadslinkspo.hide();
                     popupwin_loadslinkspo.setModal(false);

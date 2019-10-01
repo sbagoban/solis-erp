@@ -17,6 +17,7 @@ function allServicesGridClaim(id_product_service_cost) {
         "bProcessing": true,
         "bAutoWidth": false,
         "responsive": true,
+        "pageLength": 5,
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"
@@ -63,7 +64,7 @@ function allServicesGridClaim(id_product_service_cost) {
     $('#tbl-productServicesClaim tbody').on( 'click', '#btnAddExtraServicesClaim', function () {
         var table = $('#tbl-productServicesClaim').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        serviceClaim(data);
+        addExtraServiceClaim(data);
     });    
     $('#tbl-productServicesClaim tbody').on( 'click', '#btnDeleteClaim', function () {
         var table = $('#tbl-productServicesClaim').DataTable();
@@ -74,6 +75,7 @@ function allServicesGridClaim(id_product_service_cost) {
         var table = $('#tbl-productServicesClaim').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         editServiceClaim(data);
+        extraServiceGridClaim(data);
     });
 }
 
@@ -101,7 +103,6 @@ function deleteServiceClaim(data) {
 
 function editServiceClaim(data) {
     document.getElementById("id_product_services_claim").innerHTML = data.id_product_service_claim;
-    console.log(data);
     $('#valid_from').val(data.valid_from);
     $('#valid_to').val(data.valid_to);
     $('#ps_adult_claim').val(data.ps_adult_claim);

@@ -324,12 +324,18 @@ function ratescalculator() {
 
     var str_frm_spo = [
         {type: "settings", position: "label-left", id: "form_spo"},
-
         {type: "combo", name: "spo_type", label: "SPO Type:", labelWidth: "180",
-            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+            labelHeight: "22", inputWidth: "130", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+            comboType: "image",
+            comboImagePath: "../../images/"
         },
-
+        {type: "combo", name: "spo_chosen", label: "SPO Applicable Logic:", labelWidth: "180",
+            labelHeight: "22", inputWidth: "300", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10",
+            comboType: "image",
+            comboImagePath: "../../images/"
+        },
         {type: "calendar", name: "spo_booking_date", label: "Booking Date:",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "180",
@@ -358,15 +364,26 @@ function ratescalculator() {
         {type: "checkbox", name: "chk_show_invalid_spos", label: "Show Invalid SPOS:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10"
-        }
+        }        
     ];
 
     var form_spo = accordConSPO.cells("spo").attachForm(str_frm_spo);
 
-    form_spo.getCombo("spo_type").addOption([{value: "contractual", text: "CONTRACTUAL"}, {value: "tactical", text: "TACTICAL"}, {value: "both", text: "BOTH"}]);
+    form_spo.getCombo("spo_type").addOption([
+        {value: "contractual", text: "CONTRACTUAL", img_src: "images/solution.png"}, 
+        {value: "tactical", text: "TACTICAL", img_src: "images/solution.png"}, 
+        {value: "both", text: "BOTH", img_src: "images/solution.png"}]);
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
 
+    form_spo.getCombo("spo_chosen").addOption([
+        {value: "CHOICE", text: "LET ME CHOOSE OFFERS", img_src: "images/offer.png"}, 
+        {value: "LOWEST", text: "APPLY OFFER GIVING LOWEST PRICE", img_src: "images/offer.png"},
+        {value: "NONE", text: "DO NOT APPLY ANY OFFERS", img_src: "images/offer.png"}]);
+    form_spo.getCombo("spo_chosen").readonly(true);
+    form_spo.getCombo("spo_chosen").setComboValue("CHOICE");
+
+    
 
     jQuery(function ($) {
         $("[name='spo_booking_date']").mask("99-99-9999");
@@ -422,6 +439,96 @@ function ratescalculator() {
             main_layout.setSizes(true);
 
         }, 1);
+    }
+
+    var dhxWins = new dhtmlXWindows();
+    dhxWins.enableAutoViewport(false);
+    dhxWins.attachViewportTo(main_layout.cells("a"));
+
+    var popupwin_choice = dhxWins.createWindow("popupwin_choice", 50, 50, 900, 400);
+    popupwin_choice.setText("Choose Offers:");
+    popupwin_choice.denyResize();
+    popupwin_choice.denyPark();
+
+    /*=== WINDOW ON CLOSE EVENT ===*/
+    dhxWins.attachEvent("onClose", function (win) {
+        //do let user close window by clicking on close icon in window header
+        //so catch it in the event and return false. Simply hide the window
+        win.setModal(false);
+        win.hide();
+    });
+
+
+    var choiceLayout = popupwin_choice.attachLayout("2E");
+    choiceLayout.cells("a").hideHeader();
+    choiceLayout.cells("b").hideHeader();
+    choiceLayout.cells("a").setHeight(800);
+    choiceLayout.cells("b").setHeight(40);
+    
+    choiceLayout.cells("a").fixSize(true, true);
+    
+    var grid_choices = choiceLayout.cells("a").attachGrid();
+    grid_choices.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_choices.setHeader(",Category,Description,Offers,Price After Offer");
+    grid_choices.setColumnIds("choice,category,description,offers,price");
+    grid_choices.setColTypes("ch,ro,ro,ro,ro");
+    grid_choices.setInitWidths("40,80,250,300,130");
+    grid_choices.setColAlign("center,center,left,left,center");
+    grid_choices.setColSorting("int,str,str,str,str");
+    grid_choices.attachHeader(",#select_filter,#text_filter,#text_filter,#text_filter");
+    grid_choices.enableAlterCss("", "");
+    grid_choices.enableMultiline(true);
+    grid_choices.enableColSpan(true);
+    grid_choices.enableRowspan(true);
+    grid_choices.attachEvent("onCheck", function (rid, cid, state) {
+        onGridChoiceChecked(rid);
+    });
+    grid_choices.attachEvent("onRowSelect", function (rid, cid) {
+        onGridChoiceChecked(rid);
+    });
+
+    grid_choices.init();
+
+    var str_frm_choice = [
+        {type: "settings", position: "label-left", id: "form_choice"},
+        {type: "button", name: "cmdApply", value: "Apply Selected Offer", width: "300", offsetLeft: 100}
+    ];
+
+    var form_choice = choiceLayout.cells("b").attachForm(str_frm_choice);
+    form_choice.attachEvent("onButtonClick", function (name, command) {
+        if (name == "cmdApply")
+        {
+            applySPOOptions();
+        }       
+    });
+    
+    
+    function applySPOOptions()
+    {   
+        //check if there is an option chosen
+        var checkedid = grid_choices.getCheckedRows(grid_choices.getColIndexById("choice"));
+
+        if (checkedid == "")
+        {
+            dhtmlx.alert({
+                text: "Please select an Offer Option!",
+                type: "alert-warning",
+                title: "Test Rates Calculator",
+                callback: function () {
+                }
+            });
+            return;
+
+        }
+
+        form_spo.setItemValue("spo_chosen", checkedid);
+                
+        popupwin_choice.setModal(false);
+        popupwin_choice.hide();
+        
+        testRatesCalculator();
+        
+        return;
     }
 
 
@@ -583,7 +690,6 @@ function ratescalculator() {
                     return;
                 }
             }
-
         }
 
 
@@ -660,6 +766,8 @@ function ratescalculator() {
             param_layout.progressOff();
             results_layout.progressOff();
 
+            form_spo.setItemValue("spo_chosen", "CHOICE");
+
             if (loader)
             {
                 if (loader.xmlDoc.responseURL == "")
@@ -689,14 +797,32 @@ function ratescalculator() {
                 }
                 if (json_obj.OUTCOME == "OK")
                 {
-                    console.log(json_obj);
+                    if (json_obj.RESULT.OUTCOME == "OK")
+                    {
+                        console.log(json_obj);
 
-                    //all fine! contract without errors!
-                    populateResultsGrid(json_obj);
-
-                    tabViews.setTabActive("results");
+                        var choice_or_prices = json_obj.RESULT.CHOICE_PRICES;
 
 
+                        //all fine! contract without errors!
+                        if (choice_or_prices == "PRICES")
+                        {
+                            populateResultsGrid(json_obj);
+                            tabViews.setTabActive("results");
+                        } else if (choice_or_prices == "CHOICES")
+                        {
+                            loadSPOchoices(json_obj);
+                        }
+                    } else
+                    {
+                        dhtmlx.alert({
+                            text: json_obj.RESULT.OUTCOME,
+                            type: "alert-warning",
+                            title: "Test Rates Calculator",
+                            callback: function () {
+                            }
+                        });
+                    }
                 } else
                 {
                     dhtmlx.alert({
@@ -712,6 +838,49 @@ function ratescalculator() {
 
     }
 
+    function loadSPOchoices(json_obj)
+    {
+        grid_choices.clearAll();
+
+        var arrchoices = json_obj.RESULT.CHOICES;
+        for (var i = 0; i < arrchoices.length; i++)
+        {
+            var choiceid = arrchoices[i].LINKID_SPOID;
+            var description = arrchoices[i].DESCRIPTION;
+            var single_combined = arrchoices[i].SINGLE_COMBINED;
+            var totalcosts = arrchoices[i].TOTAL_COSTS;
+            
+            var arr_spos = arrchoices[i].ARR_SPOS;
+
+            var offers = arr_spos.map(function (elem) {                
+                var spo_name = elem.NAME;
+                var iscumulative = elem.ISCUMULATIVE;
+                if(iscumulative == "1")
+                {
+                    return spo_name + " - <b>CUMULATIVE</b>";
+                }
+                return spo_name;
+            }).join("<br>");
+
+            grid_choices.addRow(choiceid, "");
+            grid_choices.cells(choiceid, grid_choices.getColIndexById("choice")).setValue(0);
+            grid_choices.cells(choiceid, grid_choices.getColIndexById("category")).setValue(single_combined);
+            grid_choices.cells(choiceid, grid_choices.getColIndexById("description")).setValue(description);
+            grid_choices.cells(choiceid, grid_choices.getColIndexById("offers")).setValue(offers);
+            grid_choices.cells(choiceid, grid_choices.getColIndexById("price")).setValue(totalcosts);
+            
+            grid_choices.setRowTextStyle(choiceid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:3px solid black; border-right:1px solid #A4A4A4;");
+
+
+        }
+      
+        grid_choices.setRowTextStyle(choiceid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:3px solid black; border-right:1px solid #A4A4A4;");
+
+
+        popupwin_choice.show();
+        popupwin_choice.setModal(true);
+        popupwin_choice.center();
+    }
 
     function populateResultsGrid(json_obj)
     {
@@ -1012,29 +1181,28 @@ function ratescalculator() {
                 return false;
             }
         }
-        
-        
+
+
         //if is wedding spo interested, make sure that there is a groom and bride in adults grid
         if (form_spo.isItemChecked("chk_is_wedding"))
         {
             var flg_found_groom = false;
             var flg_found_bride = false;
-            
+
             for (var i = 0; i < grid_adult.getRowsNum(); i++)
             {
                 var rowid = grid_adult.getRowId(i);
                 var bride_groom = grid_adult.cells(rowid, grid_adult.getColIndexById("bride_groom")).getValue();
-                if(bride_groom == "BRIDE")
+                if (bride_groom == "BRIDE")
                 {
                     flg_found_bride = true;
-                }
-                else if(bride_groom == "GROOM")
+                } else if (bride_groom == "GROOM")
                 {
                     flg_found_groom = true;
                 }
             }
-            
-            if(!flg_found_bride || !flg_found_groom)
+
+            if (!flg_found_bride || !flg_found_groom)
             {
                 dhtmlx.alert({
                     text: "SPO: <b>Wedding SPO Interested</b>: Please select a <b>Bride</b> and a <b>Groom</b> in Adults!",
@@ -1049,6 +1217,37 @@ function ratescalculator() {
 
         return true;
     }
+
+    function onGridChoiceChecked(rId) {
+
+        var state = grid_choices.cells(rId, grid_choices.getColIndexById("choice")).getValue();
+        if (state == 0)
+        {
+            state = 1;
+        } else
+        {
+            state = 0;
+        }
+        grid_choices.cells(rId, grid_choices.getColIndexById("choice")).setValue(state);
+
+
+        if (state == 1)
+        {
+            //set all other rows to 0
+            for (var i = 0; i < grid_choices.getRowsNum(); i++)
+            {
+                var rowid = grid_choices.getRowId(i);
+                if (rowid != rId)
+                {
+                    grid_choices.cells(rowid, grid_choices.getColIndexById("choice")).setValue("0");
+                }
+            }
+        }
+
+        return true;
+    }
+
+    popupwin_choice.hide();
 
 }
 

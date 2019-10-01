@@ -2,7 +2,7 @@
 	<div class="row">
 		<!-- left column -->
 		<div class="col-md-6">
-			<div class="box box-info" style="height: 600px">
+			<div class="box box-info">
 				<div class="box-header with-border">
 					<h3 class="box-title">Services Claim</h3>
 				</div>
@@ -82,14 +82,8 @@
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">
-								<select class="form-control select2" data-live-search="true" id="ddlMultiSpecificTo" multiple>
-										<!-- <optgroup label="AFRICA">
-											<option value="1">SOUTH AFRICA</option>
-											<option value="2">TANZANIA</option>
-											<option value="3">KENYA</option>
-											<option value="4">ZIMBABWE</option>
-											<option value="5">MALAWI</option>
-										</optgroup>-->
+								<select id="ddlMultiSpecificTo" name="ddlMultiSpecificTo" class="ddlMultiSpecificTo" multiple="multiple">
+                                </select>
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificMarket">
@@ -162,6 +156,7 @@
 											<div class="box-header">
 												<h3 class="box-title">Product Service Extra</h3>
 											</div>
+											<div id="id_product_service_claim"></div>
 											<!-- /.box-header -->
 											<div class="box-body">
 												<table id="tbl-productServicesExtraClaim" class="table table-bordered table-hover">
@@ -173,52 +168,6 @@
 															<th class="col-sm-2"></th>
 														</tr>
 													</thead>
-													<tbody>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <i class="fa fa-fw fa-edit" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-																  <i class="fa fa-fw fa-trash"></i>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <i class="fa fa-fw fa-edit" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-																  <i class="fa fa-fw fa-trash"></i>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <i class="fa fa-fw fa-edit" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-																  <i class="fa fa-fw fa-trash"></i>
-																</div>
-															</td>
-														</tr>
-														<tr>
-															<td>100989</td>
-															<td>ACCESS FEE</td>
-															<td>PAX - 45AD | 35TN | 25CH | 0INF</td>
-															<td>
-																<div class="btn-group">
-																  <i class="fa fa-fw fa-edit" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>
-																  <i class="fa fa-fw fa-trash"></i>
-																</div>
-															</td>
-														</tr>
-													</tbody>
 												</table>	
 											</div>
 										</div>
@@ -232,7 +181,7 @@
 		</div>
 		<!-- right column -->
 		<div class="col-md-6">
-			<div class="box box-info" style="height: 600px">
+			<div class="box box-info">
 				<div class="box-header with-border">
 					<h3 class="box-title">Services Claim List</h3>
 				</div>
@@ -283,8 +232,9 @@
 							<div class="form-group"> 
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product_services_extra_claim" style="display: none" value="0">
-									<input type="text" class="form-control" id="id_product_services_extra_cost" style="display: none" value="0">
+									<div id="id_product_services_extra_cost" style="display: none">0</div>
 									<div id="id_product_services_claim" style="display: none">0</div>
+									<div id="product_services_claim_charges" style="display: none">0</div>
 									<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
 								</div>
@@ -294,7 +244,6 @@
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_product_services_extra">
 										<!-- To modify - select from db -->
-										<option value="0">SELECT</option>
 									</select>
 								</div>
 							</div>
@@ -302,22 +251,21 @@
 								<label class="col-sm-2 control-label">Claim</label>
 								<div class="col-sm-10">
 									<div class="input-group">
-										<input type="text" class="form-control" id="ps_adult_cost">
-										<span class="input-group-addon">Adult</span>
-										<input type="text" class="form-control" id="ps_teen_cost">
-										<span class="input-group-addon">Teen</span>
-										<input type="text" class="form-control" id="ps_child_cost">
-										<span class="input-group-addon">Child</span>
-										<input type="text" class="form-control" id="ps_infant_cost">
-										<span class="input-group-addon">Infant</span>
+											<input type="number" class="form-control" id="ps_adult_claim_1" name="ps_adult_claim_1" style="display:none;" placeholder="Adult">
+											<span class="input-group-addon" id="ps_adult_claim_11" style="display:none;">Adult</span>
+											<input type="number" class="form-control" id="ps_teen_claim_1" style="display:none;" placeholder="Teen">
+											<span class="input-group-addon" id="ps_teen_claim_11" style="display:none;">Teen</span>
+											<input type="number" class="form-control" id="ps_child_claim_1" style="display:none;" placeholder="Child">
+											<span class="input-group-addon" id="ps_child_claim_11" style="display:none;">Child</span>
+											<input type="number" class="form-control" id="ps_infant_claim_1" style="display:none;" placeholder="Infant">
+											<span class="input-group-addon" id="ps_infant_claim_11" style="display:none;">Infant</span>
 									</div>
 									<br>
 								</div>
 							</div>
 							
 							<div class="pager">
-								<button type="button" class="btn btn-primary" id="btn-saveProductServicesExtraCost">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-deleteProductServicesExtraCost" data-dismiss="modal">Delete</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraCost">Save</button>
 							</div>
 						</div>
 						<!-- /.box-body -->
@@ -342,16 +290,16 @@ $(function () {
       'pageLength'  : 4
 		
     })
-    $('#tbl-productServicesExtraClaim').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false,
-      'pageLength'  : 2
+    // $('#tbl-productServicesExtraClaim').DataTable({
+    //   'paging'      : true,
+    //   'lengthChange': false,
+    //   'searching'   : true,
+    //   'ordering'    : true,
+    //   'info'        : true,
+    //   'autoWidth'   : false,
+    //   'pageLength'  : 2
 		
-    })
+    // })
 	//Date picker
 	$('#valid_from,#valid_to').datepicker({
 		autoclose: true

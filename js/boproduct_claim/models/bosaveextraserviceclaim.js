@@ -1,0 +1,61 @@
+function addExtraServiceClaim(data) {
+    $('#btn-saveProductServicesExtraCost').click(function() {
+        var id_product_services_extra_cost  = document.getElementById("id_product_services_extra_cost").innerHTML;
+        var charges = document.getElementById("product_services_claim_charges").innerHTML;
+        var id_product_services_claim = data.id_product_service_claim;
+        var id_product_services_cost = data.id_product_service_cost;
+        var id_product_services = data.id_product_service;
+        var valid_from = data.valid_from;
+        var valid_to = data.valid_to;
+        var id_dept = data.id_dept;
+        var specific_to = data.specific_to;
+        var ps_adult_claim  = $('#ps_adult_claim_1').val();
+        var ps_teen_claim  = $('#ps_teen_claim_1').val();
+        var ps_child_claim  = $('#ps_child_claim_1').val();
+        var ps_infant_claim  = $('#ps_infant_claim_1').val();
+        var id_currency = data.id_currency;
+        var currency = data.currency;
+    
+        const url_save_extraservice_claim = "php/api/backofficeserviceclaim/saveextraserviceclaim.php?t=" + encodeURIComponent(global_token);
+        var objExtraServiceClaim = {
+            id_product_services_extra_claim: -1,
+            id_product_services_claim: id_product_services_claim, 
+            id_product_services_cost:id_product_services_cost, 
+            id_product_services: id_product_services,
+            valid_from: valid_from, 
+            valid_to: valid_to, 
+            id_dept: id_dept, 
+            specific_to: specific_to, 
+            ps_adult_claim: ps_adult_claim, 
+            ps_teen_claim: ps_teen_claim, 
+            ps_child_claim: ps_child_claim, 
+            ps_infant_claim: ps_infant_claim, 
+            id_currency: id_currency, 
+            currency: currency, 
+            id_product_services_extra_cost: id_product_services_extra_cost, 
+            charges: charges
+        };
+    
+        $.ajax({
+            url : url_save_extraservice_claim,
+            method : "POST",
+            data : objExtraServiceClaim,                                                                                                                                                                                                                                                                                                                                                                                                                
+            success : function(data){
+                resetExtraServicesClaim();
+                $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        });
+        extraServiceGridClaim(data);
+    });
+}
+
+function resetExtraServicesClaim() {
+    $('#id_product_services_extra').val('');
+    $('#ps_adult_claim').val('');
+    $('#ps_teen_claim ').val('');
+    $('#ps_child_claim').val('');
+    $('#ps_infant_claim').val('');
+}
