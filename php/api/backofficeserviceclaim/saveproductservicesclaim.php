@@ -47,6 +47,9 @@ try {
     $ex_friday = trim($_POST["ex_friday"]);
     $ex_saturday = trim($_POST["ex_saturday"]);
     $ex_sunday = trim($_POST["ex_sunday"]);
+    $id_country = $_POST["id_country"];
+    $id_tour_operator = $_POST["id_tour_operator"];
+    $specific_to_name = $_POST["specific_to_name"];
 
     $con = pdo_con();
 
@@ -79,7 +82,8 @@ try {
             ex_thursday,
             ex_friday,
             ex_saturday,
-            ex_sunday
+            ex_sunday,
+            specific_to_name
             ) 
                 VALUES (
                     :id_product_service_cost, 
@@ -101,7 +105,8 @@ try {
                     :ex_thursday,
                     :ex_friday,
                     :ex_saturday,
-                    :ex_sunday)";
+                    :ex_sunday,
+                    :specific_to_name)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -124,20 +129,35 @@ try {
             ":ex_thursday" => $ex_thursday,
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
-            ":ex_sunday" => $ex_sunday));
+            ":ex_sunday" => $ex_sunday,
+            ":specific_to_name" => $specific_to_name));
         
-            $id_product_service_claim = $con->lastInsertId(); 
+            $id_product_service_claim = $con->lastInsertId();
 
-            if ($id_product_service_cost == "-2") { 
-                    $sql1 = "INSERT INTO product_services_claim_countries (id_product_service_claim, id_countries) 
-                VALUES (1, ( " . $_POST["id_countries"] . "  ))";
-    
-                $stmt1 = $con->prepare($sql1);
-                $stmt1->execute(array(
-                    ":id_product_service_claim" => 1, 
-                    ":id_countries" => $_POST["id_countries"]));
+            if ($specific_to == 'A') {
+                $sqlTo = "INSERT INTO product_services_claim_to (id_product_service_claim,id_tour_operator) 
+                VALUES (:id_product_service_claim,:id_tour_operator)";
+
+                $stmt = $con->prepare($sqlTo);
+                $data = $id_tour_operator;
+                
+                foreach($data as $to) {
+                    $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_tour_operator' => $to));
+                }
+            } if($specific_to == 'C') {
+                $sqlMarket = "INSERT INTO product_services_claim_countries (id_product_service_claim,id_country) 
+                VALUES (:id_product_service_claim,:id_country)";
+
+                $stmt = $con->prepare($sqlMarket);
+                $data = $id_country;
+                
+                foreach($data as $d) {
+                    $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_country' => $d));
+                }
             }
-    } else {
+            
+    } 
+    else {
         $sql = "UPDATE product_service_claim SET 
                 id_product_service_cost=:id_product_service_cost, 
                 id_product_service=:id_product_service, 
@@ -158,7 +178,8 @@ try {
                 ex_thursday=:ex_thursday,
                 ex_friday=:ex_friday,
                 ex_saturday=:ex_saturday,
-                ex_sunday=:ex_sunday
+                ex_sunday=:ex_sunday,
+                specific_to_name=:specific_to_name
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);
@@ -182,10 +203,12 @@ try {
             ":ex_thursday" => $ex_thursday,
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
-            ":ex_sunday" => $ex_sunday));
+            ":ex_sunday" => $ex_sunday,
+            ":specific_to_name" => $specific_to_name));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
+
 ?>
