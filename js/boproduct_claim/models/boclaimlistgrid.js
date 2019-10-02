@@ -46,8 +46,8 @@ function allServicesGridClaim(id_product_service_cost) {
             "data" : "currency"
         }, {
             "data" : "allDate"
-        },  {
-            "data" : "specific_to"
+        },  { 
+            "data" : "specific_to_name"
         },  
             {
                 "targets": -1,
@@ -79,7 +79,6 @@ function allServicesGridClaim(id_product_service_cost) {
     });
 }
 
-
 // Delete Product
 function deleteServiceClaim(data) {
     var objDelClaim = {id_product_service_claim: data.id_product_service_claim};
@@ -103,6 +102,7 @@ function deleteServiceClaim(data) {
 
 function editServiceClaim(data) {
     document.getElementById("id_product_services_claim").innerHTML = data.id_product_service_claim;
+    specificToCtrl(data.id_product_service_claim);
     $('#valid_from').val(data.valid_from);
     $('#valid_to').val(data.valid_to);
     $('#ps_adult_claim').val(data.ps_adult_claim);

@@ -21,7 +21,7 @@
 							<label class="col-sm-2 control-label">Date From</label>
 							<div class="col-sm-4">
 								<div class="input-group">
-									<input type="text" class="form-control pull-right" id="valid_from">
+									<input type="text" class="form-control pull-right" id="valid_from" name="first_name">
 									<span class="input-group-addon">
 										<i class="fa fa-calendar"></i>
 									</span>
@@ -76,9 +76,9 @@
 							<label class="col-sm-2 control-label">Specific to</label>
 							<div class="col-sm-3">
 								<select type="text" class="form-control" id="specific_to">
-									<option value="A">Tour Operator</option>
-									<option value="B">Worldwide</option>
-									<option value="C">Market</option>
+									<option value="A" name="Tour Operator">Tour Operator</option>
+									<option value="B" name="Worldwide">Worldwide</option>
+									<option value="C" name="Market">Market</option>
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">
@@ -144,8 +144,8 @@
 							</div>
 					
 						<div class="pager pull-right">
+							<button type="button" class="btn btn-default" id="btn-basckProductServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 							<button type="button" class="btn btn-primary" id="btn-saveServicesClaim">Save</button>
-							<button type="button" class="btn btn-primary" id="btn-basckProductServices" onclick="history.go(-1);">Back</button>
 						</div>
 						
 							<!-- Main content -->

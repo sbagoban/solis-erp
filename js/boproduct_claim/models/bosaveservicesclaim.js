@@ -62,8 +62,6 @@ $("#specific_to").change(function () {
     }
 });
 
-
-
 // Load Tour Operator depending on country ID
 function loadTourOperatorClaim() {
     $("#multiSpecificMarket").css("display", "none");
@@ -75,7 +73,7 @@ function loadTourOperatorClaim() {
         cache: false,
         success: function(data)
             {
-                $("#").empty();
+                $("#ddlMultiSpecificTo").empty();
                 $.each(data, function (key, val) {
                 $("#ddlMultiSpecificTo").append('<option value="' + val.id + '">' + val.toname + '</option>');
                 toname = val.toname;
@@ -96,9 +94,6 @@ function loadTourOperatorClaim() {
                             selected.push($(this).val());
                             selectedTo = selected.join();
                         });
-                        if (checked) {
-                            saveTourOperatorMultiselect(selectedTo, idBlockRates, toname);
-                        } 
                     }
                 });
             }
@@ -116,7 +111,7 @@ function loadCountriesClaim() {
         cache: false,
         success: function(data)
             {
-                $("#").empty();
+                $("#ddlmultiSpecificMarket").empty();
                 $.each(data, function (key, val) {
                 $("#ddlmultiSpecificMarket").append('<option value="' + val.id + '"  data-subtext="' + val.marketfk + '">'+ val.market_name + ' - ' + val.country_name + '</option>');
             });                
@@ -137,11 +132,6 @@ function loadCountriesClaim() {
                             selectedCountriesArr.push(selectedRatesType);
                             selectedCountriesArrJoin = selectedCountriesArr.join();
                         });
-                        if (checked) {
-                            saveCountriesMultiselectSpec(selectedCountriesArrJoin);
-                        } else {
-                            //saveCountriesMultiselect1(null);
-                        }
                     }
                 });
             }
@@ -151,7 +141,8 @@ function loadCountriesClaim() {
 
 $("#btn-saveServicesClaim").click(function () {    
     var id_product_services_claim = document.getElementById("id_product_services_claim").innerHTML;
-
+    var id_country = $('#ddlmultiSpecificMarket').val();
+    var id_tour_operator = $('#ddlMultiSpecificTo').val();
     var valid_from = $('#valid_from').val();
     var valid_to = $('#valid_to').val();
     var ps_adult_claim = $('#ps_adult_claim').val();
@@ -161,6 +152,7 @@ $("#btn-saveServicesClaim").click(function () {
     var id_currency = $('#id_currency').val();
     var currency = $('#id_currency').find(":selected").text();
     var specific_to = $('#specific_to').val();
+    var specific_to_name = $('#specific_to').find(":selected").text();
 
     var chkmonday = document.getElementById("ex_monday");
     var chktuesday = document.getElementById("ex_tuesday");    
@@ -213,6 +205,15 @@ $("#btn-saveServicesClaim").click(function () {
         ex_sunday = 0;
     }  
 
+    if (specific_to == 'A') { 
+        id_country = 0;
+    } else if (specific_to == 'B') {
+        id_country = 0;
+        id_tour_operator = 0;
+    } else if (specific_to == 'C') {
+        id_tour_operator = 0;
+    }
+
     if (id_product_services_claim == 0) {
         const url_save_productservice_claim = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token);
         var objProductServiceClaim = {
@@ -236,7 +237,10 @@ $("#btn-saveServicesClaim").click(function () {
             ex_thursday: ex_thursday,
             ex_friday: ex_friday,
             ex_saturday: ex_saturday,
-            ex_sunday: ex_sunday
+            ex_sunday: ex_sunday,
+            id_country: id_country,
+            id_tour_operator: id_tour_operator,
+            specific_to_name: specific_to_name
         };
 
         console.log(objProductServiceClaim);
@@ -254,7 +258,6 @@ $("#btn-saveServicesClaim").click(function () {
             }
         });
     } else {
-        
         var id_product_service_claim = document.getElementById("id_product_services_claim").innerHTML;
         const url_update_productservice_claim = "php/api/backofficeserviceclaim/updateproductservicesclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
         var objProductServiceClaimUpdate = {
@@ -293,28 +296,6 @@ $("#btn-saveServicesClaim").click(function () {
     allServicesGridClaim(id_product_service_cost);
 });
 
-
-// Save Countries
-function saveCountriesMultiselectSpec(selectedMarket) {
-    $('#btn-saveServicesClaim').click(function () {
-            const url_save_countries = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token); 
-            //var jsonString = JSON.stringify(selectedCountriesArr);
-            objSelectedCountries = {
-                id_product_service_cost: -2,
-                id_countries: selectedMarket
-            };
-            $.ajax({
-                type: "POST",
-                url: url_save_countries,
-                data: objSelectedCountries,
-                cache: false,
-                success: function(data) {
-                    console.log("OK", data);
-                }
-            });
-    });
-}
-
 function resetProductServicesClaim() {
     $('#valid_from').val('');
     $('#valid_to').val('');
@@ -331,4 +312,62 @@ function resetProductServicesClaim() {
     $("#ex_friday").prop("checked", false);
     $("#ex_saturday").prop("checked", false);
     $("#ex_sunday").prop("checked", false);
+    $("#ddlmultiSpecificMarket").val('');
+    $("#ddlMultiSpecificTo").val('');
+}
+
+function specificToCtrl(id_product_service_claim) {
+    const url_claim_countries = "php/api/backofficeserviceclaim/populateselectedto.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
+    $.ajax({
+        type: "POST",
+        url: url_claim_countries,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+                {
+                var valArr = [data];
+                valArr.forEach(myFunction);
+                function myFunction(value) {
+                    loadTourOperatorClaim2(value);              
+                }
+        }    
+    });
+}
+
+function loadTourOperatorClaim2(value) {
+    var found = value.find(function(element) {
+        return element.id_tour_operator;
+    });
+    console.log('asdh', found);
+    //obj[Object.keys(obj)[0]];
+
+    $("#multiSpecificMarket").css("display", "none");
+    const url_to = "php/api/backofficeserviceclaim/tocombo.php?t=" + encodeURIComponent(global_token); 
+    $.ajax({
+        type: "POST",
+        url: url_to,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+            {
+                $("#ddlMultiSpecificTo").empty();
+                $.each(data, function (key, val) {
+                    $("#ddlMultiSpecificTo").append('<option value="' + val.id + '">' + val.toname + '</option>');
+                });   
+                
+                $("#ddlMultiSpecificTo").attr('multiple', 'multiple'); 
+                $("#ddlMultiSpecificTo").multiselect({
+                    buttonWidth: '313px',
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Select an Option',
+                    enableFiltering: true,
+                    enableHTML: true,
+                    buttonClass: 'btn large btn-default',
+                    enableCaseInsensitiveFiltering: true,
+                    onChange: function(element, checked) {
+                    }
+                });
+            }
+        }
+    );
 }
