@@ -3,6 +3,7 @@ $(document).ready(function () {
     const urlParams = new URLSearchParams(allParams);
     // As TO is first in the list it should be loaded by default
     loadTourOperatorClaim();
+    loadCountriesClaim();
     
     var charges = urlParams.get("charges"); 
     $('#charges').val(charges);
@@ -24,7 +25,6 @@ $(document).ready(function () {
     var saturday = urlParams.get("on_saturday"); 
     var sunday = urlParams.get("on_sunday"); 
 
-    console.log(',,,', monday);
     if (monday == 1){
         $("#ex_monday1").css("display", "block");
     } if (tuesday == 1){
@@ -48,14 +48,19 @@ $("#specific_to").change(function () {
     if (specificto == "B") {
         $("#multiSpecificTo").css("display", "none");
         $("#multiSpecificMarket").css("display", "none");
+        
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
     }
     if (specificto == "A") {
         $("#multiSpecificMarket").css("display", "none");
         $("#multiSpecificTo").css("display", "block");
         loadTourOperatorClaim();
-        
+        $('#ddlMultiSpecificTo').multiselect('destroy');
     }
     if (specificto == "C") {
+        
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
         $("#multiSpecificTo").css("display", "none");
         $("#multiSpecificMarket").css("display", "block");
         loadCountriesClaim();
@@ -292,11 +297,80 @@ $("#btn-saveServicesClaim").click(function () {
                 console.log('Error ${error}');
             }
         });
+
+        if (specific_to == 'A') { 
+            // UPDATE MULTISELECT
+            var id_product_service_claim = document.getElementById("id_product_services_claim").innerHTML;
+            const url_update_to_claim = "php/api/backofficeserviceclaim/deleteselectedto.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
+            var objProductServiceClaimUpdateTo = {id_product_service_claim: id_product_service_claim};
+            $.ajax({
+                url: url_update_to_claim,
+                method: "POST",
+                data: objProductServiceClaimUpdateTo,
+                success: function (data) {
+                },
+                error: function (error) {
+                    console.log('Error ${error}');
+                }
+            });
+            
+            const url_save_countries_claim = "php/api/backofficeserviceclaim/saveselectedto.php?t=" + encodeURIComponent(global_token);
+            var objProductServiceClaimSaveCountries = {
+                id_product_services_claim_to: -1,
+                id_product_service_claim: id_product_service_claim,
+                id_tour_operator: id_tour_operator
+            };
+            $.ajax({
+                url: url_save_countries_claim,
+                method: "POST",
+                data: objProductServiceClaimSaveCountries,
+                success: function (data) {
+                },
+                error: function (error) {
+                    console.log('Error ${error}');
+                }
+            });
+        } else if (specific_to == 'C') {
+            // UPDATE MULTISELECT
+            var id_product_service_claim = document.getElementById("id_product_services_claim").innerHTML;
+            const url_update_countries_claim = "php/api/backofficeserviceclaim/deleteselectedcountries.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
+            var objProductServiceClaimUpdateCountries = {id_product_service_claim: id_product_service_claim};
+            $.ajax({
+                url: url_update_countries_claim,
+                method: "POST",
+                data: objProductServiceClaimUpdateCountries,
+                success: function (data) {
+                },
+                error: function (error) {
+                    console.log('Error ${error}');
+                }
+            });
+            
+            const url_save_countries_claim = "php/api/backofficeserviceclaim/saveselectedcountries.php?t=" + encodeURIComponent(global_token);
+            var objProductServiceClaimSaveCountries = {
+                id_product_services_claim_countries: -1,
+                id_product_service_claim: id_product_service_claim,
+                id_country: id_country
+            };
+            $.ajax({
+                url: url_save_countries_claim,
+                method: "POST",
+                data: objProductServiceClaimSaveCountries,
+                success: function (data) {
+                },
+                error: function (error) {
+                    console.log('Error ${error}');
+                }
+            });
+        }
     }
+
     allServicesGridClaim(id_product_service_cost);
 });
 
 function resetProductServicesClaim() {
+    $('#ddlmultiSpecificMarket').val([]).multiselect('refresh');
+    $('#ddlMultiSpecificTo').val([]).multiselect('refresh');
     $('#valid_from').val('');
     $('#valid_to').val('');
     $('#ps_adult_claim').val('');
@@ -317,10 +391,10 @@ function resetProductServicesClaim() {
 }
 
 function specificToCtrl(id_product_service_claim) {
-    const url_claim_countries = "php/api/backofficeserviceclaim/populateselectedto.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
+    const url_claim_to = "php/api/backofficeserviceclaim/populateselectedto.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
     $.ajax({
         type: "POST",
-        url: url_claim_countries,
+        url: url_claim_to,
         dataType: "json",
         cache: false,
         success: function(data)
@@ -335,13 +409,8 @@ function specificToCtrl(id_product_service_claim) {
 }
 
 function loadTourOperatorClaim2(value) {
-    var found = value.find(function(element) {
-        return element.id_tour_operator;
-    });
-    console.log('asdh', found);
-    //obj[Object.keys(obj)[0]];
-
     $("#multiSpecificMarket").css("display", "none");
+    $("#multiSpecificTo").css("display", "block");
     const url_to = "php/api/backofficeserviceclaim/tocombo.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
         type: "POST",
@@ -353,8 +422,15 @@ function loadTourOperatorClaim2(value) {
                 $("#ddlMultiSpecificTo").empty();
                 $.each(data, function (key, val) {
                     $("#ddlMultiSpecificTo").append('<option value="' + val.id + '">' + val.toname + '</option>');
-                });   
+                }); 
+                arrToSelected = [];
+                for (var i = 0, l = value.length; i < l; i++) {
+                    var objSelected = value[i].id_tour_operator;
+                    arrToSelected.push(objSelected);
                 
+                    $("#ddlMultiSpecificTo").find("option[value=" + objSelected + "]").prop("selected", true)
+                    $("#ddlMultiSpecificTo").multiselect("refresh")    
+                }  
                 $("#ddlMultiSpecificTo").attr('multiple', 'multiple'); 
                 $("#ddlMultiSpecificTo").multiselect({
                     buttonWidth: '313px',
@@ -363,11 +439,69 @@ function loadTourOperatorClaim2(value) {
                     enableFiltering: true,
                     enableHTML: true,
                     buttonClass: 'btn large btn-default',
-                    enableCaseInsensitiveFiltering: true,
-                    onChange: function(element, checked) {
-                    }
+                    enableCaseInsensitiveFiltering: true
                 });
             }
+        }
+    );
+}
+
+
+function specificCountriesCtrl(id_product_service_claim) {
+    const url_claim_countries = "php/api/backofficeserviceclaim/populateselectedcountries.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
+    $.ajax({
+        type: "POST",
+        url: url_claim_countries,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+                {
+                var valArr1 = [data];
+                valArr1.forEach(myFunction1);
+                function myFunction1(value1) {
+                    loadCountriesClaim2(value1);              
+                }
+        }    
+    });
+}
+
+// Load Market By Default - On Button Edit click
+function loadCountriesClaim2(value1) {
+    console.log(value1);
+    $("#multiSpecificMarket").css("display", "block");
+    $("#multiSpecificTo").css("display", "none");
+    const url_market_2 = "php/api/backofficeserviceclaim/attachcountriesclaim.php?t=" + encodeURIComponent(global_token);
+    $.ajax({
+        type: "POST",
+        url: url_market_2,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+            {
+                $("#ddlmultiSpecificMarket").empty();
+                $.each(data, function (key, val) {
+                    console.log(val.countryId);
+                $("#ddlmultiSpecificMarket").append('<option value="' + val.countryId + '">'+ val.country_name + '</option>');
+                });          
+                arrCountriesSelected = [];
+                for (var i = 0, l = value1.length; i < l; i++) {
+                    var objSelected = value1[i].id_country;
+                    arrCountriesSelected.push(objSelected);
+                    $("#ddlmultiSpecificMarket").find("option[value=" + objSelected + "]").prop("selected", true);
+                    $("#ddlmultiSpecificMarket").multiselect("refresh");    
+                }      
+                $("#ddlmultiSpecificMarket").attr('multiple', 'multiple'); 
+                $("#ddlmultiSpecificMarket").multiselect({
+                    buttonWidth: '313px',
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Select an Option',
+                    enableFiltering: true,
+                    enableHTML: true,
+                    buttonClass: 'btn large btn-default',
+                    enableCaseInsensitiveFiltering: true
+                });
+            }
+            
         }
     );
 }

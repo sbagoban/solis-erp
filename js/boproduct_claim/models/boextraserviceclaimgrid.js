@@ -58,7 +58,6 @@ function extraServiceGridClaim(data) {
 
 // // Delete Product
 function extraServiceClaimDelete(data) {
-    console.log('--->',data);
     var objDelClaim = {id_product_services_extra_claim: data.id_product_services_extra_claim};
     const url_delete_extra_claim= "php/api/backofficeserviceclaim/deleteextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_services_extra_claim=" + data.id_product_services_extra_claim;
     $.ajax({
@@ -72,6 +71,7 @@ function extraServiceClaimDelete(data) {
         }
     });
     extraServiceGridClaim(data);
+    loadCountriesClaim();
 }
 
 // Edit Product
