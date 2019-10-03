@@ -51,15 +51,15 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="dist/css/AdminLTE.css?<?php echo time(); ?>">
 
         <!-- Sandeep Start -->
-        <link rel="stylesheet" href="css/bookingEngine.css">
-        <link rel="stylesheet" href="css/editor.css">
+        <!--<link rel="stylesheet" href="css/bookingEngine.css">-->
+        <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="css/bookingEngine.css">
+        <!--<link rel="stylesheet" href="css/bookingEngine.css">-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
-        <link rel="stylesheet" href="css/editor.css">
+        <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
         <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
         <!--<link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>-->
@@ -700,6 +700,11 @@ if (isset($_GET["m"])) {
 		<script src="bower_components/select2/dist/js/select2.full.min.js"></script>
   		<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
 		<!-- Select2 -->
+		
+		<!-- SOLIS GLOBAL CSS -->
+		
+  		<link rel="stylesheet" href="css/global.css">
+		<!-- .SOLIS GLOBAL CSS -->
 		
         <!-- Sandeep Start -->
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
