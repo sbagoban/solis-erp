@@ -21,23 +21,15 @@
 							</div>
 							<div class="form-group"> 
 									<label class="col-sm-2 control-label">Date From</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_from">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+									<div class="col-sm-10">
+										<div class="input-group date datepicker-in">
+											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+											<div class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</div>
 										</div>
 									</div>
-									<label class="col-sm-2 control-label">Date To</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_to">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-									</div>
+									
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Product</label>

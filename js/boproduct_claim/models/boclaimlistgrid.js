@@ -110,6 +110,11 @@ function editServiceClaim(data) {
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         specificCountriesCtrl(data.id_product_service_claim);
         loadCountriesClaim();
+    } else if (data.specific_to == 'B') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
+        $('#ddlmultiSpecificMarket').css('display', 'none');
+        $('#ddlMultiSpecificTo').css('display', 'none');
     }
 
     $('#valid_from').val(data.valid_from);
