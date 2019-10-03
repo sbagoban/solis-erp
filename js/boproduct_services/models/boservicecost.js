@@ -1,3 +1,19 @@
+$(document).ready(function(){
+    var allParams = window.location.href.split('productservicescost').pop();
+    const urlParams = new URLSearchParams(allParams);    
+    var charges = urlParams.get("charges"); 
+    console.log(charges);
+    if (charges == 'UNIT') {
+        $("#ps_teen_cost").css("display", "none");        
+        $("#ps_child_cost").css("display", "none");
+        $("#ps_infant_cost").css("display", "none");
+        
+        $("#ps_teen_cost_addon").css("display", "none");        
+        $("#ps_child_cost_addon").css("display", "none");
+        $("#ps_infant_cost_addon").css("display", "none");
+    }
+});
+
 //$("#txtDateStart").datepicker({dateFormat:'mm/dd/yy', minDate: new Date(2010,11,12) });
     $('#btn-saveProductServicesCost').click(function () {
         var allParams = window.location.href.split('productservicescost').pop();
@@ -5,6 +21,7 @@
 
         var id_dept = urlParams.get("iddept"); 
         var id_product_services = urlParams.get("psid"); 
+        
         var valid_from = $('#valid_from').val();
         var valid_to = $('#valid_to').val();
         var ps_adult_cost = $('#ps_adult_cost').val();

@@ -43,7 +43,7 @@
 								<label class="col-sm-2 control-label">Product</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product" style="display: none">
-									<input type="text" class="form-control" id="product_name" placeholder="Name of the product">
+									<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly>
 								</div>
 								<label class="col-sm-2 control-label">Department</label>
 								<div class="col-sm-4">
@@ -100,8 +100,8 @@
 										<!-- To modify - select from db -->
 										<option value="1">EXEMPT</option>
 										<option value="2">OUSIDE SCOPE</option>
-										<option value="3">VALUE ADDED TAX</option>
-										<option value="4" selected="selected">ZERO RATED</option>
+										<option value="3" selected="selected">VAT</option>
+										<option value="4">ZERO RATED</option>
 									</select>
 								</div>
 							</div>

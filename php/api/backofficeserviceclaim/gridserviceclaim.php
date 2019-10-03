@@ -23,14 +23,15 @@ $query_c = $con->prepare("
 SELECT PRS.id_product_services_cost, PRS.id_product_services, PRS.valid_from, PRS.valid_to, PS.charges, 
 PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency,
 PS.service_name, TD.deptname, TC.currency_code, PS.id_creditor, PS.id_coasts, TCO.coast, PRS.id_dept, 
-PS.on_monday, PS.on_tuesday, PS.on_wednesday, PS.on_thursday, PS.on_friday, PS.on_saturday, PS.on_sunday, PR.product_name, PSEC.id_product_services_extra_cost
+PS.on_monday, PS.on_tuesday, PS.on_wednesday, PS.on_thursday, PS.on_friday, PS.on_saturday, PS.on_sunday, PR.product_name
 FROM product_services_cost PRS
 JOIN product_services PS on PRS.id_product_services = PS.id_product_services
 JOIN tblcoasts TCO on PS.id_coasts = TCO.id
 JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN tblcurrency TC on PRS.id_currency = TC.id
-JOIN product_services_extra_cost PSEC on PRS.id_product_services_cost = PSEC.id_product_services_cost
-JOIN product PR on PS.id_product = PR.id_product");
+JOIN product PR on PS.id_product = PR.id_product
+WHERE PRS.active = 1
+AND PR.active = 1");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
@@ -62,8 +63,7 @@ if ($row_count_c > 0) {
             'on_friday' => $row['on_friday'],
             'on_saturday' => $row['on_saturday'],
             'on_sunday' => $row['on_sunday'],
-            'product_name' => $row['product_name'],
-            'id_product_services_extra_cost' => $row['id_product_services_extra_cost']
+            'product_name' => $row['product_name']
         );
     }
     $myData = $productServicesCost;
@@ -96,8 +96,7 @@ if ($row_count_c > 0) {
         'on_friday' => '-',
         'on_saturday' => '-',
         'on_sunday' => '-',
-        'product_name' => '-',
-        'id_product_services_extra_cost' => '-'
+        'product_name' => '-'
     );
     $myData = $productServicesCost;
     echo json_encode($myData);

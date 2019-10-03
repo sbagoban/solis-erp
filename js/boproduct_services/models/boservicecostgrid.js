@@ -33,7 +33,7 @@ function allServicesGridCost() {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_services"
+            "data" : "id_product_services_cost"
         }, {
             "data" : "allDate"
         }, {
@@ -102,5 +102,4 @@ function serviceCostEdit(data) {
 function serviceCostExtra(data) {
     document.getElementById("id_product_services_cost_extra").innerHTML = data.id_product_services_cost;
     addExtraServiceCost(data);
-    $('#modal-extraServices').modal('show');
 }

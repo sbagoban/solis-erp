@@ -28,7 +28,7 @@
                             <div class="col-md-6">
                                 <label class="col-md-2 control-label">Product Name</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="productName">
+                                    <input type="text" class="form-control text-uppercase" id="productName">
                                 </div>
                             </div>
                             <div class="col-md-6">

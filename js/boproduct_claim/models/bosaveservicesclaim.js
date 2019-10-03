@@ -150,7 +150,8 @@ function dateRangePickervalid() {
         locale: {
             format: 'YYYY/MM/DD'
         },
-        opens: 'left'
+        "autoApply": true,
+		"opens": "center",
     }, function(start, end, label) {
         valid_from = start.format('YYYY-MM-DD');
         valid_to = end.format('YYYY-MM-DD');

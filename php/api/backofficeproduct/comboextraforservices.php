@@ -13,12 +13,17 @@ if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
 
+if (!isset($_GET["id_product_services"])) {
+    throw new Exception("INVALID ID". $_GET["id_product_services"]);
+}
+
+$id_product_services = $_GET["id_product_services"];
 require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT * FROM product_services_extra");
-$query_c->execute();
+$query_c = $con->prepare("SELECT * FROM product_services_extra where id_product_services = :id_product_services");
+$query_c->execute(array(":id_product_services"=>$id_product_services));
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {

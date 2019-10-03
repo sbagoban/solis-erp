@@ -35,7 +35,15 @@ var helpersDropdownExtraExist = {
 /////////////////////////////////////////
 // model --> fetch Api extra created ////
 /////////////////////////////////////////
-const url_extra_created = "php/api/backofficeproduct/comboextraforservices.php?t=" + encodeURIComponent(global_token); 
+var allParams = window.location.href.split('data=').pop();
+const urlParams = new URLSearchParams(allParams);
+var id_product_services = urlParams.get("id_product_services");
+
+var productname = urlParams.get("productname");
+var servicename = urlParams.get("servicename");
+
+$('#product_name').val(productname + ' - ' + servicename);
+const url_extra_created = "php/api/backofficeproduct/comboextraforservices.php?t=" + encodeURIComponent(global_token) + "&id_product_services=" + id_product_services; 
 
 $.ajax({
     url : url_extra_created,

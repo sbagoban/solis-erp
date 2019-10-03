@@ -1,9 +1,20 @@
+$(document).ready(function(){
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var product_name = urlParams.get("product_name");
+    $('#product_name').val(product_name);
+});
+
 $('#btn-saveProductServices').click(function () {
     var idService = document.getElementById("idService").innerHTML;
-    var id_product = window.location.href.split('pid=').pop();
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product = urlParams.get("id_product"); 
+    console.log(id_product, ',,,,,,,');
+    var product_name = urlParams.get("product_name");
     var valid_from = $('#valid_from').val();
     var valid_to = $('#valid_to').val();
-    var product_name = $('#product_name').val();
+    var product_name = product_name;
     var id_dept = $('#id_dept').val();
     var id_countries = $('#id_countries').val();
     var id_coasts = $('#id_coasts').val();
