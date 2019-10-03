@@ -84,11 +84,8 @@
 							<div class="col-sm-7" id="multiSpecificTo">
 								<select id="ddlMultiSpecificTo" name="ddlMultiSpecificTo" class="ddlMultiSpecificTo" multiple="multiple">
                                 </select>
-								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificMarket">
-								<!-- <select class="form-control select3" data-live-search="true" id="ddlmultiSpecificMarket" multiple>
-								</select> -->
 								<select id="ddlmultiSpecificMarket" name="ddlmultiSpecificMarket" class="ddlmultiSpecificMarket" multiple="multiple">
                                 </select>
 							</div>

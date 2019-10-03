@@ -102,7 +102,16 @@ function deleteServiceClaim(data) {
 
 function editServiceClaim(data) {
     document.getElementById("id_product_services_claim").innerHTML = data.id_product_service_claim;
-    specificToCtrl(data.id_product_service_claim);
+
+    if (data.specific_to == 'A') {
+        loadTourOperatorClaim();
+        specificToCtrl(data.id_product_service_claim);
+    } else if (data.specific_to == 'C') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        specificCountriesCtrl(data.id_product_service_claim);
+        loadCountriesClaim();
+    }
+
     $('#valid_from').val(data.valid_from);
     $('#valid_to').val(data.valid_to);
     $('#ps_adult_claim').val(data.ps_adult_claim);
