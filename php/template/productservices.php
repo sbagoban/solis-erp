@@ -82,8 +82,6 @@
 								<label class="col-sm-2 control-label">Supplier</label>
 								<div class="col-sm-6">
 									<select type="text" class="form-control" id="id_creditor">
-										<!-- To modify - select from db -->
-										<option value="2">TEST</option>
 									</select>
 								</div>
 								<label class="col-sm-1 control-label">Taxable</label>
@@ -227,9 +225,9 @@
 									<br>
 								</div>
 							</div>
-							<div class="pager">
+							<div class="pager pull-right">
+								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServices">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-productServices" onclick="history.go(-1);">Back</button>
 							</div>
 						</div>
 						<!-- /.box-body -->
@@ -278,7 +276,6 @@
 		</div>	
 	</div>
 </section>	
-<!-- 
 <!-- Modal -->
 <div class="modal fade" id="modal-extraServices1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
@@ -345,7 +342,7 @@
 			</div>
 		</div>
 	</div>
-</div> -->
+</div>
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
             <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
