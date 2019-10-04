@@ -6,6 +6,8 @@
 				<div class="box-header with-border">
 					<h3 class="box-title">Services Claim</h3>
 				</div>
+				
+<div id ="alert_placeholder"></div>
 				<!-- /.box-header -->
 				<!-- form start -->
 				<form class="form-horizontal">
@@ -26,22 +28,7 @@
 										<span class="glyphicon glyphicon-calendar"></span>
 									</div>
 								</div>
-							<!-- <div class="input-group">
-									<input type="text" class="form-control pull-right" id="valid_from" name="first_name">
-									<span class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</span>
-								</div> -->
 							</div>
-							<!-- <label class="col-sm-2 control-label">Date To</label>
-							<div class="col-sm-4">
-								<div class="input-group">
-									<input type="text" class="form-control pull-right" id="valid_to">
-									<span class="input-group-addon">
-										<i class="fa fa-calendar"></i>
-									</span>
-								</div>
-							</div> -->
 						</div>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Charge</label>
@@ -277,36 +264,3 @@
 		</div>
 	</div>
 </div>
-<!-- jQuery 3 -->
-<script src="bower_components/jquery/dist/jquery.min.js"></script>
-<script>
-
-$(function () {
-	//table
-    $('#tbl-productServicesClaim').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false,
-      'pageLength'  : 4
-		
-    })
-    // $('#tbl-productServicesExtraClaim').DataTable({
-    //   'paging'      : true,
-    //   'lengthChange': false,
-    //   'searching'   : true,
-    //   'ordering'    : true,
-    //   'info'        : true,
-    //   'autoWidth'   : false,
-    //   'pageLength'  : 2
-		
-    // })
-	//Date picker
-	$('#valid_from,#valid_to').datepicker({
-		autoclose: true
-	});  
-	$('.select2, .select3').select2(); 
-});
-</script>

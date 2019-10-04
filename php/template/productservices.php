@@ -72,7 +72,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
 								<div class="col-sm-6">
-									<input type="text" class="form-control" id="service_name" placeholder="Name of the product">
+									<input type="text" class="form-control" id="service_name" onkeyup="onkeyupCtrl()" placeholder="Name of the product">
 								</div>
 								<div class="col-sm-4" style="display:none;">
 									<input type="text" class="form-control" id="special_name" placeholder="Special Name">
@@ -105,7 +105,7 @@
 								</div>
 								<label class="col-sm-2 control-label">Duration</label>
 								<div class="col-sm-2">
-									<input type="text" class="form-control" id="duration" placeholder="0.00">
+									<input type="text" class="form-control" id="duration" onkeyup="onkeyupCtrl()" placeholder="0.00">
 								</div>
 								<label class="col-sm-2 control-label">Transfer</label>
 								<div class="col-sm-2">
@@ -137,9 +137,9 @@
 								<div class="col-sm-6">
 									<select class="form-control select2" multiple="multiple">
 										<option value="1">CHAMAREL LUNCH</option>
-										<option value="2">ACCESS CHAMAREL</option>>
-										<option value="3">ACCESS CHAMAREL</option>>
-										<option value="4">ACCESS CHAMAREL</option>>
+										<option value="2">ACCESS CHAMAREL</option>
+										<option value="3">ACCESS CHAMAREL</option>
+										<option value="4">ACCESS CHAMAREL</option>
 										<option value="5">ACCESS CHAMAREL</option>
 									</select>
 								</div>
@@ -217,10 +217,10 @@
 								<label class="col-sm-2 control-label">Pax Policy</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="number" class="form-control" id="min_pax">
+										<input type="number" class="form-control" id="min_pax" onkeyup="onkeyupCtrl()">
 										<span class="input-group-addon">Min</span>
-										<input type="number" class="form-control">
-										<span class="input-group-addon" id="max_pax">Max</span>
+										<input type="number" class="form-control" id="max_pax" onkeyup="onkeyupCtrl()">
+										<span class="input-group-addon">Max</span>
 									</div>
 									<br>
 								</div>

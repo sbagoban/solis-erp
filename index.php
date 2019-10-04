@@ -63,6 +63,7 @@ if (isset($_GET["m"])) {
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
         <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
         <link rel="stylesheet" href="css/boservicesclaim.css">
+        <link rel="stylesheet" href="css/style.css">
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -890,7 +891,8 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_claim/control/ctrlClaim.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
-            <script src="js/boproduct_services/models/boproductgrid.js"></script>';
+            <script src="js/boproduct_services/models/boproductgrid.js"></script>
+            <script src="js/boproduct_services/control/productCtrl.js"></script>';
         } else if ($menu == "productservices") {
             echo '<script src="js/boproduct_services/models/bosaveservices.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>
@@ -898,14 +900,16 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/boservicesgrid.js"></script>
             <script src="js/boproduct_services/models/bosaveextraservice.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
-            <script src="js/boproduct_services/models/boextraservicegrid.js"></script>';
+            <script src="js/boproduct_services/models/boextraservicegrid.js"></script>
+            <script src="js/boproduct_services/control/productCtrl.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
             <script src="js/boproduct_services/models/boservicecost.js"></script>            
             <script src="js/boproduct_services/models/boservicecostgrid.js"></script>
             <script src="js/boproduct_services/models/bosaveextraservicescost.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
-            <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>';
+            <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
+            <script src="js/boproduct_services/control/productCtrl.js"></script>';
         }
 ?>
         <div id = "alert_placeholder"></div>
