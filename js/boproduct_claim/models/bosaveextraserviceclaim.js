@@ -54,8 +54,8 @@ function addExtraServiceClaim(data) {
 
 function resetExtraServicesClaim() {
     $('#id_product_services_extra').val('');
-    $('#ps_adult_claim').val('');
-    $('#ps_teen_claim ').val('');
-    $('#ps_child_claim').val('');
-    $('#ps_infant_claim').val('');
+    $('#ps_adult_claim_1').val('');
+    $('#ps_teen_claim_1').val('');
+    $('#ps_child_claim_1').val('');
+    $('#ps_infant_claim_1').val('');
 }

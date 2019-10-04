@@ -21,36 +21,28 @@
 							</div>
 							<div class="form-group"> 
 									<label class="col-sm-2 control-label">Date From</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_from">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+									<div class="col-sm-10">
+										<div class="input-group date datepicker-in">
+											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+											<div class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</div>
 										</div>
 									</div>
-									<label class="col-sm-2 control-label">Date To</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_to">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-									</div>
+									
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
 									<div class="input-group">
 										<input type="number" class="form-control" id="ps_adult_cost">
-										<span class="input-group-addon">Adult</span>
+										<span class="input-group-addon" id="ps_adult_cost_addon">Adult</span>
 										<input type="number" class="form-control" id="ps_teen_cost">
-										<span class="input-group-addon">Teen</span>
+										<span class="input-group-addon" id="ps_teen_cost_addon">Teen</span>
 										<input type="number" class="form-control" id="ps_child_cost">
-										<span class="input-group-addon">Child</span>
+										<span class="input-group-addon" id="ps_child_cost_addon">Child</span>
 										<input type="number" class="form-control" id="ps_infant_cost">
-										<span class="input-group-addon">Infant</span>
+										<span class="input-group-addon" id="ps_infant_cost_addon">Infant</span>
 									</div>
 									<br>
 								</div>
@@ -65,10 +57,10 @@
 								</div>
 							</div>
 							
-							<div class="pager">
+							<div class="pager pull-right">
+								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServicesCost">Save</button>
 								<!-- <button type="button" class="btn btn-primary" id="btn-addProductServicesExtra" data-toggle="modal" data-target="#modal-extraServices">Add Extra</button> -->
-								<button type="button" class="btn btn-primary" id="btn-productServices" onclick="history.go(-1);">Back</button>
 							</div>
 							<!-- Main content -->
 							<section class="content">
@@ -133,7 +125,7 @@
 										<label class="col-sm-2 control-label">Product</label>
 										<div class="col-sm-6">
 											<input type="text" class="form-control" id="id_product" style="display: none">
-											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" disabled>
+											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly style="text-transform: uppercase; font-size: 18px;">
 										</div>
 									</div>
 							

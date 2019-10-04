@@ -4,7 +4,7 @@ $(document).ready(function () {
     // As TO is first in the list it should be loaded by default
     loadTourOperatorClaim();
     loadCountriesClaim();
-    
+    dateRangePickervalid();
     var charges = urlParams.get("charges"); 
     $('#charges').val(charges);
     if (charges == 'UNIT') {
@@ -144,12 +144,29 @@ function loadCountriesClaim() {
     );
 }
 
+
+function dateRangePickervalid() {
+    $('#daterangeServiceFromTo').daterangepicker({
+        locale: {
+            format: 'YYYY/MM/DD'
+        },
+        "autoApply": true,
+		"opens": "center",
+    }, function(start, end, label) {
+        valid_from = start.format('YYYY-MM-DD');
+        valid_to = end.format('YYYY-MM-DD');
+    });
+}
 $("#btn-saveServicesClaim").click(function () {    
     var id_product_services_claim = document.getElementById("id_product_services_claim").innerHTML;
     var id_country = $('#ddlmultiSpecificMarket').val();
     var id_tour_operator = $('#ddlMultiSpecificTo').val();
-    var valid_from = $('#valid_from').val();
-    var valid_to = $('#valid_to').val();
+    var date_range = $('#daterangeServiceFromTo').val();
+    var dates = date_range.split(" - ");
+    var valid_from = dates[0];
+    var valid_to = dates[1];
+    var valid_from = valid_from;
+    var valid_to = valid_to;
     var ps_adult_claim = $('#ps_adult_claim').val();
     var ps_teen_claim = $('#ps_teen_claim').val();
     var ps_child_claim = $('#ps_child_claim').val();
@@ -225,6 +242,8 @@ $("#btn-saveServicesClaim").click(function () {
             id_product_service_claim: -1,
             id_product_service_cost: id_product_service_cost,
             id_product_service: id_product_service,
+
+
             valid_from: valid_from,
             valid_to: valid_to,
             id_dept: id_dept,

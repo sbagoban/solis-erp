@@ -3,7 +3,10 @@ $(document).ready(function(){
 });
 
 function allServicesGrid() {
-    var id_product = window.location.href.split('pid=').pop();
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product = urlParams.get("id_product");
+
     $('#tbl-productServices').DataTable({       
         "processing" : true,
 
@@ -172,8 +175,14 @@ function serviceEdit(data) {
 
 // Add Product Cost Services
 function addProductServices(data) { 
-    console.log(data);
-    window.location.href = "index.php?m=productservicescost&psid=" + data.id_product_services + "&iddept=" + data.id_dept+ "&productname=" + data.product_name + "&servicename=" + data.service_name+ "&idcoast=" + data.id_coasts+ "&idcreditor=" + data.id_creditor;
+    console.log('-->', data);
+    window.location.href = "index.php?m=productservicescost&psid=" 
+    + data.id_product_services + "&iddept=" 
+    + data.id_dept+ "&productname=" 
+    + data.product_name + "&servicename=" 
+    + data.service_name+ "&idcoast=" + data.id_coasts+ "&idcreditor=" + data.id_creditor+ "&charges=" 
+    + data.charges + "&id_product_services=" 
+    + data.id_product_services;
 }
 
 function addServiceExtra(data) {

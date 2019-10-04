@@ -22,7 +22,12 @@ require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT * FROM product_services_extra_cost where id_product_services_cost = :id_product_services_cost");
+$query_c = $con->prepare(
+    "SELECT PSEC.id_product_services_extra_cost, PSEC.extra_name, PSEC.id_product_services, PSEC.charges, PSE.extra_description
+    FROM product_services_extra_cost PSEC
+    JOIN product_services_extra PSE on PSEC.id_product_services = PSE.id_product_services
+    where id_product_services_cost = :id_product_services_cost
+    AND PSEC.active = 1");
 $query_c->execute(array(":id_product_services_cost"=>$id_product_services_cost));
 $row_count_c = $query_c->rowCount();
 
@@ -32,7 +37,8 @@ if ($row_count_c > 0) {
             'id_product_services_extra_cost' => $row['id_product_services_extra_cost'],
             'extra_name' => $row['extra_name'],
             'id_product_services' => $row['id_product_services'],
-            'charges' => $row['charges']
+            'charges' => $row['charges'],
+            'extra_description' => $row['extra_description']
         );
     }
     $myData = $ug;

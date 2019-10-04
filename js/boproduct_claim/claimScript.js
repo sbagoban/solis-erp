@@ -79,7 +79,7 @@ var helpersDropdownExtraCreated = {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
                 console.log(result, '<<<<----');
-                dropdown.append('<option value="' + result.id_product_services_extra_cost + ','+result.charges+'" name="'+result.extra_name+'">' + result.extra_name + '</option>');
+                dropdown.append('<option value="' + result.id_product_services_extra_cost + ','+result.charges+'" name="'+result.extra_name+'">' + result.extra_description + '</option>');
                 $("#blockPax").css("display", "none");
                 $("#blockUnit").css("display", "none");
             });

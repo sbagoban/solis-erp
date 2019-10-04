@@ -1,9 +1,38 @@
+$(document).ready(function(){
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var product_name = urlParams.get("product_name");
+    $('#product_name').val(product_name);
+    dateRangePickervalid();
+});
+
+function dateRangePickervalid() {
+    $('#daterangeServiceFromTo').daterangepicker({
+        locale: {
+            format: 'YYYY/MM/DD'
+        },
+        "autoApply": true,
+		"opens": "center",
+    }, function(start, end, label) {
+        valid_from = start.format('YYYY-MM-DD');
+        valid_to = end.format('YYYY-MM-DD');
+    });
+}
+
 $('#btn-saveProductServices').click(function () {
     var idService = document.getElementById("idService").innerHTML;
-    var id_product = window.location.href.split('pid=').pop();
-    var valid_from = $('#valid_from').val();
-    var valid_to = $('#valid_to').val();
-    var product_name = $('#product_name').val();
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product = urlParams.get("id_product"); 
+    var product_name = urlParams.get("product_name");
+
+    var date_range = $('#daterangeServiceFromTo').val();
+    var dates = date_range.split(" - ");
+    var valid_from = dates[0];
+    var valid_to = dates[1];
+    var valid_from = valid_from;
+    var valid_to = valid_to;
+    var product_name = product_name;
     var id_dept = $('#id_dept').val();
     var id_countries = $('#id_countries').val();
     var id_coasts = $('#id_coasts').val();
@@ -168,7 +197,6 @@ $('#btn-saveProductServices').click(function () {
 function resetServicesForm() {
     $('#valid_from').val('');
     $('#valid_to').val('');
-    $('#product_name').val('');
     $('#id_dept').val('');
     $('#id_countries').val('');
     $('#id_coasts').val('');

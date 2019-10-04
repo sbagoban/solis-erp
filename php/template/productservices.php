@@ -21,29 +21,21 @@
 							</div>
 							<div class="form-group"> 
 									<label class="col-sm-2 control-label">Date From</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_from">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+									<div class="col-sm-10">
+										<div class="input-group date datepicker-in">
+											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+											<div class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</div>
 										</div>
 									</div>
-									<label class="col-sm-2 control-label">Date To</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_to">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-									</div>
+									
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Product</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product" style="display: none">
-									<input type="text" class="form-control" id="product_name" placeholder="Name of the product">
+									<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly>
 								</div>
 								<label class="col-sm-2 control-label">Department</label>
 								<div class="col-sm-4">
@@ -90,8 +82,6 @@
 								<label class="col-sm-2 control-label">Supplier</label>
 								<div class="col-sm-6">
 									<select type="text" class="form-control" id="id_creditor">
-										<!-- To modify - select from db -->
-										<option value="2">TEST</option>
 									</select>
 								</div>
 								<label class="col-sm-1 control-label">Taxable</label>
@@ -100,8 +90,8 @@
 										<!-- To modify - select from db -->
 										<option value="1">EXEMPT</option>
 										<option value="2">OUSIDE SCOPE</option>
-										<option value="3">VALUE ADDED TAX</option>
-										<option value="4" selected="selected">ZERO RATED</option>
+										<option value="3" selected="selected">VAT</option>
+										<option value="4">ZERO RATED</option>
 									</select>
 								</div>
 							</div>
@@ -235,9 +225,9 @@
 									<br>
 								</div>
 							</div>
-							<div class="pager">
+							<div class="pager pull-right">
+								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServices">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-productServices" onclick="history.go(-1);">Back</button>
 							</div>
 						</div>
 						<!-- /.box-body -->
@@ -286,7 +276,6 @@
 		</div>	
 	</div>
 </section>	
-<!-- 
 <!-- Modal -->
 <div class="modal fade" id="modal-extraServices1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
@@ -353,7 +342,7 @@
 			</div>
 		</div>
 	</div>
-</div> -->
+</div>
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
             <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.

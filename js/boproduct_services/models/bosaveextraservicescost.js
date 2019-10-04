@@ -1,5 +1,5 @@
 function addExtraServiceCost(data) {
-console.log(data);
+    $('#modal-extraServices').modal('show');
     $("#charges_1").on('change', function() {
         if ($(this).val() == 'UNIT'){
             $("#blockPax").css("display", "none");
@@ -25,7 +25,6 @@ console.log(data);
         var currency = data.currency_code;
         var id_currency = data.id_currency;
 
-        console.log('id_product_services_extra', id_product_services_extra);
         var objExtraServiceCost = {
             id_product_services_extra_cost:-1, //for new items, id is always -1
             id_product_services_extra: id_product_services_extra,
@@ -55,7 +54,10 @@ console.log(data);
             error: function(error) {
                 console.log('Error ${error}');
             }
-        });
+        }).done(function (rawData) {
+            $('#modal-extraServices .close').click();
+    
+        })
     });
 }
 
@@ -64,5 +66,6 @@ function resetExtraServicesCostForm() {
     $('#ps_teen_cost_ex').val('');
     $('#ps_child_cost_ex').val('');
     $('#ps_infant_cost_ex').val('');
-    $('#id_product_services_extra').val('');
+    $('#charges_1').val('');
+    $('#id_product_services_extra_1').val('');
 }
