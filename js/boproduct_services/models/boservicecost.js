@@ -16,12 +16,21 @@ $(document).ready(function(){
 });
 
 function dateRangePickervalid() {
+    var allParams = window.location.href.split('productservicescost').pop();
+    const urlParams = new URLSearchParams(allParams);
+
+    var valid_from = urlParams.get("valid_from"); 
+    var valid_to = urlParams.get("valid_to"); 
+
+    
     $('#daterangeServiceFromTo').daterangepicker({
         locale: {
             format: 'YYYY/MM/DD'
         },
         "autoApply": true,
-		"opens": "center",
+        "opens": "center",
+        "minDate" : valid_from,
+        "maxDate" : valid_to
     }, function(start, end, label) {
         valid_from = start.format('YYYY-MM-DD');
         valid_to = end.format('YYYY-MM-DD');
@@ -40,7 +49,7 @@ function dateRangePickervalid() {
         var valid_from = dates[0];
         var valid_to = dates[1];
         var valid_from = valid_from;
-        var valid_to = valid_to;``
+        var valid_to = valid_to;
         var ps_adult_cost = $('#ps_adult_cost').val();
         var ps_teen_cost = $('#ps_teen_cost').val();
         var ps_child_cost = $('#ps_child_cost').val();

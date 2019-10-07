@@ -146,12 +146,19 @@ function loadCountriesClaim() {
 
 
 function dateRangePickervalid() {
+    
+    const urlParams = new URLSearchParams(allParams);
+
+    var valid_from = urlParams.get("valid_from"); 
+    var valid_to = urlParams.get("valid_to"); 
     $('#daterangeServiceFromTo').daterangepicker({
         locale: {
             format: 'YYYY/MM/DD'
         },
         "autoApply": true,
 		"opens": "center",
+        "minDate" : valid_from,
+        "maxDate" : valid_to
     }, function(start, end, label) {
         valid_from = start.format('YYYY-MM-DD');
         valid_to = end.format('YYYY-MM-DD');

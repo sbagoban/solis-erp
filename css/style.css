@@ -1,0 +1,7 @@
+.daterangepicker td.disabled {
+    color: #ff0f0f;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    background: #fe39390a;
+    border-radius: 183px;
+}

@@ -182,7 +182,8 @@ function addProductServices(data) {
     + data.product_name + "&servicename=" 
     + data.service_name+ "&idcoast=" + data.id_coasts+ "&idcreditor=" + data.id_creditor+ "&charges=" 
     + data.charges + "&id_product_services=" 
-    + data.id_product_services;
+    + data.id_product_services
+    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to;
 }
 
 function addServiceExtra(data) {
