@@ -31,7 +31,7 @@ function allServicesGridClaim() {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_services_cost"
+            "data" : "id_product_service_cost"
         }, {
             "data" : "product_name"
         }, {
@@ -41,7 +41,7 @@ function allServicesGridClaim() {
         }, {
             "data" : "deptname"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         },  {
             "data" : "allDate"
         },  
@@ -66,5 +66,5 @@ function allServicesGridClaim() {
 // Add Extra Service
 function serviceClaim(data) {
     var params = jQuery.param(data)
-    window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_services_cost + "&data=" +params;
+    window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_service_cost + "&data=" +params;
 }

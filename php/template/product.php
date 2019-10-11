@@ -7,14 +7,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
                         <i class="icon-calendar"></i>
-                        <h3 class="panel-title">Product <span id="productId">0</span></h3>
+                        <h3 class="panel-title">Product <span id="productId" style="display: none">0</span></h3>
                     </div>
 
                     <div class="panel-body">
                         <!-- Row 1 -->
                         <div class="col-md-12">
                             <div class="col-md-6">
-                                <label class="col-md-2 control-label">Service Type</label>
+                                <label class="col-md-2 control-label">Type</label>
                                 <div class="col-md-9">
                                     <select type="text" class="form-control" id="ddlType">
                                         <!-- To modify - select from db -->

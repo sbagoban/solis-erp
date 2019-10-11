@@ -1,9 +1,9 @@
 function allServicesGridCost() {
-    var id_product_services = window.location.href.split('psid=').pop();
+    var id_product_service = window.location.href.split('psid=').pop();
     $('#tbl-productServicesCost').DataTable({
         "processing": true,
         "ajax": {
-            "url": "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_services=" + id_product_services,
+            "url": "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + id_product_service,
             dataSrc: ''
         },
         "destroy": true,
@@ -27,11 +27,11 @@ function allServicesGridCost() {
         ],
         "columnDefs": [],
         "columns": [{
-            "data": "id_product_services_cost"
+            "data": "id_product_service_cost"
         }, {
             "data": "allDate"
         }, {
-            "data": "charges"
+            "data": "charge"
         },
         {
             "targets": -1,
@@ -58,6 +58,6 @@ function allServicesGridCost() {
         var table = $('#tbl-productServicesCost').DataTable();
         var data = table.row($(this).parents('tr')).data();
         serviceCostEdit(data);
-        allExtraServicesCostGrid(data.id_product_services_cost);
+        allExtraServicesCostGrid(data.id_product_service_cost);
     });
 }

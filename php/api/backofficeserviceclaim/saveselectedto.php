@@ -26,22 +26,22 @@ try {
 
     require_once("../../connector/pdo_connect_main.php");
     
-    $id_product_services_claim_to = $_POST["id_product_services_claim_to"];
+    $id_product_service_claim_to = $_POST["id_product_service_claim_to"];
     $id_tour_operator = $_POST["id_tour_operator"];
     $id_product_service_claim = $_POST["id_product_service_claim"];
 
     $con = pdo_con();
 
-    //check duplicates for services
-    $sql = "SELECT * FROM product_services_claim_to WHERE id_product_services_claim_to = :id_product_services_claim_to";
+    //check duplicates for service
+    $sql = "SELECT * FROM product_service_claim_to WHERE id_product_service_claim_to = :id_product_service_claim_to";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product_services_claim_to" => $id_product_services_claim_to));
+    $stmt->execute(array(":id_product_service_claim_to" => $id_product_service_claim_to));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES!");
     }
 
-    if ($id_product_services_claim_to == "-1") {
-        $sql = "INSERT INTO product_services_claim_to 
+    if ($id_product_service_claim_to == "-1") {
+        $sql = "INSERT INTO product_service_claim_to 
         (
             id_tour_operator,
             id_product_service_claim
@@ -59,24 +59,24 @@ try {
                 ":id_product_service_claim" => $id_product_service_claim));
         }
         
-        $id_product_services_claim_to = $con->lastInsertId();
+        $id_product_service_claim_to = $con->lastInsertId();
         
     } else {
-        $sql = "UPDATE product_services_claim_to SET 
+        $sql = "UPDATE product_service_claim_to SET 
                 id_tour_operator = :id_tour_operator,
                 id_product_service_claim = :id_product_service_claim
-                WHERE id_product_services_claim_to=:id_product_services_claim_to";
+                WHERE id_product_service_claim_to=:id_product_service_claim_to";
 
         $stmt = $con->prepare($sql);
         $data = $id_country;
         foreach($data as $d) {
             $stmt->execute(array(
-                ":id_product_services_claim_to" => $id_product_services_claim_to,
+                ":id_product_service_claim_to" => $id_product_service_claim_to,
                 ":id_tour_operator" => $d,
                 ":id_product_service_claim" => $id_product_service_claim)); 
         }
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_services_claim_to"=>$id_product_services_claim_to));
+    echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim_to"=>$id_product_service_claim_to));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

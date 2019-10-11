@@ -18,3 +18,12 @@ label.col-md-2.control-label {
 td.btnCol {
     width: 141px;
 }
+
+li.checkBoxMain{
+  list-style-type: none;
+}
+
+label.with-square-checkbox span {
+    font-weight: 500;
+    font-size: 13px;
+}

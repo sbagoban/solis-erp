@@ -23,7 +23,7 @@ $('.select2').select2();
 /////////////////////////////////////////
 // model --> fetch Api Currency sell ////
 /////////////////////////////////////////
-const url_currency_buy = "php/api/backoffservices_rates/currency_combo_rates.php?t=" + encodeURIComponent(global_token); 
+const url_currency_buy = "php/api/backofficeproduct/currency_combo_rates.php?t=" + encodeURIComponent(global_token); 
 
 $.ajax({
     url : url_currency_buy,

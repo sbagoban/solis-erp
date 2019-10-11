@@ -26,22 +26,22 @@
             throw new Exception("INVALID TOKEN2");
         }
         
-        if (!isset($_GET["id_product_services"])) {
+        if (!isset($_GET["id_product_service"])) {
             throw new Exception("INVALID ID");
         }
         // get id service to edit
         
         require_once("../../connector/pdo_connect_main.php");
 
-        $id_product_services = $_GET["id_product_services"];
+        $id_product_service = $_GET["id_product_service"];
         $valid_from = trim($_POST["valid_from"]);
         $valid_to = trim($_POST["valid_to"]);
         $id_dept = trim($_POST["id_dept"]);
-        $id_countries = trim($_POST["id_countries"]);
-        $id_coasts = trim($_POST["id_coasts"]);
+        $id_country = trim($_POST["id_country"]);
+        $id_coast = trim($_POST["id_coast"]);
         $service_name = trim($_POST["service_name"]);
         $id_tax = trim($_POST["id_tax"]);
-        $charges = trim($_POST["charges"]);
+        $charge = trim($_POST["charge"]);
         $duration = trim($_POST["duration"]);
         $transfer_included = trim($_POST["transfer_included"]);
         $description = trim($_POST["description"]);
@@ -60,17 +60,34 @@
         $min_pax = trim($_POST["min_pax"]);
         $max_pax = trim($_POST["max_pax"]);
         $id_creditor = trim($_POST["id_creditor"]);
+		
+		if ($age_inf_to == "") 
+		{
+			$age_inf_from = NULL;
+			$age_inf_to = NULL;
+		}
+
+		if ($age_child_to == "") 
+		{
+			$age_child_from = NULL;
+			$age_child_to = NULL;
+		}
+		if ($age_teen_to == "") 
+		{
+			$age_teen_from = NULL;
+			$age_teen_to = NULL;
+		}
 
         $con = pdo_con();
-        $sql = "UPDATE product_services SET 
+        $sql = "UPDATE product_service SET 
                 valid_from =:valid_from,
                 valid_to =:valid_to,
                 id_dept =:id_dept,
-                id_countries =:id_countries,
-                id_coasts =:id_coasts,
+                id_country =:id_country,
+                id_coast =:id_coast,
                 service_name =:service_name,
                 id_tax =:id_tax,
-                charges =:charges,
+                charge =:charge,
                 duration =:duration,
                 transfer_included =:transfer_included,
                 description =:description,
@@ -89,19 +106,19 @@
                 min_pax =:min_pax,
                 max_pax =:max_pax,
                 id_creditor =:id_creditor
-                WHERE id_product_services=:id_product_services";
+                WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
         $stmt->execute(array(
-                ":id_product_services" => $id_product_services,
+                ":id_product_service" => $id_product_service,
                 ":valid_from" => $valid_from,
                 ":valid_to" => $valid_to,
                 ":id_dept" => $id_dept,
-                ":id_countries" => $id_countries,
-                ":id_coasts" => $id_coasts,
+                ":id_country" => $id_country,
+                ":id_coast" => $id_coast,
                 ":service_name" => $service_name,
                 ":id_tax" => $id_tax,
-                ":charges" => $charges,
+                ":charge" => $charge,
                 ":duration" => $duration,
                 ":transfer_included" => $transfer_included,
                 ":description" => $description,

@@ -20,13 +20,13 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("
-SELECT PRS.id_product_services_cost, PRS.id_product_services, PRS.valid_from, PRS.valid_to, PS.charges, 
+SELECT PRS.id_product_service_cost, PRS.id_product_service , PRS.valid_from, PRS.valid_to, PS.charge, 
 PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency,
-PS.service_name, TD.deptname, TC.currency_code, PS.id_creditor, PS.id_coasts, TCO.coast, PRS.id_dept, 
+PS.service_name, TD.deptname, TC.currency_code, PS.id_creditor, PS.id_coast, TCO.coast, PRS.id_dept, 
 PS.on_monday, PS.on_tuesday, PS.on_wednesday, PS.on_thursday, PS.on_friday, PS.on_saturday, PS.on_sunday, PR.product_name
-FROM product_services_cost PRS
-JOIN product_services PS on PRS.id_product_services = PS.id_product_services
-JOIN tblcoasts TCO on PS.id_coasts = TCO.id
+FROM product_service_cost PRS
+JOIN product_service  PS on PRS.id_product_service  = PS.id_product_service 
+JOIN tblcoasts TCO on PS.id_coast = TCO.id
 JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN product PR on PS.id_product = PR.id_product
@@ -38,12 +38,12 @@ $row_count_c = $query_c->rowCount();
 if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
         $productServicesCost[] = array(
-            'id_product_services_cost' => $row['id_product_services_cost'],
-            'id_product_services'         => $row['id_product_services'],
+            'id_product_service_cost' => $row['id_product_service_cost'],
+            'id_product_service'         => $row['id_product_service'],
             'valid_from'    => $row['valid_from'],
             'valid_to'    => $row['valid_to'],
             'allDate' => $row['valid_from'] . ' / ' . $row['valid_to'],
-            'charges'    => $row['charges'],
+            'charge'    => $row['charge'],
             'service_name'    => $row['service_name'],
             'ps_adult_cost'    => $row['ps_adult_cost'],
             'ps_teen_cost'    => $row['ps_teen_cost'],
@@ -54,7 +54,7 @@ if ($row_count_c > 0) {
             'id_dept' => $row['id_dept'],
             'deptname' => $row['deptname'],
             'id_creditor' => $row['id_creditor'],
-            'id_coasts' => $row['id_coasts'],
+            'id_coast' => $row['id_coast'],
             'coast' => $row['coast'],
             'on_monday' => $row['on_monday'],
             'on_tuesday' => $row['on_tuesday'],
@@ -71,12 +71,12 @@ if ($row_count_c > 0) {
 } else {
     //echo "NO DATA";
     $productServicesCost[] = array(
-        'id_product_services_cost' => '-',
-        'id_product_services' => '-',
+        'id_product_service_cost' => '-',
+        'id_product_service' => '-',
         'valid_from' => '-',
         'valid_to'     => '-',
         'allDate' => '-',
-        'charges' => '-',
+        'charge' => '-',
         'service_name'     => '-',
         'ps_adult_cost' => '-',
         'ps_teen_cost'     => '-',
@@ -87,7 +87,7 @@ if ($row_count_c > 0) {
         'deptname' => '-',
         'id_dept' => '-',
         'id_creditor' => '-',
-        'id_coasts' => '-',
+        'id_coast' => '-',
         'coast' => '-',
         'on_monday' => '-',
         'on_tuesday' => '-',

@@ -26,8 +26,8 @@ try {
 
     require_once("../../connector/pdo_connect_main.php");
     
-    $id_product_services = $_POST['id_product_services'];
-    $id_product_services_cost = $_POST["id_product_services_cost"];
+    $id_product_service = $_POST['id_product_service'];
+    $id_product_service_cost = $_POST["id_product_service_cost"];
     $valid_from = $_POST["valid_from"];
     $valid_to = trim($_POST["valid_to"]);
     $ps_adult_cost = trim($_POST["ps_adult_cost"]);
@@ -36,24 +36,40 @@ try {
     $ps_infant_cost = trim($_POST["ps_infant_cost"]);
     $id_currency = trim($_POST["id_currency"]);
     $id_dept = trim($_POST["id_dept"]);
+	
+	
+	if ($ps_teen_cost == "") 
+	{
+		$ps_teen_cost = 0;
+	}
+	
+	if ($ps_child_cost == "") 
+	{
+		$ps_child_cost = 0;
+	}
+	if ($ps_infant_cost == "") 
+	{
+		$ps_infant_cost = 0;
+	}
+
 
     $con = pdo_con();
 
-    //check duplicates for services
-    $sql = "SELECT * FROM product_services_cost WHERE id_product_services_cost = :id_product_services_cost ";
+    //check duplicates for service
+    $sql = "SELECT * FROM product_service_cost WHERE id_product_service_cost = :id_product_service_cost ";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product_services_cost" => $id_product_services_cost));
+    $stmt->execute(array(":id_product_service_cost" => $id_product_service_cost));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES!");
     }
 
-    if ($id_product_services_cost == "-1") {
-        $sql = "INSERT INTO product_services_cost (id_product_services, valid_from, valid_to, ps_adult_cost, ps_teen_cost, ps_child_cost, ps_infant_cost, id_currency, id_dept) 
-                VALUES (:id_product_services, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :id_dept)";
+    if ($id_product_service_cost == "-1") {
+        $sql = "INSERT INTO product_service_cost (id_product_service, valid_from, valid_to, ps_adult_cost, ps_teen_cost, ps_child_cost, ps_infant_cost, id_currency, id_dept) 
+                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :id_dept)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":id_product_services" => $id_product_services,
+            ":id_product_service" => $id_product_service,
             ":valid_from" => $valid_from, 
             ":valid_to" => $valid_to,
             ":ps_adult_cost" => $ps_adult_cost,
@@ -63,11 +79,11 @@ try {
             ":id_currency" => $id_currency,
             ":id_dept" => $id_dept));
         
-        $id_product_services_cost = $con->lastInsertId();
+        $id_product_service_cost = $con->lastInsertId();
     } else {
-        $sql = "UPDATE product_services_cost SET 
-                id_product_services_cost=:id_product_services_cost, 
-                id_product_services=:id_product_services,
+        $sql = "UPDATE product_service_cost SET 
+                id_product_service_cost=:id_product_service_cost, 
+                id_product_service=:id_product_service,
                 valid_to=:valid_to, 
                 ps_adult_cost=:ps_adult_cost,
                 ps_teen_cost=:ps_teen_cost,
@@ -75,12 +91,12 @@ try {
                 ps_infant_cost=:ps_infant_cost,
                 id_currency=:id_currency,
                 id_dept=:id_dept,
-                WHERE id_product_services_cost=:id_product_services_cost";
+                WHERE id_product_service_cost=:id_product_service_cost";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":id_product_services_cost" => $id_product_services_cost,
-            ":id_product_services" => $id_product_services,
+            ":id_product_service_cost" => $id_product_service_cost,
+            ":id_product_service" => $id_product_service,
             ":valid_from" => $valid_from, 
             ":valid_to" => $valid_to,
             ":ps_adult_cost" => $ps_adult_cost, 
@@ -90,7 +106,7 @@ try {
             ":id_currency" => $id_currency,
             ":id_dept" => $id_dept));
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_services_cost"=>$id_product_services_cost));
+    echo json_encode(array("OUTCOME" => "OK", "id_product_service_cost"=>$id_product_service_cost));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

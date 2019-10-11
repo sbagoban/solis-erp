@@ -14,13 +14,13 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
+									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_service_type" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_type" style="display: none" value="0">
 								</div>
 							</div>
 							<div class="form-group"> 
-									<label class="col-sm-2 control-label">Date From</label>
+									<label class="col-sm-2 control-label">Date</label>
 									<div class="col-sm-10">
 										<div class="input-group date datepicker-in">
 											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
@@ -48,14 +48,14 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Location</label>
 								<div class="col-sm-4">
-									<select type="text" class="form-control" id="id_countries">
+									<select type="text" class="form-control" id="id_country">
 										<!-- To modify - select from db -->
 										<option value="913">MAURITIUS</option>
 									</select>
 								</div>
 								<label class="col-sm-2 control-label">Coast</label>
 								<div class="col-sm-4">
-									<select class="form-control" id="id_coasts">
+									<select class="form-control" id="id_coast">
 										<option selected disabled hidden>Select an option</option>
 										<option value="5">North</option>
 										<option value="2">East</option>
@@ -98,7 +98,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost Charge</label>
 								<div class="col-sm-2">
-									<select type="text" class="form-control" id="charges">
+									<select type="text" class="form-control" id="charge">
 										<option value="PAX">PAX</option>
 										<option value="UNIT">UNIT</option>
 									</select>
@@ -307,7 +307,7 @@
 								</td>
 								<td class="col-xs-5">
 									<div class="policiesGroup">
-										<select type="text" class="form-control" id="chargesExtra">
+										<select type="text" class="form-control" id="chargeExtra">
 											<option value="UNIT" name="UNIT">UNIT</option>
 											<option value="PAX" name="PAX">PAX</option>
 										</select>

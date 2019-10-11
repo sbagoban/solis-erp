@@ -26,22 +26,22 @@ try {
 
     require_once("../../connector/pdo_connect_main.php");
     
-    $id_product_services_claim_countries = $_POST["id_product_services_claim_countries"];
+    $id_product_service_claim_country = $_POST["id_product_service_claim_country"];
     $id_country = $_POST["id_country"];
     $id_product_service_claim = $_POST["id_product_service_claim"];
 
     $con = pdo_con();
 
-    //check duplicates for services
-    $sql = "SELECT * FROM product_services_claim_countries WHERE id_product_services_claim_countries = :id_product_services_claim_countries";
+    //check duplicates for service
+    $sql = "SELECT * FROM product_service_claim_country WHERE id_product_service_claim_country = :id_product_service_claim_country";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product_services_claim_countries" => $id_product_services_claim_countries));
+    $stmt->execute(array(":id_product_service_claim_country" => $id_product_service_claim_country));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES!");
     }
 
-    if ($id_product_services_claim_countries == "-1") {
-        $sql = "INSERT INTO product_services_claim_countries 
+    if ($id_product_service_claim_country == "-1") {
+        $sql = "INSERT INTO product_service_claim_country 
         (
             id_country,
             id_product_service_claim
@@ -59,24 +59,24 @@ try {
                 ":id_product_service_claim" => $id_product_service_claim));
         }
         
-        $id_product_services_claim_countries = $con->lastInsertId();
+        $id_product_service_claim_country = $con->lastInsertId();
         
     } else {
-        $sql = "UPDATE product_services_claim_countries SET 
+        $sql = "UPDATE product_service_claim_country SET 
                 id_country = :id_country,
                 id_product_service_claim = :id_product_service_claim
-                WHERE id_product_services_claim_countries=:id_product_services_claim_countries";
+                WHERE id_product_service_claim_country=:id_product_service_claim_country";
 
         $stmt = $con->prepare($sql);
         $data = $id_country;
         foreach($data as $d) {
             $stmt->execute(array(
-                ":id_product_services_claim_countries" => $id_product_services_claim_countries,
+                ":id_product_service_claim_country" => $id_product_service_claim_country,
                 ":id_country" => $d,
                 ":id_product_service_claim" => $id_product_service_claim)); 
         }
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_services_claim_countries"=>$id_product_services_claim_countries));
+    echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim_country"=>$id_product_service_claim_country));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

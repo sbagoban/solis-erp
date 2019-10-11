@@ -2,7 +2,7 @@ function extraServiceGridClaim(data) {
     $('#tbl-productServicesExtraClaim').DataTable({       
         "processing" : true,
         "ajax" : {
-            "url" : "php/api/backofficeserviceclaim/gridextraserviceclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_services_claim=" + data.id_product_service_claim,
+            "url" : "php/api/backofficeserviceclaim/gridextraserviceclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + data.id_product_service_claim,
             "dataSrc" : ''
         },
         "destroy": true,
@@ -27,11 +27,11 @@ function extraServiceGridClaim(data) {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_services_extra_claim"
+            "data" : "id_product_service_extra_claim"
         }, {
             "data" : "extra_name"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, 
             {
                 "targets": -1,
@@ -52,14 +52,14 @@ function extraServiceGridClaim(data) {
     //     var table = $('#tbl-productServicesExtraClaim').DataTable();
     //     var data = table.row( $(this).parents('tr') ).data();
     //     serviceCostEdit(data);
-    //     allExtraServicesCostGrid(data.id_product_services_cost);
+    //     allExtraServicesCostGrid(data.id_product_service_cost);
     // });
 }
 
 // // Delete Product
 function extraServiceClaimDelete(data) {
-    var objDelClaim = {id_product_services_extra_claim: data.id_product_services_extra_claim};
-    const url_delete_extra_claim= "php/api/backofficeserviceclaim/deleteextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_services_extra_claim=" + data.id_product_services_extra_claim;
+    var objDelClaim = {id_product_service_extra_claim: data.id_product_service_extra_claim};
+    const url_delete_extra_claim= "php/api/backofficeserviceclaim/deleteextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_extra_claim=" + data.id_product_service_extra_claim;
     $.ajax({
         url: url_delete_extra_claim,
         method: "POST",
@@ -71,12 +71,12 @@ function extraServiceClaimDelete(data) {
         }
     });
     extraServiceGridClaim(data);
-    loadCountriesClaim();
+    loadCountryClaim();
 }
 
 // Edit Product
 function serviceCostEdit(data) {
-    document.getElementById("id_product_services_cost_1").innerHTML = data.id_product_services_cost;
+    document.getElementById("id_product_service_cost_1").innerHTML = data.id_product_service_cost;
     $('#valid_from').val(data.valid_from);
     $('#valid_to').val(data.valid_to);
     $('#ps_adult_cost').val(data.ps_adult_cost);

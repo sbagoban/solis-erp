@@ -33,7 +33,7 @@ try {
     $valid_to = trim($_POST["valid_to"]);
     $id_dept = trim($_POST["id_dept"]);
     $specific_to = trim($_POST["specific_to"]);
-    $charges = trim($_POST["charges"]);
+    $charge = trim($_POST["charge"]);
     $ps_adult_claim = trim($_POST["ps_adult_claim"]);
     $ps_teen_claim = trim($_POST["ps_teen_claim"]);
     $ps_child_claim = trim($_POST["ps_child_claim"]);
@@ -51,9 +51,29 @@ try {
     $id_tour_operator = $_POST["id_tour_operator"];
     $specific_to_name = $_POST["specific_to_name"];
 
+	
+	if ($ps_adult_claim == "") 
+	{
+		$ps_adult_claim = NULL;
+	}
+	
+	if ($ps_teen_claim == "") 
+	{
+		$ps_teen_claim = NULL;
+	}
+	if ($ps_child_claim == "") 
+	{
+		$ps_child_claim = NULL;
+	}
+	if ($ps_infant_claim == "") 
+	{
+		$ps_infant_claim = NULL;
+	}
+	
+	
     $con = pdo_con();
 
-    //check duplicates for services
+    //check duplicates for service
     $sql = "SELECT * FROM product_service_claim WHERE id_product_service_claim = :id_product_service_claim";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id_product_service_claim" => $id_product_service_claim));
@@ -69,7 +89,7 @@ try {
             valid_to,
             id_dept,
             specific_to,
-            charges,
+            charge,
             ps_adult_claim,
             ps_teen_claim,
             ps_child_claim,
@@ -92,7 +112,7 @@ try {
                     :valid_to,
                     :id_dept,
                     :specific_to,
-                    :charges,
+                    :charge,
                     :ps_adult_claim,
                     :ps_teen_claim,
                     :ps_child_claim,
@@ -116,7 +136,7 @@ try {
             ":valid_to" => $valid_to,
             ":id_dept" => $id_dept,
             ":specific_to" => $specific_to,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":ps_adult_claim" => $ps_adult_claim,
             ":ps_teen_claim" => $ps_teen_claim,
             ":ps_child_claim" => $ps_child_claim,
@@ -135,7 +155,7 @@ try {
             $id_product_service_claim = $con->lastInsertId();
 
             if ($specific_to == 'A') {
-                $sqlTo = "INSERT INTO product_services_claim_to (id_product_service_claim,id_tour_operator) 
+                $sqlTo = "INSERT INTO product_service_claim_to (id_product_service_claim,id_tour_operator) 
                 VALUES (:id_product_service_claim,:id_tour_operator)";
 
                 $stmt = $con->prepare($sqlTo);
@@ -145,7 +165,7 @@ try {
                     $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_tour_operator' => $to));
                 }
             } if($specific_to == 'C') {
-                $sqlMarket = "INSERT INTO product_services_claim_countries (id_product_service_claim,id_country) 
+                $sqlMarket = "INSERT INTO product_service_claim_country (id_product_service_claim,id_country) 
                 VALUES (:id_product_service_claim,:id_country)";
 
                 $stmt = $con->prepare($sqlMarket);
@@ -165,7 +185,7 @@ try {
                 valid_to=:valid_to,
                 id_dept=:id_dept,
                 specific_to=:specific_to,
-                charges=:charges,
+                charge=:charge,
                 ps_adult_claim=:ps_adult_claim,
                 ps_teen_claim=:ps_teen_claim,
                 ps_child_claim=:ps_child_claim,
@@ -190,7 +210,7 @@ try {
             ":valid_to" => $valid_to,
             ":id_dept" => $id_dept,
             ":specific_to" => $specific_to,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":ps_adult_claim" => $ps_adult_claim,
             ":ps_teen_claim" => $ps_teen_claim,
             ":ps_child_claim" => $ps_child_claim,

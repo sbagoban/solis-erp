@@ -1,7 +1,7 @@
 $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
-    var id_product_service_cost = urlParams.get("id_product_services_cost"); 
+    var id_product_service_cost = urlParams.get("id_product_service_cost"); 
     allServicesGridClaim(id_product_service_cost);
 });
 
@@ -41,7 +41,7 @@ function allServicesGridClaim(id_product_service_cost) {
         }, {
             "data" : "deptname"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, {
             "data" : "currency"
         }, {
@@ -96,20 +96,20 @@ function deleteServiceClaim(data) {
     
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
-    var id_product_service_cost = urlParams.get("id_product_services_cost"); 
+    var id_product_service_cost = urlParams.get("id_product_service_cost"); 
     allServicesGridClaim(id_product_service_cost);
 }
 
 function editServiceClaim(data) {
-    document.getElementById("id_product_services_claim").innerHTML = data.id_product_service_claim;
+    document.getElementById("id_product_service_claim").innerHTML = data.id_product_service_claim;
 
     if (data.specific_to == 'A') {
         loadTourOperatorClaim();
         specificToCtrl(data.id_product_service_claim);
     } else if (data.specific_to == 'C') {
         $('#ddlmultiSpecificMarket').multiselect('destroy');
-        specificCountriesCtrl(data.id_product_service_claim);
-        loadCountriesClaim();
+        specificCountryCtrl(data.id_product_service_claim);
+        loadCountryClaim();
     } else if (data.specific_to == 'B') {
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $('#ddlMultiSpecificTo').multiselect('destroy');

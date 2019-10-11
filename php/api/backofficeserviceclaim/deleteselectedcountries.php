@@ -36,7 +36,7 @@ try {
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    $stmt = $con->prepare("UPDATE product_services_claim_countries SET active=0 WHERE id_product_service_claim = :id_product_service_claim");
+    $stmt = $con->prepare("UPDATE product_service_claim_country SET active=0 WHERE id_product_service_claim = :id_product_service_claim");
     $stmt->execute(array(":id_product_service_claim"=>$id_product_service_claim));
     
 } catch (Exception $ex) {

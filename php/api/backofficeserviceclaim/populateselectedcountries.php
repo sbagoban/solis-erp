@@ -26,7 +26,7 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("SELECT *
-FROM product_services_claim_countries 
+FROM product_service_claim_country 
 WHERE id_product_service_claim = :id_product_service_claim
 AND active = 1");
 $query_c->execute(array(":id_product_service_claim"=>$id_product_service_claim));
@@ -34,11 +34,11 @@ $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
-        $countriesSelected[] = array(
+        $countrySelected[] = array(
             'id_product_service_claim' => $row['id_product_service_claim'],
             'id_country' => $row['id_country']
         );
-    }    $myData = $countriesSelected;
+    }    $myData = $countrySelected;
     echo json_encode($myData);
 } else {
     echo "NO DATA";

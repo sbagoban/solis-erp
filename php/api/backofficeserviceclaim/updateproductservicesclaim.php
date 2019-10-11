@@ -37,7 +37,7 @@
         $valid_from = trim($_POST["valid_from"]);
         $valid_to = trim($_POST["valid_to"]);
         $specific_to = trim($_POST["specific_to"]);
-        $charges = trim($_POST["charges"]);
+        $charge = trim($_POST["charge"]);
         $ps_adult_claim = trim($_POST["ps_adult_claim"]);
         $ps_teen_claim = trim($_POST["ps_teen_claim"]);
         $ps_child_claim = trim($_POST["ps_child_claim"]);
@@ -51,13 +51,29 @@
         $ex_friday = trim($_POST["ex_friday"]);
         $ex_saturday = trim($_POST["ex_saturday"]);
         $ex_sunday = trim($_POST["ex_sunday"]);
+		
+		
+		if ($ps_teen_claim == "") 
+		{
+			$ps_teen_claim = 0;
+		}
+
+		if ($ps_child_claim == "") 
+		{
+			$ps_child_claim = 0;
+		}
+		if ($ps_infant_claim == "") 
+		{
+			$ps_infant_claimc = 0;
+		}
+
 
         $con = pdo_con();
         $sql = "UPDATE product_service_claim SET 
                 valid_from=:valid_from,
                 valid_to=:valid_to,
                 specific_to=:specific_to,
-                charges=:charges,
+                charge=:charge,
                 ps_adult_claim=:ps_adult_claim,
                 ps_teen_claim=:ps_teen_claim,
                 ps_child_claim=:ps_child_claim,
@@ -79,7 +95,7 @@
             ":valid_from" => $valid_from,
             ":valid_to" => $valid_to,
             ":specific_to" => $specific_to,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":ps_adult_claim" => $ps_adult_claim,
             ":ps_teen_claim" => $ps_teen_claim,
             ":ps_child_claim" => $ps_child_claim,

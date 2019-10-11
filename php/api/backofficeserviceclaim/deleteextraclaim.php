@@ -26,18 +26,18 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    if (!isset($_GET["id_product_services_extra_claim"])) {
-        throw new Exception("INVALID ID". $_GET["id_product_services_extra_claim"]);
+    if (!isset($_GET["id_product_service_extra_claim"])) {
+        throw new Exception("INVALID ID". $_GET["id_product_service_extra_claim"]);
     }
     
-    $id_product_services_extra_claim = $_GET["id_product_services_extra_claim"];
+    $id_product_service_extra_claim = $_GET["id_product_service_extra_claim"];
     
     require_once("../../connector/pdo_connect_main.php");
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    $stmt = $con->prepare("UPDATE product_services_extra_claim SET active=0 WHERE id_product_services_extra_claim = :id_product_services_extra_claim");
-    $stmt->execute(array(":id_product_services_extra_claim"=>$id_product_services_extra_claim));
+    $stmt = $con->prepare("UPDATE product_service_extra_claim SET active=0 WHERE id_product_service_extra_claim = :id_product_service_extra_claim");
+    $stmt->execute(array(":id_product_service_extra_claim"=>$id_product_service_extra_claim));
     
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

@@ -14,8 +14,8 @@
 					<div class="box-body">
 						<div class="form-group"> 
 							<div class="col-sm-4">
-								<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
-								<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
+								<input type="text" class="form-control" id="id_product_service_cost" style="display: none" value="0">
+								<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
 								<input type="text" class="form-control" id="id_dept" style="display: none" value="0">
 							</div>
 						</div>
@@ -33,7 +33,7 @@
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Charge</label>
 							<div class="col-sm-2">
-								<input type="text" class="form-control" id="charges" placeholder="UNIT/PAX" disabled>
+								<input type="text" class="form-control" id="charge" placeholder="UNIT/PAX" disabled>
 								<!-- for display only  --->
 							</div>
 							<div class="col-sm-8">
@@ -221,35 +221,37 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<input type="text" class="form-control" id="id_product_services_extra_claim" style="display: none" value="0">
-									<div id="id_product_services_extra_cost" style="display: none">0</div>
-									<div id="id_product_services_claim" style="display: none">0</div>
-									<div id="product_services_claim_charges" style="display: none">0</div>
-									<input type="text" class="form-control" id="id_product_services_cost" style="display: none" value="0">
-									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
+									<input type="text" class="form-control" id="id_product_service_extra_claim" style="display: none" value="0">
+									<div id="id_product_service_extra_cost" style="display: none">0</div>
+									<div id="id_product_service_claim" style="display: none">0</div>
+									<div id="product_service_claim_charge" style="display: none">0</div>
+									<input type="text" class="form-control" id="id_product_service_cost" style="display: none" value="0">
+									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Extra Name</label>
 								<div class="col-sm-4">
-									<select type="text" class="form-control" id="id_product_services_extra">
+									<select type="text" class="form-control" id="id_product_service_extra">
 										<!-- To modify - select from db -->
 									</select>
 								</div>
 							</div>
+								
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Claim</label>
 								<div class="col-sm-10">
-									<div class="input-group">
-											<input type="number" class="form-control" id="ps_adult_claim_1" name="ps_adult_claim_1" style="display:none;" placeholder="Adult">
-											<span class="input-group-addon" id="ps_adult_claim_11" style="display:none;">Adult</span>
-											<input type="number" class="form-control" id="ps_teen_claim_1" style="display:none;" placeholder="Teen">
-											<span class="input-group-addon" id="ps_teen_claim_11" style="display:none;">Teen</span>
-											<input type="number" class="form-control" id="ps_child_claim_1" style="display:none;" placeholder="Child">
-											<span class="input-group-addon" id="ps_child_claim_11" style="display:none;">Child</span>
-											<input type="number" class="form-control" id="ps_infant_claim_1" style="display:none;" placeholder="Infant">
-											<span class="input-group-addon" id="ps_infant_claim_11" style="display:none;">Infant</span>
-									</div>
+										<div class="input-group">
+											<input type="number" class="form-control" id="ps_adult_claim_1">
+											<span class="input-group-addon blockPax">Adult</span>
+											<span class="input-group-addon blockUnit" style="display: none">Unit</span>
+											<input type="number" class="form-control blockPax" id="ps_teen_claim_1">
+											<span class="input-group-addon blockPax">Teen</span>
+											<input type="number" class="form-control blockPax" id="ps_child_claim_1">
+											<span class="input-group-addon blockPax">Child</span>
+											<input type="number" class="form-control blockPax" id="ps_infant_claim_1">
+											<span class="input-group-addon blockPax">Infant</span>
+										</div>
 									<br>
 								</div>
 							</div>

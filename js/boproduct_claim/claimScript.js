@@ -10,7 +10,7 @@ $('#valid_to').datepicker({
 /////////////////////////////////////////
 // model --> fetch Api Currency sell ////
 /////////////////////////////////////////
-const url_currency_buy = "php/api/backoffservices_rates/currency_combo_rates.php?t=" + encodeURIComponent(global_token); 
+const url_currency_buy = "php/api/backofficeproduct/currency_combo_rates.php?t=" + encodeURIComponent(global_token); 
 
 $.ajax({
     url : url_currency_buy,
@@ -49,10 +49,10 @@ var helpersDropdownCurrency = {
 /////////////////////////////////////////
 var allParams = window.location.href.split('data=').pop();
 const urlParams = new URLSearchParams(allParams);
-var id_product_services_cost = urlParams.get("id_product_services_cost");
+var id_product_service_cost = urlParams.get("id_product_service_cost");
 
-console.log('-->', id_product_services);
-const url_extra_created = "php/api/backofficeserviceclaim/comboextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_services_cost=" + id_product_services_cost; 
+console.log('this -->', id_product_service_cost);
+const url_extra_created = "php/api/backofficeserviceclaim/comboextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" + id_product_service_cost; 
 
 $.ajax({
     url : url_extra_created,
@@ -60,7 +60,7 @@ $.ajax({
     success : function(data) {
         helpersDropdownExtraCreated.buildDropdown(
             jQuery.parseJSON(data),
-            $('#id_product_services_extra'),
+            $('#id_product_service_extra'),
             'Select an option' 
         );
     }, 
@@ -79,36 +79,24 @@ var helpersDropdownExtraCreated = {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
                 console.log(result, '<<<<----');
-                dropdown.append('<option value="' + result.id_product_services_extra_cost + ','+result.charges+'" name="'+result.extra_name+'">' + result.extra_description + '</option>');
+                dropdown.append('<option value="' + result.id_product_service_extra_cost + ','+result.charge+'" name="'+result.extra_name+'">' + result.extra_description + '</option>');
                 $("#blockPax").css("display", "none");
                 $("#blockUnit").css("display", "none");
             });
         }
         
-        $("#id_product_services_extra").on('change', function() {
-            var charges = $('#id_product_services_extra').val().split(',');
-            document.getElementById("product_services_claim_charges").innerHTML = charges[1];
-            document.getElementById("id_product_services_extra_cost").innerHTML = charges[0];
-            if (charges[1] == 'UNIT') {
-                $("#ps_teen_claim_1").css("display", "none");
-                $("#ps_child_claim_1").css("display", "none");                
-                $("#ps_infant_claim_1").css("display", "none");
-                $("#ps_adult_claim_1").css("display", "block");
-                $("#ps_teen_claim_11").css("display", "none");
-                $("#ps_child_claim_11").css("display", "none");                
-                $("#ps_infant_claim_11").css("display", "none");
-                $("#ps_adult_claim_11").css("display", "block");
-                document.getElementsByName('ps_adult_claim_1')[0].placeholder='Unit';
-            } else {
-                document.getElementsByName('ps_adult_claim_1')[0].placeholder='Adult';
-                $("#ps_teen_claim_1").css("display", "block");
-                $("#ps_child_claim_1").css("display", "block");                
-                $("#ps_infant_claim_1").css("display", "block");
-                $("#ps_adult_claim_1").css("display", "block");
-                $("#ps_teen_claim_11").css("display", "block");
-                $("#ps_child_claim_11").css("display", "block");                
-                $("#ps_infant_claim_11").css("display", "block");
-                $("#ps_adult_claim_11").css("display", "block");
+        $("#id_product_service_extra").on('change', function() {
+            var charge = $('#id_product_service_extra').val().split(',');
+            document.getElementById("product_service_claim_charge").innerHTML = charge[1];
+            document.getElementById("id_product_service_extra_cost").innerHTML = charge[0];
+            if (charge[1] == 'UNIT') {
+				$(".blockPax").hide();
+				$(".blockUnit").show();
+            } 
+			else 
+			{
+				$(".blockPax").show();
+				$(".blockUnit").hide();
             }
         });
     }
