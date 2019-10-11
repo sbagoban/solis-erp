@@ -1,5 +1,154 @@
 <?php
 
+function utils_authenticate_api_user($con, $arrPOST, $api_name) {
+    //check if there is username, password and token
+
+    if (!isset($arrPOST["u"])) {
+        return "ERR_NO_USERNAME";
+    }
+
+    if (!isset($arrPOST["p"])) {
+        return "ERR_NO_PASSWORD";
+    }
+
+    if (!isset($arrPOST["t"])) {
+        return "ERR_NO_TOKEN";
+    }
+    
+    $u = trim($arrPOST["u"]);
+    $p = md5(trim($arrPOST["p"]));
+    $t = trim($arrPOST["t"]);
+    
+    
+    //====================================================================
+    //load the user details
+    $userid = -1;
+    $user_active_yn = "N";
+    $user_intern_extern = "";
+    $user_tofk = -1;
+    $user_system_password = "";
+    
+    $grpid = -1;
+    $grpactive_yn = "N";
+    
+    $sql = "SELECT u.*, ug.ugroup, ug.grpactiveyn, ug.grpcode               
+            FROM tblugroup ug 
+            INNER JOIN tbluser u ON ug.id = u.ugrpid 
+            WHERE u.uname=:uname";
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":uname" => $u));
+    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+        $userid = $row["id"];
+        $user_active_yn = $row["status"];
+        $user_system_password = $row["upass"];
+        $user_intern_extern = $row["intern_extern"];
+        $user_tofk = $row["tofk"];
+        
+        $grpid = $row["ugrpid"];
+        $grpactive_yn = $row["grpactiveyn"];
+    }
+    
+    if ($userid == -1) {
+        return "ERR_USER_INVALID";
+    }
+    
+    if ($grpid == -1) {
+        return "ERR_GROUP_INVALID";
+    }
+
+    if ($user_active_yn != "ACTIVE") {
+        return "ERR_USER_DEACTIVATED";
+    }
+
+    if ($grpactive_yn == "N") {
+        return "ERR_GROUP_DEACTIVATED";
+    }
+
+    if ($p != $user_system_password) {
+        return "ERR_PASSWORD_INVALID";
+    }
+    
+    if ($user_tofk == -1) {
+        return "ERR_TO_INVALID";
+    }
+    
+    //====================================================================
+    //get the TO details
+    //then check if api access is enabled and token match
+    $api_token = "";
+    $api_active = 0;
+    $to_deleted = 0;
+    
+    $sql = "SELECT * FROM tbltouroperator WHERE id=:id";
+    $query = $con->prepare($sql);
+    $query->execute(array(":id" => $user_tofk));
+    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $api_token = $row["api_token"];
+        $api_active = $row["api_active"];
+        $to_deleted = $row["deleted"];
+    }
+    
+    if($to_deleted == 1)
+    {
+        return "ERR_TO_DELETED";
+    }
+    
+    if($api_active == 0)
+    {
+        return "ERR_TO_API_DEACTIVATED";
+    }
+    
+    if($api_token != $t)
+    {
+        return "ERR_TO_INVALID_TOKEN";
+    }
+    
+    //====================================================================
+    //check if usergroup of this user has rights to this api
+    $rights_outcome = utils_firewall_menu_rights($con, $api_name, $grpid);
+    if(!$rights_outcome)
+    {
+        return "ERR_NO_API_RIGHT";
+    }
+    
+    return array("OUTCOME"=>"OK","TOID"=>$user_tofk);
+}
+
+
+function utilities_render_query($con, $sql, $idcol, $displayfields, $display_col_keys, $arr_params) {
+    
+    //creates an array of data for the query provided
+    $query = $con->prepare($sql);
+    $query->execute($arr_params);
+    
+    $arr_data = [];
+
+    $arr_cols_to_display = explode(",", $displayfields);
+    $arr_keys_to_display = explode(",", $display_col_keys); 
+    
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+
+        $arr_to_push = array();
+        $arr_to_push["id"] = $rw[$idcol];
+
+        for ($i = 0; $i < count($arr_cols_to_display); $i++) {
+            $colname = trim($arr_cols_to_display[$i]);
+            $keyname = trim($arr_keys_to_display[$i]);
+            
+            if ($colname != "") {
+                $arr_to_push[$keyname] = $rw[$colname];
+            }
+        }
+
+        $arr_data[] = $arr_to_push;
+    }
+
+    return $arr_data;
+}
+
+
 /**
  * Adds an interval to a date
  * @param interval: interval day:d, year: yyyy, month:m

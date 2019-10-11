@@ -155,6 +155,7 @@ function _contract_getRoomDatesSingleParentPoliciesRules($con, $date_rwid) {
 }
 
 function _contract_getRoomDatesChildPoliciesRules($con, $date_rwid) {
+    //CHANGES:: UPDATED FUNCTION
     $arr_rules = array();
     $sql = "SELECT * 
             FROM tblservice_contract_childpolicy_room_dates_rules 
@@ -167,12 +168,14 @@ function _contract_getRoomDatesChildPoliciesRules($con, $date_rwid) {
         $rule_rwid = $rwrules["id"];
         $rule_rulecounter = $rwrules["rulecounter"];
         $rule_category = $rwrules["rulecategory"];
+        $rule_ageranges = $rwrules["ruleageranges"];
         $rule_sharing_single = $rwrules["sharing_single"];
-
+        
         $arr_rules[] = array("rule_rwid" => $rule_rwid,
             "rule_rulecounter" => $rule_rulecounter,
             "rule_category" => $rule_category,
             "rule_sharing_single" => $rule_sharing_single,
+            "rule_ageranges" => $rule_ageranges,
             "rule_action" => "",
             "rule_policy" => _contract_getChildPolicyDateRuleAges($con, $rule_rwid));
     }

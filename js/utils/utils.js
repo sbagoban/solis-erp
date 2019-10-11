@@ -123,7 +123,16 @@ function utils_addCommas(nStr)
 }
 
 function utils_parseInt(val)
-{
+{   
+    
+    if(!val)
+    {
+        return 0;
+    }
+    
+    
+    val = utils_trim(val, " ");
+    
     if (val == "")
     {
         return 0;

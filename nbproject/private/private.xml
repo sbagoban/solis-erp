@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="833">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="858">
         <file>
             <url>js/bckoffhotels/bckoffhotels.js</url>
             <bookmark id="30">
@@ -72,6 +72,14 @@
             </bookmark>
         </file>
         <file>
+            <url>php/utils/utilities.php</url>
+            <bookmark id="858">
+                <name/>
+                <line>119</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>php/api/hotelcontracts/savecontract.php</url>
             <bookmark id="696">
                 <name/>
@@ -99,19 +107,6 @@
             <bookmark id="350">
                 <name/>
                 <line>425</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>js/hotelcontracts/hotelcontracts.js</url>
-            <bookmark id="744">
-                <name/>
-                <line>11134</line>
-                <key/>
-            </bookmark>
-            <bookmark id="747">
-                <name/>
-                <line>11184</line>
                 <key/>
             </bookmark>
         </file>
@@ -176,33 +171,33 @@
             </bookmark>
         </file>
         <file>
-            <url>php/api/ratescalculator/_rates_calculator.php</url>
-            <bookmark id="826">
-                <name/>
-                <line>4734</line>
-                <key/>
-            </bookmark>
-            <bookmark id="827">
-                <name/>
-                <line>4741</line>
-                <key/>
-            </bookmark>
-            <bookmark id="828">
-                <name/>
-                <line>4781</line>
-                <key/>
-            </bookmark>
-            <bookmark id="829">
-                <name/>
-                <line>4788</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>js/ratescalculator/ratescalculator.js</url>
             <bookmark id="832">
                 <name/>
                 <line>374</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>php/api/ratescalculator/_rates_calculator.php</url>
+            <bookmark id="834">
+                <name/>
+                <line>3888</line>
+                <key/>
+            </bookmark>
+            <bookmark id="839">
+                <name/>
+                <line>4001</line>
+                <key/>
+            </bookmark>
+            <bookmark id="836">
+                <name/>
+                <line>4116</line>
+                <key/>
+            </bookmark>
+            <bookmark id="838">
+                <name/>
+                <line>4137</line>
                 <key/>
             </bookmark>
         </file>
@@ -217,9 +212,8 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/html/soliserp/js/ratescalculator/ratescalculator.js</file>
-            <file>file:/var/www/html/soliserp/js/hotelspecialoffers/hotelspecialoffers.js</file>
-            <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_calculator.php</file>
+            <file>file:/var/www/html/soliserp/api_connect/childrenages.php</file>
+            <file>file:/var/www/html/soliserp/php/utils/utilities.php</file>
         </group>
     </open-files>
 </project-private>

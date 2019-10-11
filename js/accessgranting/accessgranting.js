@@ -60,7 +60,8 @@ function accessgranting() {
     layoutUGrpTree.cells("a").hideHeader();
     var tree_ugrp = layoutUGrpTree.cells("a").attachTree();
     tree_ugrp.setImagePath("libraries/dhtmlx/imgs/csh_vista/");
-
+    tree_ugrp.enableThreeStateCheckboxes(1);
+    
     var tb_ugrpmenu = layoutUGrpTree.cells("a").attachToolbar();
     tb_ugrpmenu.setIconsPath("images/");
     tb_ugrpmenu.setIconSize(32);
@@ -193,7 +194,7 @@ function accessgranting() {
         tree_ugrp = layoutUGrpTree.cells("a").attachTree();
         tree_ugrp.setImagePath("libraries/dhtmlx/imgs/csh_vista/");
         tree_ugrp.enableCheckBoxes(true, false);
-        tree_ugrp.enableThreeStateCheckboxes(0);
+        tree_ugrp.enableThreeStateCheckboxes(1);
 
         //get the menu of the group in question
         layoutUGrpTree.cells("a").progressOn();
@@ -290,7 +291,7 @@ function accessgranting() {
                     tree_ugrp = layoutUGrpTree.cells("a").attachTree();
                     tree_ugrp.setImagePath("libraries/dhtmlx/imgs/csh_vista/");
                     tree_ugrp.enableCheckBoxes(true, false);
-                    tree_ugrp.enableThreeStateCheckboxes(0);
+                    tree_ugrp.enableThreeStateCheckboxes(1);
 
 
                     //get the menu of the group in question
@@ -402,7 +403,7 @@ function accessgranting() {
                     tree_ugrp = layoutUGrpTree.cells("a").attachTree();
                     tree_ugrp.setImagePath("libraries/dhtmlx/imgs/csh_vista/");
                     tree_ugrp.enableCheckBoxes(true, false);
-                    tree_ugrp.enableThreeStateCheckboxes(0);
+                    tree_ugrp.enableThreeStateCheckboxes(1);
 
                     //get the menu of the group in question                    
                     layoutUGrpTree.cells("a").progressOn();
@@ -445,7 +446,7 @@ function accessgranting() {
         tree_ugrp = layoutUGrpTree.cells("a").attachTree();
         tree_ugrp.setImagePath("libraries/dhtmlx/imgs/csh_vista/");
         tree_ugrp.enableCheckBoxes(true, false);
-        tree_ugrp.enableThreeStateCheckboxes(0);
+        tree_ugrp.enableThreeStateCheckboxes(1);
     }
 
     function onTreeMenuSelect(id)

@@ -41,7 +41,7 @@ try {
     $username = "";
     $userfullname = "";
     $userid = -1;
-    $userActiveYN = "N";
+    $userStatus = "N";
     $intern_extern = "";
     $user_image = "";
 
