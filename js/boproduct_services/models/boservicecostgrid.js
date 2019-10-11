@@ -3,12 +3,12 @@ $(document).ready(function(){
 });
 
 function allServicesGridCost() {
-    var id_product_services = window.location.href.split('psid=').pop();
+    var id_product_service = window.location.href.split('psid=').pop();
     $('#tbl-productServicesCost').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_services=" + id_product_services,
+            "url" : "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + id_product_service,
             dataSrc : ''
         },
         "destroy": true,
@@ -33,11 +33,11 @@ function allServicesGridCost() {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_services"
+            "data" : "id_product_service_cost"
         }, {
             "data" : "allDate"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, 
             {
                 "targets": -1,
@@ -65,14 +65,14 @@ function allServicesGridCost() {
         var table = $('#tbl-productServicesCost').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         serviceCostEdit(data);
-        allExtraServicesCostGrid(data.id_product_services_cost);
+        allExtraServicesCostGrid(data.id_product_service_cost);
     });
 }
 
 // // Delete Product
 function serviceCostDelete(data) {
-    var objDelServiceCost = {id_product_services_cost: data.id_product_services_cost};
-    const url_delete_service_cost= "php/api/backofficeproduct/deleteservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_services_cost=" + data.id_product_services_cost;
+    var objDelServiceCost = {id_product_service_cost: data.id_product_service_cost};
+    const url_delete_service_cost= "php/api/backofficeproduct/deleteservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" + data.id_product_service_cost;
     $.ajax({
         url: url_delete_service_cost,
         method: "POST",
@@ -88,9 +88,23 @@ function serviceCostDelete(data) {
 
 // Edit Product
 function serviceCostEdit(data) {
-    document.getElementById("id_product_services_cost_1").innerHTML = data.id_product_services_cost;
-    $('#valid_from').val(data.valid_from);
-    $('#valid_to').val(data.valid_to);
+    document.getElementById("id_product_service_cost_1").innerHTML = data.id_product_service_cost;
+		
+	var start_date = data.valid_from;
+	var date_from = start_date.split("-");
+	var date_from_y = date_from[0];
+	var date_from_m = date_from[1];
+	var date_from_d = date_from[2];
+    var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+	var end_date = data.valid_to;
+	var date_to = end_date.split("-");
+	var date_to_y = date_to[0];
+	var date_to_m = date_to[1];
+	var date_to_d = date_to[2];
+    var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+	var date_range = start_date+ " - " + end_date;
+	
+    $('#daterangeServiceFromTo').val(date_range);
     $('#ps_adult_cost').val(data.ps_adult_cost);
     $('#ps_teen_cost').val(data.ps_teen_cost);
     $('#ps_child_cost').val(data.ps_child_cost);
@@ -100,7 +114,6 @@ function serviceCostEdit(data) {
 
 // Add Extra Service
 function serviceCostExtra(data) {
-    document.getElementById("id_product_services_cost_extra").innerHTML = data.id_product_services_cost;
+    document.getElementById("id_product_service_cost_extra").innerHTML = data.id_product_service_cost;
     addExtraServiceCost(data);
-    $('#modal-extraServices').modal('show');
 }

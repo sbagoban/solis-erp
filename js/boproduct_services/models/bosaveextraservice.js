@@ -1,21 +1,22 @@
 function modalExtraService(data) { 
-    var id_product_services = data.id_product_services;
-    allExtraServicesGrid(id_product_services);
+	console.log("this ------>"+data);
+    var id_product_service = data.id_product_service;
+    allExtraServicesGrid(id_product_service);
     $('#btnAddExtraService').click(function () {
-        var id_services_extra = $('#extra_name').val();
+        var id_service_extra = $('#extra_name').val();
         var extra_name = $('#extra_name').find(":selected").text();
         var extra_description = $('#extra_description').val();
-        var charges = $('#chargesExtra').find(":selected").text();
-        var id_product_services = data.id_product_services;
-
+        var charge = $('#chargeExtra').val();
+        var id_product_service = data.id_product_service;
+console.log(charge, 'ddsfgsdfgddgdg');
         // Save Extra Service
         var objExtraService = {
-            id_product_services_extra :-1, //for new items, id is always -1
-            id_services_extra : id_services_extra,
+            id_product_service_extra :-1, //for new items, id is always -1
+            id_service_extra : id_service_extra,
             extra_name : extra_name,
             extra_description : extra_description,
-            id_product_services : id_product_services,
-            charges: charges
+            id_product_service : id_product_service,
+            charge: charge
         };
         const url_save_extra_service = "php/api/backofficeproduct/saveextraservice.php?t=" + encodeURIComponent(global_token);
         $.ajax({
@@ -31,12 +32,12 @@ function modalExtraService(data) {
                 console.log('Error ${error}');
             }
         });
-        allExtraServicesGrid(id_product_services);
+        allExtraServicesGrid(id_product_service);
     });
 }
 
 function resetExtraServicesForm() {
     $('#extra_name').val('');
     $('#extra_description').val('');
-    $('#charges').val('');
+    $('#charge').val('');
 }

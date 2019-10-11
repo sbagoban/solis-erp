@@ -24,17 +24,17 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    $id_product_services = $_POST["id_product_services"];
+    $id_product_service = $_POST["id_product_service"];
 
     $id_product = $_POST["id_product"];
     $valid_from = trim($_POST["valid_from"]);
     $valid_to = trim($_POST["valid_to"]);
     $id_dept = trim($_POST["id_dept"]);
-    $id_countries = trim($_POST["id_countries"]);
-    $id_coasts = trim($_POST["id_coasts"]);
+    $id_country = trim($_POST["id_country"]);
+    $id_coast = trim($_POST["id_coast"]);
     $service_name = trim($_POST["service_name"]);
     $id_tax = trim($_POST["id_tax"]);
-    $charges = trim($_POST["charges"]);
+    $charge = trim($_POST["charge"]);
     $duration = trim($_POST["duration"]);
     $transfer_included = trim($_POST["transfer_included"]);
     $description = trim($_POST["description"]);
@@ -53,31 +53,48 @@ try {
     $min_pax = trim($_POST["min_pax"]);
     $max_pax = trim($_POST["max_pax"]);
     $id_creditor = trim($_POST["id_creditor"]);
+	
+	if ($age_inf_to == "") 
+	{
+		$age_inf_from = NULL;
+		$age_inf_to = NULL;
+	}
+	
+	if ($age_child_to == "") 
+	{
+		$age_child_from = NULL;
+		$age_child_to = NULL;
+	}
+	if ($age_teen_to == "") 
+	{
+		$age_teen_from = NULL;
+		$age_teen_to = NULL;
+	}
 
     require_once("../../connector/pdo_connect_main.php");
 
     $con = pdo_con();
 
-    //check duplicates for services
-    $sql = "SELECT * FROM product_services WHERE id_product_services = :id_product_services";
+    //check duplicates for service
+    $sql = "SELECT * FROM product_service WHERE id_product_service = :id_product_service";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product_services" => $id_product_services));
+    $stmt->execute(array(":id_product_service" => $id_product_service));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES!");
     }
 
-    if ($id_product_services == "-1") {
+    if ($id_product_service == "-1") {
         $sql = "INSERT 
-                INTO product_services (
+                INTO product_service (
                     id_product,
                     valid_from,
                     valid_to,
                     id_dept,
-                    id_countries,
-                    id_coasts,
+                    id_country,
+                    id_coast,
                     service_name,
                     id_tax,
-                    charges,
+                    charge,
                     duration,
                     transfer_included,
                     description,
@@ -95,8 +112,8 @@ try {
                     age_teen_to,
                     min_pax,
                     max_pax,id_creditor) 
-                VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_countries, :id_coasts, 
-                :service_name, :id_tax, :charges, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
+                VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
+                :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :min_pax, :max_pax, :id_creditor)";
 
         $stmt = $con->prepare($sql);
@@ -105,11 +122,11 @@ try {
             ":valid_from" => $valid_from,
             ":valid_to" => $valid_to,
             ":id_dept" => $id_dept,
-            ":id_countries" => $id_countries,
-            ":id_coasts" => $id_coasts,
+            ":id_country" => $id_country,
+            ":id_coast" => $id_coast,
             ":service_name" => $service_name,
             ":id_tax" => $id_tax,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":duration" => $duration,
             ":transfer_included" => $transfer_included,
             ":description" => $description,
@@ -129,18 +146,18 @@ try {
             ":max_pax" => $max_pax,
             ":id_creditor" => $id_creditor));
         
-        $id_product_services = $con->lastInsertId();
+        $id_product_service = $con->lastInsertId();
     } else {
-        $sql = "UPDATE product_services SET 
+        $sql = "UPDATE product_service SET 
                 id_product =:id_product,
                 valid_from =:valid_from,
                 valid_to =:valid_to,
                 id_dept =:id_dept,
-                id_countries =:id_countries,
-                id_coasts =:id_coasts,
+                id_country =:id_country,
+                id_coast =:id_coast,
                 service_name =:service_name,
                 id_tax =:id_tax,
-                charges =:charges,
+                charge =:charge,
                 duration =:duration,
                 transfer_included =:transfer_included,
                 description =:description,
@@ -159,7 +176,7 @@ try {
                 min_pax =:min_pax,
                 max_pax =:max_pax,
                 id_creditor =:id_creditor
-                WHERE id_product_services=:id_product_services";
+                WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -167,11 +184,11 @@ try {
             ":valid_from" => $valid_from,
             ":valid_to" => $valid_to,
             ":id_dept" => $id_dept,
-            ":id_countries" => $id_countries,
-            ":id_coasts" => $id_coasts,
+            ":id_country" => $id_country,
+            ":id_coast" => $id_coast,
             ":service_name" => $service_name,
             ":id_tax" => $id_tax,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":duration" => $duration,
             ":transfer_included" => $transfer_included,
             ":description" => $description,
@@ -191,7 +208,7 @@ try {
             ":max_pax" => $max_pax,
             ":id_creditor" => $id_creditor));
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_services"=>$id_product_services));
+    echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

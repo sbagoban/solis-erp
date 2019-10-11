@@ -17,14 +17,14 @@ require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT id_services_extra, extra_name FROM services_extra ORDER BY extra_name ASC");
+$query_c = $con->prepare("SELECT id_service_extra, extra_name FROM service_extra ORDER BY extra_name ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
         $ug[] = array(
-            'id_services_extra' => $row['id_services_extra'],
+            'id_service_extra' => $row['id_service_extra'],
             'extra_name' => $row['extra_name']
         );
     }

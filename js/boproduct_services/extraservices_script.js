@@ -27,7 +27,7 @@ var helpersDropdownExtraExist = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_services_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
+                dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
             });
         }
     }
@@ -35,7 +35,15 @@ var helpersDropdownExtraExist = {
 /////////////////////////////////////////
 // model --> fetch Api extra created ////
 /////////////////////////////////////////
-const url_extra_created = "php/api/backofficeproduct/comboextraforservices.php?t=" + encodeURIComponent(global_token); 
+var allParams = window.location.href.split('data=').pop();
+const urlParams = new URLSearchParams(allParams);
+var id_product_service = urlParams.get("id_product_service");
+
+var productname = urlParams.get("productname");
+var servicename = urlParams.get("servicename");
+
+$('#product_name').val(productname + ' - ' + servicename);
+const url_extra_created = "php/api/backofficeproduct/comboextraforservices.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + id_product_service; 
 
 $.ajax({
     url : url_extra_created,
@@ -43,7 +51,7 @@ $.ajax({
     success : function(data) {
         helpersDropdownExtraCreated.buildDropdown(
             jQuery.parseJSON(data),
-            $('#id_product_services_extra_1'),
+            $('#id_product_service_extra_1'),
             'Select an option' 
         );
     }, 
@@ -61,7 +69,7 @@ var helpersDropdownExtraCreated = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_product_services_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
+                dropdown.append('<option value="' + result.id_product_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
             });
         }
     }

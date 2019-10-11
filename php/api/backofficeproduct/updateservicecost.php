@@ -26,14 +26,14 @@
             throw new Exception("INVALID TOKEN2");
         }
         
-        if (!isset($_GET["id_product_services_cost"])) {
+        if (!isset($_GET["id_product_service_cost"])) {
             throw new Exception("INVALID ID");
         }
         // get id service to edit
         
         require_once("../../connector/pdo_connect_main.php");
 
-        $id_product_services_cost = $_GET["id_product_services_cost"]; 
+        $id_product_service_cost = $_GET["id_product_service_cost"]; 
         $id_dept = trim($_POST["id_dept"]);
         $valid_to = trim($_POST["valid_to"]);
         $valid_from = trim($_POST["valid_from"]);
@@ -43,9 +43,24 @@
         $ps_child_cost = trim($_POST["ps_child_cost"]);
         $ps_infant_cost = trim($_POST["ps_infant_cost"]);
         $id_currency = trim($_POST["id_currency"]);
+		
+		if ($ps_teen_cost == "") 
+		{
+			$ps_teen_cost = 0;
+		}
+
+		if ($ps_child_cost == "") 
+		{
+			$ps_child_cost = 0;
+		}
+		if ($ps_infant_cost == "") 
+		{
+			$ps_infant_cost = 0;
+		}
+
 
         $con = pdo_con();
-        $sql = "UPDATE product_services_cost SET 
+        $sql = "UPDATE product_service_cost SET 
                         valid_to=:valid_to,
                         valid_from=:valid_from,                        
                         ps_adult_cost=:ps_adult_cost, 
@@ -54,11 +69,11 @@
                         ps_infant_cost=:ps_infant_cost,
                         id_currency=:id_currency,
                         id_dept=:id_dept
-                        WHERE id_product_services_cost=:id_product_services_cost";
+                        WHERE id_product_service_cost=:id_product_service_cost";
 
         $stmt = $con->prepare($sql);                        
         $stmt->execute(array(
-                ":id_product_services_cost" => $id_product_services_cost,
+                ":id_product_service_cost" => $id_product_service_cost,
                 ":valid_to" => $valid_to,
                 ":valid_from" => $valid_from,
                 ":ps_adult_cost" => $ps_adult_cost,

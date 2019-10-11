@@ -1,12 +1,12 @@
 function addExtraServiceCost(data) {
-console.log(data);
-    $("#charges_1").on('change', function() {
+    $('#modal-extraServices').modal('show');
+    $("#charge_1").on('change', function() {
         if ($(this).val() == 'UNIT'){
-            $("#blockPax").css("display", "none");
-        $("#blockUnit").css("display", "block");
+            $(".blockPax").hide();
+			$(".blockUnit").show();
         } else {
-            $("#blockPax").css("display", "block");
-            $("#blockUnit").css("display", "none");
+            $(".blockPax").show();
+            $(".blockUnit").hide();
         }
     });
 
@@ -15,29 +15,28 @@ console.log(data);
         var ps_teen_cost = $('#ps_teen_cost_ex').val();
         var ps_child_cost = $('#ps_child_cost_ex').val();
         var ps_infant_cost = $('#ps_infant_cost_ex').val();
-        var id_product_services_extra = $('#id_product_services_extra_1').val();
-        var extra_name = $('#id_product_services_extra_1').find(":selected").text();
-        var id_product_services_cost = document.getElementById("id_product_services_cost_extra").innerHTML;
-        var id_product_services = data.id_product_services;
+        var id_product_service_extra = $('#id_product_service_extra_1').val();
+        var extra_name = $('#id_product_service_extra_1').find(":selected").text();
+        var id_product_service_cost = document.getElementById("id_product_service_cost_extra").innerHTML;
+        var id_product_service = data.id_product_service;
         var valid_from = data.valid_from;
         var valid_to = data.valid_to;
-        var charges = $('#charges_1').val();
+        var charge = $('#charge_1').val();
         var currency = data.currency_code;
         var id_currency = data.id_currency;
 
-        console.log('id_product_services_extra', id_product_services_extra);
         var objExtraServiceCost = {
-            id_product_services_extra_cost:-1, //for new items, id is always -1
-            id_product_services_extra: id_product_services_extra,
-            id_product_services_cost: id_product_services_cost,
-            id_product_services: id_product_services,
+            id_product_service_extra_cost:-1, //for new items, id is always -1
+            id_product_service_extra: id_product_service_extra,
+            id_product_service_cost: id_product_service_cost,
+            id_product_service: id_product_service,
             valid_from: valid_from,
             valid_to : valid_to,
             ps_adult_cost: ps_adult_cost,
             ps_teen_cost: ps_teen_cost,
             ps_child_cost: ps_child_cost,
             ps_infant_cost: ps_infant_cost,
-            charges: charges,
+            charge: charge,
             id_currency: id_currency, 
             currency: currency,
             extra_name: extra_name
@@ -50,12 +49,15 @@ console.log(data);
             success : function(data){
                 console.log('value', data);
                 resetExtraServicesCostForm();
-                allExtraServicesCostGrid(id_product_services_cost);
+                allExtraServicesCostGrid(id_product_service_cost);
             },
             error: function(error) {
                 console.log('Error ${error}');
             }
-        });
+        }).done(function (rawData) {
+            $('#modal-extraServices .close').click();
+    
+        })
     });
 }
 
@@ -64,5 +66,6 @@ function resetExtraServicesCostForm() {
     $('#ps_teen_cost_ex').val('');
     $('#ps_child_cost_ex').val('');
     $('#ps_infant_cost_ex').val('');
-    $('#id_product_services_extra').val('');
+    $('#charge_1').val('');
+    $('#id_product_service_extra_1').val('');
 }

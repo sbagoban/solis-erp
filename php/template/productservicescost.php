@@ -13,44 +13,36 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<div id="id_product_services_cost_1" style="display: none"></div>
-									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
+									<div id="id_product_service_cost_1" style="display: none"></div>
+									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_dept" style="display: none" value="0">
-									<input type="text" class="form-control" id="charges" style="display: none" value="0">
+									<input type="text" class="form-control" id="charge" style="display: none" value="0">
 								</div>
 							</div>
 							<div class="form-group"> 
-									<label class="col-sm-2 control-label">Date From</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_from">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+									<label class="col-sm-2 control-label">Date</label>
+									<div class="col-sm-10">
+										<div class="input-group date datepicker-in">
+											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+											<div class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</div>
 										</div>
 									</div>
-									<label class="col-sm-2 control-label">Date To</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_to">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-									</div>
+									
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
 									<div class="input-group">
 										<input type="number" class="form-control" id="ps_adult_cost">
-										<span class="input-group-addon">Adult</span>
+										<span class="input-group-addon" id="ps_adult_cost_addon">Adult</span>
 										<input type="number" class="form-control" id="ps_teen_cost">
-										<span class="input-group-addon">Teen</span>
+										<span class="input-group-addon" id="ps_teen_cost_addon">Teen</span>
 										<input type="number" class="form-control" id="ps_child_cost">
-										<span class="input-group-addon">Child</span>
+										<span class="input-group-addon" id="ps_child_cost_addon">Child</span>
 										<input type="number" class="form-control" id="ps_infant_cost">
-										<span class="input-group-addon">Infant</span>
+										<span class="input-group-addon" id="ps_infant_cost_addon">Infant</span>
 									</div>
 									<br>
 								</div>
@@ -65,10 +57,10 @@
 								</div>
 							</div>
 							
-							<div class="pager">
+							<div class="pager pull-right">
+								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServicesCost">Save</button>
 								<!-- <button type="button" class="btn btn-primary" id="btn-addProductServicesExtra" data-toggle="modal" data-target="#modal-extraServices">Add Extra</button> -->
-								<button type="button" class="btn btn-primary" id="btn-productServices" onclick="history.go(-1);">Back</button>
 							</div>
 							<!-- Main content -->
 							<section class="content">
@@ -133,7 +125,7 @@
 										<label class="col-sm-2 control-label">Product</label>
 										<div class="col-sm-6">
 											<input type="text" class="form-control" id="id_product" style="display: none">
-											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" disabled>
+											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly style="text-transform: uppercase; font-size: 18px;">
 										</div>
 									</div>
 							
@@ -177,8 +169,8 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<div id="id_product_services_cost_extra" style="display: none">0</div>
-									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
+									<div id="id_product_service_cost_extra" style="display: none">0</div>
+									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_service_type" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_type" style="display: none" value="0">
 								</div>
@@ -186,14 +178,14 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Extra Name</label>
 								<div class="col-sm-4">
-									<select type="text" class="form-control" id="id_product_services_extra_1">
+									<select type="text" class="form-control" id="id_product_service_extra_1">
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost Charge</label>
 									<div class="col-sm-2">
-										<select type="text" class="form-control" id="charges_1">
+										<select type="text" class="form-control" id="charge_1">
 											<option value="PAX">PAX</option>
 											<option value="UNIT">UNIT</option>
 										</select>
@@ -202,24 +194,17 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
-									<div id="blockPax" style="display: block">
 										<div class="input-group">
 											<input type="number" class="form-control" id="ps_adult_cost_ex">
-											<span class="input-group-addon">Adult</span>
-											<input type="number" class="form-control" id="ps_teen_cost_ex">
-											<span class="input-group-addon">Teen</span>
-											<input type="number" class="form-control" id="ps_child_cost_ex">
-											<span class="input-group-addon">Child</span>
-											<input type="number" class="form-control" id="ps_infant_cost_ex">
-											<span class="input-group-addon">Infant</span>
+											<span class="input-group-addon blockPax">Adult</span>
+											<span class="input-group-addon blockUnit" style="display: none">Unit</span>
+											<input type="number" class="form-control blockPax" id="ps_teen_cost_ex">
+											<span class="input-group-addon blockPax">Teen</span>
+											<input type="number" class="form-control blockPax" id="ps_child_cost_ex">
+											<span class="input-group-addon blockPax">Child</span>
+											<input type="number" class="form-control blockPax" id="ps_infant_cost_ex">
+											<span class="input-group-addon blockPax">Infant</span>
 										</div>
-									</div>
-									<div id="blockUnit" style="display: none">
-										<div class="input-group">
-											<input type="number" class="form-control" id="ps_adult_cost_ex">
-											<span class="input-group-addon">Unit</span>
-										</div>
-									</div>
 									<br>
 								</div>
 							</div>

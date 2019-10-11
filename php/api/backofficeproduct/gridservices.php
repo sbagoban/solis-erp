@@ -26,11 +26,11 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("
-SELECT PRS.id_product_services, PRS.id_product, PRS.service_name, PRS.charges, PRS.valid_from, PRS.valid_to, PRS.transfer_included,
-PRS.id_dept, PRS.id_countries, PRS.id_coasts, PR.product_name, PRS.id_dept, DP.deptname, PRS.active, PRS.id_tax, PRS.charges, PRS.duration,
+SELECT PRS.id_product_service, PRS.id_product, PRS.service_name, PRS.charge, PRS.valid_from, PRS.valid_to, PRS.transfer_included,
+PRS.id_dept, PRS.id_country, PRS.id_coast, PR.product_name, PRS.id_dept, DP.deptname, PRS.active, PRS.id_tax, PRS.charge, PRS.duration,
 PRS.comments, PRS.cancellation, PRS.description, PRS.age_child_to, PRS.age_inf_to, PRS.age_teen_to, PRS.min_pax, PRS.max_pax, 
 PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday, PRS.id_creditor
-FROM product_services PRS
+FROM product_service PRS
 JOIN product PR on PRS.id_product = PR.id_product
 JOIN tbldepartments DP on PRS.id_dept = DP.id
 WHERE PRS.active = 1
@@ -45,20 +45,20 @@ if ($row_count_c > 0) {
             'id_product'         => $row['id_product'],
             'service_name'    => $row['service_name'],
             'allName'    => $row['service_name']. '--' .$row['product_name'],
-            'charges'    => $row['charges'],
+            'charge'    => $row['charge'],
             'valid_from'    => $row['valid_from'],
             'valid_to'    => $row['valid_to'],
             'valid_range' => $row['valid_from']. '--' .$row['valid_to'],
             'product_name'    => $row['product_name'],
             'deptname'    => $row['deptname'],
-            'id_product_services' => $row['id_product_services'],
+            'id_product_service' => $row['id_product_service'],
             'id_dept' => $row['id_dept'], 
-            'id_countries' => $row['id_countries'],
-            'id_coasts' => $row['id_coasts'],
+            'id_country' => $row['id_country'],
+            'id_coast' => $row['id_coast'],
             'id_tax' => $row['id_tax'], 
-            'charges' => $row['charges'], 
+            'charge' => $row['charge'], 
             'transfer_included' => $row['transfer_included'],
-            'charges' => $row['charges'], 
+            'charge' => $row['charge'], 
             'comments' => $row['comments'],
             'description' => $row['description'], 
             'cancellation' => $row['cancellation'],
@@ -85,7 +85,7 @@ if ($row_count_c > 0) {
     $services[] = array(
         'id_product' => '-',
         'service_name' => '-',
-        'charges' => '-',
+        'charge' => '-',
         'valid_from' => '-',
         'valid_to' => '-',
         'product_name' => '-',
@@ -93,8 +93,8 @@ if ($row_count_c > 0) {
         'valid_range' => '-',
         'allName'    => '-', 
         'id_dept' => '-', 
-        'id_countries' => '-',
-        'id_coasts' => '-', 
+        'id_country' => '-',
+        'id_coast' => '-', 
         'id_tax' => '-', 
         'transfer_included' => '-', 
         'comments' => '-',

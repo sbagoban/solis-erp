@@ -1,10 +1,10 @@
-function allExtraServicesCostGrid(id_product_services_cost) {
+function allExtraServicesCostGrid(id_product_service_cost) {
     // Request call everything from database
     $('#tbl-extraServiceCost').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeproduct/gridextraservicecost.php?t=" + encodeURIComponent(global_token)  + "&id_product_services_cost=" + id_product_services_cost,
+            "url" : "php/api/backofficeproduct/gridextraservicecost.php?t=" + encodeURIComponent(global_token)  + "&id_product_service_cost=" + id_product_service_cost,
             dataSrc : ''
         },
         "destroy": true,
@@ -29,11 +29,11 @@ function allExtraServicesCostGrid(id_product_services_cost) {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_services_extra_cost"
+            "data" : "id_product_service_extra_cost"
         }, {
             "data" : "extra_name"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, 
             {
                 "targets": -1,
@@ -54,8 +54,8 @@ function allExtraServicesCostGrid(id_product_services_cost) {
 
 // Delete Product
 function deleteExtraServiceCost(data) {
-    var objDelExtraServiceCost = {id_product_services_extra_cost: data.id_product_services_extra_cost};
-    const url_delete_extraservice_cost = "php/api/backofficeproduct/deleteextraservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_services_extra_cost=" + data.id_product_services_extra_cost;
+    var objDelExtraServiceCost = {id_product_service_extra_cost: data.id_product_service_extra_cost};
+    const url_delete_extraservice_cost = "php/api/backofficeproduct/deleteextraservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service_extra_cost=" + data.id_product_service_extra_cost;
     $.ajax({
         url: url_delete_extraservice_cost,
         method: "POST",
@@ -66,5 +66,5 @@ function deleteExtraServiceCost(data) {
             console.log('Error ${error}');
         }
     });
-    allExtraServicesCostGrid(data.id_product_services_cost);
+    allExtraServicesCostGrid(data.id_product_service_cost);
 }

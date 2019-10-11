@@ -3,7 +3,10 @@ $(document).ready(function(){
 });
 
 function allServicesGrid() {
-    var id_product = window.location.href.split('pid=').pop();
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product = urlParams.get("id_product");
+	console.log(id_product);
     $('#tbl-productServices').DataTable({       
         "processing" : true,
 
@@ -39,7 +42,7 @@ function allServicesGrid() {
         }, {
             "data" : "deptname"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, {
             "data" : "valid_range"
         }, 
@@ -80,8 +83,8 @@ function allServicesGrid() {
 
 // Delete Product
 function serviceDelete(data) {
-    var objDelService = {id_product_services: data.id_product_services};
-    const url_delete_service= "php/api/backofficeproduct/deleteservice.php?t=" + encodeURIComponent(global_token) + "&id_product_services=" + data.id_product_services;
+    var objDelService = {id_product_service: data.id_product_service};
+    const url_delete_service= "php/api/backofficeproduct/deleteservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + data.id_product_service;
     $.ajax({
         url: url_delete_service,
         method: "POST",
@@ -95,18 +98,35 @@ function serviceDelete(data) {
     allServicesGrid();
 }
 
+
+
 // // Edit Product
 function serviceEdit(data) {
-    document.getElementById("idService").innerHTML = data.id_product_services;
-    $('#valid_from').val(data.valid_from);
-    $('#valid_to').val(data.valid_to);
+    document.getElementById("idService").innerHTML = data.id_product_service;
+	
+	var start_date = data.valid_from;
+	var date_from = start_date.split("-");
+	var date_from_y = date_from[0];
+	var date_from_m = date_from[1];
+	var date_from_d = date_from[2];
+    var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+	var end_date = data.valid_to;
+	var date_to = end_date.split("-");
+	var date_to_y = date_to[0];
+	var date_to_m = date_to[1];
+	var date_to_d = date_to[2];
+    var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+	var date_range = start_date+ " - " + end_date;
+	
+    $('#daterangeServiceFromTo').val(date_range);
     $('#id_dept').val(data.id_dept);    
     $('#product_name').val(data.product_name);
-    $('#id_countries').val(data.id_countries);
-    $('#id_coasts').val(data.id_coasts);
+    $('#id_country').val(data.id_country);
+    $('#id_coast').val(data.id_coast);
     $('#service_name').val(data.service_name);
+    $('#id_creditor').val(data.id_creditor);
     $('#id_tax').val(data.id_tax);
-    $('#charges').val(data.charges);
+    $('#charge').val(data.charge);
     $('#duration').val(data.duration);
     $('#transfer_included').val(data.transfer_included);
     $('#description').val(data.description);
@@ -172,8 +192,15 @@ function serviceEdit(data) {
 
 // Add Product Cost Services
 function addProductServices(data) { 
-    console.log(data);
-    window.location.href = "index.php?m=productservicescost&psid=" + data.id_product_services + "&iddept=" + data.id_dept+ "&productname=" + data.product_name + "&servicename=" + data.service_name+ "&idcoast=" + data.id_coasts+ "&idcreditor=" + data.id_creditor;
+    console.log('-->', data);
+    window.location.href = "index.php?m=productservicescost&psid=" 
+    + data.id_product_service + "&iddept=" 
+    + data.id_dept+ "&productname=" 
+    + data.product_name + "&servicename=" 
+    + data.service_name+ "&idcoast=" + data.id_coast+ "&idcreditor=" + data.id_creditor+ "&charge=" 
+    + data.charge + "&id_product_service=" 
+    + data.id_product_service
+    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to;
 }
 
 function addServiceExtra(data) {

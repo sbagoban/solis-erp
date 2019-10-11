@@ -1,15 +1,35 @@
+$(document).ready(function(){
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var product_name = urlParams.get("product_name");
+    $('#product_name').val(product_name);
+    var dateToday = new Date(); 
+	$('#daterangeServiceFromTo').daterangepicker({
+		"showDropdowns": true,
+		"autoApply": true,
+		"opens": "center",
+		minDate: dateToday,
+		locale: {
+					format: 'DD/MM/YYYY'
+				}
+	});
+});
+
 $('#btn-saveProductServices').click(function () {
     var idService = document.getElementById("idService").innerHTML;
-    var id_product = window.location.href.split('pid=').pop();
-    var valid_from = $('#valid_from').val();
-    var valid_to = $('#valid_to').val();
-    var product_name = $('#product_name').val();
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product = urlParams.get("id_product"); 
+    var product_name = urlParams.get("product_name");
+	var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
+	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
+    var product_name = product_name;
     var id_dept = $('#id_dept').val();
-    var id_countries = $('#id_countries').val();
-    var id_coasts = $('#id_coasts').val();
+    var id_country = $('#id_country').val();
+    var id_coast = $('#id_coast').val();
     var service_name = $('#service_name').val();    
     var id_tax = $('#id_tax').val();
-    var charges = $('#charges').val();
+    var charge = $('#charge').val();
     var duration = $('#duration').val();
     var transfer_included = $('#transfer_included').val();
     var description = $('#description').val();
@@ -66,19 +86,20 @@ $('#btn-saveProductServices').click(function () {
         on_sunday = 0;
     }  
 
+	
     if (idService == 0) {
         var objService = {
-            id_product_services :-1, //for new items, id is always -1
+            id_product_service :-1, //for new items, id is always -1
             id_product : id_product,
             valid_from : valid_from,
             valid_to : valid_to,
             product_name : product_name,
             id_dept : id_dept,
-            id_countries : id_countries,
-            id_coasts : id_coasts,
+            id_country : id_country,
+            id_coast : id_coast,
             service_name : service_name,
             id_tax : id_tax,
-            charges : charges,
+            charge : charge,
             duration : duration,
             transfer_included : transfer_included,
             description : description,
@@ -104,7 +125,7 @@ $('#btn-saveProductServices').click(function () {
         $.ajax({
             url : url_save_service,
             method : "POST",
-            data : objService,                                                                                                                                                                                                                                                                                                                                                                                                                
+            data : objService,                                                                                       
             success : function(data){
                 console.log('value', data);
                 resetServicesForm();
@@ -116,18 +137,18 @@ $('#btn-saveProductServices').click(function () {
             }
         });
     } else {
-        const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_services=" + idService;
+        const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         var objServiceUpdate = {
             id_product : id_product,
             valid_from : valid_from,
             valid_to : valid_to,
             product_name : product_name,
             id_dept : id_dept,
-            id_countries : id_countries,
-            id_coasts : id_coasts,
+            id_country : id_country,
+            id_coast : id_coast,
             service_name : service_name,
             id_tax : id_tax,
-            charges : charges,
+            charge : charge,
             duration : duration,
             transfer_included : transfer_included,
             description : description,
@@ -154,13 +175,14 @@ $('#btn-saveProductServices').click(function () {
             success : function(data){
                 console.log('value', data);
                 resetServicesForm();
-                allServicesGrid();
+                //allServicesGrid();
                 $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
             error: function(error) {
                 console.log('Error ${error}');
             }
         });
+		allServicesGrid();
     }
     document.getElementById("idService").innerHTML = 0;    
 }); 
@@ -168,13 +190,12 @@ $('#btn-saveProductServices').click(function () {
 function resetServicesForm() {
     $('#valid_from').val('');
     $('#valid_to').val('');
-    $('#product_name').val('');
     $('#id_dept').val('');
-    $('#id_countries').val('');
-    $('#id_coasts').val('');
+    $('#id_country').val('');
+    $('#id_coast').val('');
     $('#service_name').val('');
     $('#id_tax').val('');
-    $('#charges').val('');
+    $('#charge').val('');
     $('#duration').val('');
     $('#transfer_included').val('');
     $('#description').val('');

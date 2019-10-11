@@ -26,14 +26,14 @@ try {
     require_once("../../connector/pdo_connect_main.php");
     
     $id = $_POST["id"];
-    $idservicesfk = trim($_POST["idservicesfk"]);
+    $idservicefk = trim($_POST["idservicefk"]);
     $idrates_fk = trim($_POST["idrates_fk"]);
     $to_id = trim($_POST["to_id"]);
 
     $con = pdo_con();
 
-    // check duplicates for services
-    $sql = "SELECT * FROM tblexcursion_services_rates_to WHERE id = :id ";
+    // check duplicates for service
+    $sql = "SELECT * FROM tblexcursion_service_rates_to WHERE id = :id ";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -41,27 +41,27 @@ try {
     }
 
     if ($id == "-1") {
-        $sql = "INSERT INTO tblexcursion_services_rates_to (idservicesfk, idrates_fk, to_id) 
-                VALUES (:idservicesfk, :idrates_fk, :to_id)";
+        $sql = "INSERT INTO tblexcursion_service_rates_to (idservicefk, idrates_fk, to_id) 
+                VALUES (:idservicefk, :idrates_fk, :to_id)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":idservicesfk" => $idservicesfk, 
+            ":idservicefk" => $idservicefk, 
             ":idrates_fk" => $idrates_fk,
             ":to_id" => $to_id));
         
         $id = $con->lastInsertId();
         echo $id;
     } else {
-        $sql = "UPDATE tblexcursion_services_rates_to SET 
-                idservicesfk=:idservicesfk, 
+        $sql = "UPDATE tblexcursion_service_rates_to SET 
+                idservicefk=:idservicefk, 
                 idrates_fk=:idrates_fk,
                 to_id=:to_id,
                 WHERE id=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
-            ":idservicesfk" => $idservicesfk, 
+            ":idservicefk" => $idservicefk, 
             ":idrates_fk" => $idrates_fk,
             ":to_id" => $to_id));
     }

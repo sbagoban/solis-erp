@@ -21,18 +21,18 @@ $con = pdo_con();
 $query_c = $con->prepare("SELECT id, toname
 FROM tbltouroperator");
 // $query_c = $con->prepare("SELECT id, toname
-// FROM tbltouroperator where phy_countryfk IN ( " . $phy_countryfk . "  )");
+// FROM tbltouroperator where phy_tourOperatorfk IN ( " . $phy_tourOperatorfk . "  )");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
     while ($row = $query_c->fetch(PDO::FETCH_ASSOC)) {
-        $countries[] = array(
+        $tourOperator[] = array(
             'id' => $row['id'],
             'toname' => $row['toname']
         );
     }
-    $myData = $countries;
+    $myData = $tourOperator;
     echo json_encode($myData);
 } else {
     echo "NO DATA";

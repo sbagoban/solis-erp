@@ -26,12 +26,12 @@ $con = pdo_con();
 
 $query_c = $con->prepare("
 SELECT PRSC.id_product_service_claim, PRSC.id_product_service_cost, PRSC.id_product_service, PRSC.valid_from, PRSC.valid_to,
-PRSC.id_dept, PRSC.specific_to, PRSC.charges, PRSC.ps_adult_claim, PRSC.ps_teen_claim, PRSC.ps_child_claim, PRSC.ps_infant_claim, 
+PRSC.id_dept, PRSC.specific_to, PRSC.specific_to_name, PRSC.charge, PRSC.ps_adult_claim, PRSC.ps_teen_claim, PRSC.ps_child_claim, PRSC.ps_infant_claim, 
 PRSC.id_currency, PRSC.currency, PRSC.ex_monday, PRSC.ex_tuesday, PRSC.ex_wednesday, PRSC.ex_thursday, PRSC.ex_friday, PRSC.ex_saturday, PRSC.ex_sunday, TD.deptname, 
 PS.service_name, PR.product_name
 FROM product_service_claim PRSC
 JOIN tbldepartments TD on PRSC.id_dept = TD.id
-JOIN product_services PS on PRSC.id_product_service = PS.id_product_services
+JOIN product_service PS on PRSC.id_product_service = PS.id_product_service
 JOIN product PR on PS.id_product = PR.id_product
 WHERE PRSC.id_product_service_cost = :id_product_service_cost
 AND PRSC.active = 1");
@@ -47,8 +47,9 @@ if ($row_count_c > 0) {
             'valid_from' => $row['valid_from'], 
             'valid_to' => $row['valid_to'],
             'id_dept' => $row['id_dept'],
-            'specific_to' => $row['specific_to'],
-            'charges' => $row['charges'],
+            'specific_to' => $row['specific_to'],            
+            'specific_to_name' => $row['specific_to_name'],
+            'charge' => $row['charge'],
             'ps_adult_claim' => $row['ps_adult_claim'],
             'ps_teen_claim' => $row['ps_teen_claim'],
             'ps_child_claim' => $row['ps_child_claim'],
@@ -80,8 +81,9 @@ if ($row_count_c > 0) {
         'valid_from' => '-',
         'valid_to' => '-',
         'id_dept' => '-',
-        'specific_to' => '-',
-        'charges' => '-',
+        'specific_to' => '-',        
+        'specific_to_name' => '-',
+        'charge' => '-',
         'ps_adult_claim' => '-',
         'ps_teen_claim' => '-',
         'ps_child_claim' => '-',

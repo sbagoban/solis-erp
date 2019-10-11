@@ -1,7 +1,7 @@
 $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
-    var id_product_service_cost = urlParams.get("id_product_services_cost"); 
+    var id_product_service_cost = urlParams.get("id_product_service_cost"); 
     allServicesGridClaim(id_product_service_cost);
 });
 
@@ -41,13 +41,13 @@ function allServicesGridClaim(id_product_service_cost) {
         }, {
             "data" : "deptname"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, {
             "data" : "currency"
         }, {
             "data" : "allDate"
-        },  {
-            "data" : "specific_to"
+        },  { 
+            "data" : "specific_to_name"
         },  
             {
                 "targets": -1,
@@ -75,9 +75,9 @@ function allServicesGridClaim(id_product_service_cost) {
         var table = $('#tbl-productServicesClaim').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         editServiceClaim(data);
+        extraServiceGridClaim(data);
     });
 }
-
 
 // Delete Product
 function deleteServiceClaim(data) {
@@ -96,13 +96,27 @@ function deleteServiceClaim(data) {
     
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
-    var id_product_service_cost = urlParams.get("id_product_services_cost"); 
+    var id_product_service_cost = urlParams.get("id_product_service_cost"); 
     allServicesGridClaim(id_product_service_cost);
 }
 
 function editServiceClaim(data) {
-    document.getElementById("id_product_services_claim").innerHTML = data.id_product_service_claim;
-    console.log(data);
+    document.getElementById("id_product_service_claim").innerHTML = data.id_product_service_claim;
+
+    if (data.specific_to == 'A') {
+        loadTourOperatorClaim();
+        specificToCtrl(data.id_product_service_claim);
+    } else if (data.specific_to == 'C') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        specificCountryCtrl(data.id_product_service_claim);
+        loadCountryClaim();
+    } else if (data.specific_to == 'B') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
+        $('#ddlmultiSpecificMarket').css('display', 'none');
+        $('#ddlMultiSpecificTo').css('display', 'none');
+    }
+
     $('#valid_from').val(data.valid_from);
     $('#valid_to').val(data.valid_to);
     $('#ps_adult_claim').val(data.ps_adult_claim);

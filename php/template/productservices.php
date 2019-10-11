@@ -14,36 +14,28 @@
 						<div class="box-body">
 							<div class="form-group"> 
 								<div class="col-sm-4">
-									<input type="text" class="form-control" id="id_product_services" style="display: none" value="0">
+									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_service_type" style="display: none" value="0">
 									<input type="text" class="form-control" id="id_product_type" style="display: none" value="0">
 								</div>
 							</div>
 							<div class="form-group"> 
-									<label class="col-sm-2 control-label">Date From</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_from">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
+									<label class="col-sm-2 control-label">Date</label>
+									<div class="col-sm-10">
+										<div class="input-group date datepicker-in">
+											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+											<div class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</div>
 										</div>
 									</div>
-									<label class="col-sm-2 control-label">Date To</label>
-									<div class="col-sm-4">
-										<div class="input-group">
-											<input type="text" class="form-control pull-right" id="valid_to">
-											<span class="input-group-addon">
-												<i class="fa fa-calendar"></i>
-											</span>
-										</div>
-									</div>
+									
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Product</label>
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product" style="display: none">
-									<input type="text" class="form-control" id="product_name" placeholder="Name of the product">
+									<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly>
 								</div>
 								<label class="col-sm-2 control-label">Department</label>
 								<div class="col-sm-4">
@@ -56,14 +48,14 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Location</label>
 								<div class="col-sm-4">
-									<select type="text" class="form-control" id="id_countries">
+									<select type="text" class="form-control" id="id_country">
 										<!-- To modify - select from db -->
 										<option value="913">MAURITIUS</option>
 									</select>
 								</div>
 								<label class="col-sm-2 control-label">Coast</label>
 								<div class="col-sm-4">
-									<select class="form-control" id="id_coasts">
+									<select class="form-control" id="id_coast">
 										<option selected disabled hidden>Select an option</option>
 										<option value="5">North</option>
 										<option value="2">East</option>
@@ -80,7 +72,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
 								<div class="col-sm-6">
-									<input type="text" class="form-control" id="service_name" placeholder="Name of the product">
+									<input type="text" class="form-control" id="service_name" onkeyup="onkeyupCtrl()" placeholder="Name of the product">
 								</div>
 								<div class="col-sm-4" style="display:none;">
 									<input type="text" class="form-control" id="special_name" placeholder="Special Name">
@@ -90,8 +82,6 @@
 								<label class="col-sm-2 control-label">Supplier</label>
 								<div class="col-sm-6">
 									<select type="text" class="form-control" id="id_creditor">
-										<!-- To modify - select from db -->
-										<option value="2">TEST</option>
 									</select>
 								</div>
 								<label class="col-sm-1 control-label">Taxable</label>
@@ -100,22 +90,22 @@
 										<!-- To modify - select from db -->
 										<option value="1">EXEMPT</option>
 										<option value="2">OUSIDE SCOPE</option>
-										<option value="3">VALUE ADDED TAX</option>
-										<option value="4" selected="selected">ZERO RATED</option>
+										<option value="3" selected="selected">VAT</option>
+										<option value="4">ZERO RATED</option>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost Charge</label>
 								<div class="col-sm-2">
-									<select type="text" class="form-control" id="charges">
+									<select type="text" class="form-control" id="charge">
 										<option value="PAX">PAX</option>
 										<option value="UNIT">UNIT</option>
 									</select>
 								</div>
 								<label class="col-sm-2 control-label">Duration</label>
 								<div class="col-sm-2">
-									<input type="text" class="form-control" id="duration" placeholder="0.00">
+									<input type="text" class="form-control" id="duration" onkeyup="onkeyupCtrl()" placeholder="0.00">
 								</div>
 								<label class="col-sm-2 control-label">Transfer</label>
 								<div class="col-sm-2">
@@ -147,9 +137,9 @@
 								<div class="col-sm-6">
 									<select class="form-control select2" multiple="multiple">
 										<option value="1">CHAMAREL LUNCH</option>
-										<option value="2">ACCESS CHAMAREL</option>>
-										<option value="3">ACCESS CHAMAREL</option>>
-										<option value="4">ACCESS CHAMAREL</option>>
+										<option value="2">ACCESS CHAMAREL</option>
+										<option value="3">ACCESS CHAMAREL</option>
+										<option value="4">ACCESS CHAMAREL</option>
 										<option value="5">ACCESS CHAMAREL</option>
 									</select>
 								</div>
@@ -227,17 +217,17 @@
 								<label class="col-sm-2 control-label">Pax Policy</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="number" class="form-control" id="min_pax">
+										<input type="number" class="form-control" id="min_pax" onkeyup="onkeyupCtrl()">
 										<span class="input-group-addon">Min</span>
-										<input type="number" class="form-control">
-										<span class="input-group-addon" id="max_pax">Max</span>
+										<input type="number" class="form-control" id="max_pax" onkeyup="onkeyupCtrl()">
+										<span class="input-group-addon">Max</span>
 									</div>
 									<br>
 								</div>
 							</div>
-							<div class="pager">
+							<div class="pager pull-right">
+								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServices">Save</button>
-								<button type="button" class="btn btn-primary" id="btn-productServices" onclick="history.go(-1);">Back</button>
 							</div>
 						</div>
 						<!-- /.box-body -->
@@ -286,7 +276,6 @@
 		</div>	
 	</div>
 </section>	
-<!-- 
 <!-- Modal -->
 <div class="modal fade" id="modal-extraServices1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
@@ -318,7 +307,7 @@
 								</td>
 								<td class="col-xs-5">
 									<div class="policiesGroup">
-										<select type="text" class="form-control" id="chargesExtra">
+										<select type="text" class="form-control" id="chargeExtra">
 											<option value="UNIT" name="UNIT">UNIT</option>
 											<option value="PAX" name="PAX">PAX</option>
 										</select>
@@ -353,7 +342,7 @@
 			</div>
 		</div>
 	</div>
-</div> -->
+</div>
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
             <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.

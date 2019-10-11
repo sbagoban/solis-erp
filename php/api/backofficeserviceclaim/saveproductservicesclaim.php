@@ -33,7 +33,7 @@ try {
     $valid_to = trim($_POST["valid_to"]);
     $id_dept = trim($_POST["id_dept"]);
     $specific_to = trim($_POST["specific_to"]);
-    $charges = trim($_POST["charges"]);
+    $charge = trim($_POST["charge"]);
     $ps_adult_claim = trim($_POST["ps_adult_claim"]);
     $ps_teen_claim = trim($_POST["ps_teen_claim"]);
     $ps_child_claim = trim($_POST["ps_child_claim"]);
@@ -47,10 +47,33 @@ try {
     $ex_friday = trim($_POST["ex_friday"]);
     $ex_saturday = trim($_POST["ex_saturday"]);
     $ex_sunday = trim($_POST["ex_sunday"]);
+    $id_country = $_POST["id_country"];
+    $id_tour_operator = $_POST["id_tour_operator"];
+    $specific_to_name = $_POST["specific_to_name"];
 
+	
+	if ($ps_adult_claim == "") 
+	{
+		$ps_adult_claim = NULL;
+	}
+	
+	if ($ps_teen_claim == "") 
+	{
+		$ps_teen_claim = NULL;
+	}
+	if ($ps_child_claim == "") 
+	{
+		$ps_child_claim = NULL;
+	}
+	if ($ps_infant_claim == "") 
+	{
+		$ps_infant_claim = NULL;
+	}
+	
+	
     $con = pdo_con();
 
-    //check duplicates for services
+    //check duplicates for service
     $sql = "SELECT * FROM product_service_claim WHERE id_product_service_claim = :id_product_service_claim";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id_product_service_claim" => $id_product_service_claim));
@@ -66,7 +89,7 @@ try {
             valid_to,
             id_dept,
             specific_to,
-            charges,
+            charge,
             ps_adult_claim,
             ps_teen_claim,
             ps_child_claim,
@@ -79,7 +102,8 @@ try {
             ex_thursday,
             ex_friday,
             ex_saturday,
-            ex_sunday
+            ex_sunday,
+            specific_to_name
             ) 
                 VALUES (
                     :id_product_service_cost, 
@@ -88,7 +112,7 @@ try {
                     :valid_to,
                     :id_dept,
                     :specific_to,
-                    :charges,
+                    :charge,
                     :ps_adult_claim,
                     :ps_teen_claim,
                     :ps_child_claim,
@@ -101,7 +125,8 @@ try {
                     :ex_thursday,
                     :ex_friday,
                     :ex_saturday,
-                    :ex_sunday)";
+                    :ex_sunday,
+                    :specific_to_name)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -111,7 +136,7 @@ try {
             ":valid_to" => $valid_to,
             ":id_dept" => $id_dept,
             ":specific_to" => $specific_to,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":ps_adult_claim" => $ps_adult_claim,
             ":ps_teen_claim" => $ps_teen_claim,
             ":ps_child_claim" => $ps_child_claim,
@@ -124,10 +149,35 @@ try {
             ":ex_thursday" => $ex_thursday,
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
-            ":ex_sunday" => $ex_sunday));
+            ":ex_sunday" => $ex_sunday,
+            ":specific_to_name" => $specific_to_name));
         
-        $id_product_service_claim = $con->lastInsertId();
-    } else {
+            $id_product_service_claim = $con->lastInsertId();
+
+            if ($specific_to == 'A') {
+                $sqlTo = "INSERT INTO product_service_claim_to (id_product_service_claim,id_tour_operator) 
+                VALUES (:id_product_service_claim,:id_tour_operator)";
+
+                $stmt = $con->prepare($sqlTo);
+                $data = $id_tour_operator;
+                
+                foreach($data as $to) {
+                    $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_tour_operator' => $to));
+                }
+            } if($specific_to == 'C') {
+                $sqlMarket = "INSERT INTO product_service_claim_country (id_product_service_claim,id_country) 
+                VALUES (:id_product_service_claim,:id_country)";
+
+                $stmt = $con->prepare($sqlMarket);
+                $data = $id_country;
+                
+                foreach($data as $d) {
+                    $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_country' => $d));
+                }
+            }
+            
+    } 
+    else {
         $sql = "UPDATE product_service_claim SET 
                 id_product_service_cost=:id_product_service_cost, 
                 id_product_service=:id_product_service, 
@@ -135,7 +185,7 @@ try {
                 valid_to=:valid_to,
                 id_dept=:id_dept,
                 specific_to=:specific_to,
-                charges=:charges,
+                charge=:charge,
                 ps_adult_claim=:ps_adult_claim,
                 ps_teen_claim=:ps_teen_claim,
                 ps_child_claim=:ps_child_claim,
@@ -148,7 +198,8 @@ try {
                 ex_thursday=:ex_thursday,
                 ex_friday=:ex_friday,
                 ex_saturday=:ex_saturday,
-                ex_sunday=:ex_sunday
+                ex_sunday=:ex_sunday,
+                specific_to_name=:specific_to_name
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);
@@ -159,7 +210,7 @@ try {
             ":valid_to" => $valid_to,
             ":id_dept" => $id_dept,
             ":specific_to" => $specific_to,
-            ":charges" => $charges,
+            ":charge" => $charge,
             ":ps_adult_claim" => $ps_adult_claim,
             ":ps_teen_claim" => $ps_teen_claim,
             ":ps_child_claim" => $ps_child_claim,
@@ -172,10 +223,12 @@ try {
             ":ex_thursday" => $ex_thursday,
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
-            ":ex_sunday" => $ex_sunday));
+            ":ex_sunday" => $ex_sunday,
+            ":specific_to_name" => $specific_to_name));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
+
 ?>

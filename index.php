@@ -51,18 +51,20 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="dist/css/AdminLTE.css?<?php echo time(); ?>">
 
         <!-- Sandeep Start -->
-        <link rel="stylesheet" href="css/bookingEngine.css">
-        <link rel="stylesheet" href="css/editor.css">
+        <!--<link rel="stylesheet" href="css/bookingEngine.css">-->
+        <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="css/bookingEngine.css">
+        <!--<link rel="stylesheet" href="css/bookingEngine.css">-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.css">
         <link rel="stylesheet" href="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.css">
-        <link rel="stylesheet" href="css/editor.css">
+        <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/css/dataTables.bootstrap.min.css'>
         <link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>
+        <!--<link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>-->
         <link rel="stylesheet" href="css/boservicesclaim.css">
+        <link rel="stylesheet" href="css/style.css">
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -446,6 +448,8 @@ if (isset($_GET["m"])) {
                         include 'php/template/norights.php';
                     } else if ($menu == "managebookings") {
                         include 'php/template/booking_engine.php';
+                    } else if ($menu == "bookingSystem") {
+                        include 'php/application/booking/index.php';
                     } else if ($menu == "backoff_service_claim") {
                         include 'php/template/servicerate.php';
                     } else if ($menu == "backoff_excursions") {
@@ -698,13 +702,17 @@ if (isset($_GET["m"])) {
   		<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
 		<!-- Select2 -->
 		
+		<!-- SOLIS GLOBAL CSS -->
+		
+  		<link rel="stylesheet" href="css/global.css">
+		<!-- .SOLIS GLOBAL CSS -->
+		
         <!-- Sandeep Start -->
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.js"></script>
        <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js'></script>
         <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.js'></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
         <script src="https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
@@ -714,6 +722,7 @@ if (isset($_GET["m"])) {
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
         <!-- Sandeep End -->
 
         <!-- FastClick -->
@@ -885,10 +894,13 @@ if (isset($_GET["m"])) {
             echo '<script src="js/boproduct_claim/claimScript.js"></script>
             <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
-            <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>';
+            <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>
+            <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script>            
+            <script src="js/boproduct_claim/control/ctrlClaim.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
-            <script src="js/boproduct_services/models/boproductgrid.js"></script>';
+            <script src="js/boproduct_services/models/boproductgrid.js"></script>
+            <script src="js/boproduct_services/control/productCtrl.js"></script>';
         } else if ($menu == "productservices") {
             echo '<script src="js/boproduct_services/models/bosaveservices.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>
@@ -896,14 +908,16 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/boservicesgrid.js"></script>
             <script src="js/boproduct_services/models/bosaveextraservice.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
-            <script src="js/boproduct_services/models/boextraservicegrid.js"></script>';
+            <script src="js/boproduct_services/models/boextraservicegrid.js"></script>
+            <script src="js/boproduct_services/control/productCtrl.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
             <script src="js/boproduct_services/models/boservicecost.js"></script>            
             <script src="js/boproduct_services/models/boservicecostgrid.js"></script>
             <script src="js/boproduct_services/models/bosaveextraservicescost.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
-            <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>';
+            <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
+            <script src="js/boproduct_services/control/productCtrl.js"></script>';
         }
 ?>
         <div id = "alert_placeholder"></div>

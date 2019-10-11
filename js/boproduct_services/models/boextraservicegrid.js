@@ -1,11 +1,11 @@
-function allExtraServicesGrid(id_product_services) {
-    console.log(id_product_services);
+function allExtraServicesGrid(id_product_service) {
+    console.log(id_product_service);
     // Request call everything from database
     $('#tbl-extraService').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeproduct/gridextraservice.php?t=" + encodeURIComponent(global_token)  + "&id_product_services=" + id_product_services,
+            "url" : "php/api/backofficeproduct/gridextraservice.php?t=" + encodeURIComponent(global_token)  + "&id_product_service=" + id_product_service,
             dataSrc : ''
         },
         "destroy": true,
@@ -34,7 +34,7 @@ function allExtraServicesGrid(id_product_services) {
         }, {
             "data" : "extra_description"
         }, {
-            "data" : "charges"
+            "data" : "charge"
         }, 
             {
                 "targets": -1,
@@ -55,8 +55,8 @@ function allExtraServicesGrid(id_product_services) {
 
 // Delete Product
 function deleteExtraService(data) {
-    var objDelExtraService = {id_product_services_extra: data.id_product_services_extra};
-    const url_delete_extraservice = "php/api/backofficeproduct/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id_product_services_extra=" + data.id_product_services_extra;
+    var objDelExtraService = {id_product_service_extra: data.id_product_service_extra};
+    const url_delete_extraservice = "php/api/backofficeproduct/deleteextraservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service_extra=" + data.id_product_service_extra;
     $.ajax({
         url: url_delete_extraservice,
         method: "POST",
@@ -67,5 +67,5 @@ function deleteExtraService(data) {
             console.log('Error ${error}');
         }
     });
-    allExtraServicesGrid(data.id_product_services);
+    allExtraServicesGrid(data.id_product_service);
 }
