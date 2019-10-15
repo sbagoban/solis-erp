@@ -1,7 +1,48 @@
 $(document).ready(function () {
     productCtrl();
     $('#btn-saveProductServices').attr('disabled', 'disabled');
+    $("#age_inf_from").prop("readonly", true);
+    $("#age_inf_to").prop("readonly", true);
+    $("#age_child_from").prop("readonly", true);
+    $("#age_child_to").prop("readonly", true);
+    $("#age_teen_from").prop("readonly", true);
+    $("#age_teen_to").prop("readonly", true);
+
+    applyFor();
 });
+
+function applyFor() {
+    var chkinfant = document.getElementById("for_infant");
+    var chkchild = document.getElementById("for_child");
+    var chkteen = document.getElementById("for_teen");
+
+    $('input').on('click',function () {
+        if (chkinfant.checked) {
+            $("#age_inf_from").prop("readonly", false);
+            $("#age_inf_to").prop("readonly", false);
+        } if (chkinfant.checked == false) {
+            $("#age_inf_from").prop("readonly", true);
+            $("#age_inf_to").prop("readonly", true);
+        }
+
+        if (chkchild.checked) {
+            $("#age_child_from").prop("readonly", false);
+            $("#age_child_to").prop("readonly", false);
+        } if (chkchild.checked == false) {
+            $("#age_child_from").prop("readonly", true);
+            $("#age_child_to").prop("readonly", true);
+        }
+
+        if (chkteen.checked) {
+            $("#age_teen_from").prop("readonly", false);
+            $("#age_teen_to").prop("readonly", false);
+        } if (chkteen.checked == false) {
+            $("#age_teen_from").prop("readonly", true);
+            $("#age_teen_to").prop("readonly", true);
+        }
+    });
+}
+
 
 function productCtrl() {
     // Disabled button by default
@@ -17,11 +58,10 @@ function productCtrl() {
 function onkeyupCtrl() {
     var service_name = document.getElementById("service_name").value;
     var id_creditor = document.getElementById("id_creditor").value;
-    var duration = document.getElementById("duration").value;
     var min_pax = document.getElementById("min_pax").value;
     var max_pax = document.getElementById("max_pax").value;
     
-    if(service_name.length > 0 && min_pax.length >0 && max_pax.length >0 && duration.length >0) {
+    if(service_name.length > 0 && min_pax.length >0 && max_pax.length >0) {
         $('#btn-saveProductServices').attr('disabled', false); 
     }          
     else {

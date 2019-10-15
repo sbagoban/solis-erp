@@ -59,7 +59,13 @@
         $age_teen_to = trim($_POST["age_teen_to"]);
         $min_pax = trim($_POST["min_pax"]);
         $max_pax = trim($_POST["max_pax"]);
-        $id_creditor = trim($_POST["id_creditor"]);
+        $id_creditor = trim($_POST["id_creditor"]);        
+        $age_inf_from = trim($_POST["age_inf_from"]);
+        $age_child_from = trim($_POST["age_child_from"]);
+        $age_teen_from = trim($_POST["age_teen_from"]);
+        $for_infant = trim($_POST["for_infant"]);
+        $for_child = trim($_POST["for_child"]);
+        $for_teen = trim($_POST["for_teen"]);
 		
 		if ($age_inf_to == "") 
 		{
@@ -105,7 +111,13 @@
                 age_teen_to =:age_teen_to,
                 min_pax =:min_pax,
                 max_pax =:max_pax,
-                id_creditor =:id_creditor
+                id_creditor =:id_creditor,
+                for_infant =:for_infant,
+                for_child =:for_child,
+                for_teen =:for_teen,
+                age_inf_from =:age_inf_from,
+                age_child_from =:age_child_from,
+                age_teen_from =:age_teen_from
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
@@ -136,7 +148,13 @@
                 ":age_teen_to" => $age_teen_to,
                 ":min_pax" => $min_pax,
                 ":max_pax" => $max_pax,
-                ":id_creditor" => $id_creditor));
+                ":id_creditor" => $id_creditor,
+                ":for_infant" => $for_infant,
+                ":for_child" => $for_child,
+                ":for_teen" => $for_teen,
+                ":age_inf_from" => $age_inf_from,
+                ":age_child_from" => $age_child_from,
+                ":age_teen_from" => $age_teen_from));
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

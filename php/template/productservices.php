@@ -88,10 +88,8 @@
 								<div class="col-sm-3">
 									<select type="text" class="form-control" id="id_tax">
 										<!-- To modify - select from db -->
-										<option value="1">EXEMPT</option>
 										<option value="2">OUSIDE SCOPE</option>
 										<option value="3" selected="selected">VAT</option>
-										<option value="4">ZERO RATED</option>
 									</select>
 								</div>
 							</div>
@@ -103,11 +101,14 @@
 										<option value="UNIT">UNIT</option>
 									</select>
 								</div>
-								<label class="col-sm-2 control-label">Duration</label>
+								<label class="col-sm-1 control-label">Duration</label>
 								<div class="col-sm-2">
-									<input type="text" class="form-control" id="duration" onkeyup="onkeyupCtrl()" placeholder="0.00">
+									<input type="number" class="form-control" id="duration1" placeholder="Hrs">
 								</div>
-								<label class="col-sm-2 control-label">Transfer</label>
+								<div class="col-sm-2">
+									<input type="number" class="form-control" id="duration2" placeholder="Mins">
+								</div>
+								<label class="col-sm-1 control-label">Transfer</label>
 								<div class="col-sm-2">
 									<select type="text" class="form-control" id="transfer_included">
 										<option value="0" selected="selectd">NO</option>
@@ -199,16 +200,55 @@
 									<textarea class="form-control" id="cancellation" rows="3" style="resize: none"></textarea>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Apply for</label>
+								<div class="col-sm-10">
+									<div class="checkbox" style="display: flex">
+										<li class="checkBoxMain">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="for_infant" />
+												<span>For Infant</span>
+											</label>
+										</li>
+										<li class="checkBoxMain">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="for_child" />
+												<span>For Child</span>
+											</label>
+										</li>
+										<li class="checkBoxMain">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="for_teen" />
+												<span>For Teen</span>
+											</label>
+										</li>
+									</div>
+								</div>
+							</div>
+
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Age Policy</label>
 								<div class="col-sm-10">
 									<div class="input-group">
-										<input type="number" class="form-control" min="0" max="5" id="age_inf_to">
-										<span class="input-group-addon">Infant</span>
-										<input type="number" class="form-control" min="0" max="17" id="age_child_to">
-										<span class="input-group-addon">Child</span>
-										<input type="number" class="form-control" min="0" max="17" id="age_teen_to">
-										<span class="input-group-addon">Teen</span>
+										<input type="number" class="form-control" min="0" max="5" id="age_inf_from" placeholder="Infant From">
+										<span class="input-group-addon">From</span>
+										<input type="number" class="form-control" min="0" max="5" id="age_inf_to" placeholder="Infant To">
+										<span class="input-group-addon">To</span>
+									</div>
+									<br>
+									<div class="input-group">
+										<input type="number" class="form-control" min="0" max="17" id="age_child_from" placeholder="Child From">
+										<span class="input-group-addon">From</span>
+										<input type="number" class="form-control" min="0" max="17" id="age_child_to" placeholder="Child To">
+										<span class="input-group-addon">To</span>
+									</div>
+									<br>
+									<div class="input-group">
+										<input type="number" class="form-control" min="0" max="17" id="age_teen_from" placeholder="Teen From">
+										<span class="input-group-addon">From</span>
+										<input type="number" class="form-control" min="0" max="17" id="age_teen_to" placeholder="Teen To">
+										<span class="input-group-addon">To</span>
 									</div>
 									<br>
 								</div>

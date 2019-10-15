@@ -38,6 +38,9 @@ $('#btn-saveProductServices').click(function () {
     var age_inf_to = $('#age_inf_to').val();
     var age_child_to = $('#age_child_to').val();
     var age_teen_to = $('#age_teen_to').val();
+    var age_inf_from = $('#age_inf_from').val();
+    var age_child_from = $('#age_child_from').val();
+    var age_teen_from = $('#age_teen_from').val();
     var min_pax = $('#min_pax').val();
     var max_pax = $('#max_pax').val();
     var chkmonday = document.getElementById("on_monday");
@@ -47,6 +50,10 @@ $('#btn-saveProductServices').click(function () {
     var chkfriday = document.getElementById("on_friday");
     var chksaturday = document.getElementById("on_saturday");
     var chksunday = document.getElementById("on_sunday");
+
+    var chkinfant = document.getElementById("for_infant");
+    var chkchild = document.getElementById("for_child");
+    var chkteen = document.getElementById("for_teen");
 
     var id_creditor = $('#id_creditor').val();
 
@@ -86,8 +93,24 @@ $('#btn-saveProductServices').click(function () {
         on_sunday = 0;
     }  
 
-	
+    if (chkinfant.checked) {
+        for_infant = 1;
+    } else if (chkinfant.checked == false) {
+        for_infant = 0;
+    } 
+    if (chkchild.checked) {
+        for_child = 1;
+    } else if (chkchild.checked == false) {
+        for_child = 0;
+    } 
+    if (chkteen.checked) {
+        for_teen = 1;
+    } else if (chkteen.checked == false) {
+        for_teen = 0;
+    }  
+
     if (idService == 0) {
+        console.log('This -->', for_infant);
         var objService = {
             id_product_service :-1, //for new items, id is always -1
             id_product : id_product,
@@ -100,7 +123,7 @@ $('#btn-saveProductServices').click(function () {
             service_name : service_name,
             id_tax : id_tax,
             charge : charge,
-            duration : duration,
+            duration : dateManipulationDuration(),
             transfer_included : transfer_included,
             description : description,
             comments : comments,
@@ -115,9 +138,15 @@ $('#btn-saveProductServices').click(function () {
             age_inf_to : age_inf_to,
             age_child_to : age_child_to,
             age_teen_to : age_teen_to,
+            age_inf_from : age_inf_from,
+            age_child_from : age_child_from,
+            age_teen_from : age_teen_from,
             min_pax : min_pax,
             max_pax : max_pax,
-            id_creditor : id_creditor
+            id_creditor : id_creditor,
+            for_infant : for_infant,
+            for_child : for_child,
+            for_teen : for_teen
         };
     
         console.log(objService);
@@ -149,7 +178,7 @@ $('#btn-saveProductServices').click(function () {
             service_name : service_name,
             id_tax : id_tax,
             charge : charge,
-            duration : duration,
+            duration : dateManipulationDuration(),
             transfer_included : transfer_included,
             description : description,
             comments : comments,
@@ -166,7 +195,19 @@ $('#btn-saveProductServices').click(function () {
             age_teen_to : age_teen_to,
             min_pax : min_pax,
             max_pax : max_pax,
-            id_creditor : id_creditor
+            id_creditor : id_creditor,
+            for_infant : for_infant,
+            for_child : for_child,
+            for_teen : for_teen,
+            for_infant : for_infant,
+            for_child : for_child,
+            for_teen : for_teen,            
+            for_infant : for_infant,
+            for_child : for_child,
+            for_teen : for_teen,
+            age_inf_from : age_inf_from,
+            age_child_from : age_child_from,
+            age_teen_from : age_teen_from
         };
         $.ajax({
             url : url_edit_service,
@@ -187,6 +228,15 @@ $('#btn-saveProductServices').click(function () {
     document.getElementById("idService").innerHTML = 0;    
 }); 
 
+function dateManipulationDuration() {
+    var hrs = document.getElementById('duration1').value;    
+    var min = document.getElementById('duration2').value;
+
+    var ret = "";
+    ret += hrs + ":" + min;
+    return ret;
+}
+
 function resetServicesForm() {
     $('#valid_from').val('');
     $('#valid_to').val('');
@@ -196,7 +246,8 @@ function resetServicesForm() {
     $('#service_name').val('');
     $('#id_tax').val('');
     $('#charge').val('');
-    $('#duration').val('');
+    $('#duration1').val('');    
+    $('#duration2').val('');
     $('#transfer_included').val('');
     $('#description').val('');
     $('#comments').val('');
@@ -204,6 +255,9 @@ function resetServicesForm() {
     $('#age_inf_to').val('');
     $('#age_child_to').val('');
     $('#age_teen_to').val('');
+    $('#age_inf_from').val('');
+    $('#age_child_from').val('');
+    $('#age_teen_from').val('');
     $('#min_pax').val('');
     $('#max_pax').val('');
     $("#on_monday").prop("checked", false);
@@ -213,5 +267,15 @@ function resetServicesForm() {
     $("#on_friday").prop("checked", false);
     $("#on_saturday").prop("checked", false);
     $("#on_sunday").prop("checked", false);
+    $("#for_infant").prop("checked", false);
+    $("#for_child").prop("checked", false);
+    $("#for_teen").prop("checked", false);
+
+    $("#age_inf_from").prop("readonly", true);
+    $("#age_inf_to").prop("readonly", true);
+    $("#age_child_from").prop("readonly", true);
+    $("#age_child_to").prop("readonly", true);
+    $("#age_teen_from").prop("readonly", true);
+    $("#age_teen_to").prop("readonly", true);
     $('#id_creditor').val('');
 }

@@ -19,6 +19,9 @@ $('#valid_to').datepicker({
 });
 $('.select2').select2();
 
+$('#duration').durationPicker({
+    showDays : false
+});
 
 /////////////////////////////////////////
 // model --> fetch Api Currency sell ////

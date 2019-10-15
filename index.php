@@ -51,7 +51,6 @@ if (isset($_GET["m"])) {
         <link rel="stylesheet" href="dist/css/AdminLTE.css?<?php echo time(); ?>">
 
         <!-- Sandeep Start -->
-        <!--<link rel="stylesheet" href="css/bookingEngine.css">-->
         <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -75,9 +74,13 @@ if (isset($_GET["m"])) {
         } else if ($menu == "backoff_service_claim") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         }   else if ($menu == "productservicescost") {
-            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/bookingEngine.css">';
         }   else if ($menu == "servicerate_claim") {
-            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/bookingEngine.css">';
+        } else if ($menu == "productservices") {
+            echo '<link rel="stylesheet" href="css/bookingEngine.css">';
         } 
         ?>
 
@@ -688,7 +691,7 @@ if (isset($_GET["m"])) {
 		<script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 		<script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 		<!-- daterange picker -->
-		<link rel="stylesheet" href=" bower_components/bootstrap-daterangepicker/daterangepicker.css">
+		<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
 		<!-- bootstrap datepicker -->
 		<link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 		<!-- date-range-picker -->

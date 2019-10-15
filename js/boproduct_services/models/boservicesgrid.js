@@ -103,7 +103,14 @@ function serviceDelete(data) {
 // // Edit Product
 function serviceEdit(data) {
     document.getElementById("idService").innerHTML = data.id_product_service;
-	
+    
+	var time_duration = data.duration;
+	var time_all = time_duration.split(":");
+	var time_hours = time_all[0];
+    var time_min = time_all[1];
+    $('#duration1').val(time_hours);    
+    $('#duration2').val(time_min);
+
 	var start_date = data.valid_from;
 	var date_from = start_date.split("-");
 	var date_from_y = date_from[0];
@@ -127,7 +134,6 @@ function serviceEdit(data) {
     $('#id_creditor').val(data.id_creditor);
     $('#id_tax').val(data.id_tax);
     $('#charge').val(data.charge);
-    $('#duration').val(data.duration);
     $('#transfer_included').val(data.transfer_included);
     $('#description').val(data.description);
     $('#comments').val(data.comments);
@@ -137,6 +143,9 @@ function serviceEdit(data) {
     $('#age_teen_to').val(data.age_teen_to);
     $('#min_pax').val(data.min_pax);
     $('#max_pax').val(data.max_pax);
+    $('#age_inf_from').val(data.age_inf_from);
+    $('#age_child_from').val(data.age_child_from);
+    $('#age_teen_from').val(data.age_teen_from);
 
     var chkMonday = document.getElementById("on_monday");
     var chkTuesday = document.getElementById("on_tuesday");
@@ -145,6 +154,31 @@ function serviceEdit(data) {
     var chkFriday = document.getElementById("on_friday");
     var chkSaturday = document.getElementById("on_saturday");
     var chkSunday = document.getElementById("on_sunday");
+
+    var chkInfant = document.getElementById("for_infant");
+    var chkChild = document.getElementById("for_child");
+    var chkTeen= document.getElementById("for_teen");
+
+    console.log(data.for_infant, 'test');
+    if (data.for_infant == 1){
+        chkInfant.checked = true;
+    }
+    if (data.for_infant == 0){
+        chkInfant.checked = false;
+    }
+    if (data.for_child == 1){
+        chkChild.checked = true;
+    }
+    if (data.for_child == 0){
+        chkChild.checked = false;
+    }
+    if (data.for_teen == 1){
+        chkTeen.checked = true;
+    }
+    if (data.for_teen == 0){
+        chkTeen.checked = false;
+    }
+
 
     if (data.on_monday == 1){
         chkMonday.checked = true;

@@ -45,9 +45,9 @@ function allServicesGridCost() {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<button type="button" id="btnAddExtraServices" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i></button>' +
-                '<button type="button" id="btnEditServiceCost" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i>' +
-                '<button type="button" id="btnDeleteServiceCost" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
+                '<i id="btnAddExtraServices" class="fa fa-fw fa-plus-circle"></i>' +
+                '<i id="btnEditServiceCost" class="fa fa-fw fa-edit"></i>' +
+                '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash"></i></div>'
             }
         ]
     });
