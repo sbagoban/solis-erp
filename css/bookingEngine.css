@@ -595,6 +595,10 @@ option {
   z-index: 9999;
 }
 
+.toast_duplicate {
+  background-color: #08107B;
+}
+
 i.fa.fa-plus.fa-lg {
   margin-top: -1px;
   background: #e2e2e2;

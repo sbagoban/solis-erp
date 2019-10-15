@@ -42,7 +42,7 @@ function allExtraServicesGrid(id_product_service) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<button type="button" id="btnDeleteExtraService" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
+                '<i id="btnDeleteExtraService"  class="fa fa-fw fa-trash-o"></i></div>'
             }
         ]
     });

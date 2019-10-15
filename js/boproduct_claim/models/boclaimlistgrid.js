@@ -55,9 +55,9 @@ function allServicesGridClaim(id_product_service_cost) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim" data-toggle="modal" data-target="#modal-extraServicesClaim"></i></div>' +
+                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>' +
                 '<i class="fa fa-fw fa-edit" id="btnEditClaim"></i>'+
-                '<i class="fa fa-fw fa-trash" id="btnDeleteClaim" ></i>'
+                '<i class="fa fa-fw fa-trash-o" id="btnDeleteClaim"></i>'
             }
         ]
     });

@@ -155,7 +155,7 @@
 															<th class="col-sm-1">Code</th>
 															<th class="col-sm-2">Extra</th>
 															<th class="col-sm-5">Charges</th>
-															<th class="col-sm-2"></th>
+															<th class="col-sm-1"></th>
 														</tr>
 													</thead>
 												</table>	
@@ -192,8 +192,8 @@
 								<th class="col-sm-1">Charges</th>
 								<th class="col-sm-1">CUR</th>
 								<th class="col-sm-2">Date</th>
-								<th class="col-sm-2">Specific</th>
-								<th class="col-sm-2"></th>
+								<th class="col-sm-1">Specific</th>
+								<th class="col-sm-3"></th>
 							</tr>
 						</thead>
 						<tbody></tbody>

@@ -45,9 +45,9 @@ function allProductGridCost() {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<button type="button" id="btnAddProductServices" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i></button>' +
-                '<button type="button" id="btnEditProduct" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i>' +
-                '<button type="button" id="btnDeleteProduct" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
+                '<i id="btnAddProductServices" class="fa fa-fw fa-plus-circle"></i>' +
+                '<i  id="btnEditProduct"class="fa fa-fw fa-edit"></i>' +
+                '<i id="btnDeleteProduct"  class="fa fa-fw fa-trash-o"></i></div>'
             }
         ]
     });

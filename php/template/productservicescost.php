@@ -78,7 +78,7 @@
 															<th class="col-sm-1">Code</th>
 															<th class="col-sm-2">Extra</th>
 															<th class="col-sm-5">Charges</th>
-															<th class="col-sm-2"></th>
+															<th class="col-sm-1"></th>
 														</tr>
 													</thead>
 													<!-- <tbody>
@@ -133,9 +133,10 @@
 										<thead>
 											<tr>
 												<th class="col-sm-1">Code</th>
-												<th class="col-sm-4">Date</th>
-												<th class="col-sm-4">Charges</th>
-												<th class="col-sm-3"></th>
+												<th class="col-sm-4">Date</th>												
+												<th class="col-sm-1">Currency</th>
+												<th class="col-sm-1">Charges</th>
+												<th class="col-sm-2"></th>
 											</tr>
 										</thead>
 									</table>

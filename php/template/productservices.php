@@ -298,7 +298,7 @@
 												<th>Dept</th>
 												<th>Charges</th>
 												<th>Date</th>
-												<th class="col-sm-4"></th>
+												<th class="col-sm-3"></th>
 											</tr>
 										</thead>
 									</table>
@@ -385,6 +385,11 @@
 </div>
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
-            <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
-		</div>
+	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
+</div>
+
+
+<div class="toast jam toast_duplicate" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Duplicate.
+</div>
 		

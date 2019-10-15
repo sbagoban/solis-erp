@@ -39,7 +39,7 @@ function extraServiceGridClaim(data) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i class="fa fa-fw fa-trash" id="btnDeleteServiceClaim"></i></div>'
+                '<i class="fa fa-fw fa-trash-o" id="btnDeleteServiceClaim"></i></div>'
             }
         ]
     });

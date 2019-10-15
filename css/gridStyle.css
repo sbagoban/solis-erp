@@ -11,7 +11,7 @@ table {
 /* Zebra striping */
 
 .dataTable tr:nth-of-type(odd) {
-  background: #e2effe;
+  background: #fafafa;
 }
 
 .dataTable tr:nth-of-type(even) {
@@ -84,17 +84,14 @@ div#OptionCodeDisplay {
   display: inline-block;
 }
 
-i#editBtn{
+.fa.fa-edit {
   color: #337ab7;
-  background: #ecf0f5;
-  padding: 10px;
-  border-radius: 20px;  
-  margin: 0 0px 0 13px;
-  transition: all .5s ease-in-out;
+  padding-top: 5px;
+  font-size: 17px;
 }
-i#editBtn:hover {
-  color: white;
-  background-color: #337ab7;
+
+.fa.fa-edit:hover {
+  transform: scale(1.1);
 }
 
 /* GRID QUOTE DETAILS */
@@ -110,11 +107,51 @@ td.deleteBtnCol {
 .fa.fa-trash-o {
   color: red;
   padding-top: 5px;
-  font-size: 25px;
+  font-size: 17px;
 }
 
 .fa.fa-trash-o:hover {
   transform: scale(1.1);
 }
 
+.fa.fa-plus-circle {
+  color: #1dc209;
+  padding-top: 5px;
+  font-size: 17px;
+}
+
+.fa.fa-plus-circle:hover {
+  transform: scale(1.1);
+}
+
+.fa.fa-gg-circle {
+  color: #0917c2;
+  padding-top: 5px;
+  font-size: 17px;
+}
+
+.fa.fa-gg-circle:hover {
+  transform: scale(1.1);
+}
+
+.fa.fa-clone {
+  color: #0917c2;
+  padding-top: 5px;
+  font-size: 15px;
+}
+
+.fa.fa-clone:hover {
+  transform: scale(1.1);
+}
+
+.btn-group, .btn-group-vertical {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 auto;
+  margin: 0 22px;
+}
+.table tr {
+  cursor: pointer;
+}
 /* GRID QUOTE DETAILS */

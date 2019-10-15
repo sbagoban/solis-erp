@@ -6,7 +6,6 @@ function allServicesGrid() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product = urlParams.get("id_product");
-	console.log(id_product);
     $('#tbl-productServices').DataTable({       
         "processing" : true,
 
@@ -19,6 +18,7 @@ function allServicesGrid() {
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 4,
+        
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"
@@ -36,7 +36,7 @@ function allServicesGrid() {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product"
+            "data" : "id_product_service"
         }, {
             "data" : "allName"
         }, {
@@ -52,33 +52,70 @@ function allServicesGrid() {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<button type="button" id="btnAddProductServices" class="btn btn-primary"><i class="fa fa-fw fa-plus-circle"></i></button>' +
-                '<button type="button" id="btnAddProductServicesExtra" class="btn btn-primary"><i class="fa fa-gg-circle"></i></button>' + 
-                '<button type="button" id="btnEditProduct" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i>' +
-                '<button type="button" id="btnDeleteService" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
+                '<i id="btnAddProductServices" class="fa fa-fw fa-plus-circle" title="Product Service Cost"></i>' +
+                '<i id="btnAddProductServicesExtra"  class="fa fa-gg-circle" title="Extra Service"></i>' + 
+                '<i id="btnEditProduct" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
+                '<i id="btnDuplicateProductService" class="fa fa-fw fa-clone" title="Duplicate line"></i>' +
+                '<i id="btnDeleteService" class="fa fa-fw fa-trash-o" title="Delete Service"></i></div>'
             }
-        ]
+        ],
+        "initComplete": function () {
+            $('#tbl-productServices tbody')
+                .off()
+                .on( 'click', '#btnDuplicateProductService', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    duplicateProductServices(data);
+                })
+                .on( 'click', '#btnAddProductServices', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addProductServices(data);
+                })
+                .on( 'click', '#btnEditProduct', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    serviceEdit(data);
+                })
+                .on( 'click', '#btnAddProductServicesExtra', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addServiceExtra(data);
+                })
+                .on( 'click', '#btnDeleteService', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    serviceDelete(data);
+                })
+        }
+
     });
-    $('#tbl-productServices tbody').on( 'click', '#btnDeleteService', function () {
-        var table = $('#tbl-productServices').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        serviceDelete(data);
-    });
-    $('#tbl-productServices tbody').on( 'click', '#btnAddProductServicesExtra', function () {
-        var table = $('#tbl-productServices').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        addServiceExtra(data);
-    });
-    $('#tbl-productServices tbody').on( 'click', '#btnEditProduct', function () {
-        var table = $('#tbl-productServices').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        serviceEdit(data);
-    });
-    $('#tbl-productServices tbody').on( 'click', '#btnAddProductServices', function () {
-        var table = $('#tbl-productServices').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        addProductServices(data);
-    });
+    // $('#tbl-productServices tbody').on( 'click', '#btnDeleteService', function () {
+    //     var table = $('#tbl-productServices').DataTable();
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     serviceDelete(data);
+    // });
+    // $('#tbl-productServices tbody').on( 'click', '#btnAddProductServicesExtra', function () {
+    //     var table = $('#tbl-productServices').DataTable();
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     addServiceExtra(data);
+    // });
+    // $('#tbl-productServices tbody').on( 'click', '#btnEditProduct', function () {
+    //     var table = $('#tbl-productServices').DataTable();
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     serviceEdit(data);
+    // });
+    // $('#tbl-productServices tbody').on( 'click', '#btnAddProductServices', function () {
+    //     var table = $('#tbl-productServices').DataTable();
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     addProductServices(data);
+    // });
+
+    // $('#tbl-productServices tbody').on( 'click', '#btnDuplicateProductService', function () {
+    //     var table = $('#tbl-productServices').DataTable();
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     duplicateProductServices(data);
+    // });
 }
 
 // Delete Product
@@ -98,12 +135,9 @@ function serviceDelete(data) {
     allServicesGrid();
 }
 
-
-
 // // Edit Product
 function serviceEdit(data) {
     document.getElementById("idService").innerHTML = data.id_product_service;
-    
 	var time_duration = data.duration;
 	var time_all = time_duration.split(":");
 	var time_hours = time_all[0];
@@ -225,8 +259,7 @@ function serviceEdit(data) {
 }
 
 // Add Product Cost Services
-function addProductServices(data) { 
-    console.log('-->', data);
+function addProductServices(data) {
     window.location.href = "index.php?m=productservicescost&psid=" 
     + data.id_product_service + "&iddept=" 
     + data.id_dept+ "&productname=" 
@@ -240,4 +273,60 @@ function addProductServices(data) {
 function addServiceExtra(data) {
     modalExtraService(data);
     $('#modal-extraServices1').modal('show');
+}
+
+function duplicateProductServices(data) {
+    console.log(data, 'sgf');
+    var objServiceDuplicate = {
+        id_product_service :-1, //for new items, id is always -1
+        id_product : data.id_product,
+        valid_from : data.valid_from,
+        valid_to : data.valid_to,
+        product_name : data.product_name,
+        id_dept : data.id_dept,
+        id_country : data.id_country,
+        id_coast : data.id_coast,
+        service_name : data.service_name,
+        id_tax : data.id_tax,
+        charge : data.charge,
+        duration : data.duration,
+        transfer_included : data.transfer_included,
+        description : data.description,
+        comments : data.comments,
+        on_monday : data.on_monday,
+        on_tuesday : data.on_tuesday,
+        on_wednesday : data.on_wednesday,
+        on_thursday : data.on_thursday,
+        on_friday : data.on_friday,
+        on_saturday : data.on_saturday,
+        on_sunday : data.on_sunday,
+        cancellation : data.cancellation,
+        age_inf_to : data.age_inf_to,
+        age_child_to : data.age_child_to,
+        age_teen_to : data.age_teen_to,
+        age_inf_from : data.age_inf_from,
+        age_child_from : data.age_child_from,
+        age_teen_from : data.age_teen_from,
+        min_pax : data.min_pax,
+        max_pax : data.max_pax,
+        id_creditor : data.id_creditor,
+        for_infant : data.for_infant,
+        for_child : data.for_child,
+        for_teen : data.for_teen
+    };
+
+    const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
+    $.ajax({
+        url : url_duplicate_service,
+        method : "POST",
+        data : objServiceDuplicate,  
+        cache: false,                                                                                     
+        success : function(data){
+            allServicesGrid();
+            $('.toast_duplicate').stop().fadeIn(400).delay(3000).fadeOut(500);
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });
 }

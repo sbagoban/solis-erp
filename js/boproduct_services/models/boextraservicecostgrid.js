@@ -41,7 +41,7 @@ function allExtraServicesCostGrid(id_product_service_cost) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<button type="button" id="btnDeleteExtraServiceCost" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
+                '<i id="btnDeleteExtraServiceCost" class="fa fa-fw fa-trash-o"></i></div>'
             }
         ]
     });

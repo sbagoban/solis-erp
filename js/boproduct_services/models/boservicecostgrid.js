@@ -37,6 +37,8 @@ function allServicesGridCost() {
         }, {
             "data" : "allDate"
         }, {
+            "data" : "currency_code"
+        }, {
             "data" : "charge"
         }, 
             {
@@ -45,10 +47,25 @@ function allServicesGridCost() {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i id="btnAddExtraServices" class="fa fa-fw fa-plus-circle"></i>' +
-                '<i id="btnEditServiceCost" class="fa fa-fw fa-edit"></i>' +
-                '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash"></i></div>'
+                '<i id="btnAddExtraServices" class="fa fa-fw fa-plus-circle" title="Extra Services Cost"></i>' +
+                '<i id="btnEditServiceCost" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
+                '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash-o" title="Delete Line"></i></div>'
             }
+
+            // {
+            //     "targets": -1,
+            //     "data": null,                
+            //     "class": 'btnCol',
+            //     "defaultContent": 
+            //     '<div class="dropdown">' +
+            //     '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash"></i>'+
+            //     '<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+            //     '<i class="fa fa-fw fa-plus-circle"></i>'+
+            //     '</button>'+
+            //     '<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">'+
+            //     '<li><i id="btnAddExtraServices" class="fa fa-fw fa-plus-circle">Add Extra</i></li>' +
+            //     '<li><i id="btnEditServiceCost" class="fa fa-fw fa-edit">Edit Row</i></li>'
+            // }
         ]
     });
     $('#tbl-productServicesCost tbody').on( 'click', '#btnAddExtraServices', function () {

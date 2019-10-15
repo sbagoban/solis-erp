@@ -80,8 +80,11 @@ if (isset($_GET["m"])) {
             echo '<link rel="stylesheet" href="css/gridStyle.css">
             <link rel="stylesheet" href="css/bookingEngine.css">';
         } else if ($menu == "productservices") {
-            echo '<link rel="stylesheet" href="css/bookingEngine.css">';
-        } 
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/bookingEngine.css">';
+        } else if ($menu == "backoff_product") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+        }
         ?>
 
         <!-- Sandeep End -->
