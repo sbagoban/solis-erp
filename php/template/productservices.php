@@ -287,6 +287,7 @@
 								<div class="box-header">
 									<h3 class="box-title">Product Service</h3>
 								</div>
+								<div id="id_prod_serv" style="display:none;"></div>
 								<!-- /.box-header -->
 								<div class="box-body" style="height:800px;">
 									<table id="tbl-productServices" class="table table-bordered table-hover">
@@ -391,5 +392,9 @@
 
 <div class="toast jam toast_duplicate" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Duplicate.
+</div>
+
+<div class="toast jam toast_duplicate_cost" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Cost Duplicate.
 </div>
 		

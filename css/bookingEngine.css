@@ -599,6 +599,10 @@ option {
   background-color: #08107B;
 }
 
+.toast_duplicate_cost {
+  background-color: #E49900;
+}
+
 i.fa.fa-plus.fa-lg {
   margin-top: -1px;
   background: #e2e2e2;
