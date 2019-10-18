@@ -397,4 +397,8 @@
 <div class="toast jam toast_duplicate_cost" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Cost Duplicate.
 </div>
+
+<div class="toast jam toast_duplicate_extra" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Extra Duplicate.
+</div>
 		

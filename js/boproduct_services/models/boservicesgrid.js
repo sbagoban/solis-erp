@@ -325,17 +325,18 @@ function duplicateProductServices(data) {
             allServicesGrid();
             document.getElementById('id_prod_serv').innerHTML = val.id_product_service;
             $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
-            duplicateCost(data, val.id_product_service);        },
+            duplicateCost(data, val.id_product_service); 
+            duplicateExtra(data, val.id_product_service);   
+            duplicateExtraCost(data, val.id_product_service);        
+        },
         error: function(error) {
             console.log('Error ${error}');
         }
         
     });
-    duplicateCost(data);
 }
 
-function duplicateCost(data, id_prod_serv) {    
-    // var id_prod_serv = document.getElementById('id_prod_serv').innerHTML;
+function duplicateCost(data, id_prod_serv) {
     var objCost = {id_product_service: id_prod_serv};
     const url_duplicate_service_cost = "php/api/backofficeproduct/duplicateservice.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
     $.ajax({
@@ -349,5 +350,36 @@ function duplicateCost(data, id_prod_serv) {
             console.log('Error ${error}');
         }
     });
-    
+}
+
+function duplicateExtra(data, id_prod_serv) { 
+    var objExtra = {id_prod_serv: id_prod_serv};
+    const url_duplicate_service_extra = "php/api/backofficeproduct/duplicateserviceextra.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
+    $.ajax({
+        url : url_duplicate_service_extra,
+        method : "POST",
+        data : objExtra,                                                                                    
+        success : function(data){
+            $('.toast_duplicate_extra').stop().fadeIn(6500).delay(3000).fadeOut(500);
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });
+}
+
+function duplicateExtraCost(data, id_prod_serv) {  
+    console.log(data, 'tets');
+    var objExtraCost = {id_prod_serv: id_prod_serv};
+    const url_duplicate_service_extra_cost = "php/api/backofficeproduct/duplicateserviceextracost.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
+    $.ajax({
+        url : url_duplicate_service_extra_cost,
+        method : "POST",
+        data : objExtraCost,                                                                                    
+        success : function(data){
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });
 }
