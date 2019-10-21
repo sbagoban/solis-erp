@@ -83,7 +83,14 @@
 			$age_teen_from = NULL;
 			$age_teen_to = NULL;
 		}
-
+        if ($min_pax == "") 
+        {
+            $min_pax = NULL;
+        }
+        if ($max_pax == "") 
+        {
+            $max_pax = NULL;
+        }
         $con = pdo_con();
         $sql = "UPDATE product_service SET 
                 valid_from =:valid_from,

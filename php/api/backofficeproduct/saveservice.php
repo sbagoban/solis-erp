@@ -76,6 +76,15 @@ try {
 	{
 		$age_teen_from = NULL;
 		$age_teen_to = NULL;
+    }
+    
+	if ($min_pax == "") 
+	{
+		$min_pax = NULL;
+	}
+	if ($max_pax == "") 
+	{
+		$max_pax = NULL;
 	}
 
     require_once("../../connector/pdo_connect_main.php");
