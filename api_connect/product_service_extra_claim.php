@@ -21,9 +21,7 @@ try {
     //all is valid
     $tofk = $authenticate_outcome["TOID"]; //get the toid of the user
 
-    $sql = "select id_product_service_extra_claim, id_product_service_claim, id_product_service, valid_from, valid_to, 
-    id_dept, specific_to, charge, ps_adult_claim, ps_teen_claim, ps_child_claim, ps_infant_claim, id_currency, currency    
-    from product_service_extra_claim where active=1 order by id_product_service_claim;";
+    $sql = "select * from product_service_extra_claim where active=1 order by id_product_service_claim;";
 
     $array_data = utilities_render_query($con, $sql, 
     "id_product_service_extra_claim","id_product_service_claim","id_product_service","valid_from","valid_to",

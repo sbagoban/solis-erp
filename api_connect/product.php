@@ -21,9 +21,9 @@ try {
     //all is valid
     $tofk = $authenticate_outcome["TOID"]; //get the toid of the user
     
-    $sql = "select * from product order by id_product;";
+    $sql = "select * from product where active=1 order by id_product;";
 
-    $array_data = utilities_render_query($con, $sql, "id_product", "id_service_type", "id_product_type", "product_name", "active", array());
+    $array_data = utilities_render_query($con, $sql, "id_product", "id_service_type", "id_product_type", "product_name", array());
     
     echo json_encode(array("OUTCOME"=>"OK","DATA"=>$array_data));
     

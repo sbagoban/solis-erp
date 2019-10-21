@@ -24,10 +24,10 @@ try {
     $sql = "select * from product_service_claim where active=1 order by id_product_service_claim;";
 
     $array_data = utilities_render_query($con, $sql, 
-    "id_product_service_claim", "id_product_service_cost", "id_product_service", "valid_from", "valid_to",  
+    "id_product_service_claim", "id_product_service", "valid_from", "valid_to",  
     "id_dept", "specific_to", "specific_to_name", "charge", "ps_adult_claim", "ps_teen_claim", "ps_child_claim", 
     "ps_infant_claim", "id_currency", "currency", "ex_monday", "ex_tuesday", "ex_wednesday", "ex_thursday", 
-    "ex_friday", "ex_saturday", "ex_sunday", "active", 
+    "ex_friday", "ex_saturday", "ex_sunday", 
     array()); 
     
     echo json_encode(array("OUTCOME"=>"OK","DATA"=>$array_data));

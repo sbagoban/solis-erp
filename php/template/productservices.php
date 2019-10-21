@@ -257,9 +257,9 @@
 								<label class="col-sm-2 control-label">Pax Policy</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="number" class="form-control" id="min_pax" onkeyup="onkeyupCtrl()">
+										<input type="number" class="form-control" id="min_pax">
 										<span class="input-group-addon">Min</span>
-										<input type="number" class="form-control" id="max_pax" onkeyup="onkeyupCtrl()">
+										<input type="number" class="form-control" id="max_pax">
 										<span class="input-group-addon">Max</span>
 									</div>
 									<br>

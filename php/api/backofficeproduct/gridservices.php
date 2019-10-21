@@ -90,6 +90,7 @@ if ($row_count_c > 0) {
 } else {
     //echo "NO DATA";
     $services[] = array(
+        'id_product_service' => '-',
         'id_product' => '-',
         'service_name' => '-',
         'charge' => '-',

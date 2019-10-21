@@ -58,10 +58,8 @@ function productCtrl() {
 function onkeyupCtrl() {
     var service_name = document.getElementById("service_name").value;
     var id_creditor = document.getElementById("id_creditor").value;
-    var min_pax = document.getElementById("min_pax").value;
-    var max_pax = document.getElementById("max_pax").value;
     
-    if(service_name.length > 0 && min_pax.length >0 && max_pax.length >0) {
+    if(service_name.length > 0) {
         $('#btn-saveProductServices').attr('disabled', false); 
     }          
     else {
