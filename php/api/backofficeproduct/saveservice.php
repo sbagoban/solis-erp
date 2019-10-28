@@ -87,7 +87,7 @@ try {
 		$max_pax = NULL;
     }
     
-    if ($duration == "") 
+    if ($duration == " ") 
 	{
 		$duration = NULL;
 	}

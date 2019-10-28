@@ -78,6 +78,8 @@ function allServicesGridCost() {
             }
         ]
     });
+    
+    
     $('#tbl-productServicesCost tbody').on( 'click', '#btnAddExtraServices', function () {
         var table = $('#tbl-productServicesCost').DataTable();
         var data = table.row( $(this).parents('tr') ).data();

@@ -251,7 +251,7 @@ function resetServicesForm() {
     $('#charge').val('');
     $('#duration1').val('');    
     $('#duration2').val('');
-    $('#transfer_included').val('');
+    //$('#transfer_included').val('');
     $('#description').val('');
     $('#comments').val('');
     $('#cancellation').val('');

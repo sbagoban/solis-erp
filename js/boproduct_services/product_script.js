@@ -52,7 +52,7 @@ var helpersDropdownCurrency = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.value + '">' + result.text + '</option>');
+                dropdown.append('<option value="' + result.value + '"name="' + result.text + '">' + result.text + '</option>');
             });
         }
     }

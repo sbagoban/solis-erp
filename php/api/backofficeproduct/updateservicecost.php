@@ -42,8 +42,9 @@
         $ps_teen_cost = trim($_POST["ps_teen_cost"]);
         $ps_child_cost = trim($_POST["ps_child_cost"]);
         $ps_infant_cost = trim($_POST["ps_infant_cost"]);
-        $id_currency = trim($_POST["id_currency"]);
-		
+        $id_currency = trim($_POST["id_currency"]);		
+        $currency = trim($_POST["currency"]);
+
 		if ($ps_teen_cost == "") 
 		{
 			$ps_teen_cost = 0;
@@ -68,6 +69,7 @@
                         ps_child_cost=:ps_child_cost,
                         ps_infant_cost=:ps_infant_cost,
                         id_currency=:id_currency,
+                        currency=:currency,
                         id_dept=:id_dept
                         WHERE id_product_service_cost=:id_product_service_cost";
 
@@ -81,6 +83,7 @@
                 ":ps_child_cost" => $ps_child_cost,
                 ":ps_infant_cost" => $ps_infant_cost,
                 ":id_currency" => $id_currency,
+                ":currency" => $currency,
                 ":id_dept" => $id_dept));
     }
     catch (Exception $ex) {

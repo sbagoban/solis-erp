@@ -54,10 +54,10 @@ function addExtraServiceCost(data) {
             error: function(error) {
                 console.log('Error ${error}');
             }
-        }).done(function (rawData) {
-            $('#modal-extraServices .close').click();
-    
         })
+        // .done(function (rawData) {
+        //     $('#modal-extraServices .close').click();
+        // })
     });
 }
 

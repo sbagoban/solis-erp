@@ -56,6 +56,7 @@ function dateRangePickerValid() {
         var ps_child_cost = $('#ps_child_cost').val();
         var ps_infant_cost = $('#ps_infant_cost').val();
         var id_currency = $('#id_currency').val();
+        var currency = $('#id_currency').find(":selected").text();
         var id_product_service_cost = document.getElementById("id_product_service_cost_1").innerHTML;
 
         if (id_product_service_cost != 0) {
@@ -68,6 +69,7 @@ function dateRangePickerValid() {
                 ps_child_cost: ps_child_cost,
                 ps_infant_cost: ps_infant_cost,
                 id_currency: id_currency,
+                currency: currency,
                 id_dept: id_dept
             };
             const url_edit_service_cost = "php/api/backofficeproduct/updateservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" + id_product_service_cost;
@@ -94,7 +96,8 @@ function dateRangePickerValid() {
                 ps_teen_cost: ps_teen_cost,
                 ps_child_cost: ps_child_cost,
                 ps_infant_cost: ps_infant_cost,
-                id_currency: id_currency,
+                id_currency: id_currency,                
+                currency: currency,
                 id_dept: id_dept
             };
             const url_save_service_cost = "php/api/backofficeproduct/saveservicecost.php?t=" + encodeURIComponent(global_token);

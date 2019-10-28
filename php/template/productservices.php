@@ -41,7 +41,7 @@
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_dept">
 										<!-- To modify - select from db -->
-										<option value="2">Direct Sales</option>
+										<!-- <option value="2">Direct Sales</option> -->
 										<option value="19">FIT</option>
 									</select>
 								</div>
