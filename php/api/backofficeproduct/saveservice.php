@@ -85,8 +85,13 @@ try {
 	if ($max_pax == "") 
 	{
 		$max_pax = NULL;
+    }
+    
+    if ($duration == "") 
+	{
+		$duration = NULL;
 	}
-
+    
     require_once("../../connector/pdo_connect_main.php");
 
     $con = pdo_con();
