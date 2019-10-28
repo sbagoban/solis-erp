@@ -34,9 +34,34 @@ function allServicesGridCost() {
         ],
         "columns" : [ {
             "data" : "id_product_service_cost"
-        }, {
-            "data" : "allDate"
-        }, {
+        }, 
+        
+        // {
+        //     "data" : "allDate"
+        // }, 
+        {
+            data: null,
+                render: function ( data, type, row ) {
+                    var start_date = data.valid_from;
+                    var date_from = start_date.split("-");
+                    var date_from_y = date_from[0];
+                    var date_from_m = date_from[1];
+                    var date_from_d = date_from[2];
+                    var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+                    var end_date = data.valid_to;
+                    var date_to = end_date.split("-");
+                    var date_to_y = date_to[0];
+                    var date_to_m = date_to[1];
+                    var date_to_d = date_to[2];
+                    var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+                    return start_date+' - '+end_date;
+                },
+                editField: ['valid_from', 'valid_to']
+        },
+
+
+        
+        {
             "data" : "currency_code"
         }, {
             "data" : "charge"
@@ -51,21 +76,6 @@ function allServicesGridCost() {
                 '<i id="btnEditServiceCost" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
                 '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash-o" title="Delete Line"></i></div>'
             }
-
-            // {
-            //     "targets": -1,
-            //     "data": null,                
-            //     "class": 'btnCol',
-            //     "defaultContent": 
-            //     '<div class="dropdown">' +
-            //     '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash"></i>'+
-            //     '<button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-            //     '<i class="fa fa-fw fa-plus-circle"></i>'+
-            //     '</button>'+
-            //     '<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">'+
-            //     '<li><i id="btnAddExtraServices" class="fa fa-fw fa-plus-circle">Add Extra</i></li>' +
-            //     '<li><i id="btnEditServiceCost" class="fa fa-fw fa-edit">Edit Row</i></li>'
-            // }
         ]
     });
     $('#tbl-productServicesCost tbody').on( 'click', '#btnAddExtraServices', function () {

@@ -123,7 +123,7 @@
 									
 									<div class="form-group">
 										<label class="col-sm-2 control-label">Product</label>
-										<div class="col-sm-6">
+										<div class="col-sm-7">
 											<input type="text" class="form-control" id="id_product" style="display: none">
 											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly style="text-transform: uppercase; font-size: 18px;">
 										</div>

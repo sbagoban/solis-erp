@@ -41,6 +41,7 @@
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_dept">
 										<!-- To modify - select from db -->
+										<option value="2">Direct Sales</option>
 										<option value="19">FIT</option>
 									</select>
 								</div>
@@ -88,7 +89,7 @@
 								<div class="col-sm-3">
 									<select type="text" class="form-control" id="id_tax">
 										<!-- To modify - select from db -->
-										<option value="2">OUSIDE SCOPE</option>
+										<option value="2">OUTSIDE SCOPE</option>
 										<option value="3" selected="selected">VAT</option>
 									</select>
 								</div>
@@ -108,13 +109,16 @@
 								<div class="col-sm-2">
 									<input type="number" class="form-control" id="duration2" placeholder="Mins">
 								</div>
-								<label class="col-sm-1 control-label">Transfer</label>
-								<div class="col-sm-2">
+
+								<!-- To uncomment when used for transfer -->
+								<label class="col-sm-1 control-label" style="display: none">Transfer</label>
+								<div class="col-sm-2" style="display: none">
 									<select type="text" class="form-control" id="transfer_included">
 										<option value="0" selected="selectd">NO</option>
 										<option value="1">YES</option>
 									</select>
 								</div>
+								<!-- To uncomment when used for transfer -->
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Description</label>

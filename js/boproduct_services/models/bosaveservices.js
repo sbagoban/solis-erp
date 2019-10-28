@@ -110,7 +110,6 @@ $('#btn-saveProductServices').click(function () {
     }  
 
     if (idService == 0) {
-        console.log('This -->', for_infant);
         var objService = {
             id_product_service :-1, //for new items, id is always -1
             id_product : id_product,
@@ -231,9 +230,13 @@ $('#btn-saveProductServices').click(function () {
 function dateManipulationDuration() {
     var hrs = document.getElementById('duration1').value;    
     var min = document.getElementById('duration2').value;
-
-    var ret = "";
-    ret += hrs + ":" + min;
+    if (hrs == ' ' || min ==' ') {
+        ret = '00:00';
+    } else {
+        var ret = "";
+        ret += hrs + ":" + min;
+    }
+    console.log('check duration', ret);
     return ret;
 }
 

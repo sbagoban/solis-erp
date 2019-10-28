@@ -69,7 +69,7 @@ var helpersDropdownExtraCreated = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_product_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
+                dropdown.append('<option value="' + result.id_product_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + ' - ' + result.extra_description  +'</option>');
             });
         }
     }
