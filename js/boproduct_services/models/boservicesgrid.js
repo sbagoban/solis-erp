@@ -44,8 +44,24 @@ function allServicesGrid() {
         }, {
             "data" : "charge"
         }, {
-            "data" : "valid_range"
-        }, 
+            data: null,
+                render: function ( data, type, row ) {
+                    var start_date = data.valid_from;
+                    var date_from = start_date.split("-");
+                    var date_from_y = date_from[0];
+                    var date_from_m = date_from[1];
+                    var date_from_d = date_from[2];
+                    var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+                    var end_date = data.valid_to;
+                    var date_to = end_date.split("-");
+                    var date_to_y = date_to[0];
+                    var date_to_m = date_to[1];
+                    var date_to_d = date_to[2];
+                    var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+                    return start_date+' - '+end_date;
+                },
+                editField: ['valid_from', 'valid_to']
+        },
             {
                 "targets": -1,
                 "data": null,                

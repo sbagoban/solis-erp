@@ -21,7 +21,7 @@ function allServicesGridCost() {
         +"<'row'<'col-sm-12'tr>>"
         +"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "columnDefs": [
-            { width: 200, targets: -1 }
+            
         ],
         "buttons":[
             {
@@ -57,10 +57,7 @@ function allServicesGridCost() {
                     return start_date+' - '+end_date;
                 },
                 editField: ['valid_from', 'valid_to']
-        },
-
-
-        
+        },        
         {
             "data" : "currency_code"
         }, {
@@ -74,28 +71,37 @@ function allServicesGridCost() {
                 '<div class="btn-group">' +
                 '<i id="btnAddExtraServices" class="fa fa-fw fa-plus-circle" title="Extra Services Cost"></i>' +
                 '<i id="btnEditServiceCost" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
-                '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash-o" title="Delete Line"></i></div>'
+                '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash-o" title="Delete Line"></i>' + 
+                '<i id="btnAddClaim" class="fa fa-fw fa-money" title="Add Claim"></i></div>'
             }
-        ]
+        ],
+        "initComplete": function () {
+            $('#tbl-productServicesCost tbody')
+                .off()
+                .on( 'click', '#btnAddExtraServices', function (e) {
+                    var table = $('#tbl-productServicesCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    serviceCostExtra(data);
+                })
+                .on( 'click', '#btnDeleteServiceCost', function (e) {
+                    var table = $('#tbl-productServicesCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    serviceCostDelete(data);
+                })
+                .on( 'click', '#btnEditServiceCost', function (e) {
+                    var table = $('#tbl-productServicesCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    serviceCostEdit(data);
+                    allExtraServicesCostGrid(data.id_product_service_cost);
+                })
+                .on( 'click', '#btnAddClaim', function (e) {
+                    var table = $('#tbl-productServicesCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addServiceClaim(data);
+                })
+        }
     });
     
-    
-    $('#tbl-productServicesCost tbody').on( 'click', '#btnAddExtraServices', function () {
-        var table = $('#tbl-productServicesCost').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        serviceCostExtra(data);
-    });
-    $('#tbl-productServicesCost tbody').on( 'click', '#btnDeleteServiceCost', function () {
-        var table = $('#tbl-productServicesCost').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        serviceCostDelete(data);
-    });
-    $('#tbl-productServicesCost tbody').on( 'click', '#btnEditServiceCost', function () {
-        var table = $('#tbl-productServicesCost').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        serviceCostEdit(data);
-        allExtraServicesCostGrid(data.id_product_service_cost);
-    });
 }
 
 // // Delete Product
@@ -145,4 +151,11 @@ function serviceCostEdit(data) {
 function serviceCostExtra(data) {
     document.getElementById("id_product_service_cost_extra").innerHTML = data.id_product_service_cost;
     addExtraServiceCost(data);
+}
+
+// Add claim 
+function addServiceClaim(data) {
+    console.log('New', data);
+    var params = jQuery.param(data);
+    window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_service_cost + "&data=" +params;
 }

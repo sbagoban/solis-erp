@@ -27,9 +27,14 @@ $con = pdo_con();
 $query_c = $con->prepare("
 SELECT PRS.id_product_service_cost, PRS.id_product_service, PRS.valid_from, PRS.valid_to, PS.charge, 
 PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency,
-PS.service_name, TC.currency_code, PS.id_dept
+PS.service_name, TC.currency_code,
+PS.id_dept, PS.on_monday, PS.on_tuesday, PS.on_wednesday, PS.on_thursday, PS.on_friday, PS.on_saturday, PS.on_sunday,
+PR.product_name, PS.id_coast, TCO.coast, PS.id_creditor, TD.deptname
 FROM product_service_cost PRS
 JOIN product_service PS on PRS.id_product_service = PS.id_product_service
+JOIN tblcoasts TCO on PS.id_coast = TCO.id
+JOIN tbldepartments TD on PRS.id_dept = TD.id
+JOIN product PR on PS.id_product = PR.id_product
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 WHERE PRS.active = 1
 AND PRS.id_product_service = :id_product_service");
@@ -52,7 +57,19 @@ if ($row_count_c > 0) {
             'ps_infant_cost'    => $row['ps_infant_cost'],
             'id_currency'    => $row['id_currency'],
             'currency_code' => $row['currency_code'],
-            'id_dept' => $row['id_dept']
+            'id_dept' => $row['id_dept'], 
+            'deptname' => $row['deptname'],
+            'id_creditor' => $row['id_creditor'],
+            'id_coast' => $row['id_coast'],
+            'coast' => $row['coast'],
+            'on_monday' => $row['on_monday'],
+            'on_tuesday' => $row['on_tuesday'],
+            'on_wednesday' => $row['on_wednesday'],
+            'on_thursday' => $row['on_thursday'],
+            'on_friday' => $row['on_friday'],
+            'on_saturday' => $row['on_saturday'],
+            'on_sunday' => $row['on_sunday'],
+            'product_name' => $row['product_name']
         );
     }
     $myData = $productServicesCost;
@@ -73,7 +90,19 @@ if ($row_count_c > 0) {
         'ps_infant_cost' => '-',
         'id_currency'     => '-',
         'currency_code' => '-',        
-        'id_dept' => '-'
+        'id_dept' => '-',
+        'deptname' => '-',
+        'id_creditor' => '-',
+        'id_coast' => '-',
+        'coast' => '-',
+        'on_monday' => '-',
+        'on_tuesday' => '-',
+        'on_wednesday' => '-',
+        'on_thursday' => '-',
+        'on_friday' => '-',
+        'on_saturday' => '-',
+        'on_sunday' => '-',
+        'product_name' => '-'
     );
     $myData = $productServicesCost;
     echo json_encode($myData);

@@ -2,7 +2,16 @@ $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
+    //product + service from product service + supplier name + Dept for + Coast
+    
+    var product_name_1 = urlParams.get("product_name");
+    var service_name_1 = urlParams.get("service_name");  
+    var concat_name = product_name_1 + ' / ' + service_name_1;
+    $("#product_name_dtl").val(concat_name);
+
     allServicesGridClaim(id_product_service_cost);
+
+
 });
 
 function allServicesGridClaim(id_product_service_cost) {
@@ -44,9 +53,32 @@ function allServicesGridClaim(id_product_service_cost) {
             "data" : "charge"
         }, {
             "data" : "currency"
-        }, {
-            "data" : "allDate"
-        },  { 
+        }, 
+        {
+            data: null,
+                render: function ( data, type, row ) {
+                    var start_date = data.valid_from;
+                    var date_from = start_date.split("-");
+                    var date_from_y = date_from[0];
+                    var date_from_m = date_from[1];
+                    var date_from_d = date_from[2];
+                    var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+                    var end_date = data.valid_to;
+                    var date_to = end_date.split("-");
+                    var date_to_y = date_to[0];
+                    var date_to_m = date_to[1];
+                    var date_to_d = date_to[2];
+                    var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+                    return start_date+' - '+end_date;
+                },
+                editField: ['valid_from', 'valid_to']
+        },
+
+        // {
+        //     "data" : "allDate"
+        // }, 
+        
+        { 
             "data" : "specific_to_name"
         },  
             {
@@ -55,27 +87,31 @@ function allServicesGridClaim(id_product_service_cost) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim" data-toggle="modal" data-target="#modal-extraServicesClaim"></i>' +
+                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim"></i>' +
                 '<i class="fa fa-fw fa-edit" id="btnEditClaim"></i>'+
                 '<i class="fa fa-fw fa-trash-o" id="btnDeleteClaim"></i>'
             }
-        ]
-    });
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnAddExtraServicesClaim', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        addExtraServiceClaim(data);
-    });    
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnDeleteClaim', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        deleteServiceClaim(data);
-    });   
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnEditClaim', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        editServiceClaim(data);
-        extraServiceGridClaim(data);
+        ],
+        "initComplete": function () {
+            $('#tbl-productServicesClaim tbody')
+                .off()
+                .on( 'click', '#btnAddExtraServicesClaim', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addExtraServiceClaim(data);
+                })
+                .on( 'click', '#btnDeleteClaim', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    deleteServiceClaim(data);
+                })
+                .on( 'click', '#btnEditClaim', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    editServiceClaim(data);
+                    extraServiceGridClaim(data);
+                })
+        }
     });
 }
 

@@ -144,6 +144,17 @@ td.deleteBtnCol {
   transform: scale(1.1);
 }
 
+.fa.fa-money {
+  color: #302626;
+  padding-top: -10px;
+  font-size: 17px;
+}
+
+.fa.fa-money:hover {
+  transform: scale(1.1);
+}
+
+
 .btn-group, .btn-group-vertical {
   position: relative;
   display: inline-block;

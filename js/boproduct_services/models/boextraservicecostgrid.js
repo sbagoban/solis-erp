@@ -41,14 +41,24 @@ function allExtraServicesCostGrid(id_product_service_cost) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i id="btnDeleteExtraServiceCost" class="fa fa-fw fa-trash-o"></i></div>'
+                '<i id="btnEditExtraServiceCost" class="fa fa-fw fa-edit"></i>'+
+                '<i id="btnDeleteExtraServiceCost" class="fa fa-fw fa-trash-o" title="Delete Line"></i></div>'
             }
-        ]
-    });
-    $('#tbl-extraServiceCost tbody').on( 'click', '#btnDeleteExtraServiceCost', function () {
-        var table = $('#tbl-extraServiceCost').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        deleteExtraServiceCost(data);
+        ],
+        "initComplete": function () {
+            $('#tbl-extraServiceCost tbody')
+                .off()
+                .on( 'click', '#btnEditExtraServiceCost', function (e) {
+                    var table = $('#tbl-extraServiceCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    editServiceCostExtra(data);
+                })
+                .on( 'click', '#btnDeleteExtraServiceCost', function (e) {
+                    var table = $('#tbl-extraServiceCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    deleteExtraServiceCost(data);
+                })
+        }
     });
 }
 
@@ -67,4 +77,11 @@ function deleteExtraServiceCost(data) {
         }
     });
     allExtraServicesCostGrid(data.id_product_service_cost);
+}
+
+// Edit Extra Service
+function editServiceCostExtra(data) {
+    $('#modal-extraServices').modal('show');
+    document.getElementById("id_product_service_cost_extra").innerHTML = data.id_product_service_cost;
+    editAllExtraServiceCost(data);
 }

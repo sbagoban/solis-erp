@@ -3,7 +3,7 @@ $(document).ready(function(){
 });
 
 function allServicesGridClaim() {
-    $('#tbl-productServicesClaim').DataTable({       
+    $('#tbl-productServicesClaimMain').DataTable({       
         "processing" : true,
 
         "ajax" : {
@@ -32,8 +32,12 @@ function allServicesGridClaim() {
         ],
         "columns" : [ {
             "data" : "id_product_service_cost"
-        }, {
-            "data" : "product_name"
+        },{
+            data: null,
+                render: function ( data, type, row ) {
+                    return data.product_name+' / '+data.service_name;
+                },
+                editField: ['product_name', 'service_name']
         }, {
             "data" : "service_name"
         }, {
@@ -55,16 +59,16 @@ function allServicesGridClaim() {
             }
         ]
     });
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnAddExtraServices', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
+    $('#tbl-productServicesClaimMain tbody').on( 'click', '#btnAddExtraServices', function () {
+        var table = $('#tbl-productServicesClaimMain').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
         serviceClaim(data);
     });
 }
 
-
 // Add Extra Service
 function serviceClaim(data) {
+    console.log('Old', data);
     var params = jQuery.param(data)
     window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_service_cost + "&data=" +params;
 }
