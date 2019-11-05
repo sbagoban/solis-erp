@@ -94,3 +94,20 @@ var helpersDropdownSupplier = {
         }
     }
 }
+
+
+$(document).ready(function(){
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var servicetype = urlParams.get("servicetype");
+
+    if (servicetype == "TRANSFER") {
+        $("#id_coast_label").css("display", "none");
+        $("#id_coast").css("display", "none");
+        
+        $("#duration1").css("display", "none");
+        $("#duration2").css("display", "none");
+        $("#duration_label").css("display", "none");
+        $("#chk_operation").css("display", "none");
+    }
+});

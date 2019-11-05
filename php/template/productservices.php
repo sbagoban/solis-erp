@@ -54,7 +54,7 @@
 										<option value="913">MAURITIUS</option>
 									</select>
 								</div>
-								<label class="col-sm-2 control-label">Coast</label>
+								<label class="col-sm-2 control-label" id="id_coast_label">Coast</label>
 								<div class="col-sm-4">
 									<select class="form-control" id="id_coast">
 										<option selected disabled hidden>Select an option</option>
@@ -67,6 +67,7 @@
 										<option value="6">North East</option>
 										<option value="7">North West</option>
 										<option value="10">Centre</option>
+										<option value="11" disabled style="display:none">Others</option>
 									</select>
 								</div>
 							</div>
@@ -102,7 +103,7 @@
 										<option value="UNIT">UNIT</option>
 									</select>
 								</div>
-								<label class="col-sm-1 control-label">Duration</label>
+								<label class="col-sm-1 control-label" id="duration_label">Duration</label>
 								<div class="col-sm-2">
 									<input type="number" class="form-control" id="duration1" placeholder="Hrs">
 								</div>
@@ -149,7 +150,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="chk_operation">
 								<label class="col-sm-2 control-label">Operation</label>
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">

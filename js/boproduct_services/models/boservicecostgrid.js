@@ -3,7 +3,12 @@ $(document).ready(function(){
 });
 
 function allServicesGridCost() {
-    var id_product_service = window.location.href.split('psid=').pop();
+
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product_service = urlParams.get("psid");
+    console.log('sdgg', id_product_service);
+
     $('#tbl-productServicesCost').DataTable({       
         "processing" : true,
 
