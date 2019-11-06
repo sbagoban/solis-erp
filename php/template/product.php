@@ -19,6 +19,7 @@
                                     <select type="text" class="form-control" id="ddlType">
                                         <!-- To modify - select from db -->
                                         <option value="2">Activities</option>
+                                        <option value="3">Transfer</option>
                                         <option value="4">Others</option>
                                     </select>
                                 </div>

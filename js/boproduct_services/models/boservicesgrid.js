@@ -153,6 +153,8 @@ function serviceDelete(data) {
 
 // // Edit Product
 function serviceEdit(data) {
+    console.log('-->', data);
+
     document.getElementById("idService").innerHTML = data.id_product_service;
 	var time_duration = data.duration;
 	var time_all = time_duration.split(":");
@@ -181,6 +183,7 @@ function serviceEdit(data) {
     $('#id_country').val(data.id_country);
     $('#id_coast').val(data.id_coast);
     $('#service_name').val(data.service_name);
+    $('#service_name_transfer').val(data.service_name);
     $('#id_creditor').val(data.id_creditor);
     $('#id_tax').val(data.id_tax);
     $('#charge').val(data.charge);
@@ -196,6 +199,8 @@ function serviceEdit(data) {
     $('#age_inf_from').val(data.age_inf_from);
     $('#age_child_from').val(data.age_child_from);
     $('#age_teen_from').val(data.age_teen_from);
+    $('#min_age').val(data.min_age);
+    $('#max_age').val(data.max_age);
 
     var chkMonday = document.getElementById("on_monday");
     var chkTuesday = document.getElementById("on_tuesday");
@@ -208,8 +213,15 @@ function serviceEdit(data) {
     var chkInfant = document.getElementById("for_infant");
     var chkChild = document.getElementById("for_child");
     var chkTeen= document.getElementById("for_teen");
+    var chkAdult= document.getElementById("for_adult");
 
-    console.log(data.for_infant, 'test');
+    if (data.for_adult == 1){
+        chkAdult.checked = true;
+    }
+    if (data.for_adult == 0){
+        chkAdult.checked = false;
+    }
+
     if (data.for_infant == 1){
         chkInfant.checked = true;
     }
@@ -228,8 +240,6 @@ function serviceEdit(data) {
     if (data.for_teen == 0){
         chkTeen.checked = false;
     }
-
-
     if (data.on_monday == 1){
         chkMonday.checked = true;
     }

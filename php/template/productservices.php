@@ -20,7 +20,7 @@
 								</div>
 							</div>
 							<div class="form-group"> 
-									<label class="col-sm-2 control-label">Date</label>
+									<label class="col-sm-2 control-label"z>Date</label>
 									<div class="col-sm-10">
 										<div class="input-group date datepicker-in">
 											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
@@ -54,7 +54,7 @@
 										<option value="913">MAURITIUS</option>
 									</select>
 								</div>
-								<label class="col-sm-2 control-label">Coast</label>
+								<label class="col-sm-2 control-label" id="id_coast_label">Coast</label>
 								<div class="col-sm-4">
 									<select class="form-control" id="id_coast">
 										<option selected disabled hidden>Select an option</option>
@@ -67,15 +67,27 @@
 										<option value="6">North East</option>
 										<option value="7">North West</option>
 										<option value="10">Centre</option>
+										<option value="11" disabled style="display:none">Others</option>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
-								<div class="col-sm-6">
+								<div class="col-sm-6" id="id_service_1">
 									<input type="text" class="form-control" id="service_name" onkeyup="onkeyupCtrl()" placeholder="Name of the product">
 								</div>
-								<div class="col-sm-4" style="display:none;">
+
+								<div class="col-sm-6" id="id_service_2" style="display: none;">
+									<select type="text" class="form-control" id="service_name_transfer" onchange="onkeyupCtrl()">
+										<option selected disabled hidden>Select an Option</option>
+										<option value="SOUTH EAST">SOUTH EAST</option>
+										<option value="OTHER COAST">OTHER COAST</option>
+										<option value="INTER HOTEL">INTER HOTEL</option>
+										<option value="ACTIVITY">ACTIVITY</option>
+									</select>
+								</div>
+
+								<div class="col-sm-4">
 									<input type="text" class="form-control" id="special_name" placeholder="Special Name">
 								</div>
 							</div>
@@ -102,7 +114,7 @@
 										<option value="UNIT">UNIT</option>
 									</select>
 								</div>
-								<label class="col-sm-1 control-label">Duration</label>
+								<label class="col-sm-1 control-label" id="duration_label">Duration</label>
 								<div class="col-sm-2">
 									<input type="number" class="form-control" id="duration1" placeholder="Hrs">
 								</div>
@@ -149,7 +161,7 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group" id="chk_operation">
 								<label class="col-sm-2 control-label">Operation</label>
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">
@@ -206,6 +218,32 @@
 							</div>
 
 							<div class="form-group">
+								<label class="col-sm-2 control-label">Pax Policy</label>
+								<div class="col-sm-5">
+									<div class="input-group">
+										<input type="number" class="form-control" id="min_pax">
+										<span class="input-group-addon">Min</span>
+										<input type="number" class="form-control" id="max_pax">
+										<span class="input-group-addon">Max</span>
+									</div>
+									<br>
+								</div>
+							</div>
+
+							<div class="form-group" id="ageActivity">
+								<label class="col-sm-2 control-label">Age</label>
+								<div class="col-sm-8">
+									<div class="input-group">
+										<input type="number" class="form-control" id="min_age">
+										<span class="input-group-addon">Min Age</span>
+										<input type="number" class="form-control" id="max_age">
+										<span class="input-group-addon">Max Age</span>
+									</div>
+									<br>
+								</div>
+							</div>
+
+							<div class="form-group">
 								<label class="col-sm-2 control-label">Apply for</label>
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">
@@ -225,6 +263,12 @@
 											<label class='with-square-checkbox'>
 												<input type='checkbox' id="for_teen" />
 												<span>For Teen</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="adultActivity">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="for_adult" />
+												<span>For Adult</span>
 											</label>
 										</li>
 									</div>
@@ -257,18 +301,7 @@
 									<br>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2 control-label">Pax Policy</label>
-								<div class="col-sm-5">
-									<div class="input-group">
-										<input type="number" class="form-control" id="min_pax">
-										<span class="input-group-addon">Min</span>
-										<input type="number" class="form-control" id="max_pax">
-										<span class="input-group-addon">Max</span>
-									</div>
-									<br>
-								</div>
-							</div>
+						
 							<div class="pager pull-right">
 								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServices">Save</button>

@@ -53,7 +53,10 @@ try {
     $min_pax = trim($_POST["min_pax"]);
     $max_pax = trim($_POST["max_pax"]);
     $id_creditor = trim($_POST["id_creditor"]);
-  
+
+    $min_age = trim($_POST["min_age"]);
+    $max_age = trim($_POST["max_age"]);
+
     $age_inf_from = trim($_POST["age_inf_from"]);
     $age_child_from = trim($_POST["age_child_from"]);
     $age_teen_from = trim($_POST["age_teen_from"]);
@@ -139,11 +142,13 @@ try {
                     id_creditor,
                     for_infant,
                     for_child,
-                    for_teen) 
+                    for_teen,
+                    min_age,
+                    max_age) 
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
                 :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :age_inf_from, :age_child_from, :age_teen_from,
-                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen)";
+                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -179,7 +184,9 @@ try {
             ":id_creditor" => $id_creditor,
             ":for_infant" => $for_infant,
             ":for_child" => $for_child,
-            ":for_teen" => $for_teen));
+            ":for_teen" => $for_teen,
+            ":min_age" => $min_age,
+            ":max_age" => $max_age));
         
         $id_product_service = $con->lastInsertId();
     } else {
@@ -216,7 +223,9 @@ try {
                 id_creditor =:id_creditor,
                 for_infant =:for_infant,
                 for_child =:for_child,
-                for_teen =:for_teen
+                for_teen =:for_teen,
+                min_age =:min_age,
+                max_age =:max_age
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);
@@ -253,7 +262,9 @@ try {
             ":id_creditor" => $id_creditor,
             ":for_infant" => $for_infant,
             ":for_child" => $for_child,
-            ":for_teen" => $for_teen));
+            ":for_teen" => $for_teen,
+            ":min_age" => $min_age,
+            ":max_age" => $max_age));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
 } catch (Exception $ex) {
