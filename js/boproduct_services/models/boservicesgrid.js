@@ -106,32 +106,6 @@ function allServicesGrid() {
         }
 
     });
-    // $('#tbl-productServices tbody').on( 'click', '#btnDeleteService', function () {
-    //     var table = $('#tbl-productServices').DataTable();
-    //     var data = table.row( $(this).parents('tr') ).data();
-    //     serviceDelete(data);
-    // });
-    // $('#tbl-productServices tbody').on( 'click', '#btnAddProductServicesExtra', function () {
-    //     var table = $('#tbl-productServices').DataTable();
-    //     var data = table.row( $(this).parents('tr') ).data();
-    //     addServiceExtra(data);
-    // });
-    // $('#tbl-productServices tbody').on( 'click', '#btnEditProduct', function () {
-    //     var table = $('#tbl-productServices').DataTable();
-    //     var data = table.row( $(this).parents('tr') ).data();
-    //     serviceEdit(data);
-    // });
-    // $('#tbl-productServices tbody').on( 'click', '#btnAddProductServices', function () {
-    //     var table = $('#tbl-productServices').DataTable();
-    //     var data = table.row( $(this).parents('tr') ).data();
-    //     addProductServices(data);
-    // });
-
-    // $('#tbl-productServices tbody').on( 'click', '#btnDuplicateProductService', function () {
-    //     var table = $('#tbl-productServices').DataTable();
-    //     var data = table.row( $(this).parents('tr') ).data();
-    //     duplicateProductServices(data);
-    // });
 }
 
 // Delete Product
@@ -302,6 +276,7 @@ function addServiceExtra(data) {
 }
 
 function duplicateProductServices(data) {
+    console.log('--> chk',data);
     var objServiceDuplicate = {
         id_product_service :-1, //for new items, id is always -1
         id_product : data.id_product,
@@ -337,7 +312,10 @@ function duplicateProductServices(data) {
         id_creditor : data.id_creditor,
         for_infant : data.for_infant,
         for_child : data.for_child,
-        for_teen : data.for_teen
+        for_teen : data.for_teen,  
+        for_adult : data.for_adult,          
+        min_age : data.min_age,
+        max_age : data.max_age
     };
 
     const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
@@ -353,7 +331,8 @@ function duplicateProductServices(data) {
             $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
             duplicateCost(data, val.id_product_service); 
             duplicateExtra(data, val.id_product_service);   
-            duplicateExtraCost(data, val.id_product_service);        
+            duplicateExtraCost(data, val.id_product_service);    
+            console.log('chk --> vv', val.id_product_service);    
         },
         error: function(error) {
             console.log('Error ${error}');
@@ -363,6 +342,7 @@ function duplicateProductServices(data) {
 }
 
 function duplicateCost(data, id_prod_serv) {
+    console.log('chk -->', id_prod_serv);
     var objCost = {id_product_service: id_prod_serv};
     const url_duplicate_service_cost = "php/api/backofficeproduct/duplicateservice.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
     $.ajax({
