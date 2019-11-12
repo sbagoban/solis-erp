@@ -703,10 +703,18 @@ if (isset($_GET["m"])) {
 		<!-- bootstrap datepicker -->
 		<script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 		<!-- bootstrap datepicker -->
+		<!-- bootstrap time picker -->
+		<script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
+  		<link rel="stylesheet" href="plugins/timepicker/bootstrap-timepicker.min.css">
 		<!-- Select2 -->
 		<script src="bower_components/select2/dist/js/select2.full.min.js"></script>
   		<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
 		<!-- Select2 -->
+		<!-- Select picker --->
+		<link rel="stylesheet" href="plugins/bootstrap-select-1.13.9 2/dist/css/bootstrap-select.min.css">
+		<script src="plugins/bootstrap-select-1.13.9 2/dist/js/bootstrap-select.min.js"></script>
+		<script src="plugins/bootstrap-select-1.13.9 2/dist/js/i18n/defaults-*.min.js"></script>
+		<!-- .Select picker --->
 		
 		<!-- SOLIS GLOBAL CSS -->
 		
