@@ -142,7 +142,7 @@
 									<textarea class="form-control" id="comments" rows="3" style="resize: none"></textarea>
 								</div>
 							</div>
-							<div class="form-group" style="display:none;">
+							<div class="form-group">
 								<label class="col-sm-2 control-label">Package</label>
 								<div class="col-sm-2">
 									<select type="text" class="form-control" id="is_pakage">
@@ -152,7 +152,7 @@
 								</div>
 								<label class="col-sm-2 control-label">Services</label>
 								<div class="col-sm-6">
-									<select class="form-control select2" multiple="multiple">
+									<select class="form-control selectpicker" multiple="multiple">
 										<option value="1">CHAMAREL LUNCH</option>
 										<option value="2">ACCESS CHAMAREL</option>
 										<option value="3">ACCESS CHAMAREL</option>
