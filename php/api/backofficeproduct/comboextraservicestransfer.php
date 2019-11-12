@@ -17,7 +17,7 @@ require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT id_service_extra, extra_name FROM service_extra WHERE for_activity=1 ORDER BY extra_name ASC");
+$query_c = $con->prepare("SELECT id_service_extra, extra_name FROM service_extra WHERE for_transfer=1 ORDER BY extra_name ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 

@@ -1,37 +1,47 @@
 /////////////////////////////////////////
 // model --> fetch Api Extra Name Exist//
 /////////////////////////////////////////
-const url_extra = "php/api/backofficeproduct/comboextraservices.php?t=" + encodeURIComponent(global_token); 
-
-$.ajax({
-    url : url_extra,
-    type : "GET",
-    success : function(data) {
-        helpersDropdownExtraExist.buildDropdown(
-            jQuery.parseJSON(data),
-            $('#extra_name'),
-            'Select an option' 
-        );
-    }, 
-    error:function(error) {
-        console.log('Error ${error}');
+$(document).ready(function(){
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var servicetype = urlParams.get("servicetype");
+    if (servicetype == "TRANSFER") {
+        url_extra = "php/api/backofficeproduct/comboextraservicestransfer.php?t=" + encodeURIComponent(global_token); 
+    } 
+    if (servicetype == "EXCURSION") {
+        url_extra = "php/api/backofficeproduct/comboextraservices.php?t=" + encodeURIComponent(global_token); 
     }
-});
-var helpersDropdownExtraExist = {
-    buildDropdown: function(result, dropdown, emptyMessage) {
-        // Remove current options
-        dropdown.html('');
-        // Add the empty option with the empty message
-        dropdown.append('<option value="">' + emptyMessage + '</option>');
-        // Check result isnt empty
-        if(result != '') {
-            // Loop through each of the results and append the option to the dropdown
-            $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
-            });
+    
+    $.ajax({
+        url : url_extra,
+        type : "GET",
+        success : function(data) {
+            helpersDropdownExtraExist.buildDropdown(
+                jQuery.parseJSON(data),
+                $('#extra_name'),
+                'Select an option' 
+            );
+        }, 
+        error:function(error) {
+            console.log('Error ${error}');
+        }
+    });
+    var helpersDropdownExtraExist = {
+        buildDropdown: function(result, dropdown, emptyMessage) {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '') {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(data, result) {
+                    dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
+                });
+            }
         }
     }
-}
+});
 /////////////////////////////////////////
 // model --> fetch Api extra created ////
 /////////////////////////////////////////

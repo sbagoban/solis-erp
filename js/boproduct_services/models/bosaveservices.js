@@ -15,11 +15,23 @@ $(document).ready(function(){
 	});
 });
 
+function changeTransfer() {
+    $( "#service_name_transfer" ).change(function () {
+        $( "#service_name_transfer option:selected" ).each(function() {
+            service_name = $( this ).text();
+            
+        });
+    }).change();
+    return service_name;
+}
+
 $('#btn-saveProductServices').click(function () {
     var idService = document.getElementById("idService").innerHTML;
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product = urlParams.get("id_product"); 
+    var servicetype = urlParams.get("servicetype"); 
+
     var product_name = urlParams.get("product_name");
 	var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
 	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -27,7 +39,14 @@ $('#btn-saveProductServices').click(function () {
     var id_dept = $('#id_dept').val();
     var id_country = $('#id_country').val();
     var id_coast = $('#id_coast').val();
-    var service_name = $('#service_name').val();    
+
+    if (servicetype == 'TRANSFER') { 
+        //var service_name = $('#service_name_transfer option:selected').text();
+        var service_name = changeTransfer();
+    } else {
+        var service_name = $('#service_name').val();
+    }
+    
     var id_tax = $('#id_tax').val();
     var charge = $('#charge').val();
     var duration = $('#duration').val();
@@ -54,9 +73,12 @@ $('#btn-saveProductServices').click(function () {
     var chkinfant = document.getElementById("for_infant");
     var chkchild = document.getElementById("for_child");
     var chkteen = document.getElementById("for_teen");
+    var chkadult = document.getElementById("for_adult");
+    var min_age = $('#min_age').val();
+    var max_age = $('#max_age').val();
 
     var id_creditor = $('#id_creditor').val();
-
+4
     if (chkmonday.checked) {
         on_monday = 1;
     } else if (chkmonday.checked == false) {
@@ -109,6 +131,12 @@ $('#btn-saveProductServices').click(function () {
         for_teen = 0;
     }  
 
+    if (chkadult.checked) {
+        for_adult = 1;
+    } else if (chkadult.checked == false) {
+        for_adult = 0;
+    } 
+
     if (idService == 0) {
         var objService = {
             id_product_service :-1, //for new items, id is always -1
@@ -145,7 +173,10 @@ $('#btn-saveProductServices').click(function () {
             id_creditor : id_creditor,
             for_infant : for_infant,
             for_child : for_child,
-            for_teen : for_teen
+            for_teen : for_teen,  
+            for_adult : for_adult,          
+            min_age : min_age,
+            max_age : max_age
         };
     
         console.log(objService);
@@ -165,6 +196,7 @@ $('#btn-saveProductServices').click(function () {
             }
         });
     } else {
+        console.log();
         const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         var objServiceUpdate = {
             id_product : id_product,
@@ -198,15 +230,12 @@ $('#btn-saveProductServices').click(function () {
             for_infant : for_infant,
             for_child : for_child,
             for_teen : for_teen,
-            for_infant : for_infant,
-            for_child : for_child,
-            for_teen : for_teen,            
-            for_infant : for_infant,
-            for_child : for_child,
-            for_teen : for_teen,
+            for_adult : for_adult,
             age_inf_from : age_inf_from,
             age_child_from : age_child_from,
-            age_teen_from : age_teen_from
+            age_teen_from : age_teen_from,            
+            min_age : min_age,
+            max_age : max_age
         };
         $.ajax({
             url : url_edit_service,
@@ -251,7 +280,7 @@ function resetServicesForm() {
     $('#charge').val('');
     $('#duration1').val('');    
     $('#duration2').val('');
-    $('#transfer_included').val('');
+    //$('#transfer_included').val('');
     $('#description').val('');
     $('#comments').val('');
     $('#cancellation').val('');
@@ -273,6 +302,7 @@ function resetServicesForm() {
     $("#for_infant").prop("checked", false);
     $("#for_child").prop("checked", false);
     $("#for_teen").prop("checked", false);
+    $("#for_adult").prop("checked", false);
 
     $("#age_inf_from").prop("readonly", true);
     $("#age_inf_to").prop("readonly", true);
@@ -281,4 +311,7 @@ function resetServicesForm() {
     $("#age_teen_from").prop("readonly", true);
     $("#age_teen_to").prop("readonly", true);
     $('#id_creditor').val('');
+    $('#service_name_transfer').val('');    
+    $('#min_age').val('');
+    $('#max_age').val('');
 }

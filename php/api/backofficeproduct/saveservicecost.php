@@ -34,7 +34,8 @@ try {
     $ps_teen_cost = trim($_POST["ps_teen_cost"]);
     $ps_child_cost = trim($_POST["ps_child_cost"]);
     $ps_infant_cost = trim($_POST["ps_infant_cost"]);
-    $id_currency = trim($_POST["id_currency"]);
+    $id_currency = trim($_POST["id_currency"]);    
+    $currency = trim($_POST["currency"]);
     $id_dept = trim($_POST["id_dept"]);
 	
 	
@@ -64,8 +65,8 @@ try {
     }
 
     if ($id_product_service_cost == "-1") {
-        $sql = "INSERT INTO product_service_cost (id_product_service, valid_from, valid_to, ps_adult_cost, ps_teen_cost, ps_child_cost, ps_infant_cost, id_currency, id_dept) 
-                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :id_dept)";
+        $sql = "INSERT INTO product_service_cost (id_product_service, valid_from, valid_to, ps_adult_cost, ps_teen_cost, ps_child_cost, ps_infant_cost, id_currency, currency, id_dept) 
+                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :currency, :id_dept)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -76,7 +77,8 @@ try {
             ":ps_teen_cost" => $ps_teen_cost,
             ":ps_child_cost" => $ps_child_cost,
             ":ps_infant_cost" => $ps_infant_cost,
-            ":id_currency" => $id_currency,
+            ":id_currency" => $id_currency,            
+            ":currency" => $currency,
             ":id_dept" => $id_dept));
         
         $id_product_service_cost = $con->lastInsertId();
@@ -90,6 +92,7 @@ try {
                 ps_child_cost=:ps_child_cost,
                 ps_infant_cost=:ps_infant_cost,
                 id_currency=:id_currency,
+                currency=:currency,
                 id_dept=:id_dept,
                 WHERE id_product_service_cost=:id_product_service_cost";
 
@@ -104,6 +107,7 @@ try {
             ":ps_child_cost" => $ps_child_cost, 
             ":ps_infant_cost" => $ps_infant_cost, 
             ":id_currency" => $id_currency,
+            ":currency" => $currency,
             ":id_dept" => $id_dept));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_cost"=>$id_product_service_cost));

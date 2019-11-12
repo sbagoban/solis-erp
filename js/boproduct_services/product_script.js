@@ -52,7 +52,7 @@ var helpersDropdownCurrency = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.value + '">' + result.text + '</option>');
+                dropdown.append('<option value="' + result.value + '"name="' + result.text + '">' + result.text + '</option>');
             });
         }
     }
@@ -94,3 +94,22 @@ var helpersDropdownSupplier = {
         }
     }
 }
+
+$(document).ready(function(){
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var servicetype = urlParams.get("servicetype");
+
+    if (servicetype == "TRANSFER") {
+        $("#id_coast_label").css("display", "none");
+        $("#id_coast").css("display", "none");        
+        $("#id_service_1").css("display", "none");
+        $("#id_service_2").css("display", "block");
+        $("#duration1").css("display", "none");
+        $("#duration2").css("display", "none");
+        $("#duration_label").css("display", "none");
+        $("#chk_operation").css("display", "none");
+        $("#ageActivity").css("display", "none");
+        $("#adultActivity").css("display", "none");
+    }
+});

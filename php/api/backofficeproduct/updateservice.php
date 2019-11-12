@@ -66,7 +66,11 @@
         $for_infant = trim($_POST["for_infant"]);
         $for_child = trim($_POST["for_child"]);
         $for_teen = trim($_POST["for_teen"]);
+        $for_adult = trim($_POST["for_adult"]);
 		
+        $min_age = trim($_POST["min_age"]);
+        $max_age = trim($_POST["max_age"]);
+
 		if ($age_inf_to == "") 
 		{
 			$age_inf_from = NULL;
@@ -124,7 +128,10 @@
                 for_teen =:for_teen,
                 age_inf_from =:age_inf_from,
                 age_child_from =:age_child_from,
-                age_teen_from =:age_teen_from
+                age_teen_from =:age_teen_from,
+                min_age =:min_age,
+                max_age =:max_age,
+                for_adult =:for_adult
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
@@ -161,7 +168,10 @@
                 ":for_teen" => $for_teen,
                 ":age_inf_from" => $age_inf_from,
                 ":age_child_from" => $age_child_from,
-                ":age_teen_from" => $age_teen_from));
+                ":age_teen_from" => $age_teen_from,
+                ":min_age" => $min_age,
+                ":max_age" => $max_age,
+                ":for_adult" => $for_adult));
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

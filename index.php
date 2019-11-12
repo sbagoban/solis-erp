@@ -909,8 +909,9 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
             <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>
-            <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script>            
-            <script src="js/boproduct_claim/control/ctrlClaim.js"></script>';
+            <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script> 
+            <script src="js/boproduct_claim/control/ctrlClaim.js"></script>          
+            <script src="js/boproduct_claim/models/updateAllExtraServiceClaim.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>
@@ -931,7 +932,8 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/bosaveextraservicescost.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
             <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
-            <script src="js/boproduct_services/control/productCtrl.js"></script>';
+            <script src="js/boproduct_services/control/productCtrl.js"></script>
+            <script src="js/boproduct_services/models/boupdateextraservicecost.js"></script>';
         }
 ?>
         <div id = "alert_placeholder"></div>

@@ -153,9 +153,9 @@
 													<thead>
 														<tr>
 															<th class="col-sm-1">Code</th>
-															<th class="col-sm-2">Extra</th>
-															<th class="col-sm-5">Charges</th>
-															<th class="col-sm-1"></th>
+															<th class="col-sm-4">Extra</th>
+															<th class="col-sm-2">Charges</th>
+															<th class="col-sm-2"></th>
 														</tr>
 													</thead>
 												</table>	
@@ -180,7 +180,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Service</label>
 						<div class="col-sm-10">
-							<label class="control-label" id="product_name">product + service from product service + supplier name + Dept for + Coast</label>
+							<input type="text" class="form-control" id="product_name_dtl" readonly="" style="text-transform: uppercase; font-size: 18px;">
 						</div>
 					</div>
 					<table id="tbl-productServicesClaim" class="table table-bordered table-hover">
@@ -257,7 +257,8 @@
 							</div>
 							
 							<div class="pager">
-								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraCost">Save</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraClaim">Save</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-updateProductServicesExtraClaim" style="display: none;">Update</button>
 							</div>
 						</div>
 						<!-- /.box-body -->
