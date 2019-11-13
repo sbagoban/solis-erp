@@ -12,6 +12,26 @@
 					<!-- form start -->
 					<form class="form-horizontal">
 						<div class="box-body">
+							<!-- Package Start -->
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Package</label>
+								<div class="col-sm-2">
+									<select type="text" class="form-control" id="is_pakage">
+										<option value="Y">YES</option>
+										<option value="N" selected="selectd">NO</option>
+									</select>
+								</div>
+								<div id="services_block" style="display: none">
+									<label class="col-sm-2 control-label">Services</label>
+									<div class="col-sm-6">
+										<select id="services_cost" name="services_cost" class="services_cost" multiple="multiple">
+										</select>
+									</div>
+								</div>
+								
+							</div>
+							<hr>
+							<!-- Package End -->
 							<div class="form-group"> 
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
@@ -142,25 +162,7 @@
 									<textarea class="form-control" id="comments" rows="3" style="resize: none"></textarea>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2 control-label">Package</label>
-								<div class="col-sm-2">
-									<select type="text" class="form-control" id="is_pakage">
-										<option value="Y">YES</option>
-										<option value="N" selected="selectd">NO</option>
-									</select>
-								</div>
-								<label class="col-sm-2 control-label">Services</label>
-								<div class="col-sm-6">
-									<select class="form-control selectpicker" multiple="multiple">
-										<option value="1">CHAMAREL LUNCH</option>
-										<option value="2">ACCESS CHAMAREL</option>
-										<option value="3">ACCESS CHAMAREL</option>
-										<option value="4">ACCESS CHAMAREL</option>
-										<option value="5">ACCESS CHAMAREL</option>
-									</select>
-								</div>
-							</div>
+							
 							<div class="form-group" id="chk_operation">
 								<label class="col-sm-2 control-label">Operation</label>
 								<div class="col-sm-10">

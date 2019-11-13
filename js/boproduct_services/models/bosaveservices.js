@@ -32,6 +32,9 @@ $('#btn-saveProductServices').click(function () {
     var id_product = urlParams.get("id_product"); 
     var servicetype = urlParams.get("servicetype"); 
 
+    var id_service_type = urlParams.get("id_service_type"); 
+    var id_product_type = urlParams.get("id_product_type");
+
     var product_name = urlParams.get("product_name");
 	var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
 	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -69,16 +72,20 @@ $('#btn-saveProductServices').click(function () {
     var chkfriday = document.getElementById("on_friday");
     var chksaturday = document.getElementById("on_saturday");
     var chksunday = document.getElementById("on_sunday");
-
     var chkinfant = document.getElementById("for_infant");
     var chkchild = document.getElementById("for_child");
     var chkteen = document.getElementById("for_teen");
     var chkadult = document.getElementById("for_adult");
     var min_age = $('#min_age').val();
     var max_age = $('#max_age').val();
-
     var id_creditor = $('#id_creditor').val();
-4
+    var is_pakage = $('#is_pakage').val();
+    var id_product_service_induded = $('#services_cost').val();
+    
+    if (is_pakage == 'N') { 
+        id_product_service_induded = 0;
+    } 
+
     if (chkmonday.checked) {
         on_monday = 1;
     } else if (chkmonday.checked == false) {
@@ -135,7 +142,7 @@ $('#btn-saveProductServices').click(function () {
         for_adult = 1;
     } else if (chkadult.checked == false) {
         for_adult = 0;
-    } 
+    }
 
     if (idService == 0) {
         var objService = {
@@ -176,10 +183,12 @@ $('#btn-saveProductServices').click(function () {
             for_teen : for_teen,  
             for_adult : for_adult,          
             min_age : min_age,
-            max_age : max_age
+            max_age : max_age, 
+            is_pakage : is_pakage, 
+            id_product_service_induded : id_product_service_induded, 
+            id_service_type : id_service_type, 
+            id_product_type : id_product_type
         };
-    
-        console.log(objService);
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
         $.ajax({
             url : url_save_service,
@@ -196,7 +205,6 @@ $('#btn-saveProductServices').click(function () {
             }
         });
     } else {
-        console.log();
         const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         var objServiceUpdate = {
             id_product : id_product,
@@ -235,7 +243,8 @@ $('#btn-saveProductServices').click(function () {
             age_child_from : age_child_from,
             age_teen_from : age_teen_from,            
             min_age : min_age,
-            max_age : max_age
+            max_age : max_age, 
+            is_pakage : is_pakage
         };
         $.ajax({
             url : url_edit_service,
@@ -303,7 +312,6 @@ function resetServicesForm() {
     $("#for_child").prop("checked", false);
     $("#for_teen").prop("checked", false);
     $("#for_adult").prop("checked", false);
-
     $("#age_inf_from").prop("readonly", true);
     $("#age_inf_to").prop("readonly", true);
     $("#age_child_from").prop("readonly", true);
@@ -314,4 +322,7 @@ function resetServicesForm() {
     $('#service_name_transfer').val('');    
     $('#min_age').val('');
     $('#max_age').val('');
+    $('#is_pakage').val('N');    
+    $('#services_block').css("display", "none");    
+    $('#services_cost').val('');
 }

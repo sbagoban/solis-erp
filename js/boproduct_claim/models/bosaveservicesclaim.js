@@ -253,8 +253,6 @@ $("#btn-saveServicesClaim").click(function () {
             id_product_service_claim: -1,
             id_product_service_cost: id_product_service_cost,
             id_product_service: id_product_service,
-
-
             valid_from: valid_from,
             valid_to: valid_to,
             id_dept: id_dept,
@@ -394,7 +392,6 @@ $("#btn-saveServicesClaim").click(function () {
             });
         }
     }
-
     allServicesGridClaim(id_product_service_cost);
 });
 

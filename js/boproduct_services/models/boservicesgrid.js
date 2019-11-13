@@ -175,7 +175,8 @@ function serviceEdit(data) {
     $('#age_teen_from').val(data.age_teen_from);
     $('#min_age').val(data.min_age);
     $('#max_age').val(data.max_age);
-
+    $('#is_pakage').val(data.is_pakage);
+    
     var chkMonday = document.getElementById("on_monday");
     var chkTuesday = document.getElementById("on_tuesday");
     var chkWednesday = document.getElementById("on_wednesday");
