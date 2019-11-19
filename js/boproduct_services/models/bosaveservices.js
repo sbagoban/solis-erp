@@ -12,7 +12,7 @@ $(document).ready(function(){
 		locale: {
 					format: 'DD/MM/YYYY'
 				}
-	});
+    });
 });
 
 function changeTransfer() {
@@ -204,7 +204,9 @@ $('#btn-saveProductServices').click(function () {
                 console.log('Error ${error}');
             }
         });
-    } else {
+    } else {    
+        // Edit Drop Down Services - Delete first and the Saved
+        editServicesInclude(id_product_service_induded);
         const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         var objServiceUpdate = {
             id_product : id_product,
@@ -262,7 +264,7 @@ $('#btn-saveProductServices').click(function () {
         });
 		allServicesGrid();
     }
-    document.getElementById("idService").innerHTML = 0;    
+    document.getElementById("idService").innerHTML = 0;
 }); 
 
 function dateManipulationDuration() {
@@ -324,5 +326,106 @@ function resetServicesForm() {
     $('#max_age').val('');
     $('#is_pakage').val('N');    
     $('#services_block').css("display", "none");    
+    $('#services_cost').val([]).multiselect('refresh');
     $('#services_cost').val('');
+}
+
+function specificServiceSelected(val) { 
+    const url_selected_service = "php/api/backofficeproduct/populateselectedservice.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + val.id_product_service; 
+    $.ajax({
+        type: "POST",
+        url: url_selected_service,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+                {
+                var valArr = [data];
+                valArr.forEach(myFunction);
+                function myFunction(value) {
+                    loadSelectedService(value);             
+                }
+        }    
+    });
+}
+
+function loadSelectedService(value) {
+    $("#services_block").css("display", "block");
+    console.log('--> test', value);
+    const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
+    $.ajax({
+        type: "POST",
+        url: url_service_selected,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+            {
+                $("#services_cost").attr('multiple', 'multiple');
+                $("#services_cost").empty();
+                $.each(data, function (key, val) {
+                    $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' + val.service_name + '</option>');
+                }); 
+                arrToSelected = [];
+                for (var i = 0, l = value.length; i < l; i++) {
+                    var objSelected = value[i].id_product_service_induded;
+                    arrToSelected.push(objSelected);
+                    $("#services_cost").find("option[value=" + objSelected + "]").prop("selected", true)
+                    $("#services_cost").multiselect("refresh")    
+                }
+                $("#services_cost").multiselect({
+                    buttonWidth: '295px',
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Select an Option',
+                    enableFiltering: true,
+                    enableHTML: true,
+                    buttonClass: 'btn large btn-default',
+                    enableCaseInsensitiveFiltering: true
+                });
+            }
+        }
+    );
+}
+
+function editServicesInclude(id_product_service_induded) {
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product = urlParams.get("id_product"); 
+    var servicetype = urlParams.get("servicetype"); 
+
+    var id_service_type = urlParams.get("id_service_type"); 
+    var id_product_type = urlParams.get("id_product_type");
+
+    var id_product_service = document.getElementById("idService").innerHTML;
+
+    const url_update_service_included = "php/api/backofficeproduct/deleteselectedservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" +id_product_service;
+    var objServiceIncluded = {id_product_service: id_product_service};
+    $.ajax({
+        url: url_update_service_included,
+        method: "POST",
+        data: objServiceIncluded,
+        success: function (data) {
+        },
+        error: function (error) {
+            console.log('Error ${error}');
+        }
+    });
+
+    const url_save_service_included = "php/api/backofficeproduct/saveselectedselectedservice.php?t=" + encodeURIComponent(global_token);
+    var objSaveServicesIncluded = {
+        id_product_service_package: -1,
+        id_product_service : id_product_service,
+        id_product : id_product,
+        id_service_type : id_service_type,
+        id_product_type : id_product_type,
+        id_product_service_induded: id_product_service_induded
+    };
+    $.ajax({
+        url: url_save_service_included,
+        method: "POST",
+        data: objSaveServicesIncluded,
+        success: function (data) {
+        },
+        error: function (error) {
+            console.log('Error ${error}');
+        }
+    });
 }

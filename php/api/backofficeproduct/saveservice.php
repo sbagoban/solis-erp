@@ -204,13 +204,15 @@ try {
             $stmt = $con->prepare($sqlTo);
             $data = $id_product_service_induded;
             
-            foreach($data as $servcost) {
-                $stmt->execute(array(
-                    ':id_product_service' => $id_product_service,
-                    ':id_product' => $id_product, 
-                    ':id_service_type' => $id_service_type,
-                    ':id_product_type' => $id_product_type,  
-                    ':id_product_service_induded' => $servcost));
+            if (is_array($data) || is_object($data)) {
+                foreach($data as $servcost) {
+                    $stmt->execute(array(
+                        ':id_product_service' => $id_product_service,
+                        ':id_product' => $id_product, 
+                        ':id_service_type' => $id_service_type,
+                        ':id_product_type' => $id_product_type,  
+                        ':id_product_service_induded' => $servcost));
+                }
             }
         }
 

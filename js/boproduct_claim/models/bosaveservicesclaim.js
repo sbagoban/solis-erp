@@ -157,19 +157,23 @@ function dateRangePickerValid() {
 	var valid_from = new Date(valid_from);
 	var valid_to = valid_to.split("-");
 	var valid_to = valid_to[0]+","+valid_to[1]+","+valid_to[2];
-	var valid_to = new Date(valid_to);
-	
+    var valid_to1 = new Date(valid_to);
+    
+    console.log( 'From -',  valid_from, 'To -',  valid_to);
+
     $('#daterangeServiceFromTo').daterangepicker({
         locale: {
             format: 'DD/MM/YYYY'
         },
         "autoApply": true,
-		"opens": "center",
+        "opens": "center",
+        startDate: valid_from,
+        endDate: valid_to1,
         "minDate" : valid_from,
-        "maxDate" : valid_to
+        "maxDate" : valid_to1
     }, function(start, end, label) {
         valid_from = start.format('YYYY/MM/DD');
-        valid_to = end.format('YYYY/MM/DD');
+        valid_to1 = end.format('YYYY/MM/DD');
     });
 }
 $("#btn-saveServicesClaim").click(function () {    

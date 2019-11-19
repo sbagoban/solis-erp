@@ -6,7 +6,12 @@ function allServicesGrid() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product = urlParams.get("id_product");
-    $('#tbl-productServices').DataTable({       
+    $('#tbl-productServices').DataTable({     
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        if ( aData.is_pakage == "Y" ){
+            $('td', nRow).css('background-color', '#bde8ff');
+        }
+    },  
         "processing" : true,
 
         "ajax" : {
@@ -127,8 +132,8 @@ function serviceDelete(data) {
 
 // // Edit Product
 function serviceEdit(data) {
-    console.log('-->', data);
-
+    specificServiceSelected(data);
+    loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
 	var time_duration = data.duration;
 	var time_all = time_duration.split(":");
@@ -189,6 +194,12 @@ function serviceEdit(data) {
     var chkChild = document.getElementById("for_child");
     var chkTeen= document.getElementById("for_teen");
     var chkAdult= document.getElementById("for_adult");
+    
+    if (data.is_pakage == 'N') { 
+        $('#services_block').css("display", "none");    
+        $('#services_cost').val([]).multiselect('refresh');
+        $('#services_cost').val('');
+    }
 
     if (data.for_adult == 1){
         chkAdult.checked = true;
@@ -277,7 +288,13 @@ function addServiceExtra(data) {
 }
 
 function duplicateProductServices(data) {
-    console.log('--> chk',data);
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams); 
+
+    var id_service_type = urlParams.get("id_service_type"); 
+    var id_product_type = urlParams.get("id_product_type");
+
+    console.log('Yops',data);
     var objServiceDuplicate = {
         id_product_service :-1, //for new items, id is always -1
         id_product : data.id_product,
@@ -316,7 +333,11 @@ function duplicateProductServices(data) {
         for_teen : data.for_teen,  
         for_adult : data.for_adult,          
         min_age : data.min_age,
-        max_age : data.max_age
+        max_age : data.max_age, 
+        is_pakage : data.is_pakage, 
+        id_service_type : id_service_type, 
+        id_product_type : id_product_type,
+        id_product_service_induded : 0
     };
 
     const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
@@ -327,23 +348,21 @@ function duplicateProductServices(data) {
         dataType: "json",
         cache: false,                                                                                     
         success : function(val){
-            allServicesGrid();
             document.getElementById('id_prod_serv').innerHTML = val.id_product_service;
             $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
             duplicateCost(data, val.id_product_service); 
             duplicateExtra(data, val.id_product_service);   
-            duplicateExtraCost(data, val.id_product_service);    
-            console.log('chk --> vv', val.id_product_service);    
+            duplicateExtraCost(data, val.id_product_service, val.id_product_service_cost); 
+            duplicateIncludedServices(data, val.id_product_service);          
+            allServicesGrid(); 
         },
         error: function(error) {
             console.log('Error ${error}');
         }
-        
     });
 }
 
 function duplicateCost(data, id_prod_serv) {
-    console.log('chk -->', id_prod_serv);
     var objCost = {id_product_service: id_prod_serv};
     const url_duplicate_service_cost = "php/api/backofficeproduct/duplicateservice.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
     $.ajax({
@@ -375,14 +394,33 @@ function duplicateExtra(data, id_prod_serv) {
     });
 }
 
-function duplicateExtraCost(data, id_prod_serv) {  
-    console.log(data, 'tets');
-    var objExtraCost = {id_prod_serv: id_prod_serv};
+function duplicateExtraCost(data, id_prod_serv, id_prod_cost) {  
+    console.log(id_prod_cost, 'tets');
+    var objExtraCost = {
+        id_prod_serv: id_prod_serv, 
+        id_prod_cost: id_prod_cost
+    };
     const url_duplicate_service_extra_cost = "php/api/backofficeproduct/duplicateserviceextracost.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
     $.ajax({
         url : url_duplicate_service_extra_cost,
         method : "POST",
         data : objExtraCost,                                                                                    
+        success : function(data){
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });
+}
+
+function duplicateIncludedServices(data, id_prod_serv) {
+    console.log('-->> chk', id_prod_serv);
+    var objIncludedService = {id_prod_serv: id_prod_serv};
+    const url_duplicate_included_service = "php/api/backofficeproduct/duplicateincludedservices.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
+    $.ajax({
+        url : url_duplicate_included_service,
+        method : "POST",
+        data : objIncludedService,                                                                                    
         success : function(data){
         },
         error: function(error) {

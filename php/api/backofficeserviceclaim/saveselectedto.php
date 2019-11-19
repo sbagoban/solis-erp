@@ -68,7 +68,7 @@ try {
                 WHERE id_product_service_claim_to=:id_product_service_claim_to";
 
         $stmt = $con->prepare($sql);
-        $data = $id_country;
+        $data = $id_tour_operator;
         foreach($data as $d) {
             $stmt->execute(array(
                 ":id_product_service_claim_to" => $id_product_service_claim_to,

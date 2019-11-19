@@ -21,25 +21,31 @@ function dateRangePickerValid() {
 
     var valid_from = urlParams.get("valid_from"); 
     var valid_to = urlParams.get("valid_to"); 
-	
+    console.log( 'From - 1',  valid_from, '/n', 'To - 1',  valid_to);
+
 	var valid_from = valid_from.split("-");
-	var valid_from = valid_from[0]+","+valid_from[1]+","+valid_from[2];
-	var valid_from = new Date(valid_from);
-	var valid_to = valid_to.split("-");
-	var valid_to = valid_to[0]+","+valid_to[1]+","+valid_to[2];
-	var valid_to = new Date(valid_to);
+    var valid_from1 = valid_from[2]+"/"+valid_from[1]+"/"+valid_from[0];
     
+    console.log( 'From - z',  valid_from);
+	//var valid_from1 = new Date(valid_from);
+	var valid_to = valid_to.split("-");
+	var valid_to1 = valid_to[2]+"/"+valid_to[1]+"/"+valid_to[0];
+    //var valid_to1 = new Date(valid_to);
+    
+	console.log( 'From - 2',  valid_from1, '/n', 'To - 2',  valid_to1);
     $('#daterangeServiceFromTo').daterangepicker({
         locale: {
             format: 'DD/MM/YYYY'
         },
         "autoApply": true,
         "opens": "center",
-        "minDate" : valid_from,
-        "maxDate" : valid_to
+        startDate: valid_from1,
+        endDate: valid_to1,
+        "minDate" : valid_from1,
+        "maxDate" : valid_to1
     }, function(start, end, label) {
-        valid_from = start.format('YYYY/DD/MM');
-        valid_to = end.format('YYYY/DD/MM');
+        valid_from1 = start.format('YYYY/DD/MM');
+        valid_to1 = end.format('YYYY/DD/MM');
     });
 }
 //$("#txtDateStart").datepicker({dateFormat:'mm/dd/yy', minDate: new Date(2010,11,12) });

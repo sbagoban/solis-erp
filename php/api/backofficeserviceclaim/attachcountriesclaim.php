@@ -34,7 +34,6 @@ if ($row_count_c > 0) {
             'country_name' => $row['country_name'], 
             'countryfk' => $row['countryfk'], 
             'countryId' => $row['id']
-            
         );
     }
     $myData = $market;
