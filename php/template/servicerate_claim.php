@@ -199,9 +199,8 @@
 						<tbody></tbody>
 					</table>
 				</div>
-				<!-- /.box-body -->
-				
-				
+				<!-- /.box-body -->		
+				<div id="tooltip" style="display: none;">Test</div>		
 			</div>
 		</div>
 	</div>

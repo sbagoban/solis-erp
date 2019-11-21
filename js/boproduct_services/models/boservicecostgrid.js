@@ -7,7 +7,6 @@ function allServicesGridCost() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service = urlParams.get("psid");
-    console.log('sdgg', id_product_service);
 
     $('#tbl-productServicesCost').DataTable({       
         "processing" : true,

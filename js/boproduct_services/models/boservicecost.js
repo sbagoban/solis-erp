@@ -31,8 +31,6 @@ function dateRangePickerValid() {
 	var valid_to = valid_to.split("-");
 	var valid_to1 = valid_to[2]+"/"+valid_to[1]+"/"+valid_to[0];
     //var valid_to1 = new Date(valid_to);
-    
-	console.log( 'From - 2',  valid_from1, '/n', 'To - 2',  valid_to1);
     $('#daterangeServiceFromTo').daterangepicker({
         locale: {
             format: 'DD/MM/YYYY'
@@ -48,11 +46,42 @@ function dateRangePickerValid() {
         valid_to1 = end.format('YYYY/DD/MM');
     });
 }
-//$("#txtDateStart").datepicker({dateFormat:'mm/dd/yy', minDate: new Date(2010,11,12) });
-    $('#btn-saveProductServicesCost').click(function () {
+
+$('#btn-saveProductServicesCost').click(function () {
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product_service = urlParams.get("psid");
+
+    var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
+    const url_overlap_date = "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + id_product_service;
+    $.ajax({
+        url : url_overlap_date,
+        method : "POST", 
+        dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        success : function(data){
+            console.log('value', data);
+            console.log('jksdfh', data.valid_to);
+            data.forEach(function (arrayItem) {
+                var x = arrayItem;
+                if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
+                    addCostProductService();
+                } else {
+                    alert('Date Overlap');                   
+                    resetFormAddServiceCost();
+                } 
+            });
+            
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    })
+});
+
+function addCostProductService() {
         var allParams = window.location.href.split('productservicecost').pop();
         const urlParams = new URLSearchParams(allParams);
-
         var id_dept = urlParams.get("iddept"); 
         var id_product_service = urlParams.get("psid"); 
         var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -65,6 +94,7 @@ function dateRangePickerValid() {
         var currency = $('#id_currency').find(":selected").text();
         var id_product_service_cost = document.getElementById("id_product_service_cost_1").innerHTML;
 
+        
         if (id_product_service_cost != 0) {
             var objServiceCostEdit = {
                 id_product_service: id_product_service,
@@ -122,7 +152,7 @@ function dateRangePickerValid() {
             });
         }
         document.getElementById("id_product_service_cost_1").innerHTML = 0;
-    });
+    }
 
 // Function Reset Form Add New Service
 function resetFormAddServiceCost() {

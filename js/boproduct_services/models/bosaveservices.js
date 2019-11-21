@@ -3,12 +3,10 @@ $(document).ready(function(){
     const urlParams = new URLSearchParams(allParams);
     var product_name = urlParams.get("product_name");
     $('#product_name').val(product_name);
-    var dateToday = new Date(); 
 	$('#daterangeServiceFromTo').daterangepicker({
 		"showDropdowns": true,
 		"autoApply": true,
 		"opens": "center",
-		minDate: dateToday,
 		locale: {
 					format: 'DD/MM/YYYY'
 				}
@@ -350,7 +348,6 @@ function specificServiceSelected(val) {
 
 function loadSelectedService(value) {
     $("#services_block").css("display", "block");
-    console.log('--> test', value);
     const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
         type: "POST",
