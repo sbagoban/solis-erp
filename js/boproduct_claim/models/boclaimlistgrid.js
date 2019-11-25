@@ -2,6 +2,7 @@ $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
+    var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     //product + service from product service + supplier name + Dept for + Coast
     
     var product_name_1 = urlParams.get("product_name");
@@ -9,17 +10,19 @@ $(document).ready(function(){
     var concat_name = product_name_1 + ' / ' + service_name_1;
     $("#product_name_dtl").val(concat_name);
 
-    allServicesGridClaim(id_product_service_cost);
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
 
 
 });
 
-function allServicesGridClaim(id_product_service_cost) {
+function allServicesGridClaim(id_product_service_cost,id_product_service_claim ) {
+    
+   // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     $('#tbl-productServicesClaim').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost,
+            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost + "&id_product_service_claim=" +id_product_service_claim,
             dataSrc : ''
         },
         "destroy": true,
@@ -141,7 +144,8 @@ function deleteServiceClaim(data) {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
-    allServicesGridClaim(id_product_service_cost);
+    var id_product_service_claim = 0;
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
 }
 
 function editServiceClaim(data) {
