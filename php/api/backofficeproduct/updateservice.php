@@ -71,6 +71,7 @@
         $min_age = trim($_POST["min_age"]);
         $max_age = trim($_POST["max_age"]);
         $is_pakage = trim($_POST["is_pakage"]);
+        $special_name = trim($_POST["special_name"]);
 
 		if ($age_inf_to == "") 
 		{
@@ -133,7 +134,8 @@
                 min_age =:min_age,
                 max_age =:max_age,
                 for_adult =:for_adult,
-                is_pakage =:is_pakage
+                is_pakage =:is_pakage, 
+                special_name =:special_name
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
@@ -174,7 +176,8 @@
                 ":min_age" => $min_age,
                 ":max_age" => $max_age,
                 ":for_adult" => $for_adult,
-                ":is_pakage" => $is_pakage));
+                ":is_pakage" => $is_pakage, 
+                ":special_name" => $special_name));
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

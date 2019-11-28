@@ -3,7 +3,7 @@ $(document).ready(function(){
     var allParams = window.location.href.split('productservicecost').pop();
     const urlParams = new URLSearchParams(allParams);    
     var charge = urlParams.get("charge"); 
-    console.log(charge);
+    var servicetype = urlParams.get("servicetype"); 
     if (charge == 'UNIT') {
         $("#ps_teen_cost").css("display", "none");        
         $("#ps_child_cost").css("display", "none");

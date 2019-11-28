@@ -132,6 +132,7 @@ function serviceDelete(data) {
 
 // // Edit Product
 function serviceEdit(data) {
+    console.log(data,'Edit line');
     specificServiceSelected(data);
     loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
@@ -181,6 +182,9 @@ function serviceEdit(data) {
     $('#min_age').val(data.min_age);
     $('#max_age').val(data.max_age);
     $('#is_pakage').val(data.is_pakage);
+    
+    $('#special_name').val(data.special_name);
+    $('#special_name_transfer').val(data.special_name);
     
     var chkMonday = document.getElementById("on_monday");
     var chkTuesday = document.getElementById("on_tuesday");
@@ -272,6 +276,9 @@ function serviceEdit(data) {
 
 // Add Product Cost Services
 function addProductServices(data) {
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var servicetype = urlParams.get("servicetype");
     window.location.href = "index.php?m=productservicescost&psid=" 
     + data.id_product_service + "&iddept=" 
     + data.id_dept+ "&productname=" 
@@ -279,7 +286,7 @@ function addProductServices(data) {
     + data.service_name+ "&idcoast=" + data.id_coast+ "&idcreditor=" + data.id_creditor+ "&charge=" 
     + data.charge + "&id_product_service=" 
     + data.id_product_service
-    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to;
+    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype;
 }
 
 function addServiceExtra(data) {
@@ -293,8 +300,8 @@ function duplicateProductServices(data) {
 
     var id_service_type = urlParams.get("id_service_type"); 
     var id_product_type = urlParams.get("id_product_type");
+    var servicetype = urlParams.get("servicetype");
 
-    console.log('Yops',data);
     var objServiceDuplicate = {
         id_product_service :-1, //for new items, id is always -1
         id_product : data.id_product,
@@ -337,7 +344,9 @@ function duplicateProductServices(data) {
         is_pakage : data.is_pakage, 
         id_service_type : id_service_type, 
         id_product_type : id_product_type,
-        id_product_service_induded : 0
+        id_product_service_induded : 0,
+        servicetype : servicetype,
+        special_name : data.special_name
     };
 
     const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
@@ -378,24 +387,29 @@ function duplicateCost(data, id_prod_serv) {
     });
 }
 
-function duplicateExtra(data, id_prod_serv) { 
-    var objExtra = {id_prod_serv: id_prod_serv};
-    const url_duplicate_service_extra = "php/api/backofficeproduct/duplicateserviceextra.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
-    $.ajax({
-        url : url_duplicate_service_extra,
-        method : "POST",
-        data : objExtra,                                                                                    
-        success : function(data){
-            $('.toast_duplicate_extra').stop().fadeIn(6500).delay(3000).fadeOut(500);
-        },
-        error: function(error) {
-            console.log('Error ${error}');
-        }
-    });
+function duplicateExtra(data, id_prod_serv) {
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var servicetype = urlParams.get("servicetype");
+    
+    if (servicetype == 'EXCURSION') {
+        var objExtra = {id_prod_serv: id_prod_serv};
+        const url_duplicate_service_extra = "php/api/backofficeproduct/duplicateserviceextra.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
+        $.ajax({
+            url : url_duplicate_service_extra,
+            method : "POST",
+            data : objExtra,                                                                                    
+            success : function(data){
+                $('.toast_duplicate_extra').stop().fadeIn(6500).delay(3000).fadeOut(500);
+            },
+            error: function(error) {
+                console.log('Error ${error}');
+            }
+        });
+    }
 }
 
 function duplicateExtraCost(data, id_prod_serv, id_prod_cost) {  
-    console.log(id_prod_cost, 'tets');
     var objExtraCost = {
         id_prod_serv: id_prod_serv, 
         id_prod_cost: id_prod_cost
@@ -414,7 +428,6 @@ function duplicateExtraCost(data, id_prod_serv, id_prod_cost) {
 }
 
 function duplicateIncludedServices(data, id_prod_serv) {
-    console.log('-->> chk', id_prod_serv);
     var objIncludedService = {id_prod_serv: id_prod_serv};
     const url_duplicate_included_service = "php/api/backofficeproduct/duplicateincludedservices.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
     $.ajax({

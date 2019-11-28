@@ -163,6 +163,11 @@ function editServiceClaim(data) {
         $('#ddlMultiSpecificTo').multiselect('destroy');
         $('#ddlmultiSpecificMarket').css('display', 'none');
         $('#ddlMultiSpecificTo').css('display', 'none');
+    } else if (data.specific_to == 'D') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
+        $('#ddlmultiSpecificMarket').css('display', 'none');
+        $('#ddlMultiSpecificTo').css('display', 'none');
     }
 
     $('#valid_from').val(data.valid_from);

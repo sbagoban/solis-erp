@@ -51,6 +51,13 @@ $("#specific_to").change(function () {
         
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $('#ddlMultiSpecificTo').multiselect('destroy');
+    } 
+    if (specificto == "D") {
+        $("#multiSpecificTo").css("display", "none");
+        $("#multiSpecificMarket").css("display", "none");
+        
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
     }
     if (specificto == "A") {
         $("#multiSpecificMarket").css("display", "none");
@@ -118,7 +125,7 @@ function loadCountryClaim() {
             {
                 $("#ddlmultiSpecificMarket").empty();
                 $.each(data, function (key, val) {
-                $("#ddlmultiSpecificMarket").append('<option value="' + val.id + '"  data-subtext="' + val.marketfk + '">'+ val.market_name + ' - ' + val.country_name + '</option>');
+                $("#ddlmultiSpecificMarket").append('<option value="' + val.id + '"  data-subtext="' + val.marketfk + '">'+ val.continent + ' - ' + val.market_name + ' - ' + val.country_name + '</option>');
             });                
                 $("#ddlmultiSpecificMarket").attr('multiple', 'multiple'); 
                 $("#ddlmultiSpecificMarket").multiselect({
@@ -205,8 +212,7 @@ $("#btn-saveServicesClaim").click(function () {
                     } 
                 });
                 if (overlap == true) { 
-                    if (specific_to == 'A') { // To
-                        
+                    if (specific_to == 'A') { // To                        
                         alert('2');
                         checkTo(x);
                     } else if (specific_to == 'C') { // Market
@@ -279,12 +285,12 @@ function checkMarket(data) {
         cache: false,
         success: function(data)
                 {
-                z = [];
-                data.forEach(function (arrayItem) {
-                    var x = arrayItem;
-                    z.push(x.id_country);
+                arrC = [];
+                data.forEach(function (arrayItem2) {
+                    var xy = arrayItem2;
+                    arrC.push(xy.id_country);
                 });
-                arrayCompareCountries(z, id_country );
+                arrayCompareCountries(arrC, id_country );
         },    
         error: function(error) {
             alert('ERROR');
@@ -385,6 +391,9 @@ function addClaimProductService(){
         id_country = 0;
         id_tour_operator = 0;
     } else if (specific_to == 'C') {
+        id_tour_operator = 0;
+    } else if (specific_to == 'D') {
+        id_country = 0;
         id_tour_operator = 0;
     }
 
@@ -650,7 +659,9 @@ function loadCountryClaim2(value1) {
                 $("#ddlmultiSpecificMarket").empty();
                 $.each(data, function (key, val) {
                     console.log(val.countryId);
-                $("#ddlmultiSpecificMarket").append('<option value="' + val.countryId + '">'+ val.country_name + '</option>');
+                // $("#ddlmultiSpecificMarket").append('<option value="' + val.countryId + '">'+ val.country_name + '</option>');
+                $("#ddlmultiSpecificMarket").append('<option value="' + val.id + '"  data-subtext="' + val.marketfk + '">'+ val.continent + ' - ' + val.market_name + ' - ' + val.country_name + '</option>');
+
                 });          
                 arrCountrySelected = [];
                 for (var i = 0, l = value1.length; i < l; i++) {

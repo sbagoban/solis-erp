@@ -23,12 +23,22 @@ function changeTransfer() {
     return service_name;
 }
 
+function specialNameTransfer() {
+    $( "#special_name_transfer" ).change(function () {
+        $( "#special_name_transfer option:selected" ).each(function() {
+            special_name_transfer = $( this ).text();
+            
+        });
+    }).change();
+    return special_name_transfer;
+}
+
 $('#btn-saveProductServices').click(function () {
     var idService = document.getElementById("idService").innerHTML;
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product = urlParams.get("id_product"); 
-    var servicetype = urlParams.get("servicetype"); 
+    var servicetype = urlParams.get("servicetype");
 
     var id_service_type = urlParams.get("id_service_type"); 
     var id_product_type = urlParams.get("id_product_type");
@@ -40,15 +50,6 @@ $('#btn-saveProductServices').click(function () {
     var id_dept = $('#id_dept').val();
     var id_country = $('#id_country').val();
     var id_coast = $('#id_coast').val();
-
-    if (servicetype == 'TRANSFER') { 
-        //var service_name = $('#service_name_transfer option:selected').text();
-        var service_name = changeTransfer();
-    } else {
-        var service_name = $('#service_name').val();
-    }
-    
-    var id_tax = $('#id_tax').val();
     var charge = $('#charge').val();
     var duration = $('#duration').val();
     var transfer_included = $('#transfer_included').val();
@@ -76,7 +77,6 @@ $('#btn-saveProductServices').click(function () {
     var chkadult = document.getElementById("for_adult");
     var min_age = $('#min_age').val();
     var max_age = $('#max_age').val();
-    var id_creditor = $('#id_creditor').val();
     var is_pakage = $('#is_pakage').val();
     var id_product_service_induded = $('#services_cost').val();
     
@@ -142,6 +142,23 @@ $('#btn-saveProductServices').click(function () {
         for_adult = 0;
     }
 
+    if (servicetype == 'TRANSFER') { 
+        //var service_name = $('#service_name_transfer option:selected').text();
+        var service_name = changeTransfer();
+        var special_name = specialNameTransfer();
+        // add in database - Table creditor - Solis - 
+        var id_creditor = 'Planning (Solis)';
+        var id_tax = '3';
+        for_adult = 1;
+        for_child = 1;
+        for_infant = 1;
+    } else {
+        var id_creditor = $('#id_creditor').val();
+        var service_name = $('#service_name').val();
+        var special_name = $('#special_name').val();
+        var id_tax = $('#id_tax').val();
+    }
+
     if (idService == 0) {
         var objService = {
             id_product_service :-1, //for new items, id is always -1
@@ -185,7 +202,9 @@ $('#btn-saveProductServices').click(function () {
             is_pakage : is_pakage, 
             id_product_service_induded : id_product_service_induded, 
             id_service_type : id_service_type, 
-            id_product_type : id_product_type
+            id_product_type : id_product_type, 
+            special_name : special_name,
+            servicetype : servicetype
         };
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
         $.ajax({
@@ -215,6 +234,7 @@ $('#btn-saveProductServices').click(function () {
             id_country : id_country,
             id_coast : id_coast,
             service_name : service_name,
+            special_name : special_name,
             id_tax : id_tax,
             charge : charge,
             duration : dateManipulationDuration(),
@@ -244,7 +264,8 @@ $('#btn-saveProductServices').click(function () {
             age_teen_from : age_teen_from,            
             min_age : min_age,
             max_age : max_age, 
-            is_pakage : is_pakage
+            is_pakage : is_pakage, 
+            special_name : special_name
         };
         $.ajax({
             url : url_edit_service,
@@ -326,6 +347,9 @@ function resetServicesForm() {
     $('#services_block').css("display", "none");    
     $('#services_cost').val([]).multiselect('refresh');
     $('#services_cost').val('');
+    
+    $('#special_name_transfer').val('');
+    $('#special_name').val('');
 }
 
 function specificServiceSelected(val) { 

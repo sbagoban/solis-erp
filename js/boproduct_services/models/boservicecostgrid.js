@@ -142,7 +142,6 @@ function serviceCostEdit(data) {
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
 	var date_range = start_date+ " - " + end_date;
-	
     $('#daterangeServiceFromTo').val(date_range);
     $('#ps_adult_cost').val(data.ps_adult_cost);
     $('#ps_teen_cost').val(data.ps_teen_cost);
