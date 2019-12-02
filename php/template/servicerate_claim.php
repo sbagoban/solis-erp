@@ -72,6 +72,7 @@
 									<option value="A" name="Tour Operator">Tour Operator</option>
 									<option value="B" name="Worldwide">Worldwide</option>
 									<option value="C" name="Market">Market</option>
+									<option value="D" name="Direct Sales">Direct Sales</option>
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">
@@ -199,9 +200,8 @@
 						<tbody></tbody>
 					</table>
 				</div>
-				<!-- /.box-body -->
-				
-				
+				<!-- /.box-body -->		
+				<div id="tooltip" style="display: none;">Test</div>		
 			</div>
 		</div>
 	</div>

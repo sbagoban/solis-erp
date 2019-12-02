@@ -111,5 +111,22 @@ $(document).ready(function(){
         $("#chk_operation").css("display", "none");
         $("#ageActivity").css("display", "none");
         $("#adultActivity").css("display", "none");
+        $("#infantActivity").css("display", "none");
+        $("#childActivity").css("display", "none");
+        $("#id_creditor_blk").css("display", "none");
+        $("#special_name_all").css("display", "none");
+        $("#special_name_transfer_blk").css("display", "block");
+        $("#id_tax_blk").css("display", "none");
+        $("#age_inf_from").val('0');
+        $("#age_inf_to").val('2');
+        $("#age_child_from").val('3');
+        $("#age_child_to").val('12');
+        $("#is_package_blk").css("display", "none");
+
+    } if(servicetype == "EXCURSION") {
+        $("#id_creditor_blk").css("display", "block");
+        $("#id_tax_blk").css("display", "block");
+        $("#special_name_all").css("display", "block");
+        $("#special_name_transfer_blk").css("display", "none");
     }
 });

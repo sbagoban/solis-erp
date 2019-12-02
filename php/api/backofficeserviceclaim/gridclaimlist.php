@@ -16,7 +16,11 @@ if ($_GET["t"] != $_SESSION["token"]) {
 if (!isset($_GET["id_product_service_cost"])) {
     throw new Exception("INVALID ID". $_GET["id_product_service_cost"]);
 }
+if (!isset($_GET["id_product_service_claim"])) {
+    throw new Exception("INVALID ID". $_GET["id_product_service_claim"]);
+}
 $id_product_service_cost = $_GET["id_product_service_cost"];
+$id_product_service_claim = $_GET["id_product_service_claim"];
 
 require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
@@ -34,8 +38,12 @@ JOIN tbldepartments TD on PRSC.id_dept = TD.id
 JOIN product_service PS on PRSC.id_product_service = PS.id_product_service
 JOIN product PR on PS.id_product = PR.id_product
 WHERE PRSC.id_product_service_cost = :id_product_service_cost
+AND PRSC.id_product_service_claim <> :id_product_service_claim
 AND PRSC.active = 1");
-$query_c->execute(array(":id_product_service_cost"=>$id_product_service_cost));
+$query_c->execute(array(
+    ":id_product_service_cost"=>$id_product_service_cost,    
+    ":id_product_service_claim"=>$id_product_service_claim
+));
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {

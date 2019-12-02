@@ -12,6 +12,28 @@
 					<!-- form start -->
 					<form class="form-horizontal">
 						<div class="box-body">
+							<!-- Package Start -->
+							<div class="form-group">
+								<div id="is_package_blk">
+									<label class="col-sm-2 control-label">Package</label>
+									<div class="col-sm-2">
+										<select type="text" class="form-control" id="is_pakage">
+											<option value="Y">YES</option>
+											<option value="N" selected="selectd">NO</option>
+										</select>
+									</div>
+								</div>
+								<div id="services_block" style="display: none">
+									<label class="col-sm-2 control-label">Services</label>
+									<div class="col-sm-6">
+										<select id="services_cost" name="services_cost" class="services_cost" multiple="multiple">
+										</select>
+									</div>
+								</div>
+								
+							</div>
+							<hr>
+							<!-- Package End -->
 							<div class="form-group"> 
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
@@ -87,23 +109,37 @@
 									</select>
 								</div>
 
-								<div class="col-sm-4">
+								<div class="col-sm-4" id="special_name_all">
 									<input type="text" class="form-control" id="special_name" placeholder="Special Name">
+								</div>
+								<div class="col-sm-4" id="special_name_transfer_blk">
+									<select type="text" class="form-control" id="special_name_transfer">
+										<option selected disabled hidden>Select an Option</option>
+										<option value="Drop on">Drop on</option>
+										<option value="Drop Off">Drop Off</option>
+										<option value="Full Day">Full Day</option>
+										<option value="Half Day">Half Day</option>
+										<option value="Night Tour">Night Tour</option>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-2 control-label">Supplier</label>
-								<div class="col-sm-6">
-									<select type="text" class="form-control" id="id_creditor">
-									</select>
+								<div id="id_creditor_blk">
+									<label class="col-sm-2 control-label">Supplier</label>
+									<div class="col-sm-6">
+										<select type="text" class="form-control" id="id_creditor">
+										</select>
+									</div>
 								</div>
-								<label class="col-sm-1 control-label">Taxable</label>
-								<div class="col-sm-3">
-									<select type="text" class="form-control" id="id_tax">
-										<!-- To modify - select from db -->
-										<option value="2">OUTSIDE SCOPE</option>
-										<option value="3" selected="selected">VAT</option>
-									</select>
+								<div id="id_tax_blk">
+									<label class="col-sm-1 control-label">Taxable</label>
+									<div class="col-sm-3">
+										<select type="text" class="form-control" id="id_tax">
+											<!-- To modify - select from db -->
+											<option value="2">OUTSIDE SCOPE</option>
+											<option value="3" selected="selected">VAT</option>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
@@ -142,25 +178,7 @@
 									<textarea class="form-control" id="comments" rows="3" style="resize: none"></textarea>
 								</div>
 							</div>
-							<div class="form-group" style="display:none;">
-								<label class="col-sm-2 control-label">Package</label>
-								<div class="col-sm-2">
-									<select type="text" class="form-control" id="is_pakage">
-										<option value="Y">YES</option>
-										<option value="N" selected="selectd">NO</option>
-									</select>
-								</div>
-								<label class="col-sm-2 control-label">Services</label>
-								<div class="col-sm-6">
-									<select class="form-control select2" multiple="multiple">
-										<option value="1">CHAMAREL LUNCH</option>
-										<option value="2">ACCESS CHAMAREL</option>
-										<option value="3">ACCESS CHAMAREL</option>
-										<option value="4">ACCESS CHAMAREL</option>
-										<option value="5">ACCESS CHAMAREL</option>
-									</select>
-								</div>
-							</div>
+							
 							<div class="form-group" id="chk_operation">
 								<label class="col-sm-2 control-label">Operation</label>
 								<div class="col-sm-10">
@@ -248,13 +266,13 @@
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">
 										<li class="checkBoxMain">
-											<label class='with-square-checkbox'>
+											<label class='with-square-checkbox' id="infantActivity">
 												<input type='checkbox' id="for_infant" />
 												<span>For Infant</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
-											<label class='with-square-checkbox'>
+											<label class='with-square-checkbox' id="childActivity">
 												<input type='checkbox' id="for_child" />
 												<span>For Child</span>
 											</label>

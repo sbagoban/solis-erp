@@ -17,10 +17,11 @@ require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT tmc.id, tmc.marketfk, tmc.countryfk, tc.country_name, tm.market_name, tc.id 
+$query_c = $con->prepare("SELECT tmc.id, tmc.marketfk, tmc.countryfk, tc.country_name, tm.market_name, tc.id, tc.continent, tci.continent 
 FROM tblmarket_countries tmc 
 join tblcountries tc on tmc.countryfk = tc.id 
 join tblmarkets tm on tmc.marketfk = tm.id 
+join tblcontinents tci on tc.continent = tci.continent_code
 ORDER BY `tmc`.`marketfk` ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
@@ -33,8 +34,8 @@ if ($row_count_c > 0) {
             'id' => $row['id'],
             'country_name' => $row['country_name'], 
             'countryfk' => $row['countryfk'], 
-            'countryId' => $row['id']
-            
+            'countryId' => $row['id'],
+            'continent' => $row['continent']
         );
     }
     $myData = $market;

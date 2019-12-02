@@ -7,7 +7,6 @@ function allServicesGridCost() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service = urlParams.get("psid");
-    console.log('sdgg', id_product_service);
 
     $('#tbl-productServicesCost').DataTable({       
         "processing" : true,
@@ -143,7 +142,6 @@ function serviceCostEdit(data) {
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
 	var date_range = start_date+ " - " + end_date;
-	
     $('#daterangeServiceFromTo').val(date_range);
     $('#ps_adult_cost').val(data.ps_adult_cost);
     $('#ps_teen_cost').val(data.ps_teen_cost);

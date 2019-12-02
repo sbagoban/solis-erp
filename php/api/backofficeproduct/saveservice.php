@@ -62,8 +62,17 @@ try {
     $age_teen_from = trim($_POST["age_teen_from"]);
     $for_infant = trim($_POST["for_infant"]);
     $for_child = trim($_POST["for_child"]);
-    $for_teen = trim($_POST["for_teen"]);
-	
+    $for_teen = trim($_POST["for_teen"]);	
+
+    $is_pakage = trim($_POST["is_pakage"]);
+    $id_service_type = $_POST["id_service_type"];
+    $id_product_type = $_POST["id_product_type"];
+    $id_product_service_induded = $_POST["id_product_service_induded"];
+
+    $servicetype = $_POST["servicetype"];
+
+    $special_name = trim($_POST["special_name"]);
+
 	if ($age_inf_to == "") 
 	{
 		$age_inf_from = NULL;
@@ -144,11 +153,13 @@ try {
                     for_child,
                     for_teen,
                     min_age,
-                    max_age) 
+                    max_age,
+                    is_pakage,
+                    special_name) 
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
                 :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :age_inf_from, :age_child_from, :age_teen_from,
-                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age)";
+                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -186,9 +197,56 @@ try {
             ":for_child" => $for_child,
             ":for_teen" => $for_teen,
             ":min_age" => $min_age,
-            ":max_age" => $max_age));
+            ":max_age" => $max_age,
+            ":is_pakage" => $is_pakage,        
+            ":special_name" => $special_name));
         
-        $id_product_service = $con->lastInsertId();
+            $id_product_service = $con->lastInsertId();
+
+        if ($is_pakage == 'Y') {
+            $sqlTo = "INSERT INTO product_service_package (id_product_service, id_product, id_service_type, id_product_type, id_product_service_induded) 
+            VALUES (:id_product_service, :id_product, :id_service_type, :id_product_type, :id_product_service_induded)";
+
+            $stmt = $con->prepare($sqlTo);
+            $data = $id_product_service_induded;
+            
+            if (is_array($data) || is_object($data)) {
+                foreach($data as $servcost) {
+                    $stmt->execute(array(
+                        ':id_product_service' => $id_product_service,
+                        ':id_product' => $id_product, 
+                        ':id_service_type' => $id_service_type,
+                        ':id_product_type' => $id_product_type,  
+                        ':id_product_service_induded' => $servcost));
+                }
+            }
+        }
+
+        // Add Extra - By Default -> For Transfer
+        if ($servicetype == 'TRANSFER') {
+            $sqlExtra1 = "INSERT INTO product_service_extra (id_service_extra, extra_name, 	id_product_service, extra_description, charge) 
+            VALUES 
+            (5, 'Booster Seat', $id_product_service, 'Booster Seat', 'UNIT'),
+            (3, 'Baby Seat', $id_product_service, 'Baby Seat', 'UNIT'),
+            (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT')";
+            $stmt = $con->prepare($sqlExtra1);
+            $stmt->execute(array());
+
+            $sqlCost = "INSERT INTO product_service_cost (
+                id_service_extra, 
+                extra_name, 	
+                id_product_service, 
+                extra_description, 
+                charge) 
+            VALUES 
+            (5, 'Booster Seat', $id_product_service, 'Booster Seat', 'UNIT'),
+            (3, 'Baby Seat', $id_product_service, 'Baby Seat', 'UNIT'),
+            (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT')";
+            $stmt = $con->prepare($sqlCost);
+            $stmt->execute(array());
+
+        }
+
     } else {
         $sql = "UPDATE product_service SET 
                 id_product =:id_product,
@@ -225,7 +283,9 @@ try {
                 for_child =:for_child,
                 for_teen =:for_teen,
                 min_age =:min_age,
-                max_age =:max_age
+                max_age =:max_age,
+                is_pakage =:is_pakage, 
+                special_name=:special_name
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);
@@ -264,7 +324,9 @@ try {
             ":for_child" => $for_child,
             ":for_teen" => $for_teen,
             ":min_age" => $min_age,
-            ":max_age" => $max_age));
+            ":max_age" => $max_age,
+            ":is_pakage" => $is_pakage, 
+            ":special_name" => $special_name));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
 } catch (Exception $ex) {

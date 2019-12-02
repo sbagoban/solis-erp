@@ -1,5 +1,4 @@
 function modalExtraService(data) { 
-	console.log("this ------>"+data);
     var id_product_service = data.id_product_service;
     allExtraServicesGrid(id_product_service);
     $('#btnAddExtraService').click(function () {

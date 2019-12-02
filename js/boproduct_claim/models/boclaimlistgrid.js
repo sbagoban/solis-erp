@@ -2,6 +2,7 @@ $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
+    var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     //product + service from product service + supplier name + Dept for + Coast
     
     var product_name_1 = urlParams.get("product_name");
@@ -9,17 +10,19 @@ $(document).ready(function(){
     var concat_name = product_name_1 + ' / ' + service_name_1;
     $("#product_name_dtl").val(concat_name);
 
-    allServicesGridClaim(id_product_service_cost);
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
 
 
 });
 
-function allServicesGridClaim(id_product_service_cost) {
+function allServicesGridClaim(id_product_service_cost,id_product_service_claim ) {
+    
+   // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     $('#tbl-productServicesClaim').DataTable({       
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost,
+            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost + "&id_product_service_claim=" +id_product_service_claim,
             dataSrc : ''
         },
         "destroy": true,
@@ -72,12 +75,7 @@ function allServicesGridClaim(id_product_service_cost) {
                     return start_date+' - '+end_date;
                 },
                 editField: ['valid_from', 'valid_to']
-        },
-
-        // {
-        //     "data" : "allDate"
-        // }, 
-        
+        },        
         { 
             "data" : "specific_to_name"
         },  
@@ -111,6 +109,19 @@ function allServicesGridClaim(id_product_service_cost) {
                     editServiceClaim(data);
                     extraServiceGridClaim(data);
                 })
+                .on( 'mouseenter', 'td', function () {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    if (data.specific_to == 'C') {
+                        countryDetails(data);
+                    }
+                    if (data.specific_to == 'A') {
+                        toDetails(data);
+                    }
+                })
+                .on( 'mouseleave', 'td', function () {
+                    $('#tooltip').css("display", "none");
+                })
         }
     });
 }
@@ -133,7 +144,8 @@ function deleteServiceClaim(data) {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
-    allServicesGridClaim(id_product_service_cost);
+    var id_product_service_claim = 0;
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
 }
 
 function editServiceClaim(data) {
@@ -147,6 +159,11 @@ function editServiceClaim(data) {
         specificCountryCtrl(data.id_product_service_claim);
         loadCountryClaim();
     } else if (data.specific_to == 'B') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
+        $('#ddlmultiSpecificMarket').css('display', 'none');
+        $('#ddlMultiSpecificTo').css('display', 'none');
+    } else if (data.specific_to == 'D') {
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $('#ddlMultiSpecificTo').multiselect('destroy');
         $('#ddlmultiSpecificMarket').css('display', 'none');
@@ -205,4 +222,33 @@ function editServiceClaim(data) {
     } else if (chksunday == '0') {
         $('#ex_sunday').prop('checked', false);
     }  
+}
+
+function countryDetails (countryData) {
+    console.log(countryData.id_product_service_claim);
+    const url_display_selected_countries = "php/api/backofficeserviceclaim/selectedmarketclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + countryData.id_product_service_claim;
+    var objCountryClaim = {
+        id_product_service_claim : countryData.id_product_service_claim
+    };
+
+    $.ajax({
+        url : url_display_selected_countries,
+        method : "POST",
+        data : objCountryClaim,
+        cache: false,   
+        dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                               
+        success : function(data){
+            console.log(data);
+            var selectedCountriesTooltip = data.country_name;            
+            $('#tooltip').css("display", "block");
+            console.log(selectedCountriesTooltip);
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    }); 
+}
+
+function toDetails(toData) {
+    console.log(toData);
 }

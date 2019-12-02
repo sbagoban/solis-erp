@@ -51,7 +51,6 @@ var allParams = window.location.href.split('data=').pop();
 const urlParams = new URLSearchParams(allParams);
 var id_product_service_cost = urlParams.get("id_product_service_cost");
 
-console.log('this -->', id_product_service_cost);
 const url_extra_created = "php/api/backofficeserviceclaim/comboextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" + id_product_service_cost; 
 
 $.ajax({
@@ -78,7 +77,7 @@ var helpersDropdownExtraCreated = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_product_service_extra_cost +'" name="'+result.extra_name+',*'+result.charge+'">' + result.extra_description + '</option>');
+                dropdown.append('<option value="' + result.id_product_service_extra_cost +'" name="'+result.extra_name+',*'+result.charge+'">' + result.extra_name + '</option>');
                 $("#blockPax").css("display", "none");
                 $("#blockUnit").css("display", "none");
             });

@@ -5,10 +5,12 @@ $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var servicetype = urlParams.get("servicetype");
+    var url_extra = "php/api/backofficeproduct/comboextraservices.php?t=" + encodeURIComponent(global_token); 
+
     if (servicetype == "TRANSFER") {
         url_extra = "php/api/backofficeproduct/comboextraservicestransfer.php?t=" + encodeURIComponent(global_token); 
     } 
-    if (servicetype == "EXCURSION") {
+    else if (servicetype == "EXCURSION") {
         url_extra = "php/api/backofficeproduct/comboextraservices.php?t=" + encodeURIComponent(global_token); 
     }
     

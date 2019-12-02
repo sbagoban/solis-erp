@@ -930,7 +930,8 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/bosaveextraservice.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
             <script src="js/boproduct_services/models/boextraservicegrid.js"></script>
-            <script src="js/boproduct_services/control/productCtrl.js"></script>';
+            <script src="js/boproduct_services/control/productCtrl.js"></script>
+            <script src="js/boproduct_services/models/bopackage.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
             <script src="js/boproduct_services/models/boservicecost.js"></script>            
