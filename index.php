@@ -49,7 +49,7 @@ if (isset($_GET["m"])) {
   		<link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
         <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
         <link rel="stylesheet" href="dist/css/AdminLTE.css?<?php echo time(); ?>">
-
+    
         <!-- Sandeep Start -->
         <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
@@ -713,8 +713,14 @@ if (isset($_GET["m"])) {
 		<!-- Select picker --->
 		<link rel="stylesheet" href="plugins/bootstrap-select-1.13.9 2/dist/css/bootstrap-select.min.css">
 		<script src="plugins/bootstrap-select-1.13.9 2/dist/js/bootstrap-select.min.js"></script>
-		<script src="plugins/bootstrap-select-1.13.9 2/dist/js/i18n/defaults-*.min.js"></script>
 		<!-- .Select picker --->
+        <!--Number Validation --->
+        <script src="js/utils/numberValidation.js"></script>
+        <!-- .Number Validation --->
+        <!-- Toastr -->
+        <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+        <script src="plugins/toastr/toastr.min.js"></script>
+        <!-- .Toastr -->
 		
 		<!-- SOLIS GLOBAL CSS -->
 		
