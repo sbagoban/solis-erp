@@ -6,7 +6,17 @@ $(document).ready(function () {
     loadCountryClaim();
     dateRangePickerValid();
     var charge = urlParams.get("charge"); 
+    var servicetype = urlParams.get("servicetype"); 
     $('#charge').val(charge);
+    
+    // Disable or Enable Charge - Child and Adult active for transfer
+    if (servicetype == "TRANSFER") {
+        $("#ps_teen_claim").css("display", "none"); 
+        $("#ps_teen_claim_addon").css("display", "none"); 
+        $("#ps_infant_claim").css("display", "none"); 
+        $("#ps_infant_claim_addon").css("display", "none");
+    }
+
     if (charge == 'UNIT') {
         $("#ps_teen_claim").css("display", "none");        
         $("#ps_child_claim").css("display", "none");
@@ -205,15 +215,13 @@ $("#btn-saveServicesClaim").click(function () {
                     x = arrayItem;
                     if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
                         overlap = false;
-                        alert('1');
                         addClaimProductService();
                     } else {
                         overlap = true;             
                     } 
                 });
                 if (overlap == true) { 
-                    if (specific_to == 'A') { // To                        
-                        alert('2');
+                    if (specific_to == 'A') { // To
                         checkTo(x);
                     } else if (specific_to == 'C') { // Market
                         checkMarket(x);   
@@ -228,7 +236,6 @@ $("#btn-saveServicesClaim").click(function () {
 });
 
 function checkTo(data) {
-    alert('3');
     var id_product_service_claim = data.id_product_service_claim;    
     var id_tour_operator = $('#ddlMultiSpecificTo').val();
 
@@ -267,7 +274,6 @@ function arrayCompareTo(z, id_tour_operator) {
     });
 
     if (!bExistCountry) {  
-        alert('4');  
         addClaimProductService();
     } else {
         alert('bad request');
@@ -319,7 +325,6 @@ function arrayCompareCountries(z, id_country) {
 }
 
 function addClaimProductService(){ 
-    alert('5');
     var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     var id_country = $('#ddlmultiSpecificMarket').val();
     var id_tour_operator = $('#ddlMultiSpecificTo').val();
@@ -396,6 +401,20 @@ function addClaimProductService(){
         id_country = 0;
         id_tour_operator = 0;
     }
+
+    var allParams = window.location.href.split('data=').pop();
+    var charge = urlParams.get("charge"); 
+    var servicetype = urlParams.get("servicetype"); 
+
+    // if (servicetype == "TRANSFER") {
+    //     ps_teen_claim = 0;
+    //     ps_infant_claim = 0;
+    // } else if (servicetype == "TRANSFER" && charge == 'UNIT') {
+    //     ps_adult_claim= 0;
+    //     ps_teen_claim = 0;
+    //     ps_child_claim= 0;
+    //     ps_infant_claim = 0;
+    // }
 
     if (id_product_service_claim == 0) {
         const url_save_productservice_claim = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token);

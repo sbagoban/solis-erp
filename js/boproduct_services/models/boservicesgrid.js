@@ -6,10 +6,17 @@ function allServicesGrid() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product = urlParams.get("id_product");
+    var servicetype = urlParams.get("servicetype");
     $('#tbl-productServices').DataTable({     
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
         if ( aData.is_pakage == "Y" ){
             $('td', nRow).css('background-color', '#bde8ff');
+        }
+        $('#btnAddClaimTransfer', nRow).css('display', 'none');  
+        if (servicetype == "TRANSFER") {
+            $('#btnAddProductServices', nRow).css('display', 'none');   
+            $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
+            $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
         }
     },  
         "processing" : true,
@@ -74,6 +81,7 @@ function allServicesGrid() {
                 "defaultContent": 
                 '<div class="btn-group">' +
                 '<i id="btnAddProductServices" class="fa fa-fw fa-plus-circle" title="Product Service Cost"></i>' +
+                '<i id="btnAddClaimTransfer" class="fa fa-fw fa-money" title="Add Claim"></i>' +
                 '<i id="btnAddProductServicesExtra"  class="fa fa-gg-circle" title="Extra Service"></i>' + 
                 '<i id="btnEditProduct" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
                 '<i id="btnDuplicateProductService" class="fa fa-fw fa-clone" title="Duplicate line"></i>' +
@@ -83,6 +91,11 @@ function allServicesGrid() {
         "initComplete": function () {
             $('#tbl-productServices tbody')
                 .off()
+                .on( 'click', '#btnAddClaimTransfer', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addCostTransfer(data);
+                })
                 .on( 'click', '#btnDuplicateProductService', function (e) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
@@ -441,3 +454,24 @@ function duplicateIncludedServices(data, id_prod_serv) {
         }
     });
 }
+
+function addCostTransfer(value) { 
+    console.log('check -->', value.id_product_service);
+    var objtransfercostdetails = {id_product_service: value.id_product_service};
+    const url_transfer_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
+    $.ajax({
+        url : url_transfer_cost_details,
+        method : "POST",
+        data : objtransfercostdetails, 
+        dataType: "json",                                                                                 
+        success : function(data){
+            id_product_service_cost = data[0].id_product_service_cost;
+            var params = jQuery.param(value);
+            window.location.href = "index.php?m=servicerate_claim&data=" +params + "&servicetype=" +"TRANSFER"+ "&id_product_service_cost="+id_product_service_cost;
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });    
+}
+

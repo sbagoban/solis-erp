@@ -59,9 +59,7 @@ $('#btn-saveProductServicesCost').click(function () {
         url : url_overlap_date,
         method : "POST", 
         dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                                                            
-        success : function(data){
-            console.log('value', data);
-            console.log('jksdfh', data.valid_to);
+        success : function(data) {
             data.forEach(function (arrayItem) {
                 var x = arrayItem;
                 if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
