@@ -1,0 +1,9 @@
+@charset "UTF-8";
+/* CSS Document */
+/*Date : 2019, 27 September
+Application : Booking System
+Developer : slouis@slois360.com*/
+
+.form-horizontal .control-label.text-left{
+    text-align: left;
+}
