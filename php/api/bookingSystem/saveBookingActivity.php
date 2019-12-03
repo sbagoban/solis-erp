@@ -50,9 +50,9 @@ try {
 	
 	if ($row_count_bookingDetails > 0) 
 	{
-		while ($row = $qry_bookingDetails->fetch(PDO::FETCH_ASSOC))
+		while ($rowDept = $qry_bookingDetails->fetch(PDO::FETCH_ASSOC))
 		{
-			$id_dept = $row["id_dept"];
+			$id_dept = $rowDept["id_dept"];
 		}
 	}
 	
@@ -63,6 +63,7 @@ try {
 			PS_CLAIM.id_currency AS id_product_service_claim_cur,
 			PS_CLAIM.id_dept,
 			PS_CLAIM.charge,
+			PS.id_tax,
 			PS_CLAIM.ps_adult_claim,
 			PS_CLAIM.ps_teen_claim,
 			PS_CLAIM.ps_child_claim,
@@ -90,10 +91,10 @@ try {
 
 		if ($row_count_activityDetails > 0) 
 		{
-			while ($row = $qry_activityDetails->fetch(PDO::FETCH_ASSOC))
+			while ($rowActivity = $qry_activityDetails->fetch(PDO::FETCH_ASSOC))
 			{
-				$activity_name = $row["service_name"];
-				$activity_duration = $row["duration"];
+				$activity_name = $rowActivity["service_name"];
+				$activity_duration = $rowActivity["duration"];
                 if($activity_duration == ' ' || $activity_duration == '')
                 {
                     $activity_duration = null;
@@ -103,102 +104,126 @@ try {
 				$activity_child_amt = trim($_POST["activity_child_amt"]);
 				$activity_infant_amt = trim($_POST["activity_infant_amt"]);
 				$activity_total_pax = trim($_POST["activity_total_pax"]);
-				$id_product_service_claim_cur = $row["id_product_service_claim_cur"];
-				$activity_claim_dept = $row["id_product_service_claim_cur"];
-				$activity_charge = $row["charge"];
+				$id_product_service_claim_cur = $rowActivity["id_product_service_claim_cur"];
+				$activity_claim_dept = $rowActivity["id_product_service_claim_cur"];
+                $id_tax_code = $rowActivity["id_tax"];
+                
+                $qry_TAXDetails = $con->prepare("
+                    SELECT * 
+                    FROM tax_rate
+                    WHERE tax_dateFrom < :activity_date
+                    AND id_tax_code = :id_tax
+                    AND active = 1
+                    ORDER BY tax_dateFrom DESC
+                    LIMIT 1");
+
+                $qry_TAXDetails->execute(array(":activity_date"=>$activity_date,  ":id_tax"=>$id_tax_code));
+
+                $row_count_TAXDetails = $qry_TAXDetails->rowCount();
+
+                if ($row_count_TAXDetails > 0) 
+                {
+                    while ($rowTAX = $qry_TAXDetails->fetch(PDO::FETCH_ASSOC))
+                    {
+                        $tax_charge = $rowTAX["tx_code"];
+                        $tax_value = $rowTAX["tax_value"];
+                    }
+                }
+                
+				$activity_charge = $rowActivity["charge"];
 				if ($activity_charge == "PAX")
 				{
-                    if($row["ps_adult_claim"] == null)
+                    if($rowActivity["ps_adult_claim"] == null)
                     {
                         $activity_adult_claim = 0;
                     }
                     else
                     {
-                        $activity_adult_claim = $row["ps_adult_claim"];
+                        $activity_adult_claim = $rowActivity["ps_adult_claim"];
                     }
                     
-                    if($row["ps_teen_claim"] == null)
+                    if($rowActivity["ps_teen_claim"] == null)
                     {
                         $activity_teen_claim = 0;
                     }
                     else
                     {
-                        $activity_teen_claim = $row["ps_teen_claim"];
+                        $activity_teen_claim = $rowActivity["ps_teen_claim"];
                     }
                     
-                    if($row["ps_child_claim"] == null)
+                    if($rowActivity["ps_child_claim"] == null)
                     {
                         $activity_child_claim = 0;
                     }
                     else
                     {
-                        $activity_child_claim = $row["ps_child_claim"];
+                        $activity_child_claim = $rowActivity["ps_child_claim"];
                     }
                     
-                    if($row["ps_infant_claim"] == null)
+                    if($rowActivity["ps_infant_claim"] == null)
                     {
                         $activity_infant_claim = 0;
                     }
                     else
                     {
-                        $activity_infant_claim = $row["ps_infant_claim"];
+                        $activity_infant_claim = $rowActivity["ps_infant_claim"];
                     }
                     
 					$activity_total_claim = (($activity_adult_amt * $activity_adult_claim) +($activity_teen_amt * $activity_teen_claim) + ($activity_child_amt * $activity_child_claim) +($activity_infant_amt * $activity_infant_claim));
                     
-                    if($row["ps_adult_cost"] == null)
+                    if($rowActivity["ps_adult_cost"] == null)
                     {
                         $activity_adult_cost = 0;
                     }
                     else
                     {
-                        $activity_adult_cost = $row["ps_adult_cost"];
+                        $activity_adult_cost = $rowActivity["ps_adult_cost"];
                     }
                     
-                    if($row["ps_teen_claim"] == null)
+                    if($rowActivity["ps_teen_claim"] == null)
                     {
                         $activity_teen_cost = 0;
                     }
                     else
                     {
-                        $activity_teen_cost = $row["ps_teen_cost"];
+                        $activity_teen_cost = $rowActivity["ps_teen_cost"];
                     }
                     
-                    if($row["ps_child_cost"] == null)
+                    if($rowActivity["ps_child_cost"] == null)
                     {
                         $activity_child_cost = 0;
                     }
                     else
                     {
-                        $activity_child_cost = $row["ps_child_cost"];
+                        $activity_child_cost = $rowActivity["ps_child_cost"];
                     }
                     
-                    if($row["ps_infant_cost"] == null)
+                    if($rowActivity["ps_infant_cost"] == null)
                     {
                         $activity_infant_cost = 0;
                     }
                     else
                     {
-                        $activity_infant_cost = $row["ps_infant_cost"];
+                        $activity_infant_cost = $rowActivity["ps_infant_cost"];
                     }
                     
 					$activity_total_cost = (($activity_adult_amt * $activity_adult_cost) +($activity_teen_amt * $activity_teen_cost) + ($activity_child_amt * $activity_child_cost) +($activity_infant_amt * $activity_infant_cost));
 				}
 				else
 				{
-					$activity_adult_claim = $row["ps_adult_claim"];
+					$activity_adult_claim = $rowActivity["ps_adult_claim"];
 					$activity_teen_claim = 0;
 					$activity_child_claim = 0;
 					$activity_infant_claim = 0;
-					$activity_total_claim = $row["ps_adult_claim"];
-					$activity_adult_cost = $row["ps_adult_cost"];
+					$activity_total_claim = $rowActivity["ps_adult_claim"];
+					$activity_adult_cost = $rowActivity["ps_adult_cost"];
 					$activity_teen_cost = 0;
 					$activity_child_cost = 0;
 					$activity_infant_cost = 0;
-					$activity_total_cost = $row["ps_adult_cost"];
+					$activity_total_cost = $rowActivity["ps_adult_cost"];
 				}
-				$id_product_service_cost = $row["id_product_service_cost"];
-				$id_product_service_cost_cur = $row["id_product_service_cost_cur"]; 
+				$id_product_service_cost = $rowActivity["id_product_service_cost"];
+				$id_product_service_cost_cur = $rowActivity["id_product_service_cost_cur"]; 
 				$activity_rebate_type = trim($_POST["activity_rebate_type"]);
 				$activity_rebate_approve_by = trim($_POST["activity_rebate_approve_by"]);
 				$activity_discount_percentage = trim($_POST["activity_discount_percentage"]);
@@ -222,6 +247,12 @@ try {
 				{
 					$activity_total_claim_after_disc = $activity_total_claim;
 				}
+            
+                if ($tax_charge == "VAT")
+                {
+                    $activity_total_claim_exTAX = $activity_total_claim  * ((100 - $tax_value)/100);
+                    $activity_total_claim_exTAX_after_disc = $activity_total_claim_after_disc * ((100 - $tax_value)/100);
+                }
 			}
 		}
 	$activity_remarks = trim($_POST["activity_remarks"]);
@@ -277,10 +308,13 @@ try {
 				id_dept,
 				activity_claim_dept,
 				activity_charge,
+				tax_charge,
+				tax_value,
 				activity_adult_claim,
 				activity_teen_claim,
 				activity_child_claim,
 				activity_infant_claim,
+                activity_total_claim_exTAX,
 				activity_total_claim,
 				id_product_service_cost,
 				id_product_service_cost_cur,
@@ -296,6 +330,7 @@ try {
 				activity_teen_claim_after_disc,
 				activity_child_claim_after_disc,
 				activity_infant_claim_after_disc,
+                activity_total_claim_exTAX_after_disc,
 				activity_total_claim_after_disc,
 				activity_remarks,
 				activity_internal_remarks,
@@ -326,10 +361,13 @@ try {
 				:id_dept,
 				:activity_claim_dept,
 				:activity_charge,
+				:tax_charge,
+				:tax_value,
 				:activity_adult_claim,
 				:activity_teen_claim,
 				:activity_child_claim,
 				:activity_infant_claim,
+                :activity_total_claim_exTAX,
 				:activity_total_claim,
 				:id_product_service_cost,
 				:id_product_service_cost_cur,
@@ -345,6 +383,7 @@ try {
 				:activity_teen_claim_after_disc,
 				:activity_child_claim_after_disc,
 				:activity_infant_claim_after_disc,
+                :activity_total_claim_exTAX_after_disc,
 				:activity_total_claim_after_disc,
 				:activity_remarks,
 				:activity_internal_remarks,
@@ -376,11 +415,14 @@ try {
 				":id_dept" => $id_dept,
 				":activity_claim_dept" => $activity_claim_dept,
 				":activity_charge" => $activity_charge,
+				":tax_charge" => $tax_charge,
+				":tax_value" => $tax_value,
 				":activity_adult_claim" => $activity_adult_claim,
 				":activity_teen_claim" => $activity_teen_claim,
 				":activity_child_claim" => $activity_child_claim,
 				":activity_infant_claim" => $activity_infant_claim,
 				":activity_total_claim" => $activity_total_claim,
+				":activity_total_claim_exTAX" => $activity_total_claim_exTAX,
 				":id_product_service_cost" => $id_product_service_cost,
 				":id_product_service_cost_cur" => $id_product_service_cost_cur,
 				":activity_adult_cost" => $activity_adult_cost,
@@ -395,6 +437,7 @@ try {
 				":activity_teen_claim_after_disc" => $activity_teen_claim_after_disc,
 				":activity_child_claim_after_disc" => $activity_child_claim_after_disc,
 				":activity_infant_claim_after_disc" => $activity_infant_claim_after_disc,
+				":activity_total_claim_exTAX_after_disc" => $activity_total_claim_exTAX_after_disc,
 				":activity_total_claim_after_disc" => $activity_total_claim_after_disc,
 				":activity_remarks" => $activity_remarks,
 				":activity_internal_remarks" => $activity_internal_remarks,
