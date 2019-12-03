@@ -33,7 +33,6 @@
 							<option value="CANCEL WITH FEE">CANCEL WITH FEE</option>
 						</select>
 					</div>
-					
 				</div>
 				
 				<div class="form-group">

@@ -11,36 +11,10 @@ $(function(){
 	// Activity Date
 	$('#activity_date').on('apply.daterangepicker', function(ev, picker) {
         target_action = 'NULL';
-		var activityFullDate = $("#activity_date").data('daterangepicker').startDate._d;
-		var activity_day = activityFullDate.getDay();
-		if (activity_day == 0)
-			{
-				var activity_day = "SUN";
-			}
-		else if (activity_day == 1)
-			{
-				var activity_day = "MON";
-			}
-		else if (activity_day == 2)
-			{
-				var activity_day = "TUE";
-			}
-		else if (activity_day == 3)
-			{
-				var activity_day = "WED";
-			}
-		else if (activity_day == 4)
-			{
-				var activity_day = "THU";
-			}
-		else if (activity_day == 5)
-			{
-				var activity_day = "FRI";
-			}
-		else if (activity_day == 6)
-			{
-				var activity_day = "SAT";
-			}
+		var activityFullDate = $("#activity_date").data('daterangepicker').startDate._d + ' ';
+		var activityFullDay = activityFullDate.split(" ");
+		var activity_day = activityFullDay[0];
+        
 		var activityData = {
 			id_booking: $('#id_booking').val(),
 			paid_by: $('#activity_paidBy').val(),
@@ -570,8 +544,8 @@ function newActivity(dataDetails){
 // .New Activity
 
 // Tour Operator
-function loadTourOperator(dataDetails){
-    const url_search_booking = "php/api/bookingSystem/readBooking.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +dataDetails.id_booking;
+function loadTourOperator(activityData){
+    const url_search_booking = "php/api/bookingSystem/readBooking.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +activityData.id_booking;
 		$.ajax({
 			url: url_search_booking,
 			method: "POST",
@@ -590,6 +564,29 @@ function loadTourOperator(dataDetails){
     
 }
 // .Tour Operator
+
+// Booking Client
+function loadBookingClient(activityData){
+         const url_search_booking = "php/api/bookingSystem/allClient.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +activityData.id_booking;
+            $.ajax({
+                url: url_search_booking,
+                method: "POST",
+                dataType: "json",
+                success: function (data) 
+                {
+                    $("#activity_payer").empty();
+                    $.each(data, function (key, val) {
+                    $("#activity_payer").append('<option value="' + val.id_client + '">'+val.title+ ' '+val.surname+' '+val.other_name+'</option>');
+                    });  
+
+                },
+                error: function (error) 
+                {
+                    console.log('Error ${error}');
+                }
+            });
+}
+// .Booking Client
 
 // Product
 function loadActivity(activityData){

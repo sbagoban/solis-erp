@@ -37,6 +37,22 @@ var target_action = 'NULL';
     // Date
 	var booking_from = $("#booking_travelDate").data('daterangepicker').startDate._d;
 	var booking_to = $("#booking_travelDate").data('daterangepicker').endDate._d;
+
+	// Activity Paid By
+	$('#activity_paidBy').change(function()
+		{
+			$('#activity_date').val('');
+		
+	 		if ($('#activity_paidBy').val() == "TO")
+				{
+					loadTourOperator(activityData);
+				}
+				else if ($('#activity_paidBy').val() == "Client")
+				{
+                    loadBookingClient(activityData);
+				}
+		});
+	//. Activity Paid By
     
 	$('#activity_date').daterangepicker({
 		"singleDatePicker": true,
