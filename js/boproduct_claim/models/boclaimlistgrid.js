@@ -18,7 +18,11 @@ $(document).ready(function(){
 function allServicesGridClaim(id_product_service_cost,id_product_service_claim ) {
     
    // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
-    $('#tbl-productServicesClaim').DataTable({       
+    $('#tbl-productServicesClaim').DataTable({  
+        "drawCallback": function( settings ) {
+            $('[data-toggle="tooltip1"]').tooltip();
+            $('[data-toggle="tooltip2"]').tooltip();
+        },     
         "processing" : true,
 
         "ajax" : {

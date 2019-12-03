@@ -147,7 +147,8 @@ $('#btn-saveProductServices').click(function () {
         var service_name = changeTransfer();
         var special_name = specialNameTransfer();
         // add in database - Table creditor - Solis - 
-        var id_creditor = 'Planning (Solis)';
+        // Solis - id_creditor = 0 
+        var id_creditor = 0;
         var id_tax = '3';
         for_adult = 1;
         for_child = 1;
