@@ -762,6 +762,7 @@ function ratescalculator() {
         var params = "params=" + encodeURIComponent(JSON.stringify(main_details)) +
                 "&spo_params=" + encodeURIComponent(JSON.stringify(spo_details)) +
                 "&t=" + encodeURIComponent(global_token);
+                
         dhtmlxAjax.post("php/api/ratescalculator/testrates.php", params, function (loader) {
             param_layout.progressOff();
             results_layout.progressOff();
@@ -797,9 +798,11 @@ function ratescalculator() {
                 }
                 if (json_obj.OUTCOME == "OK")
                 {
+                    console.log(json_obj);
+                    
                     if (json_obj.RESULT.OUTCOME == "OK")
                     {
-                        console.log(json_obj);
+                        
 
                         var choice_or_prices = json_obj.RESULT.CHOICE_PRICES;
 

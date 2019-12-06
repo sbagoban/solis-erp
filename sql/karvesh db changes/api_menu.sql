@@ -10,3 +10,4 @@ INSERT INTO `dbsolis`.`tblmenu` (`menuname`, `parentfk`, `leaf`, `ordering`, `ic
 INSERT INTO `dbsolis`.`tblmenu` (`menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `menusysid`, `description`, `inout`) VALUES ('Areas', '55', 'Y', '6', 'fa-tree', 'api_areas', 'external api areas', 'I');
 INSERT INTO `dbsolis`.`tblmenu` (`menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `menusysid`, `description`, `inout`) VALUES ('Coasts', '55', 'Y', '7', 'fa-tree', 'api_coasts', 'external api coasts', 'I');
 INSERT INTO `dbsolis`.`tblmenu` (`menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `menusysid`, `description`, `inout`) VALUES ('Countries', '55', 'Y', '8', 'fa-tree', 'api_countries', 'external api countries', 'I');
+INSERT INTO `dbsolis`.`tblmenu` (`menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `menusysid`, `description`, `inout`) VALUES ('Hotel Room Rates', '55', 'Y', '9', 'fa-tree', 'api_hotel_room_rates', 'external api hotel room rates', 'I');

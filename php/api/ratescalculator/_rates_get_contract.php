@@ -131,22 +131,25 @@ function _rates_get_contract_for_the_date($arr_params, $thedate, $con) {
 
 function _rates_validate_daily_contract_id($arr_days, $rollover) {
     //validate day by day
-    //must not allow overlapping contracts for any day
-    //must make sure that: either there is a similar contract id for each day
+    
+    
     //or there no contract id for any days
 
     $arr_msg = _rates_validate_daily_contract_id_overlapping($arr_days, $rollover);
     if (count($arr_msg) > 0) {
+        //must not allow overlapping contracts for any day
         return array("OUTCOME" => "FAIL_OVERLAPPING_TEST", "DETAILS" => $arr_msg);
     }
 
+    //must make sure that: either there is a similar contract id for each day
     $arr_msg = _rates_validate_daily_contract_id_different($arr_days, $rollover);
     if (count($arr_msg) > 0) {
+        
         //here error can be either MULTIPLE_CONTRACT OR NO_CONTRACT
         for ($i = 0; $i < count($arr_msg); $i++) {
             if ($arr_msg[$i]["STATUS"] == "MULTIPLE_CONTRACT") {
                 //surely MULTIPLE_CONTRACT
-                return array("OUTCOME" => "FAIL_MULTILE_PERIODS_TEST", "DETAILS" => $arr_msg);
+                return array("OUTCOME" => "FAIL_MULTIPLE_PERIODS_TEST", "DETAILS" => $arr_msg);
             }
         }
 
