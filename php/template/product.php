@@ -19,6 +19,7 @@
                                     <select type="text" class="form-control" id="ddlType">
                                         <!-- To modify - select from db -->
                                         <option value="2">Activities</option>
+                                        <option value="3">Transfer</option>
                                         <option value="4">Others</option>
                                     </select>
                                 </div>
@@ -63,10 +64,10 @@
                         <table class="table responsive" id="productServiceSort">
                             <thead>
                                 <tr>
-                                    <th scope="col">Product Id</th>
-                                    <th scope="col">Service Type</th>
-                                    <th scope="col">Product</th>
-                                    <!-- <th scope="col">Product Type</th> -->
+                                    <th>Product Id</th>
+                                    <th>Service Type</th>
+                                    <th>Product</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                         </table>

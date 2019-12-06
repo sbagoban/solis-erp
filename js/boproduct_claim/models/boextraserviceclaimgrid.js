@@ -39,21 +39,25 @@ function extraServiceGridClaim(data) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i class="fa fa-fw fa-trash" id="btnDeleteServiceClaim"></i></div>'
+                '<i class="fa fa-fw fa-edit" id="btnEditServiceClaim"></i>'+
+                '<i class="fa fa-fw fa-trash-o" id="btnDeleteServiceClaim"></i></div>'
             }
-        ]
+        ],
+        "initComplete": function () {
+            $('#tbl-productServicesExtraClaim tbody')
+                .off()
+                .on( 'click', '#btnDeleteServiceClaim', function (e) {
+                    var table = $('#tbl-productServicesExtraClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    extraServiceClaimDelete(data);
+                })
+                .on( 'click', '#btnEditServiceClaim', function (e) {
+                    var table = $('#tbl-productServicesExtraClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    extraServiceClaimEdit(data);
+                })
+        }
     });
-    $('#tbl-productServicesExtraClaim tbody').on( 'click', '#btnDeleteServiceClaim', function () {
-        var table = $('#tbl-productServicesExtraClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        extraServiceClaimDelete(data);
-    });
-    // $('#tbl-productServicesExtraClaim tbody').on( 'click', '#btnEditServiceCost', function () {
-    //     var table = $('#tbl-productServicesExtraClaim').DataTable();
-    //     var data = table.row( $(this).parents('tr') ).data();
-    //     serviceCostEdit(data);
-    //     allExtraServicesCostGrid(data.id_product_service_cost);
-    // });
 }
 
 // // Delete Product
@@ -84,4 +88,10 @@ function serviceCostEdit(data) {
     $('#ps_child_cost').val(data.ps_child_cost);
     $('#ps_infant_cost').val(data.ps_infant_cost);
     $('#id_currency').val(data.id_currency);
+}
+
+// Edit Extra Service
+function extraServiceClaimEdit(data) {
+    $('#modal-extraServicesClaim').modal('show');
+    editAllExtraServiceClaim(data);
 }

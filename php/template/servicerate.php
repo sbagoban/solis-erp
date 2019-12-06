@@ -8,7 +8,7 @@
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
-					<table id="tbl-productServicesClaim" class="table table-bordered table-hover">
+					<table id="tbl-productServicesClaimMain" class="table table-bordered table-hover">
 						<thead>
 							<tr>
 								<th class="col-sm-1">Code</th>

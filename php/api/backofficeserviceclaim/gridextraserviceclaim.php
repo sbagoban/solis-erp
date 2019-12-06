@@ -26,7 +26,7 @@ require_once("../../connector/data_connector.php");
 $con = pdo_con();
 
 $query_c = $con->prepare("SELECT PSEC.id_product_service_extra_claim, PSEC.id_product_service_cost, PSEC.charge, PSEC.ps_adult_claim, PSEC.ps_teen_claim,
-PSEC.ps_child_claim, PSEC.ps_infant_claim, PS.extra_name, PSEC.id_product_service_claim
+PSEC.ps_child_claim, PSEC.ps_infant_claim, PS.extra_name, PSEC.id_product_service_claim, PSEC.id_product_service_extra_cost
 FROM product_service_extra_claim PSEC
 JOIN product_service_extra_cost PS on PSEC.id_product_service_extra_cost = PS.id_product_service_extra_cost
 WHERE PSEC.id_product_service_claim = :id_product_service_claim
@@ -45,7 +45,8 @@ if ($row_count_c > 0) {
             'ps_child_claim'         => $row['ps_child_claim'],
             'ps_infant_claim'         => $row['ps_infant_claim'],
             'extra_name'         => $row['extra_name'],
-            'id_product_service_claim'         => $row['id_product_service_claim']
+            'id_product_service_claim'         => $row['id_product_service_claim'],
+            'id_product_service_extra_cost'         => $row['id_product_service_extra_cost']
         );
     }    $myData = $extraserviceExtraClaim;
     echo json_encode($myData);
@@ -60,7 +61,8 @@ if ($row_count_c > 0) {
         'ps_child_claim' => '-',
         'ps_infant_claim' => '-',
         'extra_name' => '-',
-        'id_product_service_claim' => '-'
+        'id_product_service_claim' => '-',
+        'id_product_service_extra_cost' => '-'
     );
     $myData = $extraserviceExtraClaim;
     echo json_encode($myData);

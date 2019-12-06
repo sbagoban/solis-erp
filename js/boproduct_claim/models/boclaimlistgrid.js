@@ -2,15 +2,31 @@ $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
-    allServicesGridClaim(id_product_service_cost);
+    var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
+    //product + service from product service + supplier name + Dept for + Coast
+    
+    var product_name_1 = urlParams.get("product_name");
+    var service_name_1 = urlParams.get("service_name");  
+    var concat_name = product_name_1 + ' / ' + service_name_1;
+    $("#product_name_dtl").val(concat_name);
+
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
+
+
 });
 
-function allServicesGridClaim(id_product_service_cost) {
-    $('#tbl-productServicesClaim').DataTable({       
+function allServicesGridClaim(id_product_service_cost,id_product_service_claim ) {
+    
+   // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
+    $('#tbl-productServicesClaim').DataTable({  
+        "drawCallback": function( settings ) {
+            $('[data-toggle="tooltip1"]').tooltip();
+            $('[data-toggle="tooltip2"]').tooltip();
+        },     
         "processing" : true,
 
         "ajax" : {
-            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost,
+            "url" : "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost + "&id_product_service_claim=" +id_product_service_claim,
             dataSrc : ''
         },
         "destroy": true,
@@ -44,9 +60,27 @@ function allServicesGridClaim(id_product_service_cost) {
             "data" : "charge"
         }, {
             "data" : "currency"
-        }, {
-            "data" : "allDate"
-        },  { 
+        }, 
+        {
+            data: null,
+                render: function ( data, type, row ) {
+                    var start_date = data.valid_from;
+                    var date_from = start_date.split("-");
+                    var date_from_y = date_from[0];
+                    var date_from_m = date_from[1];
+                    var date_from_d = date_from[2];
+                    var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+                    var end_date = data.valid_to;
+                    var date_to = end_date.split("-");
+                    var date_to_y = date_to[0];
+                    var date_to_m = date_to[1];
+                    var date_to_d = date_to[2];
+                    var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+                    return start_date+' - '+end_date;
+                },
+                editField: ['valid_from', 'valid_to']
+        },        
+        { 
             "data" : "specific_to_name"
         },  
             {
@@ -55,27 +89,44 @@ function allServicesGridClaim(id_product_service_cost) {
                 "class": 'btnCol',
                 "defaultContent": 
                 '<div class="btn-group">' +
-                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim" data-toggle="modal" data-target="#modal-extraServicesClaim"></i></div>' +
+                '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim"></i>' +
                 '<i class="fa fa-fw fa-edit" id="btnEditClaim"></i>'+
-                '<i class="fa fa-fw fa-trash" id="btnDeleteClaim" ></i>'
+                '<i class="fa fa-fw fa-trash-o" id="btnDeleteClaim"></i>'
             }
-        ]
-    });
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnAddExtraServicesClaim', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        addExtraServiceClaim(data);
-    });    
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnDeleteClaim', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        deleteServiceClaim(data);
-    });   
-    $('#tbl-productServicesClaim tbody').on( 'click', '#btnEditClaim', function () {
-        var table = $('#tbl-productServicesClaim').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        editServiceClaim(data);
-        extraServiceGridClaim(data);
+        ],
+        "initComplete": function () {
+            $('#tbl-productServicesClaim tbody')
+                .off()
+                .on( 'click', '#btnAddExtraServicesClaim', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addExtraServiceClaim(data);
+                })
+                .on( 'click', '#btnDeleteClaim', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    deleteServiceClaim(data);
+                })
+                .on( 'click', '#btnEditClaim', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    editServiceClaim(data);
+                    extraServiceGridClaim(data);
+                })
+                .on( 'mouseenter', 'td', function () {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    if (data.specific_to == 'C') {
+                        countryDetails(data);
+                    }
+                    if (data.specific_to == 'A') {
+                        toDetails(data);
+                    }
+                })
+                .on( 'mouseleave', 'td', function () {
+                    $('#tooltip').css("display", "none");
+                })
+        }
     });
 }
 
@@ -97,7 +148,8 @@ function deleteServiceClaim(data) {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
-    allServicesGridClaim(id_product_service_cost);
+    var id_product_service_claim = 0;
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
 }
 
 function editServiceClaim(data) {
@@ -111,6 +163,11 @@ function editServiceClaim(data) {
         specificCountryCtrl(data.id_product_service_claim);
         loadCountryClaim();
     } else if (data.specific_to == 'B') {
+        $('#ddlmultiSpecificMarket').multiselect('destroy');
+        $('#ddlMultiSpecificTo').multiselect('destroy');
+        $('#ddlmultiSpecificMarket').css('display', 'none');
+        $('#ddlMultiSpecificTo').css('display', 'none');
+    } else if (data.specific_to == 'D') {
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $('#ddlMultiSpecificTo').multiselect('destroy');
         $('#ddlmultiSpecificMarket').css('display', 'none');
@@ -169,4 +226,33 @@ function editServiceClaim(data) {
     } else if (chksunday == '0') {
         $('#ex_sunday').prop('checked', false);
     }  
+}
+
+function countryDetails (countryData) {
+    console.log(countryData.id_product_service_claim);
+    const url_display_selected_countries = "php/api/backofficeserviceclaim/selectedmarketclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + countryData.id_product_service_claim;
+    var objCountryClaim = {
+        id_product_service_claim : countryData.id_product_service_claim
+    };
+
+    $.ajax({
+        url : url_display_selected_countries,
+        method : "POST",
+        data : objCountryClaim,
+        cache: false,   
+        dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                               
+        success : function(data){
+            console.log(data);
+            var selectedCountriesTooltip = data.country_name;            
+            $('#tooltip').css("display", "block");
+            console.log(selectedCountriesTooltip);
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    }); 
+}
+
+function toDetails(toData) {
+    console.log(toData);
 }

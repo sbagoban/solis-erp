@@ -1,0 +1,34 @@
+@charset "UTF-8";
+/* CSS Document */
+/*Date : 2019, 27 September
+Application : SOLIS 360 ERP
+Developer : slouis@solis360.com*/
+.form-control  {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+	background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+.select2-container .select2-selection--single {
+    height: 34px;
+}
+
+.input-group .input-group-addon {
+    border-radius: 0;
+    border-color: #d6e2e8;
+    background-color: #3c8dbc;
+    color: white;
+}
+
+.input-group-addon {
+    border: 0px;
+}
+
+input[type="text"] {
+    font: 12px/21px arial,sans-serif;
+}

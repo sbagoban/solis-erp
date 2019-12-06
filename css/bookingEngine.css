@@ -595,6 +595,18 @@ option {
   z-index: 9999;
 }
 
+.toast_duplicate {
+  background-color: #08107B;
+}
+
+.toast_duplicate_cost {
+  background-color: #E49900;
+}
+
+.toast_duplicate_extra {
+  background-color: #00a8ff;
+}
+
 i.fa.fa-plus.fa-lg {
   margin-top: -1px;
   background: #e2e2e2;

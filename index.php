@@ -49,9 +49,8 @@ if (isset($_GET["m"])) {
   		<link rel="stylesheet" href="bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
         <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
         <link rel="stylesheet" href="dist/css/AdminLTE.css?<?php echo time(); ?>">
-
+    
         <!-- Sandeep Start -->
-        <!--<link rel="stylesheet" href="css/bookingEngine.css">-->
         <!--<link rel="stylesheet" href="css/editor.css">-->
         <link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -75,10 +74,17 @@ if (isset($_GET["m"])) {
         } else if ($menu == "backoff_service_claim") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         }   else if ($menu == "productservicescost") {
-            echo '<link rel="stylesheet" href="css/gridStyle.css">';
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/bookingEngine.css">';
         }   else if ($menu == "servicerate_claim") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/bookingEngine.css">';
+        } else if ($menu == "productservices") {
+            echo '<link rel="stylesheet" href="css/gridStyle.css">
+            <link rel="stylesheet" href="css/bookingEngine.css">';
+        } else if ($menu == "backoff_product") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
-        } 
+        }
         ?>
 
         <!-- Sandeep End -->
@@ -688,7 +694,7 @@ if (isset($_GET["m"])) {
 		<script src="bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 		<script src="bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 		<!-- daterange picker -->
-		<link rel="stylesheet" href=" bower_components/bootstrap-daterangepicker/daterangepicker.css">
+		<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker.css">
 		<!-- bootstrap datepicker -->
 		<link rel="stylesheet" href="bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
 		<!-- date-range-picker -->
@@ -697,10 +703,24 @@ if (isset($_GET["m"])) {
 		<!-- bootstrap datepicker -->
 		<script src="bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 		<!-- bootstrap datepicker -->
+		<!-- bootstrap time picker -->
+		<script src="plugins/timepicker/bootstrap-timepicker.min.js"></script>
+  		<link rel="stylesheet" href="plugins/timepicker/bootstrap-timepicker.min.css">
 		<!-- Select2 -->
 		<script src="bower_components/select2/dist/js/select2.full.min.js"></script>
   		<link rel="stylesheet" href="bower_components/select2/dist/css/select2.min.css">
 		<!-- Select2 -->
+		<!-- Select picker --->
+		<link rel="stylesheet" href="plugins/bootstrap-select-1.13.9 2/dist/css/bootstrap-select.min.css">
+		<script src="plugins/bootstrap-select-1.13.9 2/dist/js/bootstrap-select.min.js"></script>
+		<!-- .Select picker --->
+        <!--Number Validation --->
+        <script src="js/utils/numberValidation.js"></script>
+        <!-- .Number Validation --->
+        <!-- Toastr -->
+        <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+        <script src="plugins/toastr/toastr.min.js"></script>
+        <!-- .Toastr -->
 		
 		<!-- SOLIS GLOBAL CSS -->
 		
@@ -895,8 +915,9 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
             <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>
-            <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script>            
-            <script src="js/boproduct_claim/control/ctrlClaim.js"></script>';
+            <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script> 
+            <script src="js/boproduct_claim/control/ctrlClaim.js"></script>          
+            <script src="js/boproduct_claim/models/updateAllExtraServiceClaim.js"></script>';
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>
@@ -909,7 +930,8 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/bosaveextraservice.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
             <script src="js/boproduct_services/models/boextraservicegrid.js"></script>
-            <script src="js/boproduct_services/control/productCtrl.js"></script>';
+            <script src="js/boproduct_services/control/productCtrl.js"></script>
+            <script src="js/boproduct_services/models/bopackage.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
             <script src="js/boproduct_services/models/boservicecost.js"></script>            
@@ -917,7 +939,8 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/bosaveextraservicescost.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
             <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
-            <script src="js/boproduct_services/control/productCtrl.js"></script>';
+            <script src="js/boproduct_services/control/productCtrl.js"></script>
+            <script src="js/boproduct_services/models/boupdateextraservicecost.js"></script>';
         }
 ?>
         <div id = "alert_placeholder"></div>

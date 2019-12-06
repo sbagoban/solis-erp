@@ -12,6 +12,28 @@
 					<!-- form start -->
 					<form class="form-horizontal">
 						<div class="box-body">
+							<!-- Package Start -->
+							<div class="form-group">
+								<div id="is_package_blk">
+									<label class="col-sm-2 control-label">Package</label>
+									<div class="col-sm-2">
+										<select type="text" class="form-control" id="is_pakage">
+											<option value="Y">YES</option>
+											<option value="N" selected="selectd">NO</option>
+										</select>
+									</div>
+								</div>
+								<div id="services_block" style="display: none">
+									<label class="col-sm-2 control-label">Services</label>
+									<div class="col-sm-6">
+										<select id="services_cost" name="services_cost" class="services_cost" multiple="multiple">
+										</select>
+									</div>
+								</div>
+								
+							</div>
+							<hr>
+							<!-- Package End -->
 							<div class="form-group"> 
 								<div class="col-sm-4">
 									<input type="text" class="form-control" id="id_product_service" style="display: none" value="0">
@@ -20,7 +42,7 @@
 								</div>
 							</div>
 							<div class="form-group"> 
-									<label class="col-sm-2 control-label">Date</label>
+									<label class="col-sm-2 control-label"z>Date</label>
 									<div class="col-sm-10">
 										<div class="input-group date datepicker-in">
 											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
@@ -41,6 +63,7 @@
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_dept">
 										<!-- To modify - select from db -->
+										<!-- <option value="2">Direct Sales</option> -->
 										<option value="19">FIT</option>
 									</select>
 								</div>
@@ -53,7 +76,7 @@
 										<option value="913">MAURITIUS</option>
 									</select>
 								</div>
-								<label class="col-sm-2 control-label">Coast</label>
+								<label class="col-sm-2 control-label" id="id_coast_label">Coast</label>
 								<div class="col-sm-4">
 									<select class="form-control" id="id_coast">
 										<option selected disabled hidden>Select an option</option>
@@ -66,33 +89,57 @@
 										<option value="6">North East</option>
 										<option value="7">North West</option>
 										<option value="10">Centre</option>
+										<option value="11" disabled style="display:none">Others</option>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
-								<div class="col-sm-6">
+								<div class="col-sm-6" id="id_service_1">
 									<input type="text" class="form-control" id="service_name" onkeyup="onkeyupCtrl()" placeholder="Name of the product">
 								</div>
-								<div class="col-sm-4" style="display:none;">
+
+								<div class="col-sm-6" id="id_service_2" style="display: none;">
+									<select type="text" class="form-control" id="service_name_transfer" onchange="onkeyupCtrl()">
+										<option selected disabled hidden>Select an Option</option>
+										<option value="SOUTH EAST">SOUTH EAST</option>
+										<option value="OTHER COAST">OTHER COAST</option>
+										<option value="INTER HOTEL">INTER HOTEL</option>
+										<option value="ACTIVITY">ACTIVITY</option>
+									</select>
+								</div>
+
+								<div class="col-sm-4" id="special_name_all">
 									<input type="text" class="form-control" id="special_name" placeholder="Special Name">
+								</div>
+								<div class="col-sm-4" id="special_name_transfer_blk">
+									<select type="text" class="form-control" id="special_name_transfer">
+										<option selected disabled hidden>Select an Option</option>
+										<option value="Drop on">Drop on</option>
+										<option value="Drop Off">Drop Off</option>
+										<option value="Full Day">Full Day</option>
+										<option value="Half Day">Half Day</option>
+										<option value="Night Tour">Night Tour</option>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-2 control-label">Supplier</label>
-								<div class="col-sm-6">
-									<select type="text" class="form-control" id="id_creditor">
-									</select>
+								<div id="id_creditor_blk">
+									<label class="col-sm-2 control-label">Supplier</label>
+									<div class="col-sm-6">
+										<select type="text" class="form-control" id="id_creditor">
+										</select>
+									</div>
 								</div>
-								<label class="col-sm-1 control-label">Taxable</label>
-								<div class="col-sm-3">
-									<select type="text" class="form-control" id="id_tax">
-										<!-- To modify - select from db -->
-										<option value="1">EXEMPT</option>
-										<option value="2">OUSIDE SCOPE</option>
-										<option value="3" selected="selected">VAT</option>
-										<option value="4">ZERO RATED</option>
-									</select>
+								<div id="id_tax_blk">
+									<label class="col-sm-1 control-label">Taxable</label>
+									<div class="col-sm-3">
+										<select type="text" class="form-control" id="id_tax">
+											<!-- To modify - select from db -->
+											<option value="2">OUTSIDE SCOPE</option>
+											<option value="3" selected="selected">VAT</option>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div class="form-group">
@@ -103,17 +150,23 @@
 										<option value="UNIT">UNIT</option>
 									</select>
 								</div>
-								<label class="col-sm-2 control-label">Duration</label>
+								<label class="col-sm-1 control-label" id="duration_label">Duration</label>
 								<div class="col-sm-2">
-									<input type="text" class="form-control" id="duration" onkeyup="onkeyupCtrl()" placeholder="0.00">
+									<input type="number" class="form-control" id="duration1" placeholder="Hrs">
 								</div>
-								<label class="col-sm-2 control-label">Transfer</label>
 								<div class="col-sm-2">
+									<input type="number" class="form-control" id="duration2" placeholder="Mins">
+								</div>
+
+								<!-- To uncomment when used for transfer -->
+								<label class="col-sm-1 control-label" style="display: none">Transfer</label>
+								<div class="col-sm-2" style="display: none">
 									<select type="text" class="form-control" id="transfer_included">
 										<option value="0" selected="selectd">NO</option>
 										<option value="1">YES</option>
 									</select>
 								</div>
+								<!-- To uncomment when used for transfer -->
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Description</label>
@@ -125,26 +178,8 @@
 									<textarea class="form-control" id="comments" rows="3" style="resize: none"></textarea>
 								</div>
 							</div>
-							<div class="form-group" style="display:none;">
-								<label class="col-sm-2 control-label">Package</label>
-								<div class="col-sm-2">
-									<select type="text" class="form-control" id="is_pakage">
-										<option value="Y">YES</option>
-										<option value="N" selected="selectd">NO</option>
-									</select>
-								</div>
-								<label class="col-sm-2 control-label">Services</label>
-								<div class="col-sm-6">
-									<select class="form-control select2" multiple="multiple">
-										<option value="1">CHAMAREL LUNCH</option>
-										<option value="2">ACCESS CHAMAREL</option>
-										<option value="3">ACCESS CHAMAREL</option>
-										<option value="4">ACCESS CHAMAREL</option>
-										<option value="5">ACCESS CHAMAREL</option>
-									</select>
-								</div>
-							</div>
-							<div class="form-group">
+							
+							<div class="form-group" id="chk_operation">
 								<label class="col-sm-2 control-label">Operation</label>
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">
@@ -199,32 +234,92 @@
 									<textarea class="form-control" id="cancellation" rows="3" style="resize: none"></textarea>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2 control-label">Age Policy</label>
-								<div class="col-sm-10">
-									<div class="input-group">
-										<input type="number" class="form-control" min="0" max="5" id="age_inf_to">
-										<span class="input-group-addon">Infant</span>
-										<input type="number" class="form-control" min="0" max="17" id="age_child_to">
-										<span class="input-group-addon">Child</span>
-										<input type="number" class="form-control" min="0" max="17" id="age_teen_to">
-										<span class="input-group-addon">Teen</span>
-									</div>
-									<br>
-								</div>
-							</div>
+
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Pax Policy</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="number" class="form-control" id="min_pax" onkeyup="onkeyupCtrl()">
+										<input type="number" class="form-control" id="min_pax">
 										<span class="input-group-addon">Min</span>
-										<input type="number" class="form-control" id="max_pax" onkeyup="onkeyupCtrl()">
+										<input type="number" class="form-control" id="max_pax">
 										<span class="input-group-addon">Max</span>
 									</div>
 									<br>
 								</div>
 							</div>
+
+							<div class="form-group" id="ageActivity">
+								<label class="col-sm-2 control-label">Age</label>
+								<div class="col-sm-8">
+									<div class="input-group">
+										<input type="number" class="form-control" id="min_age">
+										<span class="input-group-addon">Min Age</span>
+										<input type="number" class="form-control" id="max_age">
+										<span class="input-group-addon">Max Age</span>
+									</div>
+									<br>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Apply for</label>
+								<div class="col-sm-10">
+									<div class="checkbox" style="display: flex">
+										<li class="checkBoxMain">
+											<label class='with-square-checkbox' id="infantActivity">
+												<input type='checkbox' id="for_infant" />
+												<span>For Infant</span>
+											</label>
+										</li>
+										<li class="checkBoxMain">
+											<label class='with-square-checkbox' id="childActivity">
+												<input type='checkbox' id="for_child" />
+												<span>For Child</span>
+											</label>
+										</li>
+										<li class="checkBoxMain">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="for_teen" />
+												<span>For Teen</span>
+											</label>
+										</li>
+										<li class="checkBoxMain" id="adultActivity">
+											<label class='with-square-checkbox'>
+												<input type='checkbox' id="for_adult" />
+												<span>For Adult</span>
+											</label>
+										</li>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">Age Policy</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+										<input type="number" class="form-control" min="0" max="5" id="age_inf_from" placeholder="Infant From">
+										<span class="input-group-addon">From</span>
+										<input type="number" class="form-control" min="0" max="5" id="age_inf_to" placeholder="Infant To">
+										<span class="input-group-addon">To</span>
+									</div>
+									<br>
+									<div class="input-group">
+										<input type="number" class="form-control" min="0" max="17" id="age_child_from" placeholder="Child From">
+										<span class="input-group-addon">From</span>
+										<input type="number" class="form-control" min="0" max="17" id="age_child_to" placeholder="Child To">
+										<span class="input-group-addon">To</span>
+									</div>
+									<br>
+									<div class="input-group">
+										<input type="number" class="form-control" min="0" max="17" id="age_teen_from" placeholder="Teen From">
+										<span class="input-group-addon">From</span>
+										<input type="number" class="form-control" min="0" max="17" id="age_teen_to" placeholder="Teen To">
+										<span class="input-group-addon">To</span>
+									</div>
+									<br>
+								</div>
+							</div>
+						
 							<div class="pager pull-right">
 								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-primary" id="btn-saveProductServices">Save</button>
@@ -247,6 +342,7 @@
 								<div class="box-header">
 									<h3 class="box-title">Product Service</h3>
 								</div>
+								<div id="id_prod_serv" style="display:none;"></div>
 								<!-- /.box-header -->
 								<div class="box-body" style="height:800px;">
 									<table id="tbl-productServices" class="table table-bordered table-hover">
@@ -258,7 +354,7 @@
 												<th>Dept</th>
 												<th>Charges</th>
 												<th>Date</th>
-												<th class="col-sm-4"></th>
+												<th class="col-sm-3"></th>
 											</tr>
 										</thead>
 									</table>
@@ -345,6 +441,19 @@
 </div>
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
-            <span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
-		</div>
+	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
+</div>
+
+
+<div class="toast jam toast_duplicate" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Duplicate.
+</div>
+
+<div class="toast jam toast_duplicate_cost" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Cost Duplicate.
+</div>
+
+<div class="toast jam toast_duplicate_extra" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Extra Duplicate.
+</div>
 		

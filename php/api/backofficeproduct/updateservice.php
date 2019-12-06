@@ -59,8 +59,20 @@
         $age_teen_to = trim($_POST["age_teen_to"]);
         $min_pax = trim($_POST["min_pax"]);
         $max_pax = trim($_POST["max_pax"]);
-        $id_creditor = trim($_POST["id_creditor"]);
+        $id_creditor = trim($_POST["id_creditor"]);        
+        $age_inf_from = trim($_POST["age_inf_from"]);
+        $age_child_from = trim($_POST["age_child_from"]);
+        $age_teen_from = trim($_POST["age_teen_from"]);
+        $for_infant = trim($_POST["for_infant"]);
+        $for_child = trim($_POST["for_child"]);
+        $for_teen = trim($_POST["for_teen"]);
+        $for_adult = trim($_POST["for_adult"]);
 		
+        $min_age = trim($_POST["min_age"]);
+        $max_age = trim($_POST["max_age"]);
+        $is_pakage = trim($_POST["is_pakage"]);
+        $special_name = trim($_POST["special_name"]);
+
 		if ($age_inf_to == "") 
 		{
 			$age_inf_from = NULL;
@@ -77,7 +89,14 @@
 			$age_teen_from = NULL;
 			$age_teen_to = NULL;
 		}
-
+        if ($min_pax == "") 
+        {
+            $min_pax = NULL;
+        }
+        if ($max_pax == "") 
+        {
+            $max_pax = NULL;
+        }
         $con = pdo_con();
         $sql = "UPDATE product_service SET 
                 valid_from =:valid_from,
@@ -105,7 +124,18 @@
                 age_teen_to =:age_teen_to,
                 min_pax =:min_pax,
                 max_pax =:max_pax,
-                id_creditor =:id_creditor
+                id_creditor =:id_creditor,
+                for_infant =:for_infant,
+                for_child =:for_child,
+                for_teen =:for_teen,
+                age_inf_from =:age_inf_from,
+                age_child_from =:age_child_from,
+                age_teen_from =:age_teen_from,
+                min_age =:min_age,
+                max_age =:max_age,
+                for_adult =:for_adult,
+                is_pakage =:is_pakage, 
+                special_name =:special_name
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
@@ -136,7 +166,18 @@
                 ":age_teen_to" => $age_teen_to,
                 ":min_pax" => $min_pax,
                 ":max_pax" => $max_pax,
-                ":id_creditor" => $id_creditor));
+                ":id_creditor" => $id_creditor,
+                ":for_infant" => $for_infant,
+                ":for_child" => $for_child,
+                ":for_teen" => $for_teen,
+                ":age_inf_from" => $age_inf_from,
+                ":age_child_from" => $age_child_from,
+                ":age_teen_from" => $age_teen_from,
+                ":min_age" => $min_age,
+                ":max_age" => $max_age,
+                ":for_adult" => $for_adult,
+                ":is_pakage" => $is_pakage, 
+                ":special_name" => $special_name));
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

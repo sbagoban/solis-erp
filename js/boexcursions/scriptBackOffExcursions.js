@@ -61,12 +61,10 @@ function dateRangePicker(idBlockRates) {
         opens: 'left'
     }, function(start, end, label) {
         counterClose++;
-        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         var closedStartDate = start.format('YYYY-MM-DD');
         var closedEndDate = end.format('YYYY-MM-DD');
 
         var chkkk = start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD');
-        //$('#selectedClosedDate').append('<div class="col-md-4"><input type="text" class="closedatetxt" id="closeData'+ counterClose +'" value="' + chkkk + '"><a href="#" class="remove_field1"  onclick = "selectedClosedDateDelete('+ counterClose +')"><i aria-hidden="true" class="fa fa-trash-o fa-lg"></i></a></div>');
         selectedClosedDateFunc(closedStartDate, closedEndDate, idBlockRates);
     });
 }
@@ -74,7 +72,7 @@ function dateRangePicker(idBlockRates) {
 function dateRangePickerServiceFromTo() {
     $('#daterangeServiceFromTo').daterangepicker({
         locale: {
-            format: 'DD/MMM/YYYY'
+            format: 'DD/MM/YYYY'
         },
         opens: 'left'
     }, function(start, end, label) {

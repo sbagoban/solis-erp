@@ -77,7 +77,7 @@
 														<tr>
 															<th class="col-sm-1">Code</th>
 															<th class="col-sm-2">Extra</th>
-															<th class="col-sm-5">Charges</th>
+															<th class="col-sm-4">Charges</th>
 															<th class="col-sm-2"></th>
 														</tr>
 													</thead>
@@ -123,7 +123,7 @@
 									
 									<div class="form-group">
 										<label class="col-sm-2 control-label">Product</label>
-										<div class="col-sm-6">
+										<div class="col-sm-7">
 											<input type="text" class="form-control" id="id_product" style="display: none">
 											<input type="text" class="form-control" id="product_name" placeholder="Name of the product" readonly style="text-transform: uppercase; font-size: 18px;">
 										</div>
@@ -133,8 +133,9 @@
 										<thead>
 											<tr>
 												<th class="col-sm-1">Code</th>
-												<th class="col-sm-4">Date</th>
-												<th class="col-sm-4">Charges</th>
+												<th class="col-sm-3">Date</th>												
+												<th class="col-sm-1">Currency</th>
+												<th class="col-sm-1">Charges</th>
 												<th class="col-sm-3"></th>
 											</tr>
 										</thead>
@@ -211,6 +212,8 @@
 							
 							<div class="pager">
 								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraCost">Save</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-updateProductServicesExtraCost" style="display:none;">Update</button>
+
 							</div>
 						</div>
 						<!-- /.box-body -->
@@ -219,3 +222,6 @@
 		</div>
 	</div>
 </div>
+
+
+

@@ -29,7 +29,8 @@ $query_c = $con->prepare("
 SELECT PRS.id_product_service, PRS.id_product, PRS.service_name, PRS.charge, PRS.valid_from, PRS.valid_to, PRS.transfer_included,
 PRS.id_dept, PRS.id_country, PRS.id_coast, PR.product_name, PRS.id_dept, DP.deptname, PRS.active, PRS.id_tax, PRS.charge, PRS.duration,
 PRS.comments, PRS.cancellation, PRS.description, PRS.age_child_to, PRS.age_inf_to, PRS.age_teen_to, PRS.min_pax, PRS.max_pax, 
-PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday, PRS.id_creditor
+PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday, PRS.id_creditor,
+PRS.for_infant, PRS.for_child, PRS.for_teen, PRS.age_child_from, PRS.age_inf_from, PRS.age_teen_from, PRS.min_age, PRS.max_age, PRS.for_adult,  PRS.is_pakage, PRS.special_name
 FROM product_service PRS
 JOIN product PR on PRS.id_product = PR.id_product
 JOIN tbldepartments DP on PRS.id_dept = DP.id
@@ -75,7 +76,18 @@ if ($row_count_c > 0) {
             'on_friday' => $row['on_friday'],
             'on_saturday' => $row['on_saturday'],            
             'on_sunday' => $row['on_sunday'],            
-            'id_creditor' => $row['id_creditor']
+            'id_creditor' => $row['id_creditor'],
+            'for_infant' => $row['for_infant'],
+            'for_child' => $row['for_child'], 
+            'for_teen' => $row['for_teen'],
+            'age_child_from' => $row['age_child_from'],            
+            'age_inf_from' => $row['age_inf_from'],            
+            'age_teen_from' => $row['age_teen_from'],
+            'min_age' => $row['min_age'], 
+            'max_age' => $row['max_age'], 
+            'for_adult' => $row['for_adult'], 
+            'is_pakage' => $row['is_pakage'],
+            'special_name' => $row['special_name']        
         );
     }
     $myData = $services;
@@ -83,6 +95,7 @@ if ($row_count_c > 0) {
 } else {
     //echo "NO DATA";
     $services[] = array(
+        'id_product_service' => '-',
         'id_product' => '-',
         'service_name' => '-',
         'charge' => '-',
@@ -113,7 +126,18 @@ if ($row_count_c > 0) {
         'on_friday' => '-',
         'on_saturday' => '-', 
         'on_sunday' => '-',
-        'id_creditor' => '-'
+        'id_creditor' => '-',
+        'for_infant' => '-',
+        'for_child' => '-',
+        'for_teen' => '-',
+        'age_child_from' => '-', 
+        'age_inf_from' => '-',
+        'age_teen_from' => '-',
+        'min_age' => '-', 
+        'max_age' => '-', 
+        'for_adult' => '-', 
+        'is_pakage' => '-', 
+        'special_name' => '-'
     );
     $myData = $services;
     echo json_encode($myData);

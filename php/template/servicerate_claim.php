@@ -72,6 +72,7 @@
 									<option value="A" name="Tour Operator">Tour Operator</option>
 									<option value="B" name="Worldwide">Worldwide</option>
 									<option value="C" name="Market">Market</option>
+									<option value="D" name="Direct Sales">Direct Sales</option>
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">
@@ -153,8 +154,8 @@
 													<thead>
 														<tr>
 															<th class="col-sm-1">Code</th>
-															<th class="col-sm-2">Extra</th>
-															<th class="col-sm-5">Charges</th>
+															<th class="col-sm-4">Extra</th>
+															<th class="col-sm-2">Charges</th>
 															<th class="col-sm-2"></th>
 														</tr>
 													</thead>
@@ -180,7 +181,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">Service</label>
 						<div class="col-sm-10">
-							<label class="control-label" id="product_name">product + service from product service + supplier name + Dept for + Coast</label>
+							<input type="text" class="form-control" id="product_name_dtl" readonly="" style="text-transform: uppercase; font-size: 18px;">
 						</div>
 					</div>
 					<table id="tbl-productServicesClaim" class="table table-bordered table-hover">
@@ -192,16 +193,15 @@
 								<th class="col-sm-1">Charges</th>
 								<th class="col-sm-1">CUR</th>
 								<th class="col-sm-2">Date</th>
-								<th class="col-sm-2">Specific</th>
-								<th class="col-sm-2"></th>
+								<th class="col-sm-1">Specific</th>
+								<th class="col-sm-3"></th>
 							</tr>
 						</thead>
 						<tbody></tbody>
 					</table>
 				</div>
-				<!-- /.box-body -->
-				
-				
+				<!-- /.box-body -->		
+				<div id="tooltip" style="display: none;">Test</div>		
 			</div>
 		</div>
 	</div>
@@ -257,7 +257,8 @@
 							</div>
 							
 							<div class="pager">
-								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraCost">Save</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-saveProductServicesExtraClaim">Save</button>
+								<button type="button" class="btn btn-primary pull-right" id="btn-updateProductServicesExtraClaim" style="display: none;">Update</button>
 							</div>
 						</div>
 						<!-- /.box-body -->

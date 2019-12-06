@@ -38,7 +38,13 @@ try {
     $con = pdo_con();
     $stmt = $con->prepare("UPDATE product_service SET active=0 WHERE id_product_service = :id_product_service");
     $stmt->execute(array(":id_product_service"=>$id_product_service));
-    
+
+    $stmt2 = $con->prepare("UPDATE product_service_cost SET active=0 WHERE id_product_service = :id_product_service");
+    $stmt2->execute(array(":id_product_service"=>$id_product_service));
+
+    $stmt3 = $con->prepare("UPDATE product_service_claim SET active=0 WHERE id_product_service = :id_product_service");
+    $stmt3->execute(array(":id_product_service"=>$id_product_service));
+
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
