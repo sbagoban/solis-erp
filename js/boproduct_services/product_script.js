@@ -123,6 +123,34 @@ $(document).ready(function(){
         $("#age_child_to").val('12');
         $("#is_package_blk").css("display", "none");
 
+        $( "#service_name_transfer" ).change(function () {
+            $( "#service_name_transfer option:selected" ).each(function() {
+                service_name = $( this ).text();
+                if (service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
+                    $('#special_name_transfer').css('display', 'block');  
+                    $('#special_name_transfer').val('Airport');
+                    $("#special_name_transfer option[value='Drop on']").hide();
+                    $("#special_name_transfer option[value='Drop Off']").hide();
+                    $("#special_name_transfer option[value='Full Day']").hide();
+                    $("#special_name_transfer option[value='Half Day']").hide();
+                    $("#special_name_transfer option[value='Night Tour']").hide();
+                    $("#special_name_transfer option[value='Airport']").show();
+                    $("#special_name_transfer option[value='Port']").show();
+                } else if (service_name == "INTER HOTEL") {                     
+                    $('#special_name_transfer').css('display', 'none');
+                } else if (service_name == "ACTIVITY") {        
+                    $('#special_name_transfer').css('display', 'block');              
+                    $("#special_name_transfer option[value='Airport']").hide();
+                    $("#special_name_transfer option[value='Port']").hide();                    
+                    $("#special_name_transfer option[value='Drop on']").show();
+                    $("#special_name_transfer option[value='Drop Off']").show();
+                    $("#special_name_transfer option[value='Full Day']").show();
+                    $("#special_name_transfer option[value='Half Day']").show();
+                    $("#special_name_transfer option[value='Night Tour']").show();
+                }
+            });
+        }).change();
+
     } if(servicetype == "EXCURSION") {
         $("#id_creditor_blk").css("display", "block");
         $("#id_tax_blk").css("display", "block");

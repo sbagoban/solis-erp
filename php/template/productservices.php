@@ -120,6 +120,8 @@
 										<option value="Full Day">Full Day</option>
 										<option value="Half Day">Half Day</option>
 										<option value="Night Tour">Night Tour</option>
+										<option value="Airport">Airport</option>
+										<option value="Port">Port</option>
 									</select>
 								</div>
 							</div>
@@ -138,6 +140,7 @@
 											<!-- To modify - select from db -->
 											<option value="2">OUTSIDE SCOPE</option>
 											<option value="3" selected="selected">VAT</option>
+											<option value="4">Exempt VAT</option>
 										</select>
 									</div>
 								</div>
