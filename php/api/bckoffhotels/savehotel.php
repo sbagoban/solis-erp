@@ -65,7 +65,8 @@ try {
 
     $areafk = trim($arrdata_details["areafk"]);
     $coastfk = trim($arrdata_details["coastfk"]);
-
+    $transfercoastfk = trim($arrdata_details["id_transfer_coast"]);
+    
     $website = trim($arrdata_details["website"]);
 
     $lat = trim($arrdata_details["lat"]);
@@ -108,6 +109,7 @@ try {
                 phy_countryfk,
                 areafk,
                 coastfk,
+                id_transfer_coast,
                 website,
                 ratecode,
                 specialratecode,
@@ -135,6 +137,7 @@ try {
                 :phy_countryfk,
                 :areafk,
                 :coastfk,
+                :id_transfer_coast,
                 :website,
                 :ratecode,
                 :specialratecode,
@@ -163,6 +166,7 @@ try {
             ":phy_countryfk" => $phy_countryfk,
             ":areafk" => $areafk,
             ":coastfk" => $coastfk,
+            ":id_transfer_coast" => $transfercoastfk,
             ":website" => $website,
             ":ratecode" => $ratecode,
             ":specialratecode" => $specialratecode,
@@ -196,6 +200,7 @@ try {
                 phy_countryfk = :phy_countryfk,
                 areafk = :areafk,
                 coastfk = :coastfk,
+                id_transfer_coast=:id_transfer_coast,
                 website = :website,
                 ratecode = :ratecode,
                 specialratecode = :specialratecode,
@@ -224,6 +229,7 @@ try {
             ":phy_countryfk" => $phy_countryfk,
             ":areafk" => $areafk,
             ":coastfk" => $coastfk,
+            ":id_transfer_coast"=>$transfercoastfk,
             ":website" => $website,
             ":ratecode" => $ratecode,
             ":specialratecode" => $specialratecode,

@@ -22,6 +22,7 @@ function _hotel_details($con, $hotelids) {
         $phy_countryfk = $rw["phy_countryfk"];
         $areafk = $rw["areafk"];
         $coastfk = $rw["coastfk"];
+        $id_transfer_coast = $rw["id_transfer_coast"];
         $website = $rw["website"];
         $ratecode = $rw["ratecode"];
         $specialratecode = $rw["specialratecode"];
@@ -50,6 +51,7 @@ function _hotel_details($con, $hotelids) {
             "phy_postcode" => $phy_postcode,
             "phy_countryfk" => $phy_countryfk,
             "areafk" => $areafk,
+            "id_transfer_coast" => $id_transfer_coast,
             "coastfk" => $coastfk,
             "website" => $website,
             "ratecode" => $ratecode,

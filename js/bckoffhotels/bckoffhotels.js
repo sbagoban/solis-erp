@@ -459,6 +459,12 @@ function hotels()
                     comboType: "image",
                     comboImagePath: "../../images/"
                 },
+                {type: "combo", name: "id_transfer_coast", label: "Transfer Coast:", labelWidth: "100",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                },
                 {type: "input", name: "lat", label: "Latitude:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",
@@ -635,6 +641,8 @@ function hotels()
 
 
     var cboCoast = form_hotels.getCombo("coastfk");
+    var cboTransferCoast = form_hotels.getCombo("id_transfer_coast");
+    
     var dsCoast = new dhtmlXDataStore();
     dsCoast.load("php/api/combos/coast_combo.php?t=" + encodeURIComponent(global_token), "json", function () {
 
@@ -644,9 +652,14 @@ function hotels()
             var value = item.value;
             var txt = item.text;
             cboCoast.addOption([{value: value, text: txt, img_src: "images/coast.png"}]);
+            cboTransferCoast.addOption([{value: value, text: txt, img_src: "images/coast.png"}]);
         }
         cboCoast.readonly(true);
         cboCoast.addOption([{value: "", text: "[SELECT]", img_src: "images/coast.png"}]);
+        
+        cboTransferCoast.readonly(true);
+        cboTransferCoast.addOption([{value: "", text: "[SELECT]", img_src: "images/coast.png"}]);
+        
     });
 
     //==========================
