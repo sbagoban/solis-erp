@@ -17,7 +17,6 @@ function changeTransfer() {
     $( "#service_name_transfer" ).change(function () {
         $( "#service_name_transfer option:selected" ).each(function() {
             service_name = $( this ).text();
-            
         });
     }).change();
     return service_name;
