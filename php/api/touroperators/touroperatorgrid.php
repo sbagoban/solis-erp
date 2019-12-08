@@ -30,7 +30,7 @@ $sql = "
             ct.comptype,
             t.mail_address,t.mail_address2,
             t.mail_city,t.mail_postcode,t.mail_countryfk,
-            t.taxindicatorfk,t.commission,t.markup,t.iata_code,
+            t.taxindicatorfk,t.commission,t.markup,t.iata_code,t.id_vat,
             group_concat(tc.companyfk SEPARATOR ',') AS selected_companies_ids,
             group_concat(com.companyname SEPARATOR '<BR>') AS selected_companies
             from tbltouroperator t
@@ -47,7 +47,7 @@ $sql = "
             t.phy_city,t.phy_postcode,
             t.mail_address,t.mail_address2,
             t.mail_city,t.mail_postcode,t.mail_countryfk, t.taxindicatorfk,
-            t.commission, t.markup, t.iata_code
+            t.commission, t.markup, t.iata_code, t.id_vat
             order by t.tocode
         ) A
         left join
@@ -85,7 +85,7 @@ $data->render_complex_sql($sql, "id", "toname,
     mail_address,mail_address2,
     mail_city,mail_postcode,mail_countryfk,
     taxindicatorfk,commission,markup,iata_code,countries,market_countries_display,
-    market_countries_ids");
+    market_countries_ids,id_vat");
 ?>
 
 

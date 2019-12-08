@@ -406,6 +406,12 @@ function touroperators()
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
                     comboImagePath: "../../images/"
+                },
+                {type: "combo", name: "id_vat", label: "Tax:", labelWidth: "100",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
                 }]}
     ];
 
@@ -552,13 +558,25 @@ function touroperators()
     var cboRateCode = form_touroperators.getCombo("ratecode");
     var cboSpecialRateCode = form_touroperators.getCombo("specialratecode");
     var cboTransferRateCode = form_touroperators.getCombo("transferratecode");
+    var cboTax = form_touroperators.getCombo("id_vat");
 
     cboRateCode.addOption([{value: "-", text: "None", img_src: "images/rate_32.png"}]);
     cboSpecialRateCode.addOption([{value: "-", text: "None", img_src: "images/rate_32.png"}]);
     cboTransferRateCode.addOption([{value: "-", text: "None", img_src: "images/rate_32.png"}]);
-
+    cboTax.addOption([{value: "", text: "None", img_src: "images/rate_32.png"}]);
+    
+    var dsTax = new dhtmlXDataStore();
+    dsTax.load("php/api/combos/taxcode_combo.php?t=" + global_token, "json", function () {
+        for (var i = 0; i < dsTax.dataCount(); i++)
+        {
+            var item = dsTax.item(dsTax.idByIndex(i));
+            cboTax.addOption([{value: item.value, text: item.description, img_src: "images/rate_32.png"}]);
+        }
+        cboTax.readonly(true);
+        cboTax.enableOptionAutoPositioning(true);
+    });
+        
     var dsRateCode = new dhtmlXDataStore();
-
     dsRateCode.load("php/api/combos/rate_code_combo.php?t=" + encodeURIComponent(global_token), "json", function () {
 
         for (var i = 0; i < dsRateCode.dataCount(); i++)
@@ -1302,7 +1320,6 @@ function touroperators()
 
 
             var data = dsTourOperators.item(toid);
-
             form_touroperators.setFormData(data);
             form_api.setFormData(data);
             form_notes.setFormData(data);
