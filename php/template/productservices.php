@@ -96,11 +96,11 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
 								<div class="col-sm-6" id="id_service_1">
-									<input type="text" class="form-control" id="service_name" onkeyup="onkeyupCtrl()" placeholder="Name of the product">
+									<input type="text" class="form-control" id="service_name" placeholder="Name of the product">
 								</div>
 
 								<div class="col-sm-6" id="id_service_2" style="display: none;">
-									<select type="text" class="form-control" id="service_name_transfer" onchange="onkeyupCtrl()">
+									<select type="text" class="form-control" id="service_name_transfer">
 										<option selected disabled hidden>Select an Option</option>
 										<option value="SOUTH EAST">SOUTH EAST</option>
 										<option value="OTHER COAST">OTHER COAST</option>

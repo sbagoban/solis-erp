@@ -42,7 +42,7 @@
 										<input type="number" class="form-control" id="ps_child_cost">
 										<span class="input-group-addon" id="ps_child_cost_addon">Child</span>
 										<input type="number" class="form-control" id="ps_infant_cost">
-										<span class="input-group-addon" id="ps_infant_cost_addon">Infant</span>
+										<span class="input-group-addon" id="ps_infant_cost_addon">Infant</span>							
 									</div>
 									<br>
 								</div>

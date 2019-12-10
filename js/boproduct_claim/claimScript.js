@@ -103,3 +103,52 @@ var helpersDropdownExtraCreated = {
         });
     }
 }
+
+
+$(document).ready(function(){ 
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var id_product_service_cost = urlParams.get("id_product_service_cost");
+    var ps_adult_cost = urlParams.get("ps_adult_cost");
+    var ps_teen_cost = urlParams.get("ps_teen_cost");
+    var ps_child_cost = urlParams.get("ps_child_cost");
+    var ps_infant_cost = urlParams.get("ps_infant_cost");
+
+    if (id_product_service_cost > 0) { 
+        if (ps_adult_cost > 0) {
+            $("#ps_adult_claim").css("display", "block");
+            $("#ps_adult_claim").attr("placeholder", "Adult");
+        }
+        if (ps_adult_cost <= 0) { 
+            $("#ps_adult_claim_addon").css("display", "none");
+            $("#ps_adult_claim").css("display", "none");
+        }
+        
+        if (ps_teen_cost > 0) {
+            $("#ps_teen_claim").css("display", "block");
+            $("#ps_teen_claim").attr("placeholder", "Teen");
+        }
+        if (ps_teen_cost <= 0) { 
+            $("#ps_teen_claim_addon").css("display", "none");
+            $("#ps_teen_claim").css("display", "none");
+        }
+        
+        if (ps_child_cost > 0) {
+            $("#ps_child_claim").css("display", "block");
+            $("#ps_child_claim").attr("placeholder", "Child");
+        }
+        if (ps_child_cost <= 0) { 
+            $("#ps_child_claim_addon").css("display", "none");
+            $("#ps_child_claim").css("display", "none");
+        }
+
+        if (ps_infant_cost > 0) {
+            $("#ps_infant_claim").css("display", "block");
+            $("#ps_infant_claim").attr("placeholder", "Infant");
+        }
+        if (ps_infant_cost <= 0) { 
+            $("#ps_infant_claim_addon").css("display", "none");
+            $("#ps_infant_claim").css("display", "none");
+        }
+    }
+});
