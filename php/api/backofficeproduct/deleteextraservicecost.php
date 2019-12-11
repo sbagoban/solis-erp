@@ -40,6 +40,7 @@ try {
     $stmt->execute(array(":id_product_service_extra_cost"=>$id_product_service_extra_cost));
     
 } catch (Exception $ex) {
+    echo json_encode(array("OUTCOME" => "ERROR"));
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 

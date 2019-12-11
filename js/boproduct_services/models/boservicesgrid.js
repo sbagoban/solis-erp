@@ -125,11 +125,27 @@ function allServicesGrid() {
                 .on( 'click', '#btnDeleteService', function (e) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    serviceDelete(data);
+                    alertServiceDelete(data);
                 })
         }
 
     });
+}
+
+function alertServiceDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        serviceDelete(data);
+	});
 }
 
 // Delete Product
@@ -140,10 +156,14 @@ function serviceDelete(data) {
         url: url_delete_service,
         method: "POST",
         data: objDelService,
+        dataType: "json",
         success: function (data) {
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allServicesGrid();

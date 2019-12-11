@@ -38,8 +38,10 @@ try {
     $con = pdo_con();
     $stmt = $con->prepare("UPDATE product SET active=0 WHERE id_product = :id_product");
     $stmt->execute(array(":id_product"=>$id_product));
-    
-} catch (Exception $ex) {
+} 
+
+catch (Exception $ex) {
+    echo json_encode(array("OUTCOME" => "ERROR"));
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 
