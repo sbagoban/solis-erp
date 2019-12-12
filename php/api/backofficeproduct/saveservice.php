@@ -81,6 +81,12 @@ try {
         $max_age = 0;
     }
 
+    if ($min_age == "") {
+        $min_age = 0;
+    }
+    if ($max_age == "") {
+        $max_age = 0;
+    }
 	if ($age_inf_to == "") 
 	{
 		$age_inf_from = NULL;
