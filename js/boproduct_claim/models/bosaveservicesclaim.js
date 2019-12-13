@@ -211,13 +211,16 @@ $("#btn-saveServicesClaim").click(function () {
         dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                                                            
         success : function(data){
             var overlap = false; 
+            if (id_product_service_claim == 0) {
                 data.forEach(function (arrayItem) {
                     x = arrayItem;
                     if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
                         overlap = false;
                         addClaimProductService();
                     } else {
-                        overlap = true;             
+                        overlap = true;
+                        alert('Date Overlap');                   
+                        resetProductServicesClaim();           
                     } 
                 });
                 if (overlap == true) { 
@@ -227,7 +230,9 @@ $("#btn-saveServicesClaim").click(function () {
                         checkMarket(x);   
                     }  
                 }
-            
+            } else {
+                addClaimProductService();
+            }
         },
         error: function(error) {
             console.log('Error ${error}');

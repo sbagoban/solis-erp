@@ -38,6 +38,10 @@
         $id_product_type = trim($_POST["id_product_type"]);
         $product_name = trim($_POST["product_name"]);
 
+        $id_user = $_SESSION["solis_userid"];
+        $uname = $_SESSION["solis_username"];
+        $log_status = "UPDATE";
+
         $con = pdo_con();
         $sql = "UPDATE product SET 
                         id_service_type=:id_service_type,
@@ -51,6 +55,39 @@
                 ":product_name" => $product_name,
                 ":id_product_type" => $id_product_type,
                 ":id_service_type" => $id_service_type));
+
+        // Start Product Log
+        $sqlLog = "INSERT INTO product_log ( 
+            id_product,
+            id_product_type, 
+            id_service_type, 
+            product_name,
+            id_user,
+            uname,
+            log_status
+            ) 
+                VALUES (
+                    :id_product,
+                    :id_product_type, 
+                    :id_service_type, 
+                    :product_name,
+                    :id_user,
+                    :uname,
+                    :log_status
+                    )";
+    
+        $stmt = $con->prepare($sqlLog);
+                    $stmt->execute(array(
+                    ":id_product" => $id_product,
+                    ":id_product_type" => $id_product_type, 
+                    ":id_service_type" => $id_service_type,
+                    ":product_name" => $product_name,
+                    ":id_user" => $id_user,
+                    ":uname" => $uname,
+                    ":log_status" => $log_status
+                ));
+    
+        // End Of Log
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

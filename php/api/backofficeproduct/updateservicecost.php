@@ -44,7 +44,10 @@
         $ps_infant_cost = trim($_POST["ps_infant_cost"]);
         $id_currency = trim($_POST["id_currency"]);		
         $currency = trim($_POST["currency"]);
+        $id_user = $_SESSION["solis_userid"];
+        $uname = $_SESSION["solis_username"];
 
+        $log_status = "UPDATE";
 		if ($ps_teen_cost == "") 
 		{
 			$ps_teen_cost = 0;
@@ -58,7 +61,6 @@
 		{
 			$ps_infant_cost = 0;
 		}
-
 
         $con = pdo_con();
         $sql = "UPDATE product_service_cost SET 
@@ -85,7 +87,56 @@
                 ":id_currency" => $id_currency,
                 ":currency" => $currency,
                 ":id_dept" => $id_dept));
+
+                $sqlLog = "INSERT INTO product_service_cost_log ( 
+                    id_product_service_cost,
+                    valid_from, 
+                    valid_to, 
+                    id_dept,
+                    ps_adult_cost, 
+                    ps_teen_cost, 
+                    ps_child_cost, 
+                    ps_infant_cost, 
+                    id_currency, 
+                    currency, 
+                    id_user,
+                    uname,
+                    log_status
+                    ) 
+                        VALUES (
+                            :id_product_service_cost,
+                            :valid_from, 
+                            :valid_to, 
+                            :id_dept,
+                            :ps_adult_cost, 
+                            :ps_teen_cost, 
+                            :ps_child_cost, 
+                            :ps_infant_cost, 
+                            :id_currency, 
+                            :currency, 
+                            :id_user,
+                            :uname,
+                            :log_status
+                            )";
+                            
+                $stmt = $con->prepare($sqlLog);
+                $stmt->execute(array(
+                    ":id_product_service_cost" => $id_product_service_cost,
+                    ":valid_from" => $valid_from, 
+                    ":valid_to" => $valid_to, 
+                    ":id_dept" => $id_dept,
+                    ":ps_adult_cost" => $ps_adult_cost, 
+                    ":ps_teen_cost" => $ps_teen_cost, 
+                    ":ps_child_cost" => $ps_child_cost, 
+                    ":ps_infant_cost" => $ps_infant_cost, 
+                    ":id_currency" => $id_currency, 
+                    ":currency" => $currency, 
+                    ":id_user" => $id_user,
+                    ":uname" => $uname,
+                    ":log_status" => $log_status
+            ));
     }
+
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
     }

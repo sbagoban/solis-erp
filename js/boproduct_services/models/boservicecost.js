@@ -52,6 +52,8 @@ $('#btn-saveProductServicesCost').click(function () {
     const urlParams = new URLSearchParams(allParams);
     var id_product_service = urlParams.get("psid");
 
+    var id_product_service_cost = document.getElementById("id_product_service_cost_1").innerHTML;
+
     var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
     var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
     const url_overlap_date = "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + id_product_service;
@@ -60,15 +62,21 @@ $('#btn-saveProductServicesCost').click(function () {
         method : "POST", 
         dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                                                            
         success : function(data) {
-            data.forEach(function (arrayItem) {
-                var x = arrayItem;
-                if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
-                    addCostProductService();
-                } else {
-                    alert('Date Overlap');                   
-                    resetFormAddServiceCost();
-                } 
-            });
+            if (id_product_service_cost == 0) {
+                data.forEach(function (arrayItem) {
+                    var x = arrayItem;
+                    console.log(valid_from > x.valid_from);
+                        if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
+                            alert('1');   
+                            addCostProductService();
+                        } else {
+                            alert('Date Overlap');                   
+                            resetFormAddServiceCost();
+                        }
+                });
+            } else {
+                addCostProductService();
+            }
             
         },
         error: function(error) {
