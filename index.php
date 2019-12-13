@@ -455,7 +455,7 @@ if (isset($_GET["m"])) {
                     } else if ($menu == "managebookings") {
                         include 'php/template/booking_engine.php';
                     } else if ($menu == "bookingSystem") {
-                        include 'php/application/booking/index.php';
+                        include 'php/application/bookingSystem/index.php';
                     } else if ($menu == "backoff_service_claim") {
                         include 'php/template/servicerate.php';
                     } else if ($menu == "backoff_excursions") {

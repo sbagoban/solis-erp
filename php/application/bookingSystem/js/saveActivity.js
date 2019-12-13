@@ -155,7 +155,7 @@ $(function(){
         
 		if(!saveError)
 		{
-			if($('#id_booking_activity').val() == 0 ||$('#id_booking_activity').val() == '')
+			if($('#id_booking_activity_claim').val() == 0 ||$('#id_booking_activity_claim').val() == '')
 				{
                     // save Activity
                     var activityData = {action: 'CREATE'}
@@ -175,7 +175,7 @@ $(function(){
 });
 
 function saveActivity(activityData) { 
-    var id_booking_activity = -1;
+    var id_booking_activity_claim = -1;
     var id_booking = $('#id_booking').val();
     var activity_service_paid_by = $('#activity_paidBy').val();
 	if (activity_service_paid_by == "TO")
@@ -279,7 +279,7 @@ function saveActivity(activityData) {
     var booking_client = $('#activity_client').val();
     
     var objReservationActivity = {
-        id_booking_activity: -1,
+        id_booking_activity_claim: -1,
         id_product_service_claim: id_product_service_claim,
         id_booking: id_booking,
         activity_service_paid_by: activity_service_paid_by,
@@ -326,7 +326,7 @@ function saveActivity(activityData) {
                         {
                             toastr.success('New Activity saved successfully');
                         }
-                        $('#id_booking_activity').val(data.id_booking_activity);
+                        $('#id_booking_activity_claim').val(data.id_booking_activity_claim);
                         allBookingActivity(data.id_booking);
                         $("#dossierService").collapse('show');
                         $("#serviceDetails").collapse('hide');
@@ -346,14 +346,14 @@ function saveActivity(activityData) {
 }
 
 function updateActivity() { 
-	var id_booking_activity = $('#id_booking_activity').val();
+	var id_booking_activity_claim = $('#id_booking_activity_claim').val();
     var id_booking = $('#id_booking').val();
     var activityData = {
         id_booking: id_booking,
-        id_booking_activity: id_booking_activity,
+        id_booking_activity_claim: id_booking_activity_claim,
         action : 'UPDATE'
     }
-    if($('#id_booking_activity').val() == '' && $('#id_booking_activity').val() != '')
+    if($('#id_booking_activity_claim').val() == '' && $('#id_booking_activity_claim').val() != '')
         {
             alert("An error occured, please load back the Activity");
         }

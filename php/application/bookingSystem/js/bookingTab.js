@@ -13,7 +13,7 @@ $(".nav-link").on('click', function(e)
 	if (id_booking_r == 'readonly' && id_booking != '')
 	{
 		tabClicked = $(this).attr('aria-controls');
-		$('#myTabContent').load("php/application/booking/"+tabClicked+".php");
+		$('#myTabContent').load("php/application/bookingSystem/"+tabClicked+".php");
 	}
 	else
 	{
