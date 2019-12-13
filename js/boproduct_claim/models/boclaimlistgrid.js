@@ -10,19 +10,13 @@ $(document).ready(function(){
     var concat_name = product_name_1 + ' / ' + service_name_1;
     $("#product_name_dtl").val(concat_name);
 
-    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
-
-
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim); 
 });
 
 function allServicesGridClaim(id_product_service_cost,id_product_service_claim ) {
     
    // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
-    $('#tbl-productServicesClaim').DataTable({  
-        "drawCallback": function( settings ) {
-            $('[data-toggle="tooltip1"]').tooltip();
-            $('[data-toggle="tooltip2"]').tooltip();
-        },     
+    $('#tbl-productServicesClaim').DataTable({     
         "processing" : true,
 
         "ajax" : {
@@ -50,7 +44,8 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
         ],
         "columnDefs": [
         ],
-        "columns" : [ {
+        "columns" : [ 
+        {
             "data" : "id_product_service_claim"
         }, {
             "data" : "allName"
@@ -94,6 +89,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                 '<i class="fa fa-fw fa-trash-o" id="btnDeleteClaim"></i>'
             }
         ],
+
         "initComplete": function () {
             $('#tbl-productServicesClaim tbody')
                 .off()
@@ -105,7 +101,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                 .on( 'click', '#btnDeleteClaim', function (e) {
                     var table = $('#tbl-productServicesClaim').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    deleteServiceClaim(data);
+                    alertServiceClaimDelete(data);
                 })
                 .on( 'click', '#btnEditClaim', function (e) {
                     var table = $('#tbl-productServicesClaim').DataTable();
@@ -113,21 +109,83 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                     editServiceClaim(data);
                     extraServiceGridClaim(data);
                 })
-                .on( 'mouseenter', 'td', function () {
+                .on('click', 'td', function(e) {             
                     var table = $('#tbl-productServicesClaim').DataTable();
-                    var data = table.row( $(this).parents('tr') ).data();
-                    if (data.specific_to == 'C') {
-                        countryDetails(data);
+                    var rowData = table.row( $(this).parents('tr') ).data();
+                    if (rowData.specific_to == 'C') {
+                        countryDetails(rowData, e);
+                        $("#myDIV").show();
                     }
-                    if (data.specific_to == 'A') {
-                        toDetails(data);
+                    if (rowData.specific_to == 'A') {
+                        toDetails(rowData, e);
                     }
                 })
-                .on( 'mouseleave', 'td', function () {
-                    $('#tooltip').css("display", "none");
+                .on('click', function(e) {
+                    if ( $(this).is(':visible') ) {
+                        //$("#myDIV").hide();
+                    }
                 })
+                .on('mousemove', function(e){
+                    console.log(e);
+                    $('#myDIV').css({
+                        left: e.pageX,
+                        top: e.pageY
+                    });
+                });
+    
         }
     });
+}
+
+function countryDetails(row2, e) {
+    console.log('-->', row2);
+    const url_display_selected_countries = "php/api/backofficeserviceclaim/selectedmarketclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + row2.id_product_service_claim;
+    var objCountryClaim = {
+        id_product_service_claim : row2.id_product_service_claim
+    };
+    tooltipText = "";
+    $.ajax({
+        url : url_display_selected_countries,
+        method : "POST",
+        data : objCountryClaim,
+        cache: false,   
+        dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                               
+        success : function(data){
+            var arrDisplay = [];
+            data.forEach(function (arrayItem) {
+                var y = arrayItem;   
+                tooltipText = y.country_name;
+                arrDisplay.push(tooltipText);
+            });
+            var vPool="";
+            jQuery.each(arrDisplay, function(i, val) {
+                vPool += val + ", ";
+            });
+    
+            //We add vPool HTML content to #myDIV
+            $('#myDIV').html(vPool);
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });
+}
+
+
+function alertServiceClaimDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        deleteServiceClaim(data);
+	});
 }
 
 // Delete Product
@@ -138,10 +196,14 @@ function deleteServiceClaim(data) {
         url: url_delete_claim,
         method: "POST",
         data: objDelClaim,
+        dataType: "json",
         success: function (data) {
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     
@@ -228,31 +290,6 @@ function editServiceClaim(data) {
     }  
 }
 
-function countryDetails (countryData) {
-    console.log(countryData.id_product_service_claim);
-    const url_display_selected_countries = "php/api/backofficeserviceclaim/selectedmarketclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + countryData.id_product_service_claim;
-    var objCountryClaim = {
-        id_product_service_claim : countryData.id_product_service_claim
-    };
-
-    $.ajax({
-        url : url_display_selected_countries,
-        method : "POST",
-        data : objCountryClaim,
-        cache: false,   
-        dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                               
-        success : function(data){
-            console.log(data);
-            var selectedCountriesTooltip = data.country_name;            
-            $('#tooltip').css("display", "block");
-            console.log(selectedCountriesTooltip);
-        },
-        error: function(error) {
-            console.log('Error ${error}');
-        }
-    }); 
-}
-
 function toDetails(toData) {
-    console.log(toData);
+    //console.log(toData);
 }

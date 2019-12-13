@@ -29,7 +29,8 @@ $con = pdo_con();
 $sql = "select h.id, h.hotelname, h.hoteltypefk,
         IFNULL(h.groupfk,'-') AS groupfk,
         h.description, h.phy_address, h.phy_address2, h.phy_city, h.phy_postcode,
-        h.phy_countryfk, h.areafk, h.coastfk, h.website, h.ratecode, h.specialratecode,
+        h.phy_countryfk, h.areafk, h.coastfk, h.id_transfer_coast,
+        h.website, h.ratecode, h.specialratecode,
         h.lat, h.lon, h.active, h.mail_address, h.mail_address2, h.mail_city,
         h.mail_postcode,
         h.mail_countryfk,h.deleted,
@@ -46,7 +47,7 @@ $data = new JSONDataConnector($con, "PDO");
 
 $data->render_sql($sql, "id", "grpname,hoteltype,hotelname,hoteltypefk,
         groupfk,description,phy_address,phy_address2,phy_city,phy_postcode,
-        phy_countryfk,areafk,coastfk,website,ratecode,specialratecode,
+        phy_countryfk,areafk,coastfk,id_transfer_coast,website,ratecode,specialratecode,
         lat,lon,active,mail_address,mail_address2,mail_city,mail_postcode,
         mail_countryfk,deleted,rating,property_name,company_name,
         num_stars,rating_description");

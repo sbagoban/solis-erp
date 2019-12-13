@@ -90,7 +90,7 @@ function allServicesGridCost() {
                 .on( 'click', '#btnDeleteServiceCost', function (e) {
                     var table = $('#tbl-productServicesCost').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    serviceCostDelete(data);
+                    alertServiceCostDelete(data);
                 })
                 .on( 'click', '#btnEditServiceCost', function (e) {
                     var table = $('#tbl-productServicesCost').DataTable();
@@ -108,6 +108,22 @@ function allServicesGridCost() {
     
 }
 
+function alertServiceCostDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        serviceCostDelete(data);
+	});
+}
+
 // // Delete Product
 function serviceCostDelete(data) {
     var objDelServiceCost = {id_product_service_cost: data.id_product_service_cost};
@@ -116,13 +132,18 @@ function serviceCostDelete(data) {
         url: url_delete_service_cost,
         method: "POST",
         data: objDelServiceCost,
-        success: function (data) {
+        dataType: "json",
+        success: function (data) { 
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allServicesGridCost();
+    allExtraServicesCostGrid(data.id_product_service_cost);
 }
 
 // Edit Product

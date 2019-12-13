@@ -29,11 +29,16 @@
         if (!isset($_GET["id_product_service_claim"])) {
             throw new Exception("INVALID ID");
         }
+          
+        if (!isset($_GET["id_product_service_claim"])) {
+            throw new Exception("INVALID ID". $_GET["id_product_service_claim"]);
+        }
+        
+        $id_product_service_claim = $_GET["id_product_service_claim"];
         // get id service to edit
         
         require_once("../../connector/pdo_connect_main.php");
 
-        $id_product_service_claim = $_GET["id_product_service_claim"];
         $valid_from = trim($_POST["valid_from"]);
         $valid_to = trim($_POST["valid_to"]);
         $specific_to = trim($_POST["specific_to"]);
@@ -51,6 +56,10 @@
         $ex_friday = trim($_POST["ex_friday"]);
         $ex_saturday = trim($_POST["ex_saturday"]);
         $ex_sunday = trim($_POST["ex_sunday"]);
+
+        $id_country = $_POST["id_country"];
+        $id_tour_operator = $_POST["id_tour_operator"];
+        $specific_to_name = $_POST["specific_to_name"];
 		
 		
 		if ($ps_teen_claim == "") 
@@ -64,7 +73,7 @@
 		}
 		if ($ps_infant_claim == "") 
 		{
-			$ps_infant_claimc = 0;
+			$ps_infant_claim = 0;
 		}
 
 
@@ -86,7 +95,8 @@
                 ex_thursday=:ex_thursday,
                 ex_friday=:ex_friday,
                 ex_saturday=:ex_saturday,
-                ex_sunday=:ex_sunday
+                ex_sunday=:ex_sunday,
+                specific_to_name=:specific_to_name
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);                        
@@ -108,7 +118,38 @@
             ":ex_thursday" => $ex_thursday,
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
-            ":ex_sunday" => $ex_sunday));
+            ":ex_sunday" => $ex_sunday,
+            ":specific_to_name" => $specific_to_name));
+
+            if ($specific_to == 'A' || $specific_to == 'C') {
+                $sqlToDelete = $con->prepare("DELETE FROM product_service_claim_to WHERE id_product_service_claim=:id_product_service_claim");
+                $sqlToDelete->execute(array(":id_product_service_claim"=>$id_product_service_claim));
+                $sqlMarketDelete = $con->prepare("DELETE FROM product_service_claim_country WHERE id_product_service_claim=:id_product_service_claim");
+                $sqlMarketDelete->execute(array(":id_product_service_claim"=>$id_product_service_claim));
+            }
+
+            if ($specific_to == 'A') {
+                $sqlTo = "INSERT INTO product_service_claim_to (id_product_service_claim,id_tour_operator) 
+                VALUES (:id_product_service_claim,:id_tour_operator)";
+
+                $stmt = $con->prepare($sqlTo);
+                $data = $id_tour_operator;
+                
+                foreach($data as $to) {
+                    $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_tour_operator' => $to));
+                }
+            } 
+            if($specific_to == 'C') {
+                $sqlMarket = "INSERT INTO product_service_claim_country (id_product_service_claim,id_country) 
+                VALUES (:id_product_service_claim,:id_country)";
+
+                $stmt = $con->prepare($sqlMarket);
+                $data = $id_country;
+                
+                foreach($data as $d) {
+                    $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_country' => $d));
+                }
+            }
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

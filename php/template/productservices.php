@@ -96,11 +96,11 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
 								<div class="col-sm-6" id="id_service_1">
-									<input type="text" class="form-control" id="service_name" onkeyup="onkeyupCtrl()" placeholder="Name of the product">
+									<input type="text" class="form-control" id="service_name" placeholder="Name of the product">
 								</div>
 
 								<div class="col-sm-6" id="id_service_2" style="display: none;">
-									<select type="text" class="form-control" id="service_name_transfer" onchange="onkeyupCtrl()">
+									<select type="text" class="form-control" id="service_name_transfer">
 										<option selected disabled hidden>Select an Option</option>
 										<option value="SOUTH EAST">SOUTH EAST</option>
 										<option value="OTHER COAST">OTHER COAST</option>
@@ -120,6 +120,8 @@
 										<option value="Full Day">Full Day</option>
 										<option value="Half Day">Half Day</option>
 										<option value="Night Tour">Night Tour</option>
+										<option value="Airport">Airport</option>
+										<option value="Port">Port</option>
 									</select>
 								</div>
 							</div>
@@ -138,6 +140,7 @@
 											<!-- To modify - select from db -->
 											<option value="2">OUTSIDE SCOPE</option>
 											<option value="3" selected="selected">VAT</option>
+											<option value="4">Exempt VAT</option>
 										</select>
 									</div>
 								</div>

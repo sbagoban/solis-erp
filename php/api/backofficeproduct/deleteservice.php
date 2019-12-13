@@ -46,6 +46,7 @@ try {
     $stmt3->execute(array(":id_product_service"=>$id_product_service));
 
 } catch (Exception $ex) {
+    echo json_encode(array("OUTCOME" => "ERROR"));
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 

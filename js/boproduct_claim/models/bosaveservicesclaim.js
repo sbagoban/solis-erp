@@ -463,7 +463,7 @@ function addClaimProductService(){
     } else {
         var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
         const url_update_productservice_claim = "php/api/backofficeserviceclaim/updateproductservicesclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
-        var objProductServiceClaimUpdate = {
+        var objProductServiceClaimUpdate = {            
             valid_from: valid_from,
             valid_to: valid_to,
             specific_to: specific_to,
@@ -480,7 +480,10 @@ function addClaimProductService(){
             ex_thursday: ex_thursday,
             ex_friday: ex_friday,
             ex_saturday: ex_saturday,
-            ex_sunday: ex_sunday
+            ex_sunday: ex_sunday,
+            id_country: id_country,
+            id_tour_operator: id_tour_operator,
+            specific_to_name: specific_to_name
         };
 
         $.ajax({
@@ -496,7 +499,7 @@ function addClaimProductService(){
             }
         });
 
-        if (specific_to == 'A') { 
+        if (specific_to == 'A' || specific_to == 'C') { 
             // UPDATE MULTISELECT
             var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
             const url_update_to_claim = "php/api/backofficeserviceclaim/deleteselectedto.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
@@ -511,7 +514,26 @@ function addClaimProductService(){
                     console.log('Error ${error}');
                 }
             });
-            
+
+             // UPDATE MULTISELECT
+            const url_update_country_claim = "php/api/backofficeserviceclaim/deleteselectedcountries.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
+            var objProductServiceClaimUpdateCountry = {id_product_service_claim: id_product_service_claim};
+            $.ajax({
+                url: url_update_country_claim,
+                method: "POST",
+                data: objProductServiceClaimUpdateCountry,
+                success: function (data) {
+                },
+                error: function (error) {
+                    console.log('Error ${error}');
+                }
+            });
+        }
+
+        if (specific_to == 'A') { 
+            // UPDATE MULTISELECT
+            var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
+                    
             const url_save_country_claim = "php/api/backofficeserviceclaim/saveselectedto.php?t=" + encodeURIComponent(global_token);
             var objProductServiceClaimSaveCountry = {
                 id_product_service_claim_to: -1,
@@ -529,21 +551,7 @@ function addClaimProductService(){
                 }
             });
         } else if (specific_to == 'C') {
-            // UPDATE MULTISELECT
             var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
-            const url_update_country_claim = "php/api/backofficeserviceclaim/deleteselectedcountries.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
-            var objProductServiceClaimUpdateCountry = {id_product_service_claim: id_product_service_claim};
-            $.ajax({
-                url: url_update_country_claim,
-                method: "POST",
-                data: objProductServiceClaimUpdateCountry,
-                success: function (data) {
-                },
-                error: function (error) {
-                    console.log('Error ${error}');
-                }
-            });
-            
             const url_save_country_claim = "php/api/backofficeserviceclaim/saveselectedcountries.php?t=" + encodeURIComponent(global_token);
             var objProductServiceClaimSaveCountry = {
                 id_product_service_claim_country: -1,

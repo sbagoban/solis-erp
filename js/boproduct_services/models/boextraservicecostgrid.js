@@ -56,10 +56,26 @@ function allExtraServicesCostGrid(id_product_service_cost) {
                 .on( 'click', '#btnDeleteExtraServiceCost', function (e) {
                     var table = $('#tbl-extraServiceCost').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    deleteExtraServiceCost(data);
+                    alertExtraServiceCostDelete(data);
                 })
         }
     });
+}
+
+function alertExtraServiceCostDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        deleteExtraServiceCost(data);
+	});
 }
 
 // Delete Product
@@ -70,10 +86,14 @@ function deleteExtraServiceCost(data) {
         url: url_delete_extraservice_cost,
         method: "POST",
         data: objDelExtraServiceCost,
+        dataType: "json",
         success: function (data) {
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allExtraServicesCostGrid(data.id_product_service_cost);

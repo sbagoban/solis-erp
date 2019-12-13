@@ -1,6 +1,6 @@
 $(document).ready(function () {
     productCtrl();
-    $('#btn-saveProductServices').attr('disabled', 'disabled');
+   // $('#btn-saveProductServices').attr('disabled', 'disabled');
     $("#age_inf_from").prop("readonly", true);
     $("#age_inf_to").prop("readonly", true);
     $("#age_child_from").prop("readonly", true);
@@ -87,22 +87,22 @@ function productCtrl() {
 }
 
 function onkeyupCtrl() {
-    var service_name = document.getElementById("service_name").value;
+    //var service_name = document.getElementById("service_name").value;
     var id_creditor = document.getElementById("id_creditor").value;
     
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
-    var servicetype = urlParams.get("servicetype"); 
-    if (servicetype == 'EXCURSION') {
-        if(service_name.length > 0) {
-            $('#btn-saveProductServices').attr('disabled', false); 
-        }          
-        else {
-            $('#btn-saveProductServices').attr('disabled',true);
-        }
-    } else if (servicetype == 'TRANSFER') {
-        $('#btn-saveProductServices').attr('disabled', false);
-    }
+    // var servicetype = urlParams.get("servicetype"); 
+    // if (servicetype == 'EXCURSION') {
+    //     if(service_name.length > 0) {
+    //         $('#btn-saveProductServices').attr('disabled', false); 
+    //     }          
+    //     else {
+    //         $('#btn-saveProductServices').attr('disabled',true);
+    //     }
+    // } else if (servicetype == 'TRANSFER') {
+    //     $('#btn-saveProductServices').attr('disabled', false);
+    // }
 }
 
 $('#btn-saveProductServicesCost').click(function (e) {

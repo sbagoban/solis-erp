@@ -64,6 +64,9 @@ if (isset($_GET["m"])) {
         <!--<link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>-->
         <link rel="stylesheet" href="css/boservicesclaim.css">
         <link rel="stylesheet" href="css/style.css">
+        <!-- To downalod -->
+        <link rel='stylesheet' href='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.css'>
+        <!-- To downalod -->
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -687,7 +690,10 @@ if (isset($_GET["m"])) {
         <!-- jQuery 3 -->
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="libraries/jquery/jquery.maskedinput.min.js"></script>
-
+        <!-- TO dwnload -->
+        <script src='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.min.js'></script>
+        <!-- TO dwnload -->
+        <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
  		<!-- DataTables -->
@@ -728,7 +734,6 @@ if (isset($_GET["m"])) {
 		<!-- .SOLIS GLOBAL CSS -->
 		
         <!-- Sandeep Start -->
-        <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.js"></script>
        <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js'></script>

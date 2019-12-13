@@ -64,6 +64,7 @@ try {
     $mail_countryfk = trim($arrdata_details["mail_countryfk"]);
 
     $taxindicatorfk = trim($arrdata_details["taxindicatorfk"]);
+    $id_vat = trim($arrdata_details["id_vat"]);
     $commission = trim($arrdata_details["commission"]);
     $markup = trim($arrdata_details["markup"]);
     $iata_code = trim($arrdata_details["iata_code"]);
@@ -131,7 +132,7 @@ try {
                 phy_address,phy_address2,phy_city,phy_postcode,
                 mail_address,mail_address2,mail_city,mail_postcode,
                 mail_countryfk,taxindicatorfk,commission,markup,
-                iata_code) 
+                iata_code,id_vat) 
                 
                 VALUES (:toname,:phy_countryfk,:companytypefk,
                 :ratecode,:specialratecode,:transferratecode,:active,:api_token,
@@ -139,7 +140,7 @@ try {
                 :phy_address,:phy_address2,:phy_city,:phy_postcode,
                 :mail_address,:mail_address2,:mail_city,:mail_postcode,
                 :mail_countryfk,:taxindicatorfk,:commission,:markup,
-                :iata_code) ";
+                :iata_code,:id_vat) ";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":toname" => $toname,
@@ -163,7 +164,8 @@ try {
             ":taxindicatorfk" => $taxindicatorfk,
             ":commission" => $commission,
             ":markup" => $markup,
-            ":iata_code" => $iata_code));
+            ":iata_code" => $iata_code,
+            ":id_vat" => $id_vat));
 
         $id = $con->lastInsertId();
     } else {
@@ -194,7 +196,8 @@ try {
                 taxindicatorfk = :taxindicatorfk,
                 commission = :commission,
                 markup = :markup,
-                iata_code = :iata_code
+                iata_code = :iata_code,
+                id_vat=:id_vat
                 WHERE id=:id ";
 
         $stmt = $con->prepare($sql);
@@ -222,6 +225,7 @@ try {
             ":iata_code" => $iata_code,
             ":description_private" => $description_private,
             ":description_public" => $description_public,
+            ":id_vat" => $id_vat,
             ":id"=>$id));
 
 

@@ -38,8 +38,18 @@ try {
     $con = pdo_con();
     $stmt = $con->prepare("UPDATE product_service_claim SET active=0 WHERE id_product_service_claim = :id_product_service_claim");
     $stmt->execute(array(":id_product_service_claim"=>$id_product_service_claim));
+
+    $stmt2 = $con->prepare("UPDATE product_service_extra_claim SET active=0 WHERE id_product_service_claim = :id_product_service_claim");
+    $stmt2->execute(array(":id_product_service_claim"=>$id_product_service_claim));
+
+    $stmt3 = $con->prepare("UPDATE product_service_claim_country SET active=0 WHERE id_product_service_claim = :id_product_service_claim");
+    $stmt3->execute(array(":id_product_service_claim"=>$id_product_service_claim));
+
+    $stmt4 = $con->prepare("UPDATE product_service_claim_to SET active=0 WHERE id_product_service_claim = :id_product_service_claim");
+    $stmt4->execute(array(":id_product_service_claim"=>$id_product_service_claim));
     
 } catch (Exception $ex) {
+    echo json_encode(array("OUTCOME" => "ERROR"));
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 

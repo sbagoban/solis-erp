@@ -9,16 +9,22 @@ function allServicesGrid() {
     var servicetype = urlParams.get("servicetype");
     $('#tbl-productServices').DataTable({     
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
-        if ( aData.is_pakage == "Y" ){
-            $('td', nRow).css('background-color', '#bde8ff');
-        }
-        $('#btnAddClaimTransfer', nRow).css('display', 'none');  
-        if (servicetype == "TRANSFER") {
-            $('#btnAddProductServices', nRow).css('display', 'none');   
-            $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
-            $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
-        }
-    },  
+            if ( aData.is_pakage == "Y" ){
+                $('td', nRow).css('background-color', '#bde8ff');
+            }
+            $('#btnAddClaimTransfer', nRow).css('display', 'none');  
+            if (servicetype == "TRANSFER") {
+                $('#btnAddProductServices', nRow).css('display', 'none');   
+                $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
+                $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
+            }
+
+            if (servicetype == "EXCURSION" && aData.is_pakage == "Y") {
+                $('#btnAddProductServices', nRow).css('display', 'none');   
+                $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
+                $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
+            }
+        },  
         "processing" : true,
 
         "ajax" : {
@@ -119,11 +125,27 @@ function allServicesGrid() {
                 .on( 'click', '#btnDeleteService', function (e) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    serviceDelete(data);
+                    alertServiceDelete(data);
                 })
         }
 
     });
+}
+
+function alertServiceDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        serviceDelete(data);
+	});
 }
 
 // Delete Product
@@ -134,10 +156,14 @@ function serviceDelete(data) {
         url: url_delete_service,
         method: "POST",
         data: objDelService,
+        dataType: "json",
         success: function (data) {
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allServicesGrid();
@@ -168,7 +194,29 @@ function serviceEdit(data) {
 	var date_to_m = date_to[1];
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
-	var date_range = start_date+ " - " + end_date;
+    var date_range = start_date+ " - " + end_date;
+    
+    if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
+        $('#special_name_transfer').css('display', 'block');  
+        $("#special_name_transfer option[value='Drop on']").hide();
+        $("#special_name_transfer option[value='Drop Off']").hide();
+        $("#special_name_transfer option[value='Full Day']").hide();
+        $("#special_name_transfer option[value='Half Day']").hide();
+        $("#special_name_transfer option[value='Night Tour']").hide();
+        $("#special_name_transfer option[value='Airport']").show();
+        $("#special_name_transfer option[value='Port']").show();
+    } else if (data.service_name == "INTER HOTEL") {                     
+        $('#special_name_transfer').css('display', 'none');
+    } else if (data.service_name == "ACTIVITY") {        
+        $('#special_name_transfer').css('display', 'block');              
+        $("#special_name_transfer option[value='Airport']").hide();
+        $("#special_name_transfer option[value='Port']").hide();                    
+        $("#special_name_transfer option[value='Drop on']").show();
+        $("#special_name_transfer option[value='Drop Off']").show();
+        $("#special_name_transfer option[value='Full Day']").show();
+        $("#special_name_transfer option[value='Half Day']").show();
+        $("#special_name_transfer option[value='Night Tour']").show();
+    }
 	
     $('#daterangeServiceFromTo').val(date_range);
     $('#id_dept').val(data.id_dept);    
@@ -299,7 +347,9 @@ function addProductServices(data) {
     + data.service_name+ "&idcoast=" + data.id_coast+ "&idcreditor=" + data.id_creditor+ "&charge=" 
     + data.charge + "&id_product_service=" 
     + data.id_product_service
-    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype;
+    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype + "&for_adult=" + data.for_adult + "&for_child=" + data.for_child
+    + "&for_infant=" + data.for_infant
+    + "&for_teen=" + data.for_teen;
 }
 
 function addServiceExtra(data) {

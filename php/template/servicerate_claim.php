@@ -183,7 +183,7 @@
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="product_name_dtl" readonly="" style="text-transform: uppercase; font-size: 18px;">
 						</div>
-					</div>
+					</div>	
 					<table id="tbl-productServicesClaim" class="table table-bordered table-hover">
 						<thead>
 							<tr>
@@ -194,14 +194,14 @@
 								<th class="col-sm-1">CUR</th>
 								<th class="col-sm-2">Date</th>
 								<th class="col-sm-1">Specific</th>
-								<th class="col-sm-3"></th>
+								<th class="col-lg-3"></th>
 							</tr>
 						</thead>
 						<tbody></tbody>
 					</table>
+					<div id="myDIV"></div>
 				</div>
-				<!-- /.box-body -->		
-				<div id="tooltip" style="display: none;">Test</div>		
+				<!-- /.box-body -->	
 			</div>
 		</div>
 	</div>

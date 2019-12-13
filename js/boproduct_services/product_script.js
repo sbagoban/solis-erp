@@ -122,11 +122,76 @@ $(document).ready(function(){
         $("#age_child_from").val('3');
         $("#age_child_to").val('12');
         $("#is_package_blk").css("display", "none");
+    
+        $( "#service_name_transfer" ).change(function () {
+            $( "#service_name_transfer option:selected" ).each(function() {
+                service_name = $( this ).text();
+                if (service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
+                    $('#special_name_transfer').css('display', 'block');  
+                    $('#special_name_transfer').val('Airport');
+                    $("#special_name_transfer option[value='Drop on']").hide();
+                    $("#special_name_transfer option[value='Drop Off']").hide();
+                    $("#special_name_transfer option[value='Full Day']").hide();
+                    $("#special_name_transfer option[value='Half Day']").hide();
+                    $("#special_name_transfer option[value='Night Tour']").hide();
+                    $("#special_name_transfer option[value='Airport']").show();
+                    $("#special_name_transfer option[value='Port']").show();
+                } else if (service_name == "INTER HOTEL") {                     
+                    $('#special_name_transfer').css('display', 'none');
+                } else if (service_name == "ACTIVITY") {        
+                    $('#special_name_transfer').css('display', 'block');              
+                    $("#special_name_transfer option[value='Airport']").hide();
+                    $("#special_name_transfer option[value='Port']").hide();                    
+                    $("#special_name_transfer option[value='Drop on']").show();
+                    $("#special_name_transfer option[value='Drop Off']").show();
+                    $("#special_name_transfer option[value='Full Day']").show();
+                    $("#special_name_transfer option[value='Half Day']").show();
+                    $("#special_name_transfer option[value='Night Tour']").show();
+                }
+            });
+        }).change();
 
     } if(servicetype == "EXCURSION") {
         $("#id_creditor_blk").css("display", "block");
         $("#id_tax_blk").css("display", "block");
         $("#special_name_all").css("display", "block");
         $("#special_name_transfer_blk").css("display", "none");
+
+        var for_adult = urlParams.get("for_adult");
+        var for_child = urlParams.get("for_child");
+        var for_infant = urlParams.get("for_infant");
+        var for_teen = urlParams.get("for_teen");
+
+        if (for_infant > 0) { 
+            $("#ps_infant_cost").css("display", "block");
+            $("#ps_infant_cost").attr("placeholder", "Infant");
+        } if (for_infant <= 0) { 
+            $("#ps_infant_cost_addon").css("display", "none");
+            $("#ps_infant_cost").css("display", "none");
+        }
+
+        if (for_teen > 0) { 
+            $("#ps_teen_cost").css("display", "block");
+            $("#ps_teen_cost").attr("placeholder", "Teen");
+        } if (for_teen <= 0) { 
+            $("#ps_teen_cost_addon").css("display", "none");
+            $("#ps_teen_cost").css("display", "none");
+        }
+
+        if (for_child > 0) { 
+            $("#ps_child_cost").css("display", "block");
+            $("#ps_child_cost").attr("placeholder", "Child");
+        } if (for_child <= 0) { 
+            $("#ps_child_cost_addon").css("display", "none");
+            $("#ps_child_cost").css("display", "none");
+        }
+
+        if (for_adult > 0) { 
+            $("#ps_adult_cost").css("display", "block");
+            $("#ps_adult_cost").attr("placeholder", "Adult");
+        } if (for_adult <= 0) { 
+            $("#ps_adult_cost_addon").css("display", "none");
+            $("#ps_adult_cost").css("display", "none");
+        }
     }
 });
