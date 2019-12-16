@@ -213,15 +213,17 @@ $("#btn-saveServicesClaim").click(function () {
             var overlap = false; 
                 data.forEach(function (arrayItem) {
                     x = arrayItem;
-                    if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
-                        overlap = false;
-                        addClaimProductService();
-                    } else {
-                        overlap = true;
-                        alert('Date Overlap');                   
-                        resetProductServicesClaim();           
-                    } 
                 });
+
+                if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
+                    overlap = false;
+                    addClaimProductService();
+                } else {
+                    overlap = true;
+                    alert('Date Overlap');                   
+                    resetProductServicesClaim();           
+                } 
+                
                 if (overlap == true) { 
                     if (specific_to == 'A') { // To
                         checkTo(x);
