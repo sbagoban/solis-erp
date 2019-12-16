@@ -74,10 +74,18 @@
         $is_pakage = trim($_POST["is_pakage"]);
         $special_name = trim($_POST["special_name"]);
 
+        $servicetype = $_POST["servicetype"];
         $id_user = $_SESSION["solis_userid"];
         $uname = $_SESSION["solis_username"];
         $log_status = "UPDATE";
-        
+
+        if ($servicetype == 'TRANSFER') {
+            $id_coast = 0;
+            $duration = '00:00:00.00000';
+            $id_creditor = 0; //id_creditor name should be Solis planning - to set in db 
+            $min_age = 0;
+            $max_age = 0;
+        }
 		if ($age_inf_to == "") 
 		{
 			$age_inf_from = NULL;

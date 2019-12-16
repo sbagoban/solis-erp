@@ -47,10 +47,11 @@ try {
     $ex_friday = trim($_POST["ex_friday"]);
     $ex_saturday = trim($_POST["ex_saturday"]);
     $ex_sunday = trim($_POST["ex_sunday"]);
-    $id_country = $_POST["id_country"];
-    $id_tour_operator = $_POST["id_tour_operator"];
     $specific_to_name = $_POST["specific_to_name"];
 
+    $id_user = $_SESSION["solis_userid"];
+    $uname = $_SESSION["solis_username"];
+    $log_status = "CREATE";
 	
 	if ($ps_adult_claim == "") 
 	{
@@ -154,6 +155,8 @@ try {
         
             $id_product_service_claim = $con->lastInsertId();
 
+            $id_country = $_POST["id_country"];
+            $id_tour_operator = $_POST["id_tour_operator"];
             if ($specific_to == 'A') {
                 $sqlTo = "INSERT INTO product_service_claim_to (id_product_service_claim,id_tour_operator) 
                 VALUES (:id_product_service_claim,:id_tour_operator)";
@@ -175,6 +178,94 @@ try {
                     $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_country' => $d));
                 }
             }
+
+
+
+    //         // Start Product Log
+    // $sqlLog = "INSERT INTO product_service_claim_log ( 
+    //     id_product_service_claim,
+    //     id_product_service_cost,
+    //     id_product_service, 
+    //     valid_from, 
+    //     valid_to, 
+    //     id_dept,
+    //     specific_to,
+    //     specific_to_name,
+    //     specific_to_id,
+    //     charge, 
+    //     ps_adult_claim, 
+    //     ps_teen_claim, 
+    //     ps_child_claim, 
+    //     ps_infant_claim, 
+    //     id_currency, 
+    //     currency, 
+    //     ex_monday,
+    //     ex_tuesday,
+    //     ex_wednesday,
+    //     ex_thursday,
+    //     ex_friday,
+    //     ex_saturday,
+    //     id_user,
+    //     uname,
+    //     log_status
+    //     ) 
+    //         VALUES (
+    //             :id_product_service_claim,
+    //             :id_product_service_cost,
+    //             :id_product_service, 
+    //             :valid_from, 
+    //             :valid_to, 
+    //             :id_dept,
+    //             :specific_to,
+    //             :specific_to_name,
+    //             :specific_to_id,
+    //             :charge, 
+    //             :ps_adult_claim, 
+    //             :ps_teen_claim, 
+    //             :ps_child_claim, 
+    //             :ps_infant_claim, 
+    //             :id_currency, 
+    //             :currency, 
+    //             :ex_monday,
+    //             :ex_tuesday,
+    //             :ex_wednesday,
+    //             :ex_thursday,
+    //             :ex_friday,
+    //             :ex_saturday,
+    //             :id_user,
+    //             :uname,
+    //             :log_status
+    //             )";
+
+    // $stmt = $con->prepare($sqlLog);
+    //         $stmt->execute(array(
+    //             ":id_product_service_claim" => $id_product_service_claim,
+    //             ":id_product_service_cost" => $id_product_service_cost,
+    //             ":id_product_service" => $id_product_service,  
+    //             ":valid_from" => $valid_from,  
+    //             ":valid_to" => $valid_to,  
+    //             ":id_dept" => $id_dept,
+    //             ":specific_to" => $specific_to,
+    //             ":specific_to_name" => $specific_to_name,
+    //             ":specific_to_id" => $specific_to_id,
+    //             ":charge" => $charge,  
+    //             ":ps_adult_claim" => $ps_adult_claim,  
+    //             ":ps_teen_claim" => $ps_teen_claim,  
+    //             ":ps_child_claim" => $ps_child_claim,  
+    //             ":ps_infant_claim" => $ps_infant_claim,  
+    //             ":id_currency" => $id_currency,  
+    //             ":currency" => $currency,  
+    //             ":ex_monday" => $ex_monday,
+    //             ":ex_tuesday" => $ex_tuesday,
+    //             ":ex_wednesday" => $ex_wednesday,
+    //             ":ex_thursday" => $ex_thursday,
+    //             ":ex_friday" => $ex_friday,
+    //             ":ex_saturday" => $ex_saturday,
+    //             ":id_user" => $id_user,
+    //             ":uname" => $uname,
+    //             ":log_status" => $log_status
+    //     ));
+    // End Of Log
             
     } 
     else {

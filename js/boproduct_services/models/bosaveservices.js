@@ -265,7 +265,8 @@ $('#btn-saveProductServices').click(function () {
             min_age : min_age,
             max_age : max_age, 
             is_pakage : is_pakage, 
-            special_name : special_name
+            special_name : special_name,            
+            servicetype : servicetype
         };
         $.ajax({
             url : url_edit_service,

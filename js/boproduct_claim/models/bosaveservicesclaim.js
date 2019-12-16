@@ -211,7 +211,6 @@ $("#btn-saveServicesClaim").click(function () {
         dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                                                            
         success : function(data){
             var overlap = false; 
-            if (id_product_service_claim == 0) {
                 data.forEach(function (arrayItem) {
                     x = arrayItem;
                     if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
@@ -230,9 +229,7 @@ $("#btn-saveServicesClaim").click(function () {
                         checkMarket(x);   
                     }  
                 }
-            } else {
-                addClaimProductService();
-            }
+            
         },
         error: function(error) {
             console.log('Error ${error}');
@@ -598,6 +595,7 @@ function resetProductServicesClaim() {
     $("#ex_sunday").prop("checked", false);
     $("#ddlmultiSpecificMarket").val('');
     $("#ddlMultiSpecificTo").val('');
+    document.getElementById("id_product_service_claim").innerHTML = '0';
 }
 
 function specificToCtrl(id_product_service_claim) {
