@@ -607,6 +607,11 @@ option {
   background-color: #00a8ff;
 }
 
+.toast_error {
+  background-color: #ed0606!important;
+  width: 249px;
+}
+
 i.fa.fa-plus.fa-lg {
   margin-top: -1px;
   background: #e2e2e2;

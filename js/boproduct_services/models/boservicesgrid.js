@@ -175,6 +175,8 @@ function serviceEdit(data) {
     specificServiceSelected(data);
     loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
+    document.getElementById("chargeDetail").innerHTML = data.charge;
+
 	var time_duration = data.duration;
 	var time_all = time_duration.split(":");
 	var time_hours = time_all[0];
@@ -195,7 +197,7 @@ function serviceEdit(data) {
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
     var date_range = start_date+ " - " + end_date;
-    
+
     if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
         $('#special_name_transfer').css('display', 'block');  
         $("#special_name_transfer option[value='Drop on']").hide();

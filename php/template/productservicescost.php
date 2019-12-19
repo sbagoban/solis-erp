@@ -56,11 +56,10 @@
 									</select>
 								</div>
 							</div>
-							
 							<div class="pager pull-right">
 								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
-								<button type="button" class="btn btn-primary" id="btn-saveProductServicesCost">Save</button>
-								<!-- <button type="button" class="btn btn-primary" id="btn-addProductServicesExtra" data-toggle="modal" data-target="#modal-extraServices">Add Extra</button> -->
+								<button type="button" class="btn btn-default" onclick="resetFormAddServiceCost()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>
+								<button type="button" class="btn btn-success" id="btn-saveProductServicesCost">Save</button>
 							</div>
 							<!-- Main content -->
 							<section class="content">
@@ -196,14 +195,14 @@
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
 										<div class="input-group">
-											<input type="number" class="form-control" id="ps_adult_cost_ex">
+											<input type="number" class="form-control" id="ps_adult_cost_ex" min="0">
 											<span class="input-group-addon blockPax">Adult</span>
 											<span class="input-group-addon blockUnit" style="display: none">Unit</span>
-											<input type="number" class="form-control blockPax" id="ps_teen_cost_ex">
+											<input type="number" class="form-control blockPax" id="ps_teen_cost_ex" min="0">
 											<span class="input-group-addon blockPax">Teen</span>
-											<input type="number" class="form-control blockPax" id="ps_child_cost_ex">
+											<input type="number" class="form-control blockPax" id="ps_child_cost_ex" min="0">
 											<span class="input-group-addon blockPax">Child</span>
-											<input type="number" class="form-control blockPax" id="ps_infant_cost_ex">
+											<input type="number" class="form-control blockPax" id="ps_infant_cost_ex" min="0">
 											<span class="input-group-addon blockPax">Infant</span>
 										</div>
 									<br>

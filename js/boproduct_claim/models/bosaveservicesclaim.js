@@ -223,7 +223,7 @@ $("#btn-saveServicesClaim").click(function () {
                     alert('Date Overlap');                   
                     resetProductServicesClaim();           
                 } 
-                
+
                 if (overlap == true) { 
                     if (specific_to == 'A') { // To
                         checkTo(x);
@@ -405,7 +405,7 @@ function addClaimProductService(){
         id_country = 0;
         id_tour_operator = 0;
     }
-
+console.log('specific_to', specific_to);
     var allParams = window.location.href.split('data=').pop();
     var charge = urlParams.get("charge"); 
     var servicetype = urlParams.get("servicetype"); 
