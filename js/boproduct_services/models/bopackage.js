@@ -9,7 +9,7 @@ $('#is_pakage').on('change', function() {
 
 function serviceCost() {
     // $('#services_cost').selectpicker();
-    const url_service_cost = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token);
+    const url_service_cost = "php/api/backofficeproduct/selectservicecostpackage.php?t=" + encodeURIComponent(global_token);
     $.ajax({
         url: url_service_cost,
         method: "POST",

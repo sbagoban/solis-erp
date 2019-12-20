@@ -38,13 +38,13 @@
 							</div>
 							<div class="col-sm-8">
 								<div class="input-group">
-									<input type="number" class="form-control" id="ps_adult_claim">
+									<input type="number" class="form-control" id="ps_adult_claim" min="0">
 									<span class="input-group-addon" id="ps_adult_claim_addon">Adult</span>
-									<input type="number" class="form-control" id="ps_teen_claim">
+									<input type="number" class="form-control" id="ps_teen_claim" min="0">
 									<span class="input-group-addon" id="ps_teen_claim_addon">Teen</span>
-									<input type="number" class="form-control" id="ps_child_claim">
+									<input type="number" class="form-control" id="ps_child_claim" min="0">
 									<span class="input-group-addon" id="ps_child_claim_addon">Child</span>
-									<input type="number" class="form-control" id="ps_infant_claim">
+									<input type="number" class="form-control" id="ps_infant_claim" min="0">
 									<span class="input-group-addon" id="ps_infant_claim_addon">Infant</span>
 								</div>
 								<br>
@@ -136,7 +136,8 @@
 					
 						<div class="pager pull-right">
 							<button type="button" class="btn btn-default" id="btn-basckProductServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
-							<button type="button" class="btn btn-primary" id="btn-saveServicesClaim">Save</button>
+							<button type="button" class="btn btn-default" onclick="resetProductServicesClaim()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>
+							<button type="button" class="btn btn-success" id="btn-saveServicesClaim">Save</button>
 						</div>
 						
 							<!-- Main content -->
@@ -242,14 +243,14 @@
 								<label class="col-sm-2 control-label">Claim</label>
 								<div class="col-sm-10">
 										<div class="input-group">
-											<input type="number" class="form-control" id="ps_adult_claim_1">
+											<input type="number" class="form-control" id="ps_adult_claim_1" min="0">
 											<span class="input-group-addon blockPax">Adult</span>
 											<span class="input-group-addon blockUnit" style="display: none">Unit</span>
-											<input type="number" class="form-control blockPax" id="ps_teen_claim_1">
+											<input type="number" class="form-control blockPax" id="ps_teen_claim_1" min="0">
 											<span class="input-group-addon blockPax">Teen</span>
-											<input type="number" class="form-control blockPax" id="ps_child_claim_1">
+											<input type="number" class="form-control blockPax" id="ps_child_claim_1" min="0">
 											<span class="input-group-addon blockPax">Child</span>
-											<input type="number" class="form-control blockPax" id="ps_infant_claim_1">
+											<input type="number" class="form-control blockPax" id="ps_infant_claim_1" min="0">
 											<span class="input-group-addon blockPax">Infant</span>
 										</div>
 									<br>

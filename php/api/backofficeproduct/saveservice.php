@@ -71,7 +71,7 @@ try {
 
     $servicetype = $_POST["servicetype"];
 
-    $special_name = trim($_POST["special_name"]);
+    $special_name = strtoupper(trim($_POST["special_name"]));
     
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];

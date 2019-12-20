@@ -37,7 +37,6 @@ $("#btnSaveProduct").click(function () {
                 method : "POST",
                 data : objProduct,                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 success : function(data){
-                    console.log('value', data);
                     allProductGridCost(data);
                     resetFormAddProduct();
                 },

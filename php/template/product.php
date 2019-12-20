@@ -45,8 +45,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-primary pull-right" id="btnSaveProduct">Save</button>
+                        <div class="pager pull-right">
+                            <button type="button" class="btn btn-default" id="btnResetProduct" onclick="resetFormAddProduct()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>
+                            <button type="button" class="btn btn-success" id="btnSaveProduct">Save</button>
                         </div>
                         <!-- Row 1 -->
                     </div>
