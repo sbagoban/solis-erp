@@ -230,7 +230,10 @@ $('#btn-saveProductServices').click(function () {
 
     } else {    
         // Edit Drop Down Services - Delete first and the Saved
-        editServicesInclude(id_product_service_induded);
+        console.log('is_pakage', is_pakage);
+        if (servicetype != 'TRANSFER' && is_pakage == 'Y') {
+            editServicesInclude(id_product_service_induded);
+        }
         const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         const url_edit_delete_service = "php/api/backofficeproduct/updatedeleteservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         var objServiceUpdate = {
@@ -277,8 +280,11 @@ $('#btn-saveProductServices').click(function () {
             servicetype : servicetype
         };
 
-        console.log('sdfs', objServiceUpdate);
         // HERE !!!
+        
+        var chargeDetail = document.getElementById("chargeDetail").innerHTML;
+        
+        console.log('sdfs', chargeDetail ,'==', charge);
         if (chargeDetail == charge) {
             $.ajax({
                 url : url_edit_service,
@@ -294,7 +300,7 @@ $('#btn-saveProductServices').click(function () {
                     console.log('Error ${error}');
                 }
             });
-        } else { 
+        } if (chargeDetail != charge) { 
             $.ajax({
                 url : url_edit_delete_service,
                 method : "POST",

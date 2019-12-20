@@ -338,11 +338,11 @@ $sqlLog = "INSERT INTO product_service_log (
     $stmt6 = $con->prepare("UPDATE product_service_extra_claim SET active=0 WHERE id_product_service = :id_product_service");
     $stmt6->execute(array(":id_product_service"=>$id_product_service));
 
-    $stmt7 = $con->prepare("UPDATE product_service_claim_country SET active=0 WHERE id_product_service = :id_product_service");
-    $stmt7->execute(array(":id_product_service"=>$id_product_service));
+    // $stmt7 = $con->prepare("UPDATE product_service_claim_country SET active=0 WHERE id_product_service = :id_product_service");
+    // $stmt7->execute(array(":id_product_service"=>$id_product_service));
 
-    $stmt8 = $con->prepare("UPDATE product_service_claim_to SET active=0 WHERE id_product_service = :id_product_service");
-    $stmt8->execute(array(":id_product_service"=>$id_product_service));
+    // $stmt8 = $con->prepare("UPDATE product_service_claim_to SET active=0 WHERE id_product_service = :id_product_service");
+    // $stmt8->execute(array(":id_product_service"=>$id_product_service));
 
     }
     catch (Exception $ex) {

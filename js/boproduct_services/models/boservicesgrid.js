@@ -171,7 +171,6 @@ function serviceDelete(data) {
 
 // // Edit Product
 function serviceEdit(data) {
-    console.log(data,'Edit line');
     specificServiceSelected(data);
     loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
