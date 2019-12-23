@@ -7,6 +7,7 @@
 					<div class="box-header with-border">
 						<h3 class="box-title">Services</h3>
 						<div id="idService" style="display:none;">0</div>
+						<div id="chargeDetail" style="display:none;">0</div>
 					</div>
 					<!-- /.box-header -->
 					<!-- form start -->
@@ -101,7 +102,7 @@
 
 								<div class="col-sm-6" id="id_service_2" style="display: none;">
 									<select type="text" class="form-control" id="service_name_transfer">
-										<option selected disabled hidden>Select an Option</option>
+										<option selected disabled hidden value="Select an Option">Select an Option</option>
 										<option value="SOUTH EAST">SOUTH EAST</option>
 										<option value="OTHER COAST">OTHER COAST</option>
 										<option value="INTER HOTEL">INTER HOTEL</option>
@@ -110,7 +111,7 @@
 								</div>
 
 								<div class="col-sm-4" id="special_name_all">
-									<input type="text" class="form-control" id="special_name" placeholder="Special Name">
+									<input type="text" class="form-control text-uppercase" id="special_name" placeholder="Special Name">
 								</div>
 								<div class="col-sm-4" id="special_name_transfer_blk">
 									<select type="text" class="form-control" id="special_name_transfer">
@@ -155,10 +156,10 @@
 								</div>
 								<label class="col-sm-1 control-label" id="duration_label">Duration</label>
 								<div class="col-sm-2">
-									<input type="number" class="form-control" id="duration1" placeholder="Hrs">
+									<input type="number" class="form-control" min="0" id="duration1" placeholder="Hrs">
 								</div>
 								<div class="col-sm-2">
-									<input type="number" class="form-control" id="duration2" placeholder="Mins">
+									<input type="number" class="form-control" min="0" id="duration2" placeholder="Mins">
 								</div>
 
 								<!-- To uncomment when used for transfer -->
@@ -242,9 +243,9 @@
 								<label class="col-sm-2 control-label">Pax Policy</label>
 								<div class="col-sm-5">
 									<div class="input-group">
-										<input type="number" class="form-control" id="min_pax">
+										<input type="number" class="form-control" id="min_pax" min="0">
 										<span class="input-group-addon">Min</span>
-										<input type="number" class="form-control" id="max_pax">
+										<input type="number" class="form-control" id="max_pax" min="0">
 										<span class="input-group-addon">Max</span>
 									</div>
 									<br>
@@ -255,9 +256,9 @@
 								<label class="col-sm-2 control-label">Age</label>
 								<div class="col-sm-8">
 									<div class="input-group">
-										<input type="number" class="form-control" id="min_age">
+										<input type="number" class="form-control" id="min_age" min="0">
 										<span class="input-group-addon">Min Age</span>
-										<input type="number" class="form-control" id="max_age">
+										<input type="number" class="form-control" id="max_age" min="0">
 										<span class="input-group-addon">Max Age</span>
 									</div>
 									<br>
@@ -265,7 +266,7 @@
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-2 control-label">Apply for</label>
+								<label class="col-sm-2 control-label" id="applyForLabel">Apply for</label>
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">
 										<li class="checkBoxMain">
@@ -280,7 +281,7 @@
 												<span>For Child</span>
 											</label>
 										</li>
-										<li class="checkBoxMain">
+										<li class="checkBoxMain" id="teenActivity">
 											<label class='with-square-checkbox'>
 												<input type='checkbox' id="for_teen" />
 												<span>For Teen</span>
@@ -296,7 +297,7 @@
 								</div>
 							</div>
 
-							<div class="form-group">
+							<div class="form-group" id="blckAgePolicy">
 								<label class="col-sm-2 control-label">Age Policy</label>
 								<div class="col-sm-10">
 									<div class="input-group">
@@ -325,7 +326,8 @@
 						
 							<div class="pager pull-right">
 								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
-								<button type="button" class="btn btn-primary" id="btn-saveProductServices">Save</button>
+								<button type="button" class="btn btn-default" onclick="resetServicesForm()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>
+								<button type="button" class="btn btn-success" id="btn-saveProductServices">Save</button>
 							</div>
 						</div>
 						<!-- /.box-body -->
@@ -447,7 +449,6 @@
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
 </div>
 
-
 <div class="toast jam toast_duplicate" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Duplicate.
 </div>
@@ -458,5 +459,9 @@
 
 <div class="toast jam toast_duplicate_extra" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Extra Duplicate.
+</div>
+
+<div class="toast jam toast_error" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> <i class="fas fa-dollar-sign"></i> Please Choose A Service
 </div>
 		

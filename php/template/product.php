@@ -29,6 +29,7 @@
                         <div class="col-md-4">
                             <input type="text" class="form-control text-uppercase" id="productName">
                         </div>
+
                         <label class="col-md-2 control-label">Product Type</label>
                         <div class="col-md-4">
                             <select type="text" class="form-control" id="ddlProductType">
@@ -38,10 +39,11 @@
                             <option value="3">Air</option>
                             <option value="4">Other</option>
                             </select>
+
+                        <div class="pager pull-right">
+                            <button type="button" class="btn btn-default" id="btnResetProduct" onclick="resetFormAddProduct()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>
+                            <button type="button" class="btn btn-success" id="btnSaveProduct">Save</button>
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                    <button type="button" class="btn btn-primary pull-right" id="btnSaveProduct">Save</button>
                     </div>
                     <!-- Row 1 -->
                 </div>

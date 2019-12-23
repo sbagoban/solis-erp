@@ -3,7 +3,7 @@
 Application : Transfer - Booking System
 Developer : slouis@solis360.com*/
 $(function(){
-var target_action = 'NULL';
+    var target_action = 'NULL';
     $('.select2').select2({
 		placeholder : 'Select'
 	});
@@ -19,48 +19,32 @@ var target_action = 'NULL';
 			id_booking: id_booking,
             action: target_action
     }   
+    
     newTransfer(transferData);
- /* //  allBookingTransfer(transferData.id_booking);*/
     
     // Transfer Product
-        const url_product = "php/api/bookingSystem/transferList.php?t=" + encodeURIComponent(global_token) ;
-        $.ajax({
-            url: url_product,
-            dataType: "json",
-            success: function (data) 
-            {
-                $("#transfer_vehicle").empty();
-                $("#transfer_vehicle").append('<option value="0">Select</option>');
-                $.each(data, function (key, val) {
-                $("#transfer_vehicle").append('<option value="' + val.id_product + '">'+val.product_name+ '</option>');
-                $("#transfer_vehicle").val('0');
-                $('#transfer_vehicle').select2().trigger('change');	
-                }); 
+    const url_product = "php/api/bookingSystem/transferList.php?t=" + encodeURIComponent(global_token) ;
+    $.ajax({
+        url: url_product,
+        dataType: "json",
+        success: function (data) 
+        {
+            $("#transfer_vehicle").empty();
+            $("#transfer_vehicle").append('<option value="0">Select</option>');
+            $.each(data, function (key, val) {
+            $("#transfer_vehicle").append('<option value="' + val.id_product + '">'+val.product_name+ '</option>');
+            $("#transfer_vehicle").val('0');
+            $('#transfer_vehicle').select2().trigger('change');	
+            }); 
 
-            },
-            error: function (error) 
-            {
-                console.log('Error ${error}');
-            }
-        });
-    // .Transfer Product
-        
-    // Transfer Arrival Date and Departure Date
-    $('#transfer_arrivalDate').datepicker(
-    {
-        format: 'dd/mm/yyyy',
-        startDate: '-30d',
-        changeMonth: true,
-        changeYear: true
-    }).on('changeDate', function(selected) {
-        $('#transfer_departureDate').val('');
-        $('#transfer_departureFlight').val('');
-        $('#transfer_departureTime').val('');
-        startDate = new Date(selected.date.valueOf());
-        $('#transfer_departureDate').datepicker('setStartDate', startDate);
+        },
+        error: function (error) 
+        {
+            console.log('Error ${error}');
+        }
     });
-    // .Transfer Arrival Date and Departure Date
-  
+    // .Transfer Product
+    
     // Transfer Arrival Time and Departure Time
     $('#transfer_arrivalTime').timepicker({
 		minuteStep: 1,
@@ -75,7 +59,7 @@ var target_action = 'NULL';
     });
 	// .Transfer Arrival Time and Departure Time
     
-	//Destination From 
+    //Destination From 
 	const url_search_hotelList = "php/api/hotel/allHotel.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_hotelList,
@@ -122,21 +106,6 @@ var target_action = 'NULL';
 		});
 	//.Client
     
-    
-    /*
-    
-    $('#btn-newTransfer').click(function() {
-        var transferData = {
-                id_booking: id_booking,
-                action: 'RESET'
-        }   
-	//	newTransfer(transferData);
-    //    allBookingTransfer(transferData.id_booking);
-        $("#dossierService").collapse('show');
-        $("#serviceDetails").collapse('hide');
-        
-	});
-   
     //Approved Discount List
 	const url_search_discountUserList = "php/api/users/approveDiscountUser.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
@@ -145,12 +114,12 @@ var target_action = 'NULL';
 		dataType: "json",
 		success: function (data) 
 		{
-			$("#activity_approvedBy").empty();
-			$("#activity_approvedBy").append('<option value="0">None</option>');
+			$("#transfer_approvedBy").empty();
+			$("#transfer_approvedBy").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#activity_approvedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
-			$("#activity_approvedBy").val('0');
-			$('#activity_approvedBy').select2().trigger('change');	
+			$("#transfer_approvedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
+			$("#transfer_approvedBy").val('0');
+			$('#transfer_approvedBy').select2().trigger('change');	
 			}); 
 
 		},
@@ -159,5 +128,6 @@ var target_action = 'NULL';
 			console.log('Error ${error}');
 		}
 	});
-	//.Approved Discount List*/
+	//.Approved Discount List
+    
 });

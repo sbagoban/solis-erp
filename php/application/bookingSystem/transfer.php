@@ -76,7 +76,7 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group arrivalLine">
 					<label class="col-sm-2 control-label">Arrival</label>
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="transfer_arrivalDate" placeholder="00/00/0000">
@@ -89,7 +89,7 @@
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div class="form-group departureLine">
 					<label class="col-sm-2 control-label">Departure</label>
 					<div class="col-sm-4">
 						<input type="text" class="form-control" id="transfer_departureDate" placeholder="00/00/0000">
@@ -99,6 +99,19 @@
 					</div>
 					<div class="col-sm-3">
 						<input type="text" class="form-control" id="transfer_departureTime" placeholder="00:00">
+					</div>
+				</div>
+
+				<div class="form-group pickupLine" style="display: none">
+					<label class="col-sm-2 control-label" id="pickupLabel">Departure</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" id="transfer_pickupDate" placeholder="00/00/0000">
+					</div>
+					<div class="col-sm-3">
+						<input type="text" class="form-control" id="transfer_pickupFlight" placeholder="ZZZ000">
+					</div>
+					<div class="col-sm-3">
+						<input type="text" class="form-control" id="transfer_pickupTime" placeholder="00:00">
 					</div>
 				</div>
 				
@@ -213,26 +226,30 @@
                             <thead>
                                 <tr>
                                     <th class="col-sm-1">TYPE<input type="text" class="form-control bookingTransfer" id="id_product_service_claim" style=""></th>
-                                    <th class="col-sm-2 transferUnit">UNIT</th>
-                                    <th class="col-sm-2 transferPax">ADULT</th>
-                                    <th class="col-sm-2 transferPax">CHILD</th>
-                                    <th class="col-sm-2">MAX OCCUPANCY</th>
+                                    <th class="col-sm-2 unit_charge">UNIT</th>
+                                    <th class="col-sm-2 pax_charge">ADULT</th>
+                                    <th class="col-sm-2 pax_charge">CHILD</th>
+                                    <!--<th class="col-sm-2">MAX OCCUPANCY</th>-->
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr id="transfer_in">
                                     <td>ARRIVAL</td>
-                                    <td class="transferUnit">459 USD</td>
-                                    <td class="transferPax">459 USD</td>
-                                    <td class="transferPax">354 USD</td>
-                                    <td>2</td>
+                                    <td class="unit_charge"><span id="ps_unit_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
+                                    <td><span id="ps_adult_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
+                                    <td><span id="ps_child_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
                                 </tr>
                                 <tr id="transfer_out">
                                     <td>DEPARTURE</td>
-                                    <td class="transferUnit">459 USD</td>
-                                    <td class="transferPax">459 USD</td>
-                                    <td class="transferPax">354 USD</td>
-                                    <td>2</td>
+                                    <td class="unit_charge"><span id="ps_unit_dep_claim"></span><span class="ps_claim_dep_cur"></span></td>
+                                    <td><span id="ps_adult_dep_claim"></span> <span class="ps_claim_dep_cur"></span></td>
+                                    <td><span id="ps_child_dep_claim"></span> <span class="ps_claim_dep_cur"></span></td>
+                                </tr>
+                                <tr id="transfer_interHotel">
+                                    <td>INTER HOTEL</td>
+                                    <td class="unit_charge"><span id="ps_unit_int_claim"></span><span class="ps_claim_int_cur"></span></td>
+                                    <td><span id="ps_adult_int_claim"></span> <span class="ps_claim_int_cur"></span></td>
+                                    <td><span id="ps_child_int_claim"></span> <span class="ps_claim_int_cur"></span></td>
                                 </tr>
                                 <tr>
                                     <th>DESCRIPTION</th>

@@ -7,72 +7,6 @@ $(document).ready(function () {
     $("#age_child_to").prop("readonly", true);
     $("#age_teen_from").prop("readonly", true);
     $("#age_teen_to").prop("readonly", true);
-
-    applyFor();
-});
-
-function applyFor() {
-    var chkinfant = document.getElementById("for_infant");
-    var chkchild = document.getElementById("for_child");
-    var chkteen = document.getElementById("for_teen");
-    var chkadult = document.getElementById("for_adult");
-
-    $('input').on('click',function () {
-        if (chkinfant.checked) {
-            $("#age_inf_from").prop("readonly", false);
-            $("#age_inf_to").prop("readonly", false);
-        } if (chkinfant.checked == false) {
-            $("#age_inf_from").prop("readonly", true);
-            $("#age_inf_to").prop("readonly", true);
-        }
-
-        if (chkchild.checked) {
-            $("#age_child_from").prop("readonly", false);
-            $("#age_child_to").prop("readonly", false);
-        } if (chkchild.checked == false) {
-            $("#age_child_from").prop("readonly", true);
-            $("#age_child_to").prop("readonly", true);
-        }
-
-        if (chkteen.checked) {
-            $("#age_teen_from").prop("readonly", false);
-            $("#age_teen_to").prop("readonly", false);
-        } if (chkteen.checked == false) {
-            $("#age_teen_from").prop("readonly", true);
-            $("#age_teen_to").prop("readonly", true);
-        }
-
-        if (chkadult.checked && chkteen.checked == false && chkchild.checked == false && chkinfant.checked == false) {
-            $('#min_age').css("border", "2px solid orange");
-            $('#max_age').css("border", "2px solid orange");
-
-            var minage = Number ($('#min_age').val());
-            var maxage = Number ($('#max_age').val());
-            if (minage == '' || maxage == '') {
-                $('#btn-saveProductServices').attr('disabled', true); 
-            }
-        }
-        if (chkadult.checked == false || chkteen.checked || chkchild.checked || chkinfant.checked) {
-            $('#min_age').css("border", "1px solid black");
-            $('#max_age').css("border", "1px solid black");
-        }
-    });
-}
-
-$('#max_age').change(function(){
-    var minage = Number ($('#min_age').val());
-    var maxage = Number ($('#max_age').val());
-    if (minage > maxage){        
-        $('#max_age').css("border", "2px solid orange");
-        alert ('Choose a number greater than ' + minage );
-    }
-});
-
-$('#min_age').change(function(){
-    var minage = Number ($('#min_age').val());
-    if (minage != ''){
-        $('#btn-saveProductServices').attr('disabled', false); 
-    }
 });
 
 function productCtrl() {
@@ -127,3 +61,21 @@ $('#btn-saveProductServicesCost').click(function (e) {
     if (isValid == false)
         e.preventDefault();
 });
+
+$( "#ddlType" ).change(function () {
+    $( "#ddlType option:selected" ).each(function() {
+        service_name = $( this ).text();
+        if (service_name == "Others" || service_name == "Transfer") {
+            console.log('OK');
+            $('#ddlProductType').val('4');
+            $("#ddlProductType option[value='1']").hide();
+            $("#ddlProductType option[value='2']").hide();
+            $("#ddlProductType option[value='3']").hide();
+        } else { 
+            $("#ddlProductType option[value='1']").show();
+            $("#ddlProductType option[value='2']").show();
+            $("#ddlProductType option[value='3']").show();
+            $('#ddlProductType').val('1');
+        } 
+    });
+}).change();
