@@ -10,7 +10,7 @@ $(document).ready(function(){
     if (servicetype == "TRANSFER") {
         url_extra = "php/api/backofficeproduct/comboextraservicestransfer.php?t=" + encodeURIComponent(global_token); 
     } 
-    else if (servicetype == "EXCURSION") {
+    else if (servicetype == "ACTIVITY") {
         url_extra = "php/api/backofficeproduct/comboextraservices.php?t=" + encodeURIComponent(global_token); 
     }
     

@@ -156,12 +156,12 @@ $(document).ready(function(){
             });
         }).change();
 
-    } if(servicetype == "EXCURSION" || servicetype == "OTHER") {
+    } if(servicetype == "ACTIVITY" || servicetype == "OTHER") {
         $("#id_creditor_blk").css("display", "block");
         $("#id_tax_blk").css("display", "block");
         $("#special_name_all").css("display", "block");
         $("#special_name_transfer_blk").css("display", "none");
-
+alert('sadf');
         var for_adult = urlParams.get("for_adult");
         var for_child = urlParams.get("for_child");
         var for_infant = urlParams.get("for_infant");
