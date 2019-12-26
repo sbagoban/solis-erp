@@ -109,11 +109,13 @@ $(document).ready(function(){
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost");
+    var servicetype = urlParams.get("servicetype");
+
     var ps_adult_cost = urlParams.get("ps_adult_cost");
     var ps_teen_cost = urlParams.get("ps_teen_cost");
     var ps_child_cost = urlParams.get("ps_child_cost");
     var ps_infant_cost = urlParams.get("ps_infant_cost");
-
+console.log(id_product_service_cost == 0, '&&',  servicetype== "TRANSFER");
     if (id_product_service_cost > 0) { 
         if (ps_adult_cost > 0) {
             $("#ps_adult_claim").css("display", "block");
@@ -150,5 +152,10 @@ $(document).ready(function(){
             $("#ps_infant_claim_addon").css("display", "none");
             $("#ps_infant_claim").css("display", "none");
         }
+    } if (servicetype== "TRANSFER") {
+        $("#ps_adult_claim").css("display", "block");
+        $("#ps_adult_claim").attr("placeholder", "Adult");
+        $("#ps_child_claim").css("display", "block");
+        $("#ps_child_claim").attr("placeholder", "Child");
     }
 });
