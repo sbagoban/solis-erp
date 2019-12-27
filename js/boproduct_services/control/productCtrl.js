@@ -17,7 +17,8 @@ function productCtrl() {
             $('#btnSaveProduct').attr('disabled', false);            
         else
             $('#btnSaveProduct').attr('disabled',true);
-    })
+    }); 
+    
 }
 
 function onkeyupCtrl() {

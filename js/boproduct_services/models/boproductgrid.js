@@ -107,6 +107,7 @@ function productServiceClaimDelete(data) {
 
 // Edit Product
 function productServiceClaimEdit(data) {
+    $('#btnSaveProduct').attr('disabled', false); 
     $('#productName').val(data.product_name);
     $("#ddlType").val(data.id_service_type);
     $("#ddlProductType").val(data.id_product_type);

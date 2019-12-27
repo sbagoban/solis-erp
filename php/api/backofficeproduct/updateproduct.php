@@ -46,9 +46,11 @@
          //check duplicates for area name
         $sql_name = "SELECT * FROM product 
         WHERE product_name = :product_name 
+        AND id_product <> :id_product
         AND active = 1";
         $stmt_name = $con->prepare($sql_name);
         $stmt_name->bindParam(':product_name', $product_name);
+        $stmt_name->bindParam(':id_product', $id_product);
         $stmt_name->execute(); 
 
         if ($rw = $stmt_name->fetch(PDO::FETCH_ASSOC)) {
