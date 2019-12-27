@@ -18,6 +18,7 @@ $("#btnSaveProduct").click(function () {
                 success : function(data){
                     if (data.OUTCOME == "ERROR_NAME") { 
                         swal("Duplicate", "Product Name Duplicate...", "error");
+                        document.getElementById("productId").textContent = id_product;
                     } else { 
                         resetFormAddProduct();
                         allProductGridCost(data);
@@ -64,7 +65,7 @@ $("#btnSaveProduct").click(function () {
 function resetFormAddProduct() {
     $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
     $('#productName').val('');
-    $("#ddlType").val('1');
+    $("#ddlType").val('2');
     $('#ddlProductType').val('1');
     document.getElementById("productId").textContent = 0;
 }
