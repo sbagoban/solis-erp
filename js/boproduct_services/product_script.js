@@ -161,7 +161,6 @@ $(document).ready(function(){
         $("#id_tax_blk").css("display", "block");
         $("#special_name_all").css("display", "block");
         $("#special_name_transfer_blk").css("display", "none");
-alert('sadf');
         var for_adult = urlParams.get("for_adult");
         var for_child = urlParams.get("for_child");
         var for_infant = urlParams.get("for_infant");

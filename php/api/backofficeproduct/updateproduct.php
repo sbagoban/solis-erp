@@ -36,7 +36,7 @@
         $id_product = $_GET["id_product"];
         $id_service_type = trim($_POST["id_service_type"]);
         $id_product_type = trim($_POST["id_product_type"]);
-        $product_name = trim($_POST["product_name"]);
+        $product_name = strtoupper(trim($_POST["product_name"]));
 
         $id_user = $_SESSION["solis_userid"];
         $uname = $_SESSION["solis_username"];
