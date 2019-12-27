@@ -43,6 +43,17 @@
         $log_status = "UPDATE";
 
         $con = pdo_con();
+         //check duplicates for area name
+        $sql_name = "SELECT * FROM product 
+        WHERE product_name = :product_name 
+        AND active = 1";
+        $stmt_name = $con->prepare($sql_name);
+        $stmt_name->bindParam(':product_name', $product_name);
+        $stmt_name->execute(); 
+
+        if ($rw = $stmt_name->fetch(PDO::FETCH_ASSOC)) {
+            die(json_encode(array("OUTCOME" => "ERROR_NAME")));
+        }
         $sql = "UPDATE product SET 
                         id_service_type=:id_service_type,
                         id_product_type=:id_product_type,

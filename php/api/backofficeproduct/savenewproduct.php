@@ -47,10 +47,14 @@ try {
     // }
 
     //check duplicates for area name
-    $sql = "SELECT * FROM product WHERE product_name = :product_name AND id_product <> :id_product ";
-    $stmt = $con->prepare($sql);
-    $stmt->execute(array(":product_name" => $product_name, ":id_product" => $id_product));
-    if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $sql_name = "SELECT * FROM product 
+            WHERE product_name = :product_name 
+            AND active = 1";
+    $stmt_name = $con->prepare($sql_name);
+    $stmt_name->bindParam(':product_name', $product_name);
+    $stmt_name->execute(); 
+
+    if ($rw = $stmt_name->fetch(PDO::FETCH_ASSOC)) {
         // throw new Exception("DUPLICATE PRODUCT NAME!");
         die(json_encode(array("OUTCOME" => "ERROR_NAME")));
     }
