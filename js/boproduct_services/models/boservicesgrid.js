@@ -19,7 +19,7 @@ function allServicesGrid() {
                 $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
             }
 
-            if (servicetype == "EXCURSION" && aData.is_pakage == "Y") {
+            if (servicetype == "ACTIVITY" && aData.is_pakage == "Y") {
                 $('#btnAddProductServices', nRow).css('display', 'none');   
                 $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
                 $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
@@ -456,7 +456,7 @@ function duplicateExtra(data, id_prod_serv) {
     const urlParams = new URLSearchParams(allParams);
     var servicetype = urlParams.get("servicetype");
     
-    if (servicetype == 'EXCURSION') {
+    if (servicetype == 'ACTIVITY') {
         var objExtra = {id_prod_serv: id_prod_serv};
         const url_duplicate_service_extra = "php/api/backofficeproduct/duplicateserviceextra.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
         $.ajax({

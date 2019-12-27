@@ -35,10 +35,15 @@ $("#btnSaveProduct").click(function () {
             $.ajax({
                 url : url_save_product,
                 method : "POST",
-                data : objProduct,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                data : objProduct,      
+                dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                                                        
                 success : function(data){
                     allProductGridCost(data);
                     resetFormAddProduct();
+                    console.log(data);
+                    if (data.OUTCOME == "ERROR_NAME") { 
+                        swal("Duplicate", "Product Name Duplicate...", "error");
+                    }
                 },
                 error: function(error) {
                     console.log('Error ${error}');

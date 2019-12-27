@@ -38,12 +38,21 @@ try {
 
     $con = pdo_con();
 
-    //check duplicates for services
-    $sql = "SELECT * FROM product WHERE id_product = :id_product ";
+    // //check duplicates for services
+    // $sql = "SELECT * FROM product WHERE id_product = :id_product ";
+    // $stmt = $con->prepare($sql);
+    // $stmt->execute(array(":id_product" => $id_product));
+    // if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //     throw new Exception("DUPLICATE SERVICES!");
+    // }
+
+    //check duplicates for area name
+    $sql = "SELECT * FROM product WHERE product_name = :product_name AND id_product <> :id_product ";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product" => $id_product));
+    $stmt->execute(array(":product_name" => $product_name, ":id_product" => $id_product));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        throw new Exception("DUPLICATE SERVICES!");
+        // throw new Exception("DUPLICATE PRODUCT NAME!");
+        die(json_encode(array("OUTCOME" => "ERROR_NAME")));
     }
 
     if ($id_product == "-1") {

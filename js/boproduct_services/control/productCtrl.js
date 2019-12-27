@@ -27,7 +27,7 @@ function onkeyupCtrl() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     // var servicetype = urlParams.get("servicetype"); 
-    // if (servicetype == 'EXCURSION') {
+    // if (servicetype == 'ACTIVITY') {
     //     if(service_name.length > 0) {
     //         $('#btn-saveProductServices').attr('disabled', false); 
     //     }          
