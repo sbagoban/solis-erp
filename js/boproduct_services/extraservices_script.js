@@ -38,9 +38,27 @@ $(document).ready(function(){
             if(result != '') {
                 // Loop through each of the results and append the option to the dropdown
                 $.each(result, function(data, result) {
-                    dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
+                    console.log('check', result.charge);
+                    dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+',*'+result.charge+'">' + result.charge + '</option>');
                 });
             }
+            // Extra service - does not change - extras
+            // $("#id_product_service_extra_1").on('change', function() {
+            
+            //     var charge2 = $('#id_product_service_extra_1').find('option:selected').attr("name");
+    
+            //     var chargeChk = charge2.split(',*');
+            //     console.log('ghjugh', charge2);
+            //     if (chargeChk[1] == 'UNIT') {
+            //         $(".blockPax").hide();
+            //         $(".blockUnit").show();
+            //     } 
+            //     else 
+            //     {
+            //         $(".blockPax").show();
+            //         $(".blockUnit").hide();
+            //     }
+            // });
         }
     }
 });

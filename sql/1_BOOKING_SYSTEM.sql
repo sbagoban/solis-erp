@@ -537,3 +537,10 @@ INSERT INTO `tax_rate` (`id_tax_rate`, `id_tax_code`, `tx_code`, `tax_value`, `t
 VALUES
 	(1,3,'VAT',12.00,'1992-01-01','1998-06-30',1),
 	(2,3,'VAT',15.00,'1998-07-01',NULL,1);
+
+-- Insert menu
+    INSERT INTO `tblmenu` (`menuid`, `menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `clkevent`, `menusysid`, `description`, `inout`)
+VALUES
+    (58, 'Booking System', 2, 'Y', 3, 'fas fa-briefcase', '', 'bookingSystem', 'Booking System', 'O');
+ 
+

@@ -185,7 +185,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cost Charge</label>
 									<div class="col-sm-2">
-										<select type="text" class="form-control" id="charge_1">
+										<select type="text" class="form-control" id="charge_1" disabled>
 											<option value="PAX">PAX</option>
 											<option value="UNIT">UNIT</option>
 										</select>

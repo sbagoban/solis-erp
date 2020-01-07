@@ -68,6 +68,6 @@ function resetExtraServicesCostForm() {
     $('#ps_teen_cost_ex').val('').end();
     $('#ps_child_cost_ex').val('').end();
     $('#ps_infant_cost_ex').val('').end();
-    $('#charge_1').val('').end();
+    // $('#charge_1').val('').end();
     $('#id_product_service_extra_1').val('').end();
 }
