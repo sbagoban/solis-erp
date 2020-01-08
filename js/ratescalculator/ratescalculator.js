@@ -118,6 +118,7 @@ function ratescalculator() {
     var str_frm_exec = [
         {type: "settings", position: "label-left", id: "form_exec"},
         {type: "button", name: "cmdTest", value: "Launch Rates Calculator", width: "300", offsetLeft: 200}
+        //,{type: "button", name: "cmdTestMe", value: "Launch Rates API", width: "300", offsetLeft: 200}
     ];
 
     var form_exec = main_layout.cells("b").attachForm(str_frm_exec);
@@ -126,6 +127,10 @@ function ratescalculator() {
         if (name == "cmdTest")
         {
             testRatesCalculator();
+        }
+        else if (name == "cmdTestMe")
+        {
+            testRatesAPI();
         }
     });
 
@@ -627,7 +632,75 @@ function ratescalculator() {
             grid_children.cells(rowid, grid_children.getColIndexById("count")).setValue((i + 1));
         }
     }
+    
+    function testRatesAPI()
+    {
+        var arradults = [];
+        for (var i = 0; i < grid_adult.getRowsNum(); i++)
+        {
+            var rowid = grid_adult.getRowId(i);
+            var count = grid_adult.cells(rowid, grid_adult.getColIndexById("count")).getValue();
+            var age = grid_adult.cells(rowid, grid_adult.getColIndexById("age")).getValue();
+            var bride_groom = grid_adult.cells(rowid, grid_adult.getColIndexById("bride_groom")).getValue();
 
+            arradults.push({count: count, age: age, bride_groom: bride_groom});
+        }
+
+        //=================================
+        var arrchildren = [];
+        for (var i = 0; i < grid_children.getRowsNum(); i++)
+        {
+            var rowid = grid_children.getRowId(i);
+            var count = grid_children.cells(rowid, grid_children.getColIndexById("count")).getValue();
+            var age = grid_children.cells(rowid, grid_children.getColIndexById("age")).getValue();
+            var sharing_own = grid_children.cells(rowid, grid_children.getColIndexById("sharing_own")).getValue();
+
+            arrchildren.push({count: count, age: age, sharing_own: sharing_own});
+        }
+        
+        var params = "u=" + encodeURIComponent("SCGP_API_USER") +
+                     "&p=" + encodeURIComponent("SCGP_API_USER") +
+                     "&t=" + encodeURIComponent("UZghvY3ToXFiuCr1nLVwKHt4pW6dQBqJbRk8yDz9") +
+                     "&checkin_date=" + encodeURIComponent("2019-04-03") +
+                     "&checkout_date=" + encodeURIComponent("2019-04-07") +
+                     "&checkin_time=" + encodeURIComponent("10:00") +
+                     "&checkout_time=" + encodeURIComponent("14:00") +
+                     "&adults=" + encodeURIComponent(JSON.stringify(arradults)) +
+                     "&children=" + encodeURIComponent(JSON.stringify(arrchildren)) +
+                     "&hotel=" + encodeURIComponent("19") +
+                     "&hotelroom=" + encodeURIComponent("2") + 
+                     "&mealplan=" + encodeURIComponent("6") + 
+                     "&supp_mealplan=" + encodeURIComponent("4") + 
+                     "&is_wedding=" + encodeURIComponent("0") + 
+                     "&booking_date=" + encodeURIComponent("2019-03-01") +
+                     "&party_pax=" + encodeURIComponent("5") + 
+                     "&travel_date=" + encodeURIComponent("2019-04-01");
+                
+        dhtmlxAjax.post("api_connect/hotelroomrates.php", params, function (loader) {
+           
+            if (loader)
+            {
+                
+                console.log(loader);
+                
+                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                if (!json_obj)
+                {
+                    dhtmlx.alert({
+                        text: loader.xmlDoc.responseText,
+                        type: "alert-warning",
+                        title: "Test Rates API",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                console.log(json_obj);
+            }
+        });
+
+    }
 
     function testRatesCalculator()
     {

@@ -3,6 +3,7 @@
 function _rates_calculator($con, $arr_params) {
     try {
 
+                
         $time_pre = microtime(true);
 
 
@@ -982,6 +983,7 @@ function _rates_calculator_get_arrcapacity_daterange($arr_capacity, $roomid, $th
 
     return null;
 }
+
 
 function _rates_calculator_getcontracts_for_the_date($arr_params, $thedate, $con) {
 
