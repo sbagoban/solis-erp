@@ -26,27 +26,27 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    if (!isset($_GET["id_booking_activity"])) {
-        throw new Exception("INVALID ID". $_GET["id_booking_activity"]);
+    if (!isset($_GET["id_booking_activity_claim"])) {
+        throw new Exception("INVALID ID". $_GET["id_booking_activity_claim"]);
     }
     
-    $id_booking_activity = $_GET["id_booking_activity"];
+    $id_booking_activity_claim = $_GET["id_booking_activity_claim"];
     
     require_once("../../connector/pdo_connect_main.php");
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
     $qryBookingActivity = $con->prepare("SELECT *
-                                        FROM booking_activity BA
-                                        WHERE BA.id_booking_activity = :id_booking_activity
-                                        AND BA.active = 1");
-    $qryBookingActivity->execute(array(":id_booking_activity"=>$id_booking_activity));
+                                        FROM booking_activity_claim BA_CLAIM
+                                        WHERE BA_CLAIM.id_booking_activity_claim = :id_booking_activity_claim
+                                        AND BA_CLAIM.active = 1");
+    $qryBookingActivity->execute(array(":id_booking_activity_claim"=>$id_booking_activity_claim));
     $row_count_c = $qryBookingActivity->rowCount();
 
     if ($row_count_c > 0) {
         while ($row = $qryBookingActivity->fetch(PDO::FETCH_ASSOC)) {
             $bookingActivityDetails[] = array(
-				"id_booking_activity" => $row['id_booking_activity'],
+				"id_booking_activity_claim" => $row['id_booking_activity_claim'],
 				"id_booking" => $row['id_booking'],
 				"activity_service_paid_by" => $row['activity_service_paid_by'],
 				"id_tour_operator" => $row['id_tour_operator'],
@@ -68,10 +68,10 @@ try {
 				"activity_rebate_type" => $row['activity_rebate_type'],
 				"activity_rebate_approve_by" => $row['activity_rebate_approve_by'],
 				"activity_discount_percentage" => $row['activity_discount_percentage'],
-				"activity_adult_claim_after_disc" => $row['activity_adult_claim_after_disc'],
-				"activity_teen_claim_after_disc" => $row['activity_teen_claim_after_disc'],
-				"activity_child_claim_after_disc" => $row['activity_child_claim_after_disc'],
-				"activity_infant_claim_after_disc" => $row['activity_infant_claim_after_disc'],
+				"activity_adult_disc" => $row['activity_adult_disc'],
+				"activity_teen_disc" => $row['activity_teen_disc'],
+				"activity_child_disc" => $row['activity_child_disc'],
+				"activity_infant_disc" => $row['activity_infant_disc'],
 				"activity_client_room_no" => $row['activity_client_room_no'],
 				"id_language" => $row['id_language'],
 				"id_rep" => $row['id_rep'],
@@ -89,7 +89,7 @@ try {
     } else {
         //echo "NO DATA";    
         $bookingActivityDetails[] = array(
-				"id_booking_activity" => '-',
+				"id_booking_activity_claim" => '-',
 				"id_booking" => '-',
 				"activity_service_paid_by" => '-',
 				"id_tour_operator" => '-',
@@ -111,10 +111,10 @@ try {
 				"activity_rebate_type" => '-',
 				"activity_rebate_approve_by" => '-',
 				"activity_discount_percentage" => '-',
-				"activity_adult_claim_after_disc" => '-',
-				"activity_teen_claim_after_disc" => '-',
-				"activity_child_claim_after_disc" => '-',
-				"activity_infant_claim_after_disc" => '-',
+				"activity_adult_disc" => '-',
+				"activity_teen_disc" => '-',
+				"activity_child_disc" => '-',
+				"activity_infant_disc" => '-',
 				"activity_client_room_no" => '-',
 				"id_language" => '-',
 				"id_rep" => '-',

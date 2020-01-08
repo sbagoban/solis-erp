@@ -49,7 +49,7 @@ function extraServiceGridClaim(data) {
                 .on( 'click', '#btnDeleteServiceClaim', function (e) {
                     var table = $('#tbl-productServicesExtraClaim').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    extraServiceClaimDelete(data);
+                    alertExtraClaimDelete(data);
                 })
                 .on( 'click', '#btnEditServiceClaim', function (e) {
                     var table = $('#tbl-productServicesExtraClaim').DataTable();
@@ -60,6 +60,22 @@ function extraServiceGridClaim(data) {
     });
 }
 
+function alertExtraClaimDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        extraServiceClaimDelete(data);
+	});
+}
+
 // // Delete Product
 function extraServiceClaimDelete(data) {
     var objDelClaim = {id_product_service_extra_claim: data.id_product_service_extra_claim};
@@ -68,10 +84,14 @@ function extraServiceClaimDelete(data) {
         url: url_delete_extra_claim,
         method: "POST",
         data: objDelClaim,
+        dataType: "json",
         success: function (data) {
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     extraServiceGridClaim(data);

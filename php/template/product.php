@@ -7,48 +7,46 @@
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
                         <i class="icon-calendar"></i>
-                        <h3 class="panel-title">Product <span id="productId" style="display: none">0</span></h3>
+                        <h3 class="panel-title">Product <span id="productId" style="display: block">0</span></h3>
                     </div>
 
                     <div class="panel-body">
+                        <div class="form-group col-md-12">
+                            <!-- Row 1 -->
+                            <label class="col-md-2 control-label">Type</label>
+                            <div class="col-md-4">
+                                <select type="text" class="form-control" id="ddlType">
+                                    <!-- To modify - select from db -->
+                                    <option value="2">Activities</option>
+                                    <option value="3">Transfer</option>
+                                    <option value="4">Others</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <!-- Row 1 -->
+                            <label class="col-md-2 control-label">Product Name</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control text-uppercase" id="productName">
+                            </div>
+
+                            <label class="col-md-2 control-label">Product Type</label>
+                            <div class="col-md-4">
+                                <select type="text" class="form-control" id="ddlProductType">
+                                    <!-- To modify - select from db -->
+                                    <option value="1">Land</option>
+                                    <option value="2">Sea</option>
+                                    <option value="3">Air</option>
+                                    <option value="4">Other</option>
+                                </select>
+
+                                <div class="pager pull-right">
+                                    <button type="button" class="btn btn-default" id="btnResetProduct" onclick="resetFormAddProduct()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>
+                                    <button type="button" class="btn btn-success" id="btnSaveProduct">Save</button>
+                                </div>
+                            </div>
                         <!-- Row 1 -->
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <label class="col-md-2 control-label">Type</label>
-                                <div class="col-md-9">
-                                    <select type="text" class="form-control" id="ddlType">
-                                        <!-- To modify - select from db -->
-                                        <option value="2">Activities</option>
-                                        <option value="3">Transfer</option>
-                                        <option value="4">Others</option>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                <label class="col-md-2 control-label">Product Name</label>
-                                <div class="col-md-9">
-                                    <input type="text" class="form-control text-uppercase" id="productName">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="col-md-2 control-label">Product Type</label>
-                                <div class="col-md-9">
-                                    <select type="text" class="form-control" id="ddlProductType">
-                                        <!-- To modify - select from db -->
-                                        <option value="1">Land</option>
-                                        <option value="2">Sea</option>
-                                        <option value="3">Air</option>
-                                        <option value="4">Other</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-primary pull-right" id="btnSaveProduct">Save</button>
-                        </div>
-                        <!-- Row 1 -->
                     </div>
                 </div>
             </div>
@@ -75,37 +73,45 @@
                 </div>
             </div>
         </div>
-
         <!-- Column 2 -->
         <div class="col-md-4">
-            <!-- Panel -->
-            <h3 class="panel-title">Latest Product Services</h3>
-            <br>
-            <div class="panel panel-theme">
-                <div class="panel-heading">Product Name</div>
-                <div class="panel-body">
-                    Product : <br>
-                    Product Type :  <br>
-                    Services :  <br>
-                    Package :  <br>
-                </div>
-            </div>
-            <div class="panel panel-theme">
-                <div class="panel-heading">Product Name</div>
-                <div class="panel-body">
-                    Product : <br>
-                    Product Type :  <br>
-                    Services :  <br>
-                    Package :  <br>
-                </div>
-            </div>
-            <div class="panel panel-theme">
-                <div class="panel-heading">Product Name</div>
-                <div class="panel-body">
-                    Product : <br>
-                    Product Type :  <br>
-                    Services :  <br>
-                    Package :  <br>
+            
+            <div class="col-md-12">
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h3 class="panel-title">Latest Product Services</h3>
+                    </div>
+                    <div class="panel-body">
+                        <!-- Panel -->
+                        <div class="panel panel-theme">
+                            <div class="panel-heading">Product Name</div>
+                            <div class="panel-body">
+                                Product : <br>
+                                Product Type :  <br>
+                                Services :  <br>
+                                Package :  <br>
+                            </div>
+                        </div>
+                        <div class="panel panel-theme">
+                            <div class="panel-heading">Product Name</div>
+                            <div class="panel-body">
+                                Product : <br>
+                                Product Type :  <br>
+                                Services :  <br>
+                                Package :  <br>
+                            </div>
+                        </div>
+                        <div class="panel panel-theme">
+                            <div class="panel-heading">Product Name</div>
+                            <div class="panel-body">
+                                Product : <br>
+                                Product Type :  <br>
+                                Services :  <br>
+                                Package :  <br>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -90,7 +90,7 @@ function allServicesGridCost() {
                 .on( 'click', '#btnDeleteServiceCost', function (e) {
                     var table = $('#tbl-productServicesCost').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    serviceCostDelete(data);
+                    alertServiceCostDelete(data);
                 })
                 .on( 'click', '#btnEditServiceCost', function (e) {
                     var table = $('#tbl-productServicesCost').DataTable();
@@ -108,6 +108,22 @@ function allServicesGridCost() {
     
 }
 
+function alertServiceCostDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+        showConfirmButton: false
+	},
+	function(){
+        serviceCostDelete(data);
+	});
+}
+
 // // Delete Product
 function serviceCostDelete(data) {
     var objDelServiceCost = {id_product_service_cost: data.id_product_service_cost};
@@ -116,19 +132,42 @@ function serviceCostDelete(data) {
         url: url_delete_service_cost,
         method: "POST",
         data: objDelServiceCost,
-        success: function (data) {
+        dataType: "json",
+        success: function (data) { 
+            if (data.OUTCOME == 'OK') { 
+                // swal("Deleted!", "Deleted !", "success");
+                swal({
+                    title: "Deleted!",
+                    text: "Your row has been deleted.",
+                    type: "success",
+                    timer: 2000,
+                });
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allServicesGridCost();
+    allExtraServicesCostGrid(data.id_product_service_cost);
 }
 
 // Edit Product
 function serviceCostEdit(data) {
+    var allParams = window.location.href.split('productservicecost').pop();
+
+    const urlParams = new URLSearchParams(allParams);
+
+    var valid_from = urlParams.get("valid_from"); 
+    var valid_to = urlParams.get("valid_to"); 
+    var valid_from = valid_from.split("-");
+	var valid_from = valid_from[0]+","+valid_from[1]+","+valid_from[2];
+	var valid_from = new Date(valid_from);
+	var valid_to = valid_to.split("-");
+    var valid_to = valid_to[0]+","+valid_to[1]+","+valid_to[2];
+    var valid_to = new Date(valid_to);
     document.getElementById("id_product_service_cost_1").innerHTML = data.id_product_service_cost;
-		
+		console.log(data);
 	var start_date = data.valid_from;
 	var date_from = start_date.split("-");
 	var date_from_y = date_from[0];
@@ -148,6 +187,19 @@ function serviceCostEdit(data) {
     $('#ps_child_cost').val(data.ps_child_cost);
     $('#ps_infant_cost').val(data.ps_infant_cost);
     $('#id_currency').val(data.id_currency);
+
+    $('#daterangeServiceFromTo').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+        "autoApply": true,
+        "opens": "center",
+        startDate : start_date,
+        endDate : end_date,        
+        "minDate" : valid_from,
+        "maxDate" : valid_to
+    });
+    
 }
 
 // Add Extra Service

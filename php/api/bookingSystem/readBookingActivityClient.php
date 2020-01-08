@@ -26,11 +26,11 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    if (!isset($_GET["id_booking_activity"])) {
-        throw new Exception("INVALID ID". $_GET["id_booking_activity"]);
+    if (!isset($_GET["id_booking_activity_claim"])) {
+        throw new Exception("INVALID ID". $_GET["id_booking_activity_claim"]);
     }
     
-    $id_booking_activity = $_GET["id_booking_activity"];
+    $id_booking_activity_claim = $_GET["id_booking_activity_claim"];
     
     require_once("../../connector/pdo_connect_main.php");
     require_once("../../utils/utilities.php");
@@ -38,9 +38,9 @@ try {
     $con = pdo_con();
     $qryBookingActivityClient = $con->prepare("SELECT * 
                                         FROM booking_activity_client
-                                        WHERE id_booking_activity = :id_booking_activity
+                                        WHERE id_booking_activity_claim = :id_booking_activity_claim
                                         AND active = 1");
-    $qryBookingActivityClient->execute(array(":id_booking_activity"=>$id_booking_activity));
+    $qryBookingActivityClient->execute(array(":id_booking_activity_claim"=>$id_booking_activity_claim));
     $row_count_c = $qryBookingActivityClient->rowCount();
 
     if ($row_count_c > 0) {
@@ -48,7 +48,7 @@ try {
             $bookingActivityClientDetails[] = array(
 				"id_booking_activity_client" => $row['id_booking_activity_client'],
 				"id_client" => $row['id_client'],
-				"id_booking_activity" => $row['id_booking_activity'],
+				"id_booking_activity_claim" => $row['id_booking_activity_claim'],
 				"id_booking" => $row['id_booking'],
                 "OUTCOME" => 'OK'
                 
@@ -61,7 +61,7 @@ try {
         $bookingActivityClientDetails[] = array(
 				"id_booking_activity_client" => '-',
 				"id_client" => '-',
-				"id_booking_activity" => '-',
+				"id_booking_activity_claim" => '-',
 				"id_booking" => '-',
                 "OUTCOME" => 'ERROR'
         );

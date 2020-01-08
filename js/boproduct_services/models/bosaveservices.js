@@ -32,6 +32,7 @@ function specialNameTransfer() {
     return special_name_transfer;
 }
 
+
 $('#btn-saveProductServices').click(function () {
     var idService = document.getElementById("idService").innerHTML;
     var allParams = window.location.href.split('data=').pop();
@@ -207,24 +208,34 @@ $('#btn-saveProductServices').click(function () {
             servicetype : servicetype
         };
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
-        $.ajax({
-            url : url_save_service,
-            method : "POST",
-            data : objService,                                                                                       
-            success : function(data){
-                console.log('value', data);
-                resetServicesForm();
-                allServicesGrid();
-                $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
-            },
-            error: function(error) {
-                console.log('Error ${error}');
-            }
-        });
+        if (is_pakage == 'N' || (is_pakage == 'Y' &&  id_product_service_induded > 0)) { 
+            $.ajax({
+                url : url_save_service,
+                method : "POST",
+                data : objService,                                                                                   
+                success : function(data){
+                    console.log('value', data);
+                    
+                    resetServicesForm();
+                    allServicesGrid();
+                    $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+                },
+                error: function(error) {
+                    console.log('Error ${error}');
+                }
+            });
+        } else { 
+            $('.toast_error').stop().fadeIn(400).delay(3000).fadeOut(500);
+        }
+
     } else {    
         // Edit Drop Down Services - Delete first and the Saved
-        editServicesInclude(id_product_service_induded);
+        console.log('is_pakage', is_pakage);
+        if (servicetype != 'TRANSFER' && is_pakage == 'Y') {
+            editServicesInclude(id_product_service_induded);
+        }
         const url_edit_service = "php/api/backofficeproduct/updateservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
+        const url_edit_delete_service = "php/api/backofficeproduct/updatedeleteservice.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + idService;
         var objServiceUpdate = {
             id_product : id_product,
             valid_from : valid_from,
@@ -265,25 +276,50 @@ $('#btn-saveProductServices').click(function () {
             min_age : min_age,
             max_age : max_age, 
             is_pakage : is_pakage, 
-            special_name : special_name
+            special_name : special_name,            
+            servicetype : servicetype
         };
-        $.ajax({
-            url : url_edit_service,
-            method : "POST",
-            data : objServiceUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
-            success : function(data){
-                console.log('value', data);
-                resetServicesForm();
-                //allServicesGrid();
-                $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
-            },
-            error: function(error) {
-                console.log('Error ${error}');
-            }
-        });
+
+        // HERE !!!
+        
+        var chargeDetail = document.getElementById("chargeDetail").innerHTML;
+        
+        console.log('sdfs', chargeDetail ,'==', charge);
+        if (chargeDetail == charge) {
+            $.ajax({
+                url : url_edit_service,
+                method : "POST",
+                data : objServiceUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                success : function(data){
+                    console.log('value', data);
+                    resetServicesForm();
+                    //allServicesGrid();
+                    $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+                },
+                error: function(error) {
+                    console.log('Error ${error}');
+                }
+            });
+        } if (chargeDetail != charge) { 
+            $.ajax({
+                url : url_edit_delete_service,
+                method : "POST",
+                data : objServiceUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                success : function(data){
+                    console.log('value', data);
+                    resetServicesForm();
+                    //allServicesGrid();
+                    $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+                },
+                error: function(error) {
+                    console.log('Error ${error}');
+                }
+            });
+        }
 		allServicesGrid();
     }
     document.getElementById("idService").innerHTML = 0;
+    document.getElementById("chargeDetail").innerHTML = 0;
 }); 
 
 function dateManipulationDuration() {

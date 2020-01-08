@@ -54,7 +54,7 @@ function allProductGridCost() {
     $('#productServiceSort tbody').on( 'click', '#btnDeleteProduct', function () {
         var table = $('#productServiceSort').DataTable();
         var data = table.row( $(this).parents('tr') ).data();
-        productServiceClaimDelete(data);
+        alertDelete(data);
     });
     $('#productServiceSort tbody').on( 'click', '#btnEditProduct', function () {
         var table = $('#productServiceSort').DataTable();
@@ -68,6 +68,21 @@ function allProductGridCost() {
     });
 }
 
+function alertDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        productServiceClaimDelete(data);
+	});
+}
 // Delete Product
 function productServiceClaimDelete(data) {
     var objDelProduct = {id_product: data.id_product};
@@ -76,10 +91,15 @@ function productServiceClaimDelete(data) {
         url: url_delete_product,
         method: "POST",
         data: objDelProduct,
+        dataType: "json",
         success: function (data) {
+            console.log(data.OUTCOME,'sdfsd');
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allProductGridCost();
@@ -87,6 +107,7 @@ function productServiceClaimDelete(data) {
 
 // Edit Product
 function productServiceClaimEdit(data) {
+    $('#btnSaveProduct').attr('disabled', false); 
     $('#productName').val(data.product_name);
     $("#ddlType").val(data.id_service_type);
     $("#ddlProductType").val(data.id_product_type);

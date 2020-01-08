@@ -57,7 +57,7 @@ $('#tbl-bookingActivity').DataTable({
                 .on( 'click', '#btnEditActivity', function (e) {
                     var table = $('#tbl-bookingActivity').DataTable();
 					var data = table.row( $(this).parents('tr') ).data();
-					editActivity(data.id_booking_activity);
+					editActivity(data.id_booking_activity_claim);
                 })
                 .on( 'click', '#btnDeleteActivity', function (e) {
                 	var table = $('#tbl-bookingActivity').DataTable();
@@ -75,8 +75,8 @@ $('#tbl-bookingActivity').DataTable({
 }
 
 // EDIT ACTIVITY DATA
-function editActivity(id_booking_activity) {
-     const url_search_bookingActivity = "php/api/bookingSystem/readBookingActivity.php?t=" + encodeURIComponent(global_token) + "&id_booking_activity=" +id_booking_activity;
+function editActivity(id_booking_activity_claim) {
+     const url_search_bookingActivity = "php/api/bookingSystem/readBookingActivity.php?t=" + encodeURIComponent(global_token) + "&id_booking_activity_claim=" +id_booking_activity_claim;
      $.ajax({
         url: url_search_bookingActivity,
         method: "POST",
@@ -105,7 +105,7 @@ function displayActivity(activityDetails) {
     activityDetails[0].action = 'RESET';
     newActivity(activityDetails[0]);
     console.log(activityDetails[0]);
-	$("#id_booking_activity").val(activityDetails[0].id_booking_activity);
+	$("#id_booking_activity_claim").val(activityDetails[0].id_booking_activity_claim);
     var bookingDate = activityDetails[0].activity_booking_date;
     var bookingDate = bookingDate.split("-").reverse();
     var activity_bookingDate = bookingDate[0]+"/"+bookingDate[1]+"/"+bookingDate[2];
@@ -220,7 +220,7 @@ function displayActivity(activityDetails) {
         });
     // .Product
     //.bookingActivityClient
-    const url_search_bookingActivity = "php/api/bookingSystem/readBookingActivityClient.php?t=" + encodeURIComponent(global_token) + "&id_booking_activity=" +activityDetails[0].id_booking_activity;
+    const url_search_bookingActivity = "php/api/bookingSystem/readBookingActivityClient.php?t=" + encodeURIComponent(global_token) + "&id_booking_activity_claim=" +activityDetails[0].id_booking_activity_claim;
      $.ajax({
         url: url_search_bookingActivity,
         method: "POST",
@@ -274,10 +274,10 @@ function displayActivity(activityDetails) {
         {
             $("#rebateSection").show();
             $("#rebate_fix").show();
-            $("#activity_adultRebate").val(activityDetails[0].activity_adult_claim_after_disc);
-            $("#activity_teenRebate").val(activityDetails[0].activity_teen_claim_after_disc);
-            $("#activity_childRebate").val(activityDetails[0].activity_child_claim_after_disc);
-            $("#activity_InfantRebate").val(activityDetails[0].activity_infant_claim_after_disc);
+            $("#activity_adultRebate").val(activityDetails[0].activity_adult_disc);
+            $("#activity_teenRebate").val(activityDetails[0].activity_teen_disc);
+            $("#activity_childRebate").val(activityDetails[0].activity_child_disc);
+            $("#activity_InfantRebate").val(activityDetails[0].activity_infant_disc);
             $("#activity_percentageRebate").hide();
             $("#activity_approvedBy").prop("disabled", false);
             $("#activity_percentageRebate").val('');
@@ -295,15 +295,6 @@ function displayActivity(activityDetails) {
             $("#activity_childRebate").val('');
             $("#activity_InfantRebate").val('');
         }
-    $("#activity_representative").val(activityDetails[0].id_rep);
-    $('#activity_representative').select2().trigger('change');
-    $("#activity_voucherNo").val(activityDetails[0].activity_voucher_no);
-    $("#activity_language").val(activityDetails[0].id_language);
-    $('#activity_language').select2().trigger('change');
-    $("#activity_pickupHotel").val(activityDetails[0].id_hotel);
-    $('#activity_pickupHotel').select2().trigger('change');
-    $("#activity_pickupTime").val(activityDetails[0].activity_pickup_time);
-    $("#activity_pickupRoomNo").val(activityDetails[0].activity_client_room_no);
     $("#activity_serviceRemark").val(activityDetails[0].activity_remarks);
     $("#activity_internalRemark").val(activityDetails[0].activity_internal_remarks);
 }

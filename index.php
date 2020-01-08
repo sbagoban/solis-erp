@@ -64,6 +64,9 @@ if (isset($_GET["m"])) {
         <!--<link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.css'>-->
         <link rel="stylesheet" href="css/boservicesclaim.css">
         <link rel="stylesheet" href="css/style.css">
+        <!-- To downalod -->
+        <link rel='stylesheet' href='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.css'>
+        <!-- To downalod -->
         <?php
         $menu = "";
         if (isset($_GET["m"])) {
@@ -455,7 +458,7 @@ if (isset($_GET["m"])) {
                     } else if ($menu == "managebookings") {
                         include 'php/template/booking_engine.php';
                     } else if ($menu == "bookingSystem") {
-                        include 'php/application/booking/index.php';
+                        include 'php/application/bookingSystem/index.php';
                     } else if ($menu == "backoff_service_claim") {
                         include 'php/template/servicerate.php';
                     } else if ($menu == "backoff_excursions") {
@@ -687,7 +690,9 @@ if (isset($_GET["m"])) {
         <!-- jQuery 3 -->
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script type="text/javascript" src="libraries/jquery/jquery.maskedinput.min.js"></script>
-
+        <!-- TO dwnload -->
+        <script src='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.min.js'></script>
+        <!-- TO dwnload -->
         <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
         <!-- Bootstrap 3.3.7 -->
         <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -729,11 +734,11 @@ if (isset($_GET["m"])) {
 		<!-- .SOLIS GLOBAL CSS -->
 		
         <!-- Sandeep Start -->
+        <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
         <script src="bower_components/bootstrap-duration-picker/dist/bootstrap-duration-picker.js"></script>
-       <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js'></script>
+        <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/moment.min.js'></script>
         <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.24/daterangepicker.min.js'></script>
-        <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.10.6/jquery.typeahead.min.js"></script>
         <script src="https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -743,6 +748,7 @@ if (isset($_GET["m"])) {
         <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+
         <!-- Sandeep End -->
 
         <!-- FastClick -->

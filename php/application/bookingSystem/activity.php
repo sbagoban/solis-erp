@@ -1,9 +1,9 @@
-<script src="php/application/booking/js/bookingActivity.js"></script>
-<script src="php/application/booking/js/newActivity.js"></script>
-<script src="php/application/booking/js/tableBookingActivity.js"></script>
-<script src="php/application/booking/js/saveActivity.js"></script>
-<script src="php/application/booking/js/tableActivityExtra.js"></script>
-<script src="php/application/booking/js/deleteActivity.js"></script>
+<script src="php/application/bookingSystem/js/bookingActivity.js"></script>
+<script src="php/application/bookingSystem/js/newActivity.js"></script>
+<script src="php/application/bookingSystem/js/tableBookingActivity.js"></script>
+<script src="php/application/bookingSystem/js/saveActivity.js"></script>
+<script src="php/application/bookingSystem/js/tableActivityExtra.js"></script>
+<script src="php/application/bookingSystem/js/deleteActivity.js"></script>
 <!-- Activity Tab -->
 <div class="tab-pane active in fade" id="activity">
 <!-- left column -->	
@@ -15,7 +15,7 @@
 				<div class="form-group" style="display: none">
 					<label class="col-sm-2 control-label">ID BOOKING ACTIVITY</label>
 					<div class="col-sm-2">
-						<input type="text" class="form-control bookingActivity" id="id_booking_activity" placeholder="000" readonly>
+						<input type="text" class="form-control bookingActivity" id="id_booking_activity_claim" placeholder="000" readonly>
 					</div>
 				</div>
 
@@ -267,7 +267,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table id="tbl-activityExtra" class="table table-bordered table-hover" style="display: hide">
+                        <table id="tbl-activityExtra" class="table table-bordered table-hover" style="display: none">
                             <thead>
                                 <tr>
                                     <th class="col-sm-3">EXTRA</th>

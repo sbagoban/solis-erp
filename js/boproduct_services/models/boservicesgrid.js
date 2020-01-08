@@ -19,7 +19,7 @@ function allServicesGrid() {
                 $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
             }
 
-            if (servicetype == "EXCURSION" && aData.is_pakage == "Y") {
+            if (servicetype == "ACTIVITY" && aData.is_pakage == "Y") {
                 $('#btnAddProductServices', nRow).css('display', 'none');   
                 $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
                 $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
@@ -125,11 +125,27 @@ function allServicesGrid() {
                 .on( 'click', '#btnDeleteService', function (e) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
-                    serviceDelete(data);
+                    alertServiceDelete(data);
                 })
         }
 
     });
+}
+
+function alertServiceDelete (data) {
+    swal({
+		title: "Are you sure?",
+		text: "you want to delete ?",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: '#DD6B55',
+		confirmButtonText: 'Yes, delete it!',
+		closeOnConfirm: false,
+		//closeOnCancel: false
+	},
+	function(){
+        serviceDelete(data);
+	});
 }
 
 // Delete Product
@@ -140,10 +156,14 @@ function serviceDelete(data) {
         url: url_delete_service,
         method: "POST",
         data: objDelService,
+        dataType: "json",
         success: function (data) {
+            if (data.OUTCOME == 'OK') { 
+                swal("Deleted!", "Deleted !", "success");
+            }
         },
         error: function (error) {
-            console.log('Error ${error}');
+            swal("Cancelled", "Not Deleted - Please try again...", "error");
         }
     });
     allServicesGrid();
@@ -151,10 +171,11 @@ function serviceDelete(data) {
 
 // // Edit Product
 function serviceEdit(data) {
-    console.log(data,'Edit line');
     specificServiceSelected(data);
     loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
+    document.getElementById("chargeDetail").innerHTML = data.charge;
+
 	var time_duration = data.duration;
 	var time_all = time_duration.split(":");
 	var time_hours = time_all[0];
@@ -175,7 +196,7 @@ function serviceEdit(data) {
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
     var date_range = start_date+ " - " + end_date;
-    
+
     if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
         $('#special_name_transfer').css('display', 'block');  
         $("#special_name_transfer option[value='Drop on']").hide();
@@ -327,7 +348,9 @@ function addProductServices(data) {
     + data.service_name+ "&idcoast=" + data.id_coast+ "&idcreditor=" + data.id_creditor+ "&charge=" 
     + data.charge + "&id_product_service=" 
     + data.id_product_service
-    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype;
+    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype + "&for_adult=" + data.for_adult + "&for_child=" + data.for_child
+    + "&for_infant=" + data.for_infant
+    + "&for_teen=" + data.for_teen;
 }
 
 function addServiceExtra(data) {
@@ -433,7 +456,7 @@ function duplicateExtra(data, id_prod_serv) {
     const urlParams = new URLSearchParams(allParams);
     var servicetype = urlParams.get("servicetype");
     
-    if (servicetype == 'EXCURSION') {
+    if (servicetype == 'ACTIVITY') {
         var objExtra = {id_prod_serv: id_prod_serv};
         const url_duplicate_service_extra = "php/api/backofficeproduct/duplicateserviceextra.php?t=" + encodeURIComponent(global_token)+ "&id_product_service1=" + data.id_product_service;
         $.ajax({

@@ -213,20 +213,26 @@ $("#btn-saveServicesClaim").click(function () {
             var overlap = false; 
                 data.forEach(function (arrayItem) {
                     x = arrayItem;
-                    if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
-                        overlap = false;
-                        addClaimProductService();
-                    } else {
-                        overlap = true;             
-                    } 
                 });
-                if (overlap == true) { 
+
+                if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
+                    overlap = false;
+                    addClaimProductService();
+                } else {
+                    overlap = true;
                     if (specific_to == 'A') { // To
                         checkTo(x);
+                        alert('Date Overlap 1');   
                     } else if (specific_to == 'C') { // Market
-                        checkMarket(x);   
-                    }  
-                }
+                        checkMarket(x);  
+                        alert('Date Overlap 2');   
+                    }                  
+                    // resetProductServicesClaim();           
+                } 
+                
+                // if (overlap == true) { 
+                    
+                // }
             
         },
         error: function(error) {
@@ -281,8 +287,10 @@ function arrayCompareTo(z, id_tour_operator) {
 }
 
 function checkMarket(data) { 
+    console.log('chk -->', data);
     var id_product_service_claim = data.id_product_service_claim;    
-    var id_country = $('#multiSpecificMarket').val();
+    var id_country = $('#ddlmultiSpecificMarket').val();
+    console.log('market', id_country);
     const url_claim_countries = "php/api/backofficeserviceclaim/populateselectedcountries.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
     $.ajax({
         type: "POST",
@@ -296,7 +304,7 @@ function checkMarket(data) {
                     var xy = arrayItem2;
                     arrC.push(xy.id_country);
                 });
-                arrayCompareCountries(arrC, id_country );
+                arrayCompareCountries(arrC, id_country);
         },    
         error: function(error) {
             alert('ERROR');
@@ -306,6 +314,7 @@ function checkMarket(data) {
 }
 
 function arrayCompareCountries(z, id_country) {
+    console.log('--->>>', z, id_country);
     var bExists = false;
     $.each(id_country, function(index,value) {
         if($.inArray(value,z)!=-1) {
@@ -593,6 +602,7 @@ function resetProductServicesClaim() {
     $("#ex_sunday").prop("checked", false);
     $("#ddlmultiSpecificMarket").val('');
     $("#ddlMultiSpecificTo").val('');
+    document.getElementById("id_product_service_claim").innerHTML = '0';
 }
 
 function specificToCtrl(id_product_service_claim) {

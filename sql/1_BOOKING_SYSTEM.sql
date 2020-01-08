@@ -140,10 +140,126 @@ CREATE TABLE `booking_client_log` (
   KEY `id_booking_clientfk` (`id_booking_client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `booking_activity`;
+DROP TABLE IF EXISTS `booking_activity_log`;
+DROP TABLE IF EXISTS `booking_activity_client`;
+
+DROP TABLE IF EXISTS `booking_activity`;
+DROP TABLE IF EXISTS `booking_activity_log`;
+
 /*  ACTIVITY */
+CREATE TABLE `booking_activity_claim` (
+  `id_booking_activity_claim` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
+  `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
+  `activity_service_paid_by` varchar(11) NOT NULL DEFAULT 'TO' COMMENT 'TO/CLIENT',
+  `id_tour_operator` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tbltouroperator',
+  `id_client` int(11) NOT NULL DEFAULT 0 COMMENT 'id_client from client table',
+  `activity_date` date NOT NULL DEFAULT '9999-12-31' COMMENT 'Date of activity',
+  `activity_time` time DEFAULT NULL COMMENT 'time of activity',
+  `activity_booking_date` date NOT NULL DEFAULT '9999-12-31' COMMENT 'Date to apply the booking',
+  `id_product` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product from product table',
+  `id_product_service` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service from product_service table',
+  `activity_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT 'descriptive name of the activity',
+  `activity_duration` time(5) DEFAULT NULL COMMENT 'Duration of service',
+  `id_hotel` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tblhotels table',
+  `hotelname` varchar(100) DEFAULT NULL COMMENT 'hotelname from tblhotels_rooms table',
+  `activity_pickup_time` time DEFAULT NULL COMMENT 'time if transfer included in activity',
+  `activity_adult_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of adult in the activity',
+  `activity_teen_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of teen in the activity',
+  `activity_child_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of child in the activity',
+  `activity_infant_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of infant in the activity',
+  `activity_total_pax` int(11) NOT NULL DEFAULT 0 COMMENT 'no of pax in the activity',
+  `id_product_service_claim` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service_claim from product_service_claim table',
+  `id_product_service_claim_cur` int(11) NOT NULL DEFAULT 0 COMMENT 'id currency from ???? table',
+  `id_dept` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tbldepartments',
+  `activity_claim_dept` varchar(10) NOT NULL DEFAULT '' COMMENT 'department name',
+  `activity_charge` varchar(10) NOT NULL DEFAULT '' COMMENT 'PAX/UNIT',
+  `id_service_tax` int(11) NOT NULL COMMENT 'id_service_tax of activity',
+  `tax_value` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'tax percentage charge',
+  `activity_adult_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit initial claim excluding TAX',
+  `activity_adult_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit initial claim',
+  `activity_teen_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen initial claim excluding TAX',
+  `activity_teen_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen initial claim',
+  `activity_child_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child initial claim excluding TAX',
+  `activity_child_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child initial claim',
+  `activity_infant_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant initial claim excluding TAX',
+  `activity_infant_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant initial claim',
+  `activity_total_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total initial claim excluding TAX',
+  `activity_total_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total initial claim',
+  `activity_rebate_type` varchar(15) DEFAULT 'None' COMMENT 'Type of rebate percentage/fixed tariff',
+  `activity_rebate_approve_by` int(11) NOT NULL DEFAULT 0 COMMENT 'id user who approved the discount',
+  `activity_discount_percentage` decimal(10,2) NOT NULL DEFAULT 0.00 COMMENT 'discount percentage amount',
+  `activity_adult_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit discounted tariff',
+  `activity_adult_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit claim with discount excluding TAX',
+  `activity_adult_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit claim with discount',
+  `activity_teen_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen discounted tariff',
+  `activity_teen_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen claim with discount',
+  `activity_teen_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen claim with discount excluding TAX',
+  `activity_child_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child discounted tariff',
+  `activity_child_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child claim with discount',
+  `activity_child_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child claim with discount excluding TAX',
+  `activity_infant_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant discounted tariff',
+  `activity_infant_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant claim with discount',
+  `activity_infant_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant claim with discount excluding TAX',
+  `activity_total_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total claim with discount excluding TAX',
+  `activity_total_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total claim with discount',
+  `activity_client_room_no` varchar(25) DEFAULT NULL COMMENT 'room no of the client for the activity',
+  `id_language` int(11) NOT NULL DEFAULT 0 COMMENT 'id from language',
+  `id_rep` int(11) DEFAULT NULL COMMENT 'id_rep from representative table',
+  `activity_voucher_no` varchar(15) NOT NULL DEFAULT '' COMMENT 'voucher no of activity if on direct sale',
+  `activity_remarks` varchar(25) DEFAULT NULL COMMENT 'remarks for the activity booking',
+  `activity_internal_remarks` varchar(25) DEFAULT NULL COMMENT 'internal remarks for the acoom booking',
+  `activity_invoice_no` int(11) DEFAULT NULL COMMENT 'invoice no',
+  `activity_invoiced_date` date DEFAULT '9999-12-31' COMMENT 'date when the dossier will be invoiced',
+  `activity_close` int(11) NOT NULL DEFAULT 0 COMMENT '1 for closed dossier / 0 open',
+  `activity_close_on` date DEFAULT '9999-12-31' COMMENT 'date when dossier is closed',
+  `activity_status` text DEFAULT 'QUOTE' COMMENT 'QUOTE,CONFIRM, CANCEL, CANCEL WITH FEE',
+  `created_by` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tblusers',
+  `created_name` varchar(25) NOT NULL DEFAULT '0' COMMENT 'username of staff who created the dossier',
+  `active` smallint(1) NOT NULL DEFAULT 1 COMMENT '1 for active dossier no/ 0 for deleted',
+  PRIMARY KEY (`id_booking_activity_claim`),
+  KEY `id_bookingfk` (`id_booking`),
+  KEY `id_tour_operatorfk` (`id_tour_operator`),
+  KEY `id_productfk` (`id_product`),
+  KEY `id_product_servicefk` (`id_product_service`),
+  KEY `id_hotelfk` (`id_hotel`),
+  KEY `id_product_service_claimfk` (`id_product_service_claim`),
+  KEY `id_languagefk` (`id_language`),
+  KEY `activity_invoice_no` (`activity_invoice_no`),
+  KEY `activity_close` (`activity_close`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `booking_activity_cost` (
+  `id_booking_activity_cost` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
+  `id_booking_activity_claim` int(11) NOT NULL COMMENT 'id_booking_activity from table booking_activity_claim',
+  `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
+  `id_product` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product from product table',
+  `id_product_service` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service from product_service table',
+  `id_product_service_claim` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service_claim from product_service_claim table',
+  `id_product_service_cost` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service_cost from product_service_cost table',
+  `id_product_service_cost_cur` int(11) NOT NULL DEFAULT 0 COMMENT 'id currency from ???? table',
+  `activity_adult_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of adult in the activity',
+  `activity_teen_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of teen in the activity',
+  `activity_child_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of child in the activity',
+  `activity_infant_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of infant in the activity',
+  `activity_total_pax` int(11) NOT NULL DEFAULT 0 COMMENT 'no of pax in the activity',
+  `activity_adult_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit cost',
+  `activity_teen_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen cost',
+  `activity_child_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child cost',
+  `activity_infant_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant cost',
+  `activity_total_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total cost',
+  `created_by` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tblusers',
+  `created_name` varchar(25) NOT NULL DEFAULT '0' COMMENT 'username of staff who created the dossier',
+  `active` smallint(1) NOT NULL DEFAULT 1 COMMENT '1 for active dossier no/ 0 for deleted',
+  PRIMARY KEY (`id_booking_activity_cost`),
+  KEY `id_bookingfk` (`id_booking`),
+  KEY `id_productfk` (`id_product`),
+  KEY `id_product_servicefk` (`id_product_service`),
+  KEY `id_product_service_claimfk` (`id_product_service_claim`),
+  KEY `id_product_service_costfk` (`id_product_service_cost`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `booking_activity` (
+/*CREATE TABLE `booking_activity` (
   `id_booking_activity` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
   `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
   `activity_service_paid_by` varchar(11) NOT NULL DEFAULT 'TO' COMMENT 'TO/CLIENT',
@@ -218,21 +334,21 @@ CREATE TABLE `booking_activity` (
   KEY `id_languagefk` (`id_language`),
   KEY `activity_invoice_no` (`activity_invoice_no`),
   KEY `activity_close` (`activity_close`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8;*/
 
 CREATE TABLE `booking_activity_client` (
   `id_booking_activity_client` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment field',
   `id_client` int(11) NOT NULL COMMENT 'id_client from client table',
-  `id_booking_activity` int(11) NOT NULL COMMENT 'id_booking_activity from booking_activity table',
+  `id_booking_activity_claim` int(11) NOT NULL COMMENT 'id_booking_activity from booking_activity table',
   `id_booking` int(11) NOT NULL COMMENT 'id_booking from booking table',
   `active` smallint(1) NOT NULL DEFAULT 1 COMMENT '1 for active 0 for deleted',
   PRIMARY KEY (`id_booking_activity_client`),
   KEY `id_clientfk` (`id_client`),
-  KEY `id_booking_activityfk` (`id_booking_activity`),
+  KEY `id_booking_activityfk` (`id_booking_activity_claim`),
   KEY `id_bookingfk` (`id_booking`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `booking_activity_log` (
+/*CREATE TABLE `booking_activity_log` (
   `id_booking_activity_log` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
   `id_booking_activity` int(11) NOT NULL COMMENT 'id_booking_activity from booking_activity table',
   `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
@@ -299,8 +415,111 @@ CREATE TABLE `booking_activity_log` (
   `log_status` varchar(15) NOT NULL COMMENT 'CREATE, UPDATE, DELETE',
   PRIMARY KEY (`id_booking_activity_log`),
   KEY `id_booking_activityfk` (`id_booking_activity`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;*/
 
+CREATE TABLE `booking_activity_claim_log` (
+  `id_booking_activity_claim_log` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
+  `id_booking_activity_claim` int(11) NOT NULL COMMENT 'id_booking_activity_claim from id_booking_activity_claim',
+  `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
+  `activity_service_paid_by` varchar(11) NOT NULL DEFAULT 'TO' COMMENT 'TO/CLIENT',
+  `id_tour_operator` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tbltouroperator',
+  `id_client` int(11) NOT NULL DEFAULT 0 COMMENT 'id_client from client table',
+  `activity_date` date NOT NULL DEFAULT '9999-12-31' COMMENT 'Date of activity',
+  `activity_time` time DEFAULT NULL COMMENT 'time of activity',
+  `activity_booking_date` date NOT NULL DEFAULT '9999-12-31' COMMENT 'Date to apply the booking',
+  `id_product` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product from product table',
+  `id_product_service` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service from product_service table',
+  `activity_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT 'descriptive name of the activity',
+  `activity_duration` time(5) DEFAULT NULL COMMENT 'Duration of service',
+  `id_hotel` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tblhotels table',
+  `hotelname` varchar(100) DEFAULT NULL COMMENT 'hotelname from tblhotels_rooms table',
+  `activity_pickup_time` time DEFAULT NULL COMMENT 'time if transfer included in activity',
+  `activity_clients` varchar(255) NOT NULL DEFAULT '0' COMMENT 'id_clients from booking_activity_client',
+  `activity_adult_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of adult in the activity',
+  `activity_teen_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of teen in the activity',
+  `activity_child_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of child in the activity',
+  `activity_infant_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of infant in the activity',
+  `activity_total_pax` int(11) NOT NULL DEFAULT 0 COMMENT 'no of pax in the activity',
+  `id_product_service_claim` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service_claim from product_service_claim table',
+  `id_product_service_claim_cur` int(11) NOT NULL DEFAULT 0 COMMENT 'id currency from ???? table',
+  `id_dept` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tbldepartments',
+  `activity_claim_dept` varchar(10) NOT NULL DEFAULT '' COMMENT 'department name',
+  `activity_charge` varchar(10) NOT NULL DEFAULT '' COMMENT 'PAX/UNIT',
+  `id_service_tax` int(11) NOT NULL COMMENT 'id_service_tax of activity',
+  `tax_value` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'tax percentage charge',
+  `activity_adult_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit initial claim excluding TAX',
+  `activity_adult_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit initial claim',
+  `activity_teen_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen initial claim excluding TAX',
+  `activity_teen_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen initial claim',
+  `activity_child_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child initial claim excluding TAX',
+  `activity_child_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child initial claim',
+  `activity_infant_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant initial claim excluding TAX',
+  `activity_infant_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant initial claim',
+  `activity_total_claim_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total initial claim excluding TAX',
+  `activity_total_claim` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total initial claim',
+  `activity_rebate_type` varchar(15) DEFAULT 'None' COMMENT 'Type of rebate percentage/fixed tariff',
+  `activity_rebate_approve_by` int(11) NOT NULL DEFAULT 0 COMMENT 'id user who approved the discount',
+  `activity_discount_percentage` decimal(10,2) NOT NULL DEFAULT 0.00 COMMENT 'discount percentage amount',
+  `activity_adult_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit discounted tariff',
+  `activity_adult_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit claim with discount excluding TAX',
+  `activity_adult_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit claim with discount',
+  `activity_teen_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen discounted tariff',
+  `activity_teen_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen claim with discount excluding TAX',
+  `activity_teen_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen claim with discount',
+  `activity_child_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child discounted tariff',
+  `activity_child_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child claim with discount',
+  `activity_child_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child claim with discount excluding TAX',
+  `activity_infant_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant discounted tariff',
+  `activity_infant_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant claim with discount',
+  `activity_infant_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant claim with discount excluding TAX',
+  `activity_total_claim_after_disc_exTAX` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total claim with discount excluding TAX',
+  `activity_total_claim_after_disc` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total claim with discount',
+  `activity_client_room_no` varchar(25) DEFAULT NULL COMMENT 'room no of the client for the activity',
+  `id_language` int(11) NOT NULL DEFAULT 0 COMMENT 'id from language',
+  `id_rep` int(11) DEFAULT NULL COMMENT 'id_rep from representative table',
+  `activity_voucher_no` varchar(15) NOT NULL DEFAULT '' COMMENT 'voucher no of activity if on direct sale',
+  `activity_remarks` varchar(25) DEFAULT NULL COMMENT 'remarks for the activity booking',
+  `activity_internal_remarks` varchar(25) DEFAULT NULL COMMENT 'internal remarks for the acoom booking',
+  `activity_invoice_no` int(11) DEFAULT NULL COMMENT 'invoice no',
+  `activity_invoiced_date` date DEFAULT '9999-12-31' COMMENT 'date when the dossier will be invoiced',
+  `activity_close` int(11) NOT NULL DEFAULT 0 COMMENT '1 for closed dossier / 0 open',
+  `activity_close_on` date DEFAULT '9999-12-31' COMMENT 'date when dossier is closed',
+  `activity_status` text DEFAULT 'QUOTE' COMMENT 'QUOTE,CONFIRM, CANCEL, CANCEL WITH FEE',
+  `id_user` int(11) NOT NULL COMMENT 'id from tbluser',
+  `uname` varchar(45) NOT NULL DEFAULT 'NONE',
+  `log_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `log_status` varchar(15) NOT NULL COMMENT 'CREATE, UPDATE, DELETE',
+  PRIMARY KEY (`id_booking_activity_claim_log`),
+  KEY `id_booking_activity_claimfk` (`id_booking_activity_claim`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `booking_activity_cost_log` (
+  `id_booking_activity_cost_log` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
+  `id_booking_activity_cost` int(11) NOT NULL COMMENT 'id_booking_activity_cost from booking_activity_cost',
+  `id_booking_activity_claim` int(11) NOT NULL COMMENT 'id_booking_activity from table booking_activity_claim',
+  `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
+  `id_product` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product from product table',
+  `id_product_service` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service from product_service table',
+  `id_product_service_claim` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service_claim from product_service_claim table',
+  `id_product_service_cost` int(11) NOT NULL DEFAULT 0 COMMENT 'id_product_service_cost from product_service_cost table',
+  `id_product_service_cost_cur` int(11) NOT NULL DEFAULT 0 COMMENT 'id currency from ???? table',
+  `activity_adult_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of adult in the activity',
+  `activity_teen_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of teen in the activity',
+  `activity_child_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of child in the activity',
+  `activity_infant_amt` int(11) NOT NULL DEFAULT 0 COMMENT 'no of infant in the activity',
+  `activity_total_pax` int(11) NOT NULL DEFAULT 0 COMMENT 'no of pax in the activity',
+  `activity_adult_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'adult/unit cost',
+  `activity_teen_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'teen cost',
+  `activity_child_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'child cost',
+  `activity_infant_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'infant cost',
+  `activity_total_cost` float(15,2) NOT NULL DEFAULT 0.00 COMMENT 'total cost',
+  `id_user` int(11) NOT NULL COMMENT 'id from tbluser',
+  `uname` varchar(45) NOT NULL DEFAULT 'NONE',
+  `log_date` datetime NOT NULL DEFAULT current_timestamp(),
+  `log_status` varchar(15) NOT NULL COMMENT 'CREATE, UPDATE, DELETE',
+  PRIMARY KEY (`id_booking_activity_cost_log`),
+  KEY `id_booking_activity_cost` (`id_booking_activity_cost`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /* TAX RATE */
 CREATE TABLE `tax_rate` (
@@ -318,3 +537,10 @@ INSERT INTO `tax_rate` (`id_tax_rate`, `id_tax_code`, `tx_code`, `tax_value`, `t
 VALUES
 	(1,3,'VAT',12.00,'1992-01-01','1998-06-30',1),
 	(2,3,'VAT',15.00,'1998-07-01',NULL,1);
+
+-- Insert menu
+    INSERT INTO `tblmenu` (`menuid`, `menuname`, `parentfk`, `leaf`, `ordering`, `icon`, `clkevent`, `menusysid`, `description`, `inout`)
+VALUES
+    (58, 'Booking System', 2, 'Y', 3, 'fas fa-briefcase', '', 'bookingSystem', 'Booking System', 'O');
+ 
+

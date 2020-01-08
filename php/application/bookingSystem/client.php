@@ -1,8 +1,8 @@
-<script src="php/application/booking/js/bookingClient.js"></script>
-<script src="php/application/booking/js/newClient.js"></script>
-<script src="php/application/booking/js/tableBookingClient.js"></script>
-<script src="php/application/booking/js/saveClient.js"></script>
-<script src="php/application/booking/js/deleteClient.js"></script>
+<script src="php/application/bookingSystem/js/bookingClient.js"></script>
+<script src="php/application/bookingSystem/js/newClient.js"></script>
+<script src="php/application/bookingSystem/js/tableBookingClient.js"></script>
+<script src="php/application/bookingSystem/js/saveClient.js"></script>
+<script src="php/application/bookingSystem/js/deleteClient.js"></script>
 <!-- Client Tab -->
 <div class="tab-pane active in fade" id="client">
 <!-- left column -->	

@@ -13,11 +13,16 @@ $("#btnSaveProduct").click(function () {
             $.ajax({
                 url : url_edit_product,
                 method : "POST",
-                data : objProductUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                data : objProductUpdate,    
+                dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                                                                  
                 success : function(data){
-                    console.log('value', data);
-                    allProductGridCost(data);
-                    resetFormAddProduct();
+                    if (data.OUTCOME == "ERROR_NAME") { 
+                        swal("Duplicate", "Product Name Duplicate...", "error");
+                        document.getElementById("productId").textContent = id_product;
+                    } else { 
+                        resetFormAddProduct();
+                        allProductGridCost(data);
+                    }
                 },
                 error: function(error) {
                     console.log('Error ${error}');
@@ -35,11 +40,16 @@ $("#btnSaveProduct").click(function () {
             $.ajax({
                 url : url_save_product,
                 method : "POST",
-                data : objProduct,                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                data : objProduct,      
+                dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                                                        
                 success : function(data){
-                    console.log('value', data);
-                    allProductGridCost(data);
-                    resetFormAddProduct();
+                    console.log(data);
+                    if (data.OUTCOME == "ERROR_NAME") { 
+                        swal("Duplicate", "Product Name Duplicate...", "error");
+                    } else { 
+                        resetFormAddProduct();
+                        allProductGridCost(data);
+                    }
                 },
                 error: function(error) {
                     console.log('Error ${error}');
@@ -55,6 +65,7 @@ $("#btnSaveProduct").click(function () {
 function resetFormAddProduct() {
     $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
     $('#productName').val('');
-    $("#ddlType").val("Choose An Option");
-    $("#ddlProductType").val("Choose An Option");
+    $("#ddlType").val('2');
+    $('#ddlProductType').val('1');
+    document.getElementById("productId").textContent = 0;
 }

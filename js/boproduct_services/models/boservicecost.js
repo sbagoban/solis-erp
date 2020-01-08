@@ -52,6 +52,8 @@ $('#btn-saveProductServicesCost').click(function () {
     const urlParams = new URLSearchParams(allParams);
     var id_product_service = urlParams.get("psid");
 
+    var id_product_service_cost = document.getElementById("id_product_service_cost_1").innerHTML;
+
     var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
     var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
     const url_overlap_date = "php/api/backofficeproduct/gridservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service=" + id_product_service;
@@ -60,15 +62,21 @@ $('#btn-saveProductServicesCost').click(function () {
         method : "POST", 
         dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                                                            
         success : function(data) {
-            data.forEach(function (arrayItem) {
-                var x = arrayItem;
+            if (id_product_service_cost == 0) {
+                data.forEach(function (arrayItem) {
+                    x = arrayItem;
+                    console.log('Array date Table', x);
+                });
                 if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
+                    alert('1');   
                     addCostProductService();
                 } else {
                     alert('Date Overlap');                   
                     resetFormAddServiceCost();
-                } 
-            });
+                }
+            } else {
+                addCostProductService();
+            }
             
         },
         error: function(error) {
@@ -138,11 +146,14 @@ function addCostProductService() {
             $.ajax({
                 url : url_save_service_cost,
                 method : "POST",
-                data : objServiceCost,                                
+                data : objServiceCost,  
+                dataType: "json",     
                 success : function(data){
-                    console.log('value', data);
-                    resetFormAddServiceCost();
-                    allServicesGridCost();
+                    console.log('value', data.OUTCOME);
+                    if (data.OUTCOME == 'OK') {
+                        resetFormAddServiceCost();
+                        allServicesGridCost();
+                    }
                 },
                 error: function(error) {
                     console.log('Error ${error}');
@@ -155,11 +166,12 @@ function addCostProductService() {
 // Function Reset Form Add New Service
 function resetFormAddServiceCost() {
     $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
-    $('#valid_from').val('');
-    $('#valid_to').val('');
-    $('#ps_adult_cost').val('');
-    $('#ps_teen_cost').val('');
-    $('#ps_child_cost').val('');
-    $('#ps_infant_cost').val('');
-    $('#id_currency').val('');
+    $('#valid_from').val('').end();
+    $('#valid_to').val('').end();
+    $('#ps_adult_cost').val('').end();
+    $('#ps_teen_cost').val('').end();
+    $('#ps_child_cost').val('').end();
+    $('#ps_infant_cost').val('').end();
+    $('#id_currency').val('').end();
+    document.getElementById("id_product_service_cost_1").innerHTML = 0;
 }

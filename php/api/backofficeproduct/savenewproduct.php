@@ -29,17 +29,34 @@ try {
     $id_product = $_POST["id_product"];
     $id_product_type = trim($_POST["id_product_type"]);
     $id_service_type = trim($_POST["id_service_type"]);
-    $product_name = trim($_POST["product_name"]);
+    $product_name = strtoupper(trim($_POST["product_name"]));
     $active = trim($_POST["active"]);
+
+    $id_user = $_SESSION["solis_userid"];
+    $uname = $_SESSION["solis_username"];
+    $log_status = "CREATE";
 
     $con = pdo_con();
 
-    //check duplicates for services
-    $sql = "SELECT * FROM product WHERE id_product = :id_product ";
-    $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product" => $id_product));
-    if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        throw new Exception("DUPLICATE SERVICES!");
+    // //check duplicates for services
+    // $sql = "SELECT * FROM product WHERE id_product = :id_product ";
+    // $stmt = $con->prepare($sql);
+    // $stmt->execute(array(":id_product" => $id_product));
+    // if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //     throw new Exception("DUPLICATE SERVICES!");
+    // }
+
+    //check duplicates for area name
+    $sql_name = "SELECT * FROM product 
+            WHERE product_name = :product_name 
+            AND active = 1";
+    $stmt_name = $con->prepare($sql_name);
+    $stmt_name->bindParam(':product_name', $product_name);
+    $stmt_name->execute(); 
+
+    if ($rw = $stmt_name->fetch(PDO::FETCH_ASSOC)) {
+        // throw new Exception("DUPLICATE PRODUCT NAME!");
+        die(json_encode(array("OUTCOME" => "ERROR_NAME")));
     }
 
     if ($id_product == "-1") {
@@ -54,6 +71,39 @@ try {
             ":active" => $active));
         
         $id_product = $con->lastInsertId();
+        
+        // Start Product Log
+        $sqlLog = "INSERT INTO product_log ( 
+            id_product,
+            id_product_type, 
+            id_service_type, 
+            product_name,
+            id_user,
+            uname,
+            log_status
+            ) 
+                VALUES (
+                    :id_product,
+                    :id_product_type, 
+                    :id_service_type, 
+                    :product_name,
+                    :id_user,
+                    :uname,
+                    :log_status
+                    )";
+    
+        $stmt = $con->prepare($sqlLog);
+                    $stmt->execute(array(
+                    ":id_product" => $id_product,
+                    ":id_product_type" => $id_product_type, 
+                    ":id_service_type" => $id_service_type,
+                    ":product_name" => $product_name,
+                    ":id_user" => $id_user,
+                    ":uname" => $uname,
+                    ":log_status" => $log_status
+                ));
+    
+        // End Of Log
     } else {
         $sql = "UPDATE product SET 
                 id_product_type=:id_product_type, 

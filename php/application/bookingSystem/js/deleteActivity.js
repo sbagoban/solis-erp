@@ -7,14 +7,14 @@ $(function(){
 	$('#btn-deleteActivity').click(
 	function()
 	{
-        var id_booking_activity = $('#id_booking_activity').val();
+        var id_booking_activity_claim = $('#id_booking_activity_claim').val();
         var id_booking = $('#id_booking').val();
         var activityData = {
             id_booking: id_booking,
-            id_booking_activity: id_booking_activity,
+            id_booking_activity_claim: id_booking_activity_claim,
             action: 'DELETE'
         }
-        if($('#id_booking_activity').val() == '' && $('#id_booking_activity').val() != '')
+        if($('#id_booking_activity_claim').val() == '' && $('#id_booking_activity_claim').val() != '')
 			{
 				alert("An error occured, please load back the Activity");
 			}
@@ -34,10 +34,10 @@ $(function(){
 function deleteActivity(activityData) { 
     var objReservationActivity = {
         id_booking: activityData.id_booking,
-        id_booking_activity: activityData.id_booking_activity,
+        id_booking_activity_claim: activityData.id_booking_activity_claim,
         action: activityData.action
     }
-     const url_delete_activity = "php/api/bookingSystem/deleteBookingActivity.php?t="  + encodeURIComponent(global_token) + "&id_booking=" +activityData.id_booking + "&id_booking_activity=" +activityData.id_booking_activity;
+     const url_delete_activity = "php/api/bookingSystem/deleteBookingActivity.php?t="  + encodeURIComponent(global_token) + "&id_booking=" +activityData.id_booking + "&id_booking_activity_claim=" +activityData.id_booking_activity_claim;
     $.ajax({
         url : url_delete_activity,
         method : "POST",

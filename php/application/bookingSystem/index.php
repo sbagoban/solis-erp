@@ -1,10 +1,10 @@
-<script src="php/application/booking/js/bookingSystem.js"></script>
-<script src="php/application/booking/js/newBooking.js"></script>
-<script src="php/application/booking/js/searchBooking.js"></script>
-<script src="php/application/booking/js/saveBooking.js"></script>
-<script src="php/application/booking/js/deleteBooking.js"></script>
-<script src="php/application/booking/js/bookingTab.js"></script>
-<link rel="stylesheet" href="php/application/booking/css/bookingSystem.css">
+<script src="php/application/bookingSystem/js/bookingSystem.js"></script>
+<script src="php/application/bookingSystem/js/newBooking.js"></script>
+<script src="php/application/bookingSystem/js/searchBooking.js"></script>
+<script src="php/application/bookingSystem/js/saveBooking.js"></script>
+<script src="php/application/bookingSystem/js/deleteBooking.js"></script>
+<script src="php/application/bookingSystem/js/bookingTab.js"></script>
+<link rel="stylesheet" href="php/application/bookingSystem/css/bookingSystem.css">
 <!-- Main content -->
 <section class="content">
 	<!-- 1 row -->

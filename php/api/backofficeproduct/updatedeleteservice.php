@@ -280,7 +280,7 @@ $sqlLog = "INSERT INTO product_service_log (
             :log_status
             )";
 
-$stmt = $con->prepare($sqlLog);
+            $stmt = $con->prepare($sqlLog);
             $stmt->execute(array(
                 ":id_product" => $id_product,
                 ":valid_from" => $valid_from,
@@ -325,6 +325,25 @@ $stmt = $con->prepare($sqlLog);
         ));
 
 // End Of Log
+    // Edit Cost - 
+    $stmt3 = $con->prepare("UPDATE product_service_cost SET active=0 WHERE id_product_service = :id_product_service");
+    $stmt3->execute(array(":id_product_service"=>$id_product_service));
+
+    $stmt4 = $con->prepare("UPDATE product_service_extra_cost SET active=0 WHERE id_product_service = :id_product_service");
+    $stmt4->execute(array(":id_product_service"=>$id_product_service));
+
+    $stmt5 = $con->prepare("UPDATE product_service_claim SET active=0 WHERE id_product_service = :id_product_service");
+    $stmt5->execute(array(":id_product_service"=>$id_product_service));
+
+    $stmt6 = $con->prepare("UPDATE product_service_extra_claim SET active=0 WHERE id_product_service = :id_product_service");
+    $stmt6->execute(array(":id_product_service"=>$id_product_service));
+
+    // $stmt7 = $con->prepare("UPDATE product_service_claim_country SET active=0 WHERE id_product_service = :id_product_service");
+    // $stmt7->execute(array(":id_product_service"=>$id_product_service));
+
+    // $stmt8 = $con->prepare("UPDATE product_service_claim_to SET active=0 WHERE id_product_service = :id_product_service");
+    // $stmt8->execute(array(":id_product_service"=>$id_product_service));
+
     }
     catch (Exception $ex) {
         die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
