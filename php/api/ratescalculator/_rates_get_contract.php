@@ -1,11 +1,32 @@
 <?php
 
 function _rates_reservation_get_contract_id($con, $arr_params_resa) {
-    //GET THE CONTRACT ID FOR THE FOLLOWING CALL FROM RESERVATION
-    //RETURNS AN INTEGER IF SUCCESSFUL CONTRACT ID LOOKUP
-    //OTHERWISE RETURNS "FAIL_NO_CONTRACT", 
-    //                  "FAIL_OVERLAPPING_TEST", 
-    //                  "FAIL_MULTILE_PERIODS_TEST"
+    
+    /**
+    * Summary.
+    *
+    * looks up the contract id for the reservation parameters passed
+    *
+    *
+    * @param PDOConnection  $con PDO Connection Object
+    * @param array $arr_params_resa {
+    *     Array of parameters from reservation
+    *
+    *     @type Integer $mealplan meal plan id 
+    *     @type Integer $touroperator tour operator id
+    *     @type Integer $hotel hotel id
+    *     @type Integer $hotelroom hotel room id
+    *     @type Date $checkin_date checkin date in yyyy-mm-dd
+    *     @type Date $checkout_date checkout date in yyyy-mm-dd
+    *     @type Date $booking_date booking date in yyyy-mm-dd
+    *     @type Date $travel_date travel date in yyyy-mm-dd
+    *     @type Integer $max_pax maximum passengers in reservation
+    * 
+    * }
+    * @return INTEGER IF SUCCESSFUL CONTRACT ID LOOKUP 
+    * OTHERWISE RETURNS STRING "FAIL_NO_CONTRACT", "FAIL_OVERLAPPING_TEST", "FAIL_MULTILE_PERIODS_TEST"     
+    */
+    
 
     try {
 
@@ -15,6 +36,10 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         $hotelroom = $arr_params_resa["hotelroom"];
         $checkin_date = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
         $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
+        $booking_date = $arr_params_resa["booking_date"]; //yyyy-mm-dd
+        $travel_date = $arr_params_resa["travel_date"]; //yyyy-mm-dd
+        $max_pax = $arr_params_resa["max_pax"]; 
+        
         //=========================================
         //get the country of the TO
         $countryid = -1;
@@ -45,6 +70,7 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         }
 
         //=========================================
+        //reset my parameters
         $arr_params["checkin_date"] = $checkin_date;
         $arr_params["checkout_date"] = $checkout_date;
         $arr_params["country"] = $countryid;
