@@ -37,8 +37,8 @@ JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN product PR on PS.id_product = PR.id_product
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN tblservicetype TSC on PR.id_service_type = TSC.id
-WHERE PRS.active = 1
-AND TSC.servicetype = 'ACTIVITY'");
+WHERE PRS.active = 1");
+// AND TSC.servicetype = 'ACTIVITY'");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 

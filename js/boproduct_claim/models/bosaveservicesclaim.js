@@ -203,6 +203,7 @@ $("#btn-saveServicesClaim").click(function () {
     var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
     var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
     var specific_to = $('#specific_to').val();
+    var id_currency = $('#id_currency').val();
 
     const url_overlap_claim_date = "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost + "&id_product_service_claim=" +id_product_service_claim;
     $.ajax({
@@ -214,26 +215,28 @@ $("#btn-saveServicesClaim").click(function () {
                 data.forEach(function (arrayItem) {
                     x = arrayItem;
                 });
-
+                // Check Date from datatable then compare - with value input
                 if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
                     overlap = false;
                     addClaimProductService();
                 } else {
                     overlap = true;
+                    console.log('--> test', specific_to);
                     if (specific_to == 'A') { // To
                         checkTo(x);
-                        alert('Date Overlap 1');   
+                        //alert('Date Overlap - Tour Operator');   
                     } else if (specific_to == 'C') { // Market
                         checkMarket(x);  
-                        alert('Date Overlap 2');   
-                    }                  
+                        //alert('Date Overlap - Market');   
+                    } else if (specific_to == 'B') {
+                        if (id_currency != x.id_currency) {
+                            addClaimProductService();
+                        } else {
+                            alert('Please Choose another currency for Worldwide');
+                        }
+                    }               
                     // resetProductServicesClaim();           
-                } 
-                
-                // if (overlap == true) { 
-                    
-                // }
-            
+                }            
         },
         error: function(error) {
             console.log('Error ${error}');

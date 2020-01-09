@@ -132,25 +132,25 @@ $(document).ready(function(){
                 service_name = $( this ).text();
                 if (service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
                     $('#special_name_transfer').css('display', 'block');  
-                    $('#special_name_transfer').val('Airport');
-                    $("#special_name_transfer option[value='Drop on']").hide();
-                    $("#special_name_transfer option[value='Drop Off']").hide();
-                    $("#special_name_transfer option[value='Full Day']").hide();
-                    $("#special_name_transfer option[value='Half Day']").hide();
-                    $("#special_name_transfer option[value='Night Tour']").hide();
-                    $("#special_name_transfer option[value='Airport']").show();
-                    $("#special_name_transfer option[value='Port']").show();
+                    $('#special_name_transfer').val('AIRPORT');
+                    $("#special_name_transfer option[value='DROP ON']").hide();
+                    $("#special_name_transfer option[value='DROP OFF']").hide();
+                    $("#special_name_transfer option[value='FULL DAY']").hide();
+                    $("#special_name_transfer option[value='HALF DAY']").hide();
+                    $("#special_name_transfer option[value='NIGHT TOUR']").hide();
+                    $("#special_name_transfer option[value='AIRPORT']").show();
+                    $("#special_name_transfer option[value='PORT']").show();
                 } else if (service_name == "INTER HOTEL") {                     
                     $('#special_name_transfer').css('display', 'none');
                 } else if (service_name == "ACTIVITY") {        
                     $('#special_name_transfer').css('display', 'block');              
-                    $("#special_name_transfer option[value='Airport']").hide();
-                    $("#special_name_transfer option[value='Port']").hide();                    
-                    $("#special_name_transfer option[value='Drop on']").show();
-                    $("#special_name_transfer option[value='Drop Off']").show();
-                    $("#special_name_transfer option[value='Full Day']").show();
-                    $("#special_name_transfer option[value='Half Day']").show();
-                    $("#special_name_transfer option[value='Night Tour']").show();
+                    $("#special_name_transfer option[value='AIRPORT']").hide();
+                    $("#special_name_transfer option[value='PORT']").hide();                    
+                    $("#special_name_transfer option[value='DROP ON']").show();
+                    $("#special_name_transfer option[value='DROP OFF']").show();
+                    $("#special_name_transfer option[value='FULL DAY']").show();
+                    $("#special_name_transfer option[value='HALF DAY']").show();
+                    $("#special_name_transfer option[value='NIGHT TOUR']").show();
                     $('#special_name_transfer').val('Select an Option');
                 }
             });
