@@ -84,6 +84,9 @@ try {
         $id_creditor = 0; //id_creditor name should be Solis planning - to set in db 
         $min_age = 0;
         $max_age = 0;
+    }
+    
+    if ($servicetype != 'TRANSFER') {
         $max_adult = 0;
     }
 
@@ -220,7 +223,7 @@ try {
             ":min_age" => $min_age,
             ":max_age" => $max_age,
             ":is_pakage" => $is_pakage,
-            ":special_name" => $special_name,        
+            ":special_name" => $special_name,
             ":max_adult" => $max_adult));
         
             $id_product_service = $con->lastInsertId();

@@ -87,8 +87,12 @@
             $id_creditor = 0; //id_creditor name should be Solis planning - to set in db 
             $min_age = 0;
             $max_age = 0;
+        }
+
+        if ($servicetype != 'TRANSFER') {
             $max_adult = 0;
         }
+
 		if ($age_inf_to == "") 
 		{
 			$age_inf_from = NULL;

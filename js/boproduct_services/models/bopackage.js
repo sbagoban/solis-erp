@@ -18,7 +18,7 @@ function serviceCost() {
         {
             $("#services_cost").empty();
             $.each(data, function (key, val) {
-                $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' + val.service_name + '</option>');
+                $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' + val.service_name + '/' + val.product_name +'</option>');
             });
             $("#services_cost").attr('multiple', 'multiple'); 
             $("#services_cost").multiselect({
