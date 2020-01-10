@@ -84,7 +84,7 @@ $('#btn-saveProductServices').click(function () {
     var is_pakage = $('#is_pakage').val();
     var id_product_service_induded = $('#services_cost').val();
     var max_adult = $('#max_adult').val();
-    
+    console.log('-->',  id_product_service_induded.length > 0);
     if (is_pakage == 'N') { 
         id_product_service_induded = 0;
     } 
@@ -214,7 +214,7 @@ $('#btn-saveProductServices').click(function () {
             max_adult : max_adult
         };
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
-        if (is_pakage == 'N' || (is_pakage == 'Y' &&  id_product_service_induded > 0)) { 
+        if (is_pakage == 'N' || (is_pakage == 'Y' &&  id_product_service_induded.length > 0)) { 
             $.ajax({
                 url : url_save_service,
                 method : "POST",
@@ -290,8 +290,6 @@ $('#btn-saveProductServices').click(function () {
         // HERE !!!
         
         var chargeDetail = document.getElementById("chargeDetail").innerHTML;
-        
-        console.log('sdfs', chargeDetail ,'==', charge);
         if (chargeDetail == charge) {
             $.ajax({
                 url : url_edit_service,
@@ -415,6 +413,7 @@ function specificServiceSelected(val) {
 
 function loadSelectedService(value) {
     $("#services_block").css("display", "block");
+    console.log('-->', value);
     const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
         type: "POST",

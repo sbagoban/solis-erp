@@ -218,7 +218,6 @@ function serviceEdit(data) {
         $("#special_name_transfer option[value='HALF DAY']").show();
         $("#special_name_transfer option[value='NIGHT TOUR']").show();
     }
-	console.log(data);
     $('#daterangeServiceFromTo').val(date_range);
     $('#id_dept').val(data.id_dept);    
     $('#product_name').val(data.product_name);
@@ -263,9 +262,9 @@ function serviceEdit(data) {
     var chkAdult= document.getElementById("for_adult");
     
     if (data.is_pakage == 'N') { 
-        $('#services_block').css("display", "none");    
         $('#services_cost').val([]).multiselect('refresh');
-        $('#services_cost').val('');
+        $('#services_block').css("display", "none");
+        // $('#services_cost').val('');
     }
 
     if (data.for_adult == 1){
