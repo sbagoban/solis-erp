@@ -11269,22 +11269,24 @@ function hotelcontracts()
         {
             var buying_settings = _json_taxcommi[i].buying_settings;
             var selling_settings = _json_taxcommi[i].selling_settings;
-
-            cleanJsonTaxCommi_buy_sell(buying_settings);
-            cleanJsonTaxCommi_buy_sell(selling_settings);
+            
+            var selected_currency_buy_ids = utils_trim(form_currency.getItemValue("selected_currency_buy_ids"), " ");
+            var selected_currency_sell_ids = utils_trim(form_currency.getItemValue("selected_currency_sell_ids"), " ");
+            
+            cleanJsonTaxCommi_buy_sell(buying_settings, selected_currency_buy_ids);
+            cleanJsonTaxCommi_buy_sell(selling_settings, selected_currency_sell_ids);
         }
     }
 
-    function cleanJsonTaxCommi_buy_sell(buy_sell_settings)
+    function cleanJsonTaxCommi_buy_sell(buy_sell_settings, selected_currency_id)
     {
         for (var i = 0; i < buy_sell_settings.length; i++)
         {
             var setting_values = buy_sell_settings[i].setting_values;
             for (var j = 0; j < setting_values.length; j++)
             {
-                var selected_currency_buy_ids = utils_trim(form_currency.getItemValue("selected_currency_buy_ids"), " ");
                 var value_currency_fk = setting_values[j].value_currency_fk;
-                if (value_currency_fk != "" && value_currency_fk != selected_currency_buy_ids)
+                if (value_currency_fk != "" && value_currency_fk != selected_currency_id)
                 {
                     setting_values[j].value_action = "DELETE";
                 }

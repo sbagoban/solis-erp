@@ -66,11 +66,10 @@ try {
     $arr_params["mealplan"] = $_POST["mealplan"];
     $arr_params["supp_mealplan"] = $_POST["supp_mealplan"];
     $arr_params["touroperator"] = $tofk;
-    $arr_params["chk_is_wedding"] = $_POST["is_wedding"];
+    $arr_params["spo_chk_is_wedding"] = $_POST["is_wedding"];
     $arr_params["chk_show_invalid_spos"] = 0;
     $arr_params["spo_booking_date"] = $_POST["booking_date"];
     $arr_params["spo_chosen"] = "LOWEST";
-    $arr_params["spo_party_pax"] = $_POST["party_pax"];
     $arr_params["spo_party_pax"] = $_POST["party_pax"];
     $arr_params["spo_travel_date"] = $_POST["travel_date"];
     $arr_params["spo_type"] = "BOTH";
@@ -210,7 +209,7 @@ function validate_rates_parameters($arrPOST, $con) {
     //spo_booking_date <= spo_travel_date
     //adult.count and children.count cannot be both 0
     //cannot have chilren.sharing_own both SHARING and OWN
-    //if chk_is_wedding == 1 then must be GROOM and BRIDE in adults array
+    //if spo_chk_is_wedding == 1 then must be GROOM and BRIDE in adults array
     //============================================================
 
     $checkin_date = trim($arrPOST["checkin_date"]);

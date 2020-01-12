@@ -362,7 +362,7 @@ function ratescalculator() {
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
         },
-        {type: "checkbox", name: "chk_is_wedding", label: "Interested in Wedding SPOS:", labelWidth: "180",
+        {type: "checkbox", name: "spo_chk_is_wedding", label: "Interested in Wedding SPOS:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10"
         },
@@ -924,7 +924,7 @@ function ratescalculator() {
             var choiceid = arrchoices[i].LINKID_SPOID;
             var description = arrchoices[i].DESCRIPTION;
             var single_combined = arrchoices[i].SINGLE_COMBINED;
-            var totalcosts = arrchoices[i].TOTAL_COSTS;
+            var totalsells = arrchoices[i].TOTAL_SELL_DESCRIPTION;
             
             var arr_spos = arrchoices[i].ARR_SPOS;
 
@@ -943,7 +943,7 @@ function ratescalculator() {
             grid_choices.cells(choiceid, grid_choices.getColIndexById("category")).setValue(single_combined);
             grid_choices.cells(choiceid, grid_choices.getColIndexById("description")).setValue(description);
             grid_choices.cells(choiceid, grid_choices.getColIndexById("offers")).setValue(offers);
-            grid_choices.cells(choiceid, grid_choices.getColIndexById("price")).setValue(totalcosts);
+            grid_choices.cells(choiceid, grid_choices.getColIndexById("price")).setValue(totalsells);
             
             grid_choices.setRowTextStyle(choiceid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:3px solid black; border-right:1px solid #A4A4A4;");
 
@@ -1260,7 +1260,7 @@ function ratescalculator() {
 
 
         //if is wedding spo interested, make sure that there is a groom and bride in adults grid
-        if (form_spo.isItemChecked("chk_is_wedding"))
+        if (form_spo.isItemChecked("spo_chk_is_wedding"))
         {
             var flg_found_groom = false;
             var flg_found_bride = false;

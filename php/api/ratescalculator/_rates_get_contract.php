@@ -73,14 +73,17 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         //reset my parameters
         $arr_params["checkin_date"] = $checkin_date;
         $arr_params["checkout_date"] = $checkout_date;
+        $arr_params["checkin_time"] = "";
+        $arr_params["checkout_time"] = "";
         $arr_params["country"] = $countryid;
         $arr_params["hotel"] = $hotel;
         $arr_params["hotelroom"] = $hotelroom;
         $arr_params["mealplan"] = $mealplan;
+        $arr_params["supp_mealplan"] = "";
         $arr_params["touroperator"] = $touroperator;
         $arr_params["contractids"] = "";
         //======================================================================
-        //now proceed with looking up the contract with standard parameters
+        //now proceed with looking up the contract with special rates
         $arr_params["rate"] = $special_rate_id;
         $the_contract_id = rates_reservation_lookup_contract($con, $arr_params);
         
@@ -101,7 +104,7 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         }
         //======================================================================
     } catch (Exception $ex) {
-        return array("OUTCOME" => "_RATES_RESERVATION_GET_CONTRACT: " . $ex->getMessage());
+        return "_RATES_RESERVATION_GET_CONTRACT: ";
     }
 }
 
