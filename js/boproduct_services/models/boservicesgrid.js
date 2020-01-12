@@ -199,26 +199,25 @@ function serviceEdit(data) {
 
     if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
         $('#special_name_transfer').css('display', 'block');  
-        $("#special_name_transfer option[value='Drop on']").hide();
-        $("#special_name_transfer option[value='Drop Off']").hide();
-        $("#special_name_transfer option[value='Full Day']").hide();
-        $("#special_name_transfer option[value='Half Day']").hide();
-        $("#special_name_transfer option[value='Night Tour']").hide();
-        $("#special_name_transfer option[value='Airport']").show();
-        $("#special_name_transfer option[value='Port']").show();
+        $("#special_name_transfer option[value='DROP ON']").hide();
+        $("#special_name_transfer option[value='DROP OFF']").hide();
+        $("#special_name_transfer option[value='FULL DAY']").hide();
+        $("#special_name_transfer option[value='HALF DAY']").hide();
+        $("#special_name_transfer option[value='NIGHT TOUR']").hide();
+        $("#special_name_transfer option[value='AIRPORT']").show();
+        $("#special_name_transfer option[value='PORT']").show();
     } else if (data.service_name == "INTER HOTEL") {                     
         $('#special_name_transfer').css('display', 'none');
     } else if (data.service_name == "ACTIVITY") {        
         $('#special_name_transfer').css('display', 'block');              
-        $("#special_name_transfer option[value='Airport']").hide();
-        $("#special_name_transfer option[value='Port']").hide();                    
-        $("#special_name_transfer option[value='Drop on']").show();
-        $("#special_name_transfer option[value='Drop Off']").show();
-        $("#special_name_transfer option[value='Full Day']").show();
-        $("#special_name_transfer option[value='Half Day']").show();
-        $("#special_name_transfer option[value='Night Tour']").show();
+        $("#special_name_transfer option[value='AIRPORT']").hide();
+        $("#special_name_transfer option[value='PORT']").hide();                    
+        $("#special_name_transfer option[value='DROP ON']").show();
+        $("#special_name_transfer option[value='DROP OFF']").show();
+        $("#special_name_transfer option[value='FULL DAY']").show();
+        $("#special_name_transfer option[value='HALF DAY']").show();
+        $("#special_name_transfer option[value='NIGHT TOUR']").show();
     }
-	
     $('#daterangeServiceFromTo').val(date_range);
     $('#id_dept').val(data.id_dept);    
     $('#product_name').val(data.product_name);
@@ -226,6 +225,7 @@ function serviceEdit(data) {
     $('#id_coast').val(data.id_coast);
     $('#service_name').val(data.service_name);
     $('#service_name_transfer').val(data.service_name);
+    $('#max_adult').val(data.max_adult);
     $('#id_creditor').val(data.id_creditor);
     $('#id_tax').val(data.id_tax);
     $('#charge').val(data.charge);
@@ -262,9 +262,9 @@ function serviceEdit(data) {
     var chkAdult= document.getElementById("for_adult");
     
     if (data.is_pakage == 'N') { 
-        $('#services_block').css("display", "none");    
         $('#services_cost').val([]).multiselect('refresh');
-        $('#services_cost').val('');
+        $('#services_block').css("display", "none");
+        // $('#services_cost').val('');
     }
 
     if (data.for_adult == 1){
@@ -365,7 +365,7 @@ function duplicateProductServices(data) {
     var id_service_type = urlParams.get("id_service_type"); 
     var id_product_type = urlParams.get("id_product_type");
     var servicetype = urlParams.get("servicetype");
-
+console.log(data);
     var objServiceDuplicate = {
         id_product_service :-1, //for new items, id is always -1
         id_product : data.id_product,
@@ -410,7 +410,8 @@ function duplicateProductServices(data) {
         id_product_type : id_product_type,
         id_product_service_induded : 0,
         servicetype : servicetype,
-        special_name : data.special_name
+        special_name : data.special_name,
+        max_adult : data.max_adult
     };
 
     const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);

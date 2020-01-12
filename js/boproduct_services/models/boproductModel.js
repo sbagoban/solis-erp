@@ -68,4 +68,5 @@ function resetFormAddProduct() {
     $("#ddlType").val('2');
     $('#ddlProductType').val('1');
     document.getElementById("productId").textContent = 0;
+    $('#ddlType').prop('disabled', false);
 }

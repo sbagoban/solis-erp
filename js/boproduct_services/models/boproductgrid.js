@@ -112,6 +112,7 @@ function productServiceClaimEdit(data) {
     $("#ddlType").val(data.id_service_type);
     $("#ddlProductType").val(data.id_product_type);
     document.getElementById("productId").textContent = data.id_product;
+    $('#ddlType').prop('disabled', 'disabled');
 }
 
 // Add Product Services

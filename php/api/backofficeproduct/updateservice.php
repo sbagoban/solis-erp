@@ -71,6 +71,8 @@
 		
         $min_age = trim($_POST["min_age"]);
         $max_age = trim($_POST["max_age"]);
+        $max_adult = trim($_POST["max_adult"]);
+
         $is_pakage = trim($_POST["is_pakage"]);
         $special_name = strtoupper(trim($_POST["special_name"]));
 
@@ -86,6 +88,11 @@
             $min_age = 0;
             $max_age = 0;
         }
+
+        if ($servicetype != 'TRANSFER') {
+            $max_adult = 0;
+        }
+
 		if ($age_inf_to == "") 
 		{
 			$age_inf_from = NULL;
@@ -149,7 +156,8 @@
                 max_age =:max_age,
                 for_adult =:for_adult,
                 is_pakage =:is_pakage, 
-                special_name =:special_name
+                special_name =:special_name,
+                max_adult =:max_adult
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
@@ -192,7 +200,8 @@
                 ":max_age" => $max_age,
                 ":for_adult" => $for_adult,
                 ":is_pakage" => $is_pakage, 
-                ":special_name" => $special_name));
+                ":special_name" => $special_name, 
+                ":max_adult" => $max_adult));
 
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 

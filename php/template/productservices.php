@@ -116,13 +116,13 @@
 								<div class="col-sm-4" id="special_name_transfer_blk">
 									<select type="text" class="form-control" id="special_name_transfer">
 										<option selected disabled hidden>Select an Option</option>
-										<option value="Drop on">Drop on</option>
-										<option value="Drop Off">Drop Off</option>
-										<option value="Full Day">Full Day</option>
-										<option value="Half Day">Half Day</option>
-										<option value="Night Tour">Night Tour</option>
-										<option value="Airport">Airport</option>
-										<option value="Port">Port</option>
+										<option value="DROP ON">Drop on</option>
+										<option value="DROP OFF">Drop Off</option>
+										<option value="FULL DAY">Full Day</option>
+										<option value="HALF DAY">Half Day</option>
+										<option value="NIGHT TOUR">Night Tour</option>
+										<option value="AIRPORT">Airport</option>
+										<option value="PORT">Port</option>
 									</select>
 								</div>
 							</div>
@@ -247,6 +247,17 @@
 										<span class="input-group-addon">Min</span>
 										<input type="number" class="form-control" id="max_pax" min="0">
 										<span class="input-group-addon">Max</span>
+									</div>
+									<br>
+								</div>
+							</div>
+
+							<div class="form-group adult_blk" style="display: none">
+								<label class="col-sm-2 control-label">Adult</label>
+								<div class="col-sm-5">
+									<div class="input-group">
+										<input type="number" class="form-control" id="max_adult" min="0">
+										<span class="input-group-addon">Max Adult</span>
 									</div>
 									<br>
 								</div>

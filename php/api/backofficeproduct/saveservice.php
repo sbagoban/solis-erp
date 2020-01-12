@@ -56,6 +56,7 @@ try {
 
     $min_age = trim($_POST["min_age"]);
     $max_age = trim($_POST["max_age"]);
+    $max_adult = trim($_POST["max_adult"]);
 
     $age_inf_from = trim($_POST["age_inf_from"]);
     $age_child_from = trim($_POST["age_child_from"]);
@@ -83,6 +84,10 @@ try {
         $id_creditor = 0; //id_creditor name should be Solis planning - to set in db 
         $min_age = 0;
         $max_age = 0;
+    }
+    
+    if ($servicetype != 'TRANSFER') {
+        $max_adult = 0;
     }
 
     if ($min_age == "") {
@@ -173,11 +178,12 @@ try {
                     min_age,
                     max_age,
                     is_pakage,
-                    special_name) 
+                    special_name,
+                    max_adult) 
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
                 :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :age_inf_from, :age_child_from, :age_teen_from,
-                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name)";
+                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name, :max_adult)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -216,8 +222,9 @@ try {
             ":for_teen" => $for_teen,
             ":min_age" => $min_age,
             ":max_age" => $max_age,
-            ":is_pakage" => $is_pakage,        
-            ":special_name" => $special_name));
+            ":is_pakage" => $is_pakage,
+            ":special_name" => $special_name,
+            ":max_adult" => $max_adult));
         
             $id_product_service = $con->lastInsertId();
 
@@ -470,7 +477,8 @@ $stmt = $con->prepare($sqlLog);
                 min_age =:min_age,
                 max_age =:max_age,
                 is_pakage =:is_pakage, 
-                special_name=:special_name
+                special_name=:special_name, 
+                max_adult=:max_adult
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);
@@ -511,7 +519,8 @@ $stmt = $con->prepare($sqlLog);
             ":min_age" => $min_age,
             ":max_age" => $max_age,
             ":is_pakage" => $is_pakage, 
-            ":special_name" => $special_name));
+            ":special_name" => $special_name,
+            ":max_adult" => $max_adult));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
 } catch (Exception $ex) {
