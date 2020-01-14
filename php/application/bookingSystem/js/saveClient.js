@@ -78,7 +78,7 @@ function paxValidation(paxType){
 			
 			if ($('#client_type').val() == "ADULT")
 				{
-					if (data.adult_amt > client_adult)
+					if (data.adult_amt > parseInt(client_adult))
 						{
 							var paxCountValid = true;
 							formValidation();
@@ -92,7 +92,7 @@ function paxValidation(paxType){
 				}
 			if ($('#client_type').val() == "TEEN")
 				{
-					if (data.teen_amt > client_teen)
+					if (data.teen_amt > parseInt(client_teen))
 						{
 							var paxCountValid = true;
 							formValidation();
@@ -106,7 +106,7 @@ function paxValidation(paxType){
 				}
 			if ($('#client_type').val() == "CHILD")
 				{
-					if (data.child_amt > client_child)
+					if (data.child_amt > parseInt(client_child))
 						{
 							var paxCountValid = true;
 							formValidation();
@@ -120,7 +120,7 @@ function paxValidation(paxType){
 				}
 			if ($('#client_type').val() == "INFANT")
 				{
-					if (data.infant_amt > client_infant)
+					if (data.infant_amt > parseInt(client_infant))
 						{
 							var paxCountValid = true;
 							formValidation();
@@ -247,6 +247,7 @@ function saveClient() {
                     $('#id_booking_client').val(data.id_booking_client);
                     allBookingClient(data.id_booking)
                     toastr.success('New Client saved successfully');
+                    newClient();
                 }
             else
                 {
