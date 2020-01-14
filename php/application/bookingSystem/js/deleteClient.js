@@ -53,7 +53,7 @@ function deleteClient(clientData) {
         success : function(data){
             if (data.OUTCOME == 'OK')
                 {
-                    toastr.error('Booking deleted successfully');
+                    toastr.error('Client deleted successfully');
                     newClient();
                     allBookingClient(data.id_booking);
                 }

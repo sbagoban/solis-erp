@@ -126,11 +126,11 @@ try {
                 ":log_status" => $log_status
             ));
 
+    echo json_encode(array("OUTCOME" => "OK", "id_booking" => $id_booking));
     
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 
-echo json_encode(array("OUTCOME" => "OK"));
 ?>
 
