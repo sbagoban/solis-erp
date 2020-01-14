@@ -87,7 +87,7 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         $arr_params["rate"] = $special_rate_id;
         $the_contract_id = rates_reservation_lookup_contract($con, $arr_params);
         
-        if(is_integer($the_contract_id))
+        if(is_numeric($the_contract_id))
         {
             return $the_contract_id; //successful contract id lookup
         }
