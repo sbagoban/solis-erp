@@ -266,6 +266,10 @@ function serviceEdit(data) {
         $('#services_block').css("display", "none");
         // $('#services_cost').val('');
     }
+    if (data.is_pakage == 'Y') {      
+        $('#services_block').css("display", "block");
+        serviceCost();
+    } 
 
     if (data.for_adult == 1){
         chkAdult.checked = true;
