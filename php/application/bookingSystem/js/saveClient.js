@@ -161,6 +161,11 @@ function formValidation(){
 		alert("Input Client Forename");
 		formInputValid = true;
 	}
+	else if($('#client_years').val() != "" || $('#client_yearMonth').val() == 0)
+	{
+		alert("Choose between Month/Years");
+		formInputValid = true;
+	}
 
 	if(!formInputValid)
 	{

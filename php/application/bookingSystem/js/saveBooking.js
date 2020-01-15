@@ -82,21 +82,25 @@ $(function(){
                                     {
                                         updateError = true;
                                         alert("The proposed Adult amount is less than Adult Client Recorded");
+                                        $('#booking_adultAmt').val(client_adult);
                                     }
                                 else if (parseInt(client_teen) > parseInt(booking_teenAmt))
                                     {
                                         updateError = true;
                                         alert("The proposed Teen amount is less than Teen Client Recorded");
+                                        $('#booking_teenAmt').val(client_teen);
                                     }
                                 else if (parseInt(client_child) > parseInt(booking_childAmt))
                                     {
                                         updateError = true;
                                         alert("The proposed Child amount is less than Child Client Recorded");
+                                        $('#booking_childAmt').val(client_child);
                                     }
                                 else if (parseInt(client_infant) > parseInt(booking_infantAmt))
                                     {
                                         updateError = true;
                                         alert("The proposed Infant amount is less than Infant Client Recorded");
+                                        $('#booking_infantAmt').val(client_infant);
                                     }
                                 if(!updateError)
                                     {
