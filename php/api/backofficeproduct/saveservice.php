@@ -179,11 +179,13 @@ try {
                     max_age,
                     is_pakage,
                     special_name,
-                    max_adult) 
+                    max_adult,
+                    id_service_type,
+                    id_product_type)
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
                 :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :age_inf_from, :age_child_from, :age_teen_from,
-                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name, :max_adult)";
+                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name, :max_adult, :id_service_type, :id_product_type)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -224,7 +226,9 @@ try {
             ":max_age" => $max_age,
             ":is_pakage" => $is_pakage,
             ":special_name" => $special_name,
-            ":max_adult" => $max_adult));
+            ":max_adult" => $max_adult,
+            ":id_service_type" => $id_service_type,
+            ":id_product_type" => $id_product_type));
         
             $id_product_service = $con->lastInsertId();
 
@@ -478,7 +482,9 @@ $stmt = $con->prepare($sqlLog);
                 max_age =:max_age,
                 is_pakage =:is_pakage, 
                 special_name=:special_name, 
-                max_adult=:max_adult
+                max_adult=:max_adult, 
+                id_service_type=:id_service_type, 
+                id_product_type=:id_product_type
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);
@@ -520,7 +526,9 @@ $stmt = $con->prepare($sqlLog);
             ":max_age" => $max_age,
             ":is_pakage" => $is_pakage, 
             ":special_name" => $special_name,
-            ":max_adult" => $max_adult));
+            ":max_adult" => $max_adult, 
+            ":id_service_type" => $id_service_type,
+            ":id_product_type" => $id_product_type));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
 } catch (Exception $ex) {
