@@ -221,18 +221,18 @@ $("#btn-saveServicesClaim").click(function () {
                     addClaimProductService();
                 } else {
                     overlap = true;
-                    console.log('--> test', specific_to);
                     if (specific_to == 'A') { // To
                         checkTo(x);
                         //alert('Date Overlap - Tour Operator');   
                     } else if (specific_to == 'C') { // Market
                         checkMarket(x);  
                         //alert('Date Overlap - Market');   
-                    } else if (specific_to == 'B') {
+                    } 
+                    else if (specific_to == 'B') {
                         if (id_currency != x.id_currency) {
-                            addClaimProductService();
+                            alert('Only One currency');
                         } else {
-                            alert('Please Choose another currency for Worldwide');
+                            addClaimProductService();
                         }
                     }               
                     // resetProductServicesClaim();           
@@ -290,7 +290,6 @@ function arrayCompareTo(z, id_tour_operator) {
 }
 
 function checkMarket(data) { 
-    console.log('chk -->', data);
     var id_product_service_claim = data.id_product_service_claim;    
     var id_country = $('#ddlmultiSpecificMarket').val();
     console.log('market', id_country);
@@ -317,7 +316,6 @@ function checkMarket(data) {
 }
 
 function arrayCompareCountries(z, id_country) {
-    console.log('--->>>', z, id_country);
     var bExists = false;
     $.each(id_country, function(index,value) {
         if($.inArray(value,z)!=-1) {

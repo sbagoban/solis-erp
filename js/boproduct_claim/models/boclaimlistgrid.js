@@ -118,6 +118,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                     }
                     if (rowData.specific_to == 'A') {
                         toDetails(rowData, e);
+                        $("#myDIV").show();
                     }
                 })
                 .on('click', function(e) {
@@ -126,7 +127,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                     }
                 })
                 .on('mousemove', function(e){
-                    console.log(e);
+                   // console.log(e);
                     $('#myDIV').css({
                         left: e.pageX,
                         top: e.pageY
@@ -215,6 +216,7 @@ function deleteServiceClaim(data) {
 }
 
 function editServiceClaim(data) {
+    console.log(data);
     document.getElementById("id_product_service_claim").innerHTML = data.id_product_service_claim;
 
     if (data.specific_to == 'A') {
@@ -290,6 +292,37 @@ function editServiceClaim(data) {
     }  
 }
 
-function toDetails(toData) {
-    //console.log(toData);
+function toDetails(row2, e) {
+    const url_display_selected_countries = "php/api/backofficeserviceclaim/selectedtoclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + row2.id_product_service_claim;
+    var objCountryClaim = {
+        id_product_service_claim : row2.id_product_service_claim
+    };
+    tooltipText = "";
+    $.ajax({
+        url : url_display_selected_countries,
+        method : "POST",
+        data : objCountryClaim,
+        cache: false,   
+        dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                               
+        success : function(data){
+            var arrDisplay = [];
+            data.forEach(function (arrayItem) {
+                var y = arrayItem; 
+                console.log(y);  
+                tooltipText = y.toname;
+                arrDisplay.push(tooltipText);
+            });
+            var vPool="";
+            count = 1;
+            jQuery.each(arrDisplay, function(i, val) {
+                vPool += count++ + " - " + val + "<br> ";
+            });
+    
+            //We add vPool HTML content to #myDIV
+            $('#myDIV').html(vPool);
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });
 }

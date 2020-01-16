@@ -32,3 +32,12 @@ Developer : slouis@solis360.com*/
 input[type="text"] {
     font: 12px/21px arial,sans-serif;
 }
+
+#myDIV { 
+    left: 984px;
+    top: 556px;
+    border: 1px solid gainsboro;
+    padding: 10px;
+    height: 98px;
+    overflow: auto;
+}
