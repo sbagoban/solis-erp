@@ -72,12 +72,7 @@ $(function(){
 	//. Activity Service
     
     // Activity Client
-	$("#activity_client").on("changed.bs.select",
-    	function(e, clickedIndex, newValue, oldValue) {
-			console.log('e', e);
-			console.log('clickedIndex', clickedIndex);
-			console.log('newValue', newValue);
-			console.log('oldValue', oldValue);
+	$("#activity_client").on("changed.bs.select",function(e, clickedIndex, newValue, oldValue) {
 
 		var numberOfClient = $("#activity_client :selected").length;
 		var valueOfClient = $("#activity_client").val();
@@ -132,9 +127,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 1");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -151,9 +146,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 2");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -170,9 +165,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 3");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -189,9 +184,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 4");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -269,10 +264,10 @@ $(function(){
 															clientCount.infant_amt ++;
 														}
 													else
-														{	
-															alert("Maximum pax for the activity already reached 5");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+														{				
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -289,10 +284,10 @@ $(function(){
 															clientCount.child_amt ++;
 														}
 													else
-														{
-															alert("Maximum pax for the activity already reached 6");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+														{												
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -309,10 +304,10 @@ $(function(){
 															clientCount.teen_amt ++;
 														}
 													else
-														{
-															alert("Maximum pax for the activity already reached 7");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+														{												
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -330,9 +325,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 8");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -349,9 +344,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 9");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -368,14 +363,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 10");
-															var chk = $('#activity_client').val();
-															console.log('--> tst', chk);
-															console.log('ok 3', oldValue);
-															var newArray=$.merge($(chk).not(oldValue).get(),$(oldValue).not(chk).get());
-        													console.log(newArray);
-															//var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+newArray[0]+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -392,9 +382,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 11");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -411,9 +401,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 12");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
@@ -430,9 +420,9 @@ $(function(){
 														}
 													else
 														{												
-															alert("Maximum pax for the activity already reached 13");
-															var inegibleClient = $('#activity_client option[value="'+val+'"]').val();
-															$('#activity_client').find('[value='+inegibleClient+']').prop('selected', false);
+															alert("Maximum pax for the activity already reached");
+															var inegibleClient=$.merge($(valueOfClient).not(oldValue).get(),$(oldValue).not(valueOfClient).get());
+															$('#activity_client').find('[value='+inegibleClient[0]+']').prop('selected', false);
 															$("#activity_client").selectpicker('refresh');
 															clientCount.pax_amt -= 1;
 														}
