@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    $("#myDIV").hide();
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
@@ -116,9 +117,11 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                         countryDetails(rowData, e);
                         $("#myDIV").show();
                     }
-                    if (rowData.specific_to == 'A') {
+                    else if (rowData.specific_to == 'A') {
                         toDetails(rowData, e);
                         $("#myDIV").show();
+                    } else {
+                        $("#myDIV").hide();
                     }
                 })
                 .on('click', function(e) {

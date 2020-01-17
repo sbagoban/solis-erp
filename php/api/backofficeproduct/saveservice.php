@@ -81,7 +81,7 @@ try {
     if ($servicetype == 'TRANSFER') {
         $id_coast = 0;
         $duration = '00:00:00.00000';
-        $id_creditor = 0; //id_creditor name should be Solis planning - to set in db 
+        $id_creditor = 0001; //id_creditor name should be Solis planning - to set in db 
         $min_age = 0;
         $max_age = 0;
     }
