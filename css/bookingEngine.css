@@ -596,6 +596,10 @@ option {
   z-index: 9999;
 }
 
+.toast_update {
+  background-color: #E49900!important;
+}
+
 .toast_duplicate {
   background-color: #08107B;
 }

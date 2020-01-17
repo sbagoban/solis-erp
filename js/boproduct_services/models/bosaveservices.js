@@ -297,7 +297,7 @@ function saveService() {
                     console.log('value', data);
                     resetServicesForm();
                     //allServicesGrid();
-                    $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
+                    $('.toast_update').stop().fadeIn(400).delay(3000).fadeOut(500);
                 },
                 error: function(error) {
                     console.log('Error ${error}');

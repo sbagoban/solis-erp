@@ -460,6 +460,10 @@
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
 </div>
 
+<div class="toast jam toast_update" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Updated.
+</div>
+
 <div class="toast jam toast_duplicate" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Duplicate.
 </div>
