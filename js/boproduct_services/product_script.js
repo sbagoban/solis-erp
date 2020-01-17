@@ -140,7 +140,8 @@ $(document).ready(function(){
                     $("#special_name_transfer option[value='AIRPORT']").show();
                     $("#special_name_transfer option[value='PORT']").show();
                 } else if (service_name == "INTER HOTEL") {                     
-                    $('#special_name_transfer').css('display', 'none');
+                    $('#special_name_transfer').css('display', 'none');     
+                    $('#special_name_transfer').val('');
                 } else if (service_name == "ACTIVITY") {        
                     $('#special_name_transfer').css('display', 'block');              
                     $("#special_name_transfer option[value='AIRPORT']").hide();
@@ -239,6 +240,8 @@ function applyFor() {
             var maxage = Number ($('#max_age').val());
             if (minage == '' || maxage == '') {
                 $('#btn-saveProductServices').attr('disabled', true); 
+            } else {
+                $('#btn-saveProductServices').attr('disabled', false); 
             }
         }
         if (chkadult.checked == false || chkteen.checked || chkchild.checked || chkinfant.checked) {
@@ -261,5 +264,7 @@ $('#min_age').change(function(){
     var minage = Number ($('#min_age').val());
     if (minage != ''){
         $('#btn-saveProductServices').attr('disabled', false); 
+    } else { 
+        $('#btn-saveProductServices').attr('disabled', true); 
     }
 });

@@ -51,8 +51,9 @@ label.with-square-checkbox input[type="checkbox"]:checked + span::before {
   color: #00a8ff;
 }
 
-li.checkBoxMain{
+li.checkBoxMain {
   list-style-type: none;
+  padding-right: 5px;
 }
 
 label.with-square-checkbox span {

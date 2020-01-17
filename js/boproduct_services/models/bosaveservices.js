@@ -36,8 +36,7 @@ function specialNameTransfer() {
     return special_name_transfer;
 }
 
-
-$('#btn-saveProductServices').click(function () {
+function saveService() {
     var idService = document.getElementById("idService").innerHTML;
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
@@ -84,7 +83,7 @@ $('#btn-saveProductServices').click(function () {
     var is_pakage = $('#is_pakage').val();
     var id_product_service_induded = $('#services_cost').val();
     var max_adult = $('#max_adult').val();
-    console.log('-->',  id_product_service_induded.length > 0);
+
     if (is_pakage == 'N') { 
         id_product_service_induded = 0;
     } 
@@ -221,7 +220,6 @@ $('#btn-saveProductServices').click(function () {
                 data : objService,                                                                                   
                 success : function(data){
                     console.log('value', data);
-                    
                     resetServicesForm();
                     allServicesGrid();
                     $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
@@ -234,7 +232,7 @@ $('#btn-saveProductServices').click(function () {
             $('.toast_error').stop().fadeIn(400).delay(3000).fadeOut(500);
         }
 
-    } else {    
+    } else {
         // Edit Drop Down Services - Delete first and the Saved
         console.log('is_pakage', is_pakage);
         if (servicetype != 'TRANSFER' && is_pakage == 'Y') {
@@ -325,7 +323,7 @@ $('#btn-saveProductServices').click(function () {
     }
     document.getElementById("idService").innerHTML = 0;
     document.getElementById("chargeDetail").innerHTML = 0;
-}); 
+}
 
 function dateManipulationDuration() {
     var hrs = document.getElementById('duration1').value;    
