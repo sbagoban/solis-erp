@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    document.getElementById("aTitle").innerHTML = "";
     productCtrl();
    // $('#btn-saveProductServices').attr('disabled', 'disabled');
     $("#age_inf_from").prop("readonly", true);

@@ -1,3 +1,6 @@
+$(document).ready(function () {
+    document.getElementById("aTitle").innerHTML = "";
+});
 
 $('#btn-saveServicesClaim').click(function (e) {
     var isValid = true;

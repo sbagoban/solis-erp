@@ -1,4 +1,3 @@
-
 $('#tbl-product, #tbl-productServices').DataTable({
     'paging'      : true,
     'lengthChange': false,
