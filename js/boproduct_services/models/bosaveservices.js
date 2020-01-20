@@ -29,8 +29,7 @@ function changeTransfer() {
 function specialNameTransfer() {
     $( "#special_name_transfer" ).change(function () {
         $( "#special_name_transfer option:selected" ).each(function() {
-            special_name_transfer = $( this ).text();
-            
+            special_name_transfer = $(this).text();
         });
     }).change();
     return special_name_transfer;
@@ -150,8 +149,6 @@ function saveService() {
         //var service_name = $('#service_name_transfer option:selected').text();
         var service_name = changeTransfer();
         var special_name = specialNameTransfer();
-        // add in database - Table creditor - Solis - 
-        // Solis - id_creditor = 0 
         var id_creditor = 0;
         var id_tax = '3';
         for_adult = 1;

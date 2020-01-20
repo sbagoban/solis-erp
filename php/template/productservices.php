@@ -115,7 +115,6 @@
 								</div>
 								<div class="col-sm-4" id="special_name_transfer_blk">
 									<select type="text" class="form-control" id="special_name_transfer">
-										<option selected disabled hidden>Select an Option</option>
 										<option value="DROP ON">Drop on</option>
 										<option value="DROP OFF">Drop Off</option>
 										<option value="FULL DAY">Full Day</option>

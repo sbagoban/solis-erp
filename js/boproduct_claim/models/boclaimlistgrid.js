@@ -110,7 +110,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                     editServiceClaim(data);
                     extraServiceGridClaim(data);
                 })
-                .on('click', 'td', function(e) {             
+                .on('click', 'td', function(e) {
                     var table = $('#tbl-productServicesClaim').DataTable();
                     var rowData = table.row( $(this).parents('tr') ).data();
                     if (rowData.specific_to == 'C') {
