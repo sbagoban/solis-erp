@@ -581,7 +581,7 @@ function addClaimProductService(){
         }
     }
     var addedClaim = true;
-    allServicesGridClaim(id_product_service_cost, 0, added);
+    allServicesGridClaim(id_product_service_cost, 0, addedClaim);
 }
 
 function resetProductServicesClaim() {

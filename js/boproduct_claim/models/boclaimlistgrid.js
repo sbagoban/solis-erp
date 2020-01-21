@@ -14,9 +14,7 @@ $(document).ready(function(){
     allServicesGridClaim(id_product_service_cost, id_product_service_claim); 
 });
 
-function allServicesGridClaim(id_product_service_cost,id_product_service_claim, addedClaim) {
-    console.log('dgl', added);
-    
+function allServicesGridClaim(id_product_service_cost,id_product_service_claim, addedClaim) {    
    // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     $('#tbl-productServicesClaim').DataTable({     
         "processing" : true,
