@@ -2,7 +2,7 @@ $(document).ready(function(){
     allServicesGrid();
 });
 
-function allServicesGrid() {
+function allServicesGrid(added) {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product = urlParams.get("id_product");
@@ -36,6 +36,7 @@ function allServicesGrid() {
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 4,
+        "aaSorting": [ [0,'desc'] ],
         
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
@@ -127,6 +128,10 @@ function allServicesGrid() {
                     var data = table.row( $(this).parents('tr') ).data();
                     alertServiceDelete(data);
                 })
+                if (added == true) {
+                    row = $('#tbl-productServices tr:first-child');
+                    $(row).addClass('DTTT_selected');
+                }
         }
 
     });
@@ -266,6 +271,10 @@ function serviceEdit(data) {
         $('#services_block').css("display", "none");
         // $('#services_cost').val('');
     }
+    if (data.is_pakage == 'Y') {      
+        $('#services_block').css("display", "block");
+        serviceCost();
+    } 
 
     if (data.for_adult == 1){
         chkAdult.checked = true;

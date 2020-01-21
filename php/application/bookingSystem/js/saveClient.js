@@ -87,7 +87,6 @@ function paxValidation(paxType){
 						{
 							var paxCountValid = false;
 							alert('Amount of Adult reached for the dossier');
-							newClient();
 						}
 				}
 			if ($('#client_type').val() == "TEEN")
@@ -101,7 +100,6 @@ function paxValidation(paxType){
 						{
 							var paxCountValid = false;
 							alert('Amount of Teen reached for the dossier');
-							newClient();
 						}
 				}
 			if ($('#client_type').val() == "CHILD")
@@ -115,7 +113,6 @@ function paxValidation(paxType){
 						{
 							var paxCountValid = false;
 							alert('Amount of Child reached for the dossier');
-							newClient();
 						}
 				}
 			if ($('#client_type').val() == "INFANT")
@@ -129,7 +126,6 @@ function paxValidation(paxType){
 						{
 							var paxCountValid = false;
 							alert('Amount of Infant reached for the dossier');
-							newClient();
 						}
 				}
 		},
@@ -161,6 +157,11 @@ function formValidation(){
 		alert("Input Client Forename");
 		formInputValid = true;
 	}
+	else if($('#client_years').val() != "" && $('#client_yearMonth').val() == null)
+	{
+		alert("Choose between Month/Years");
+		formInputValid = true;
+	}
 
 	if(!formInputValid)
 	{
@@ -190,6 +191,10 @@ function formValidation(){
 				}
 		}
 	}
+    else
+    {
+        toastr.warning('An error occured. Please solve your issue.');
+    }
 
 }
 function saveClient() { 

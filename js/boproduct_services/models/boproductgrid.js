@@ -16,6 +16,7 @@ function allProductGridCost() {
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 4,
+        "aaSorting": [ [0,'desc'] ],
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"

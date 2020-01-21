@@ -88,6 +88,7 @@ var helpersDropdownExtraCreated = {
             var charge1 = $('#id_product_service_extra').find('option:selected').attr("name");
 
             var charge = charge1.split(',*');
+            console.log('-->', charge);
             var idproductserviceextracost = $('#id_product_service_extra').val();
             document.getElementById("product_service_claim_charge").innerHTML = charge[1];
             document.getElementById("id_product_service_extra_cost").innerHTML = idproductserviceextracost;

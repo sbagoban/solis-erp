@@ -59,8 +59,62 @@ $(function(){
                     var updateConfirm = confirm("Are you sure you want to update the dossier?");
                     if(updateConfirm)
                     {
-                        // update dossier
-                        updateBooking();
+                        var updateError = false;
+
+                        var id_booking = $('#id_booking').val();
+                        var objReservationClient = {id_booking:id_booking}
+                        const url_record_client = "php/api/bookingSystem/countBookingClient.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +id_booking;
+                        $.ajax({
+                            url : url_record_client,
+                            method : "POST",
+                            data : objReservationClient, 
+                            dataType: "json",                                                                             
+                            success : function(data){
+                                var client_adult = data.client_adult;
+                                var client_teen = data.client_teen;
+                                var client_child = data.client_child;
+                                var client_infant  = data.client_infant;
+                                var booking_adultAmt = $('#booking_adultAmt').val();
+                                var booking_teenAmt = $('#booking_teenAmt').val();
+                                var booking_childAmt = $('#booking_childAmt').val();
+                                var booking_infantAmt = $('#booking_infantAmt').val();
+                                if (parseInt(client_adult) > parseInt(booking_adultAmt))
+                                    {
+                                        updateError = true;
+                                        alert("The proposed Adult amount is less than Adult Client Recorded");
+                                        $('#booking_adultAmt').val(client_adult);
+                                    }
+                                else if (parseInt(client_teen) > parseInt(booking_teenAmt))
+                                    {
+                                        updateError = true;
+                                        alert("The proposed Teen amount is less than Teen Client Recorded");
+                                        $('#booking_teenAmt').val(client_teen);
+                                    }
+                                else if (parseInt(client_child) > parseInt(booking_childAmt))
+                                    {
+                                        updateError = true;
+                                        alert("The proposed Child amount is less than Child Client Recorded");
+                                        $('#booking_childAmt').val(client_child);
+                                    }
+                                else if (parseInt(client_infant) > parseInt(booking_infantAmt))
+                                    {
+                                        updateError = true;
+                                        alert("The proposed Infant amount is less than Infant Client Recorded");
+                                        $('#booking_infantAmt').val(client_infant);
+                                    }
+                                if(!updateError)
+                                    {
+                                        updateBooking();
+                                    }
+                                else
+                                    {
+                                        toastr.warning('Proposed update failed.');
+                                    }
+                            },
+                            error: function(error) {
+                                console.log('Error ${error}');
+                            }
+                        });
                     }
 				}
 			}

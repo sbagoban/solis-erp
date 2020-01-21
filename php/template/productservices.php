@@ -115,7 +115,6 @@
 								</div>
 								<div class="col-sm-4" id="special_name_transfer_blk">
 									<select type="text" class="form-control" id="special_name_transfer">
-										<option selected disabled hidden>Select an Option</option>
 										<option value="DROP ON">Drop on</option>
 										<option value="DROP OFF">Drop Off</option>
 										<option value="FULL DAY">Full Day</option>
@@ -185,51 +184,51 @@
 							
 							<div class="form-group" id="chk_operation">
 								<label class="col-sm-2 control-label">Operation</label>
-								<div class="col-sm-10">
-									<div class="checkbox" style="display: flex">
+								<div class="col-sm-10" style="display: flex">
+									<form class="checkbox">
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_monday" />
+												<input type='checkbox' class="requiredChkDate" id="on_monday" />
 												<span>Monday</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_tuesday" />
+												<input type='checkbox' class="requiredChkDate" id="on_tuesday" />
 												<span>Tuesday</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_wednesday" />
+												<input type='checkbox' class="requiredChkDate" id="on_wednesday" />
 												<span>Wednesday</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_thursday" />
+												<input type='checkbox' class="requiredChkDate" id="on_thursday" />
 												<span>Thursday</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_friday" />
+												<input type='checkbox' class="requiredChkDate" id="on_friday" />
 												<span>Friday</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_saturday" />
+												<input type='checkbox' class="requiredChkDate" id="on_saturday" />
 												<span>Saturday</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="on_sunday" />
+												<input type='checkbox' class="requiredChkDate" id="on_sunday" />
 												<span>Sunday</span>
 											</label>
 										</li>
-									</div>
+									</form>
 								</div>
 							</div>
 							<div class="form-group">
@@ -282,25 +281,25 @@
 									<div class="checkbox" style="display: flex">
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox' id="infantActivity">
-												<input type='checkbox' id="for_infant" />
+												<input type='checkbox' class="requiredChkApplyFor" id="for_infant" />
 												<span>For Infant</span>
 											</label>
 										</li>
 										<li class="checkBoxMain">
 											<label class='with-square-checkbox' id="childActivity">
-												<input type='checkbox' id="for_child" />
+												<input type='checkbox' class="requiredChkApplyFor" id="for_child" />
 												<span>For Child</span>
 											</label>
 										</li>
 										<li class="checkBoxMain" id="teenActivity">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="for_teen" />
+												<input type='checkbox' class="requiredChkApplyFor" id="for_teen" />
 												<span>For Teen</span>
 											</label>
 										</li>
 										<li class="checkBoxMain" id="adultActivity">
 											<label class='with-square-checkbox'>
-												<input type='checkbox' id="for_adult" />
+												<input type='checkbox' class="requiredChkApplyFor" id="for_adult" />
 												<span>For Adult</span>
 											</label>
 										</li>
@@ -458,6 +457,10 @@
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
+</div>
+
+<div class="toast jam toast_update" aria-hidden="true" style="display:none;">
+	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Updated.
 </div>
 
 <div class="toast jam toast_duplicate" aria-hidden="true" style="display:none;">

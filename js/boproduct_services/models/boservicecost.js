@@ -65,10 +65,8 @@ $('#btn-saveProductServicesCost').click(function () {
             if (id_product_service_cost == 0) {
                 data.forEach(function (arrayItem) {
                     x = arrayItem;
-                    console.log('Array date Table', x);
                 });
                 if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
-                    alert('1');   
                     addCostProductService();
                 } else {
                     alert('Date Overlap');                   
@@ -122,7 +120,6 @@ function addCostProductService() {
                 success : function(data){
                     console.log('value', data);
                     resetFormAddServiceCost();
-                    allServicesGridCost();
                 },
                 error: function(error) {
                     console.log('Error ${error}');
@@ -153,6 +150,8 @@ function addCostProductService() {
                     if (data.OUTCOME == 'OK') {
                         resetFormAddServiceCost();
                         allServicesGridCost();
+                        var addedCost = true;
+                        allServicesGridCost(addedCost);
                     }
                 },
                 error: function(error) {
