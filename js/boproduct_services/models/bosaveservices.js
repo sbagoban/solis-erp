@@ -148,7 +148,12 @@ function saveService() {
     if (servicetype == 'TRANSFER') { 
         //var service_name = $('#service_name_transfer option:selected').text();
         var service_name = changeTransfer();
-        var special_name = specialNameTransfer();
+            if (service_name == 'INTER HOTEL') {
+                var special_name = 'None';
+            } else {
+                var special_name = specialNameTransfer();
+            }
+        console.log('-->', special_name);
         var id_creditor = 0;
         var id_tax = '3';
         for_adult = 1;
@@ -218,7 +223,8 @@ function saveService() {
                 success : function(data){
                     console.log('value', data);
                     resetServicesForm();
-                    allServicesGrid();
+                    var added = true;
+                    allServicesGrid(added);
                     $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
                 },
                 error: function(error) {
