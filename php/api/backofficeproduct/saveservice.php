@@ -305,7 +305,7 @@ try {
                     ($id_product_service_cost, $id_product_service, 3, 'Baby Seat (On Request)', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
-                    ($id_product_service_cost, $id_product_service, 4, 'Child Seat', '$valid_from', '$valid_to', 0, 
+                    ($id_product_service_cost, $id_product_service, 4, 'Child Seat', '$valid_from', '$valid_to', 0,
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
                     ($id_product_service_cost, $id_product_service, 6, 'Surcharge - Specific Vehicle', '$valid_from', '$valid_to', 0, 
