@@ -73,17 +73,33 @@ $(function(){
     
     // Activity Client
 	$("#activity_client").on("changed.bs.select",function(e, clickedIndex, newValue, oldValue) {
-
 		var numberOfClient = $("#activity_client :selected").length;
 		var valueOfClient = $("#activity_client").val();
-		var clientCount = {
+        if (numberOfClient == 0)
+        {
+            var clientCount = {
+                pax_amt: 0,
+                infant_amt: 0,
+                child_amt: 0,
+                teen_amt:0,
+                adult_amt: 0
+            }
+            $("#activity_adultAmt").val("");
+            $("#activity_teenAmt").val("");
+            $("#activity_childAmt").val("");
+            $("#activity_infantAmt").val("");
+            
+        }
+        else
+        {
+		      var clientCount = {
 			pax_amt: valueOfClient.length,
 			infant_amt: 0,
 			child_amt: 0,
 			teen_amt:0,
 			adult_amt: 0
 		}
-		$.each(valueOfClient, function (key, val) {
+		      $.each(valueOfClient, function (key, val) {
 			if ($("#activity_type").val() == null || $("#activity_service").val() == null )
 				{
 					alert("Select an activity");
@@ -450,8 +466,7 @@ $(function(){
 				}
 			
 		});
-				
-		
+        }
 		
 	});
 	//. Activity Client

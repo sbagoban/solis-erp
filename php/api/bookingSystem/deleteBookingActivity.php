@@ -91,21 +91,21 @@ try {
             $activity_total_claim = $row['activity_total_claim'];
             $activity_rebate_type = $row['activity_rebate_type'];
             $activity_rebate_approve_by = $row['activity_rebate_approve_by'];
-            $activity_discount_percentage = $row['activity_discount_percentage'];
-            $activity_adult_disc = $row['activity_adult_disc'];
-            $activity_adult_claim_after_disc_exTAX = $row['activity_adult_claim_after_disc_exTAX'];
-            $activity_adult_claim_after_disc = $row['activity_adult_claim_after_disc'];
-            $activity_teen_disc = $row['activity_teen_disc'];
-            $activity_teen_claim_after_disc = $row['activity_teen_claim_after_disc'];
-            $activity_teen_claim_after_disc_exTAX = $row['activity_teen_claim_after_disc_exTAX'];
-            $activity_child_disc = $row['activity_child_disc'];
-            $activity_child_claim_after_disc = $row['activity_child_claim_after_disc'];
-            $activity_child_claim_after_disc_exTAX = $row['activity_child_claim_after_disc_exTAX'];
-            $activity_infant_disc = $row['activity_infant_disc'];
-            $activity_infant_claim_after_disc = $row['activity_infant_claim_after_disc'];
-            $activity_infant_claim_after_disc_exTAX = $row['activity_infant_claim_after_disc_exTAX'];
-            $activity_total_claim_after_disc_exTAX = $row['activity_total_claim_after_disc_exTAX'];
-            $activity_total_claim_after_disc = $row['activity_total_claim_after_disc'];
+            $activity_rebate_percentage = $row['activity_rebate_percentage'];
+            $activity_adult_rebate = $row['activity_adult_rebate'];
+            $activity_adult_claim_after_rebate_exTAX = $row['activity_adult_claim_after_rebate_exTAX'];
+            $activity_adult_claim_after_rebate = $row['activity_adult_claim_after_rebate'];
+            $activity_teen_rebate = $row['activity_teen_rebate'];
+            $activity_teen_claim_after_rebate = $row['activity_teen_claim_after_rebate'];
+            $activity_teen_claim_after_rebate_exTAX = $row['activity_teen_claim_after_rebate_exTAX'];
+            $activity_child_rebate = $row['activity_child_rebate'];
+            $activity_child_claim_after_rebate = $row['activity_child_claim_after_rebate'];
+            $activity_child_claim_after_rebate_exTAX = $row['activity_child_claim_after_rebate_exTAX'];
+            $activity_infant_rebate = $row['activity_infant_rebate'];
+            $activity_infant_claim_after_rebate = $row['activity_infant_claim_after_rebate'];
+            $activity_infant_claim_after_rebate_exTAX = $row['activity_infant_claim_after_rebate_exTAX'];
+            $activity_total_claim_after_rebate_exTAX = $row['activity_total_claim_after_rebate_exTAX'];
+            $activity_total_claim_after_rebate = $row['activity_total_claim_after_rebate'];
             $activity_client_room_no = $row['activity_client_room_no'];
             $id_language = $row['id_language'];
             $id_rep = $row['id_rep'];
@@ -220,21 +220,21 @@ try {
                     activity_total_claim,
                     activity_rebate_type,
                     activity_rebate_approve_by,
-                    activity_discount_percentage,
-                    activity_adult_disc,
-                    activity_adult_claim_after_disc_exTAX,
-                    activity_adult_claim_after_disc,
-                    activity_teen_disc,
-                    activity_teen_claim_after_disc_exTAX,
-                    activity_teen_claim_after_disc,
-                    activity_child_disc,
-                    activity_child_claim_after_disc_exTAX,
-                    activity_child_claim_after_disc,
-                    activity_infant_disc,
-                    activity_infant_claim_after_disc_exTAX,
-                    activity_infant_claim_after_disc,
-                    activity_total_claim_after_disc_exTAX,
-                    activity_total_claim_after_disc,
+                    activity_rebate_percentage,
+                    activity_adult_rebate,
+                    activity_adult_claim_after_rebate_exTAX,
+                    activity_adult_claim_after_rebate,
+                    activity_teen_rebate,
+                    activity_teen_claim_after_rebate_exTAX,
+                    activity_teen_claim_after_rebate,
+                    activity_child_rebate,
+                    activity_child_claim_after_rebate_exTAX,
+                    activity_child_claim_after_rebate,
+                    activity_infant_rebate,
+                    activity_infant_claim_after_rebate_exTAX,
+                    activity_infant_claim_after_rebate,
+                    activity_total_claim_after_rebate_exTAX,
+                    activity_total_claim_after_rebate,
                     activity_client_room_no,
                     id_language,
                     id_rep,
@@ -292,21 +292,21 @@ try {
                     :activity_total_claim,
                     :activity_rebate_type,
                     :activity_rebate_approve_by,
-                    :activity_discount_percentage,
-                    :activity_adult_disc,
-                    :activity_adult_claim_after_disc_exTAX,
-                    :activity_adult_claim_after_disc,
-                    :activity_teen_disc,
-                    :activity_teen_claim_after_disc_exTAX,
-                    :activity_teen_claim_after_disc,
-                    :activity_child_disc,
-                    :activity_child_claim_after_disc_exTAX,
-                    :activity_child_claim_after_disc,
-                    :activity_infant_disc,
-                    :activity_infant_claim_after_disc_exTAX,
-                    :activity_infant_claim_after_disc,
-                    :activity_total_claim_after_disc_exTAX,
-                    :activity_total_claim_after_disc,
+                    :activity_rebate_percentage,
+                    :activity_adult_rebate,
+                    :activity_adult_claim_after_rebate_exTAX,
+                    :activity_adult_claim_after_rebate,
+                    :activity_teen_rebate,
+                    :activity_teen_claim_after_rebate_exTAX,
+                    :activity_teen_claim_after_rebate,
+                    :activity_child_rebate,
+                    :activity_child_claim_after_rebate_exTAX,
+                    :activity_child_claim_after_rebate,
+                    :activity_infant_rebate,
+                    :activity_infant_claim_after_rebate_exTAX,
+                    :activity_infant_claim_after_rebate,
+                    :activity_total_claim_after_rebate_exTAX,
+                    :activity_total_claim_after_rebate,
                     :activity_client_room_no,
                     :id_language,
                     :id_rep,
@@ -365,21 +365,21 @@ try {
                     "activity_total_claim" => $activity_total_claim,
                     "activity_rebate_type" => $activity_rebate_type,
                     "activity_rebate_approve_by" => $activity_rebate_approve_by,
-                    "activity_discount_percentage" => $activity_discount_percentage,
-                    "activity_adult_disc" => $activity_adult_disc,
-                    "activity_adult_claim_after_disc_exTAX" => $activity_adult_claim_after_disc_exTAX,
-                    "activity_adult_claim_after_disc" => $activity_adult_claim_after_disc,
-                    "activity_teen_disc" => $activity_teen_disc,
-                    "activity_teen_claim_after_disc_exTAX" => $activity_teen_claim_after_disc_exTAX,
-                    "activity_teen_claim_after_disc" => $activity_teen_claim_after_disc,
-                    "activity_child_disc" => $activity_child_disc,
-                    "activity_child_claim_after_disc_exTAX" => $activity_child_claim_after_disc_exTAX,
-                    "activity_child_claim_after_disc" => $activity_child_claim_after_disc,
-                    "activity_infant_disc" => $activity_infant_disc,
-                    "activity_infant_claim_after_disc_exTAX" => $activity_infant_claim_after_disc_exTAX,
-                    "activity_infant_claim_after_disc" => $activity_infant_claim_after_disc,
-                    "activity_total_claim_after_disc_exTAX" => $activity_total_claim_after_disc_exTAX,
-                    "activity_total_claim_after_disc" => $activity_total_claim_after_disc,
+                    "activity_rebate_percentage" => $activity_rebate_percentage,
+                    "activity_adult_rebate" => $activity_adult_rebate,
+                    "activity_adult_claim_after_rebate_exTAX" => $activity_adult_claim_after_rebate_exTAX,
+                    "activity_adult_claim_after_rebate" => $activity_adult_claim_after_rebate,
+                    "activity_teen_rebate" => $activity_teen_rebate,
+                    "activity_teen_claim_after_rebate_exTAX" => $activity_teen_claim_after_rebate_exTAX,
+                    "activity_teen_claim_after_rebate" => $activity_teen_claim_after_rebate,
+                    "activity_child_rebate" => $activity_child_rebate,
+                    "activity_child_claim_after_rebate_exTAX" => $activity_child_claim_after_rebate_exTAX,
+                    "activity_child_claim_after_rebate" => $activity_child_claim_after_rebate,
+                    "activity_infant_rebate" => $activity_infant_rebate,
+                    "activity_infant_claim_after_rebate_exTAX" => $activity_infant_claim_after_rebate_exTAX,
+                    "activity_infant_claim_after_rebate" => $activity_infant_claim_after_rebate,
+                    "activity_total_claim_after_rebate_exTAX" => $activity_total_claim_after_rebate_exTAX,
+                    "activity_total_claim_after_rebate" => $activity_total_claim_after_rebate,
                     "activity_client_room_no" => $activity_client_room_no,
                     "id_language" => $id_language,
                     "id_rep" => $id_rep,

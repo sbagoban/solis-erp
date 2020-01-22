@@ -34,7 +34,7 @@ $sqlBookingActivity = $con->prepare("SELECT
                                                                 PS.service_name,
                                                                 BA_CLAIM.activity_date,
                                                                 BA_CLAIM.activity_rebate_type,
-                                                                BA_CLAIM.activity_total_claim_after_disc,
+                                                                BA_CLAIM.activity_total_claim_after_rebate,
                                                                 C.currency_code
                                                             FROM 
                                                                 booking_activity_claim BA_CLAIM,
@@ -60,7 +60,7 @@ if ($row_count_c > 0) {
             'service_name'  => $row['service_name'],
             'activity_date' => $row['activity_date'],
             'activity_rebate_type'  => $row['activity_rebate_type'],
-            'activity_total_claim_after_disc'   => $row['activity_total_claim_after_disc'],
+            'activity_total_claim_after_rebate'   => $row['activity_total_claim_after_rebate'],
             'currency_code' => $row['currency_code']
         );
     }    $myData = $bookingActivityDetails;
@@ -76,7 +76,7 @@ if ($row_count_c > 0) {
             'service_name'  => '-',
             'activity_date' => '-',
             'activity_rebate_type'  => '-',
-            'activity_total_claim_after_disc'   => '-',
+            'activity_total_claim_after_rebate'   => '-',
             'currency_code' => '-'
     );
     $myData = $bookingActivityDetails;

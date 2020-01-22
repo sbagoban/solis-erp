@@ -269,71 +269,71 @@ try {
                             $id_product_service_cost_cur = $rowActivity["id_product_service_cost_cur"]; 
                             $activity_rebate_type = trim($_POST["activity_rebate_type"]);
                             $activity_rebate_approve_by = trim($_POST["activity_rebate_approve_by"]);
-                            $activity_discount_percentage = trim($_POST["activity_discount_percentage"]);
-                            $activity_adult_disc = trim($_POST["activity_adult_claim_after_disc"]);
-                            if($activity_adult_disc !=0)
+                            $activity_rebate_percentage = trim($_POST["activity_rebate_percentage"]);
+                            $activity_adult_rebate = trim($_POST["activity_adult_claim_after_rebate"]);
+                            if($activity_adult_rebate !=0)
                             {
-                                $activity_adult_claim_after_disc_exTAX = $activity_adult_disc * ((100 - $tax_value)/100);
-                                $activity_adult_claim_after_disc = $activity_adult_claim_after_disc_exTAX;
+                                $activity_adult_claim_after_rebate_exTAX = $activity_adult_rebate * ((100 - $tax_value)/100);
+                                $activity_adult_claim_after_rebate = $activity_adult_claim_after_rebate_exTAX;
                             }
                             else
                             {
-                                $activity_adult_claim_after_disc_exTAX = 0;
-                                $activity_adult_claim_after_disc = 0;
+                                $activity_adult_claim_after_rebate_exTAX = 0;
+                                $activity_adult_claim_after_rebate = 0;
                             }
-                            $activity_teen_disc = trim($_POST["activity_teen_claim_after_disc"]);
-                            if($activity_teen_disc !=0)
+                            $activity_teen_rebate = trim($_POST["activity_teen_claim_after_rebate"]);
+                            if($activity_teen_rebate !=0)
                             {
-                                $activity_teen_claim_after_disc_exTAX  = $activity_teen_disc * ((100 - $tax_value)/100);
-                                $activity_teen_claim_after_disc = $activity_teen_claim_after_disc_exTAX;
-                            }
-                            else
-                            {
-                                $activity_teen_claim_after_disc_exTAX = 0;
-                                $activity_teen_claim_after_disc = 0;
-                            }
-                            $activity_child_disc = trim($_POST["activity_child_claim_after_disc"]);
-                            if($activity_child_disc !=0)
-                            {
-                                $activity_child_claim_after_disc_exTAX  = $activity_child_disc * ((100 - $tax_value)/100);
-                                $activity_child_claim_after_disc = $activity_child_claim_after_disc_exTAX;
+                                $activity_teen_claim_after_rebate_exTAX  = $activity_teen_rebate * ((100 - $tax_value)/100);
+                                $activity_teen_claim_after_rebate = $activity_teen_claim_after_rebate_exTAX;
                             }
                             else
                             {
-                                $activity_child_claim_after_disc_exTAX = 0;
-                                $activity_child_claim_after_disc_exTAX = 0;
+                                $activity_teen_claim_after_rebate_exTAX = 0;
+                                $activity_teen_claim_after_rebate = 0;
                             }
-                            $activity_infant_disc = trim($_POST["activity_infant_claim_after_disc"]);
-                            if($activity_infant_disc !=0)
+                            $activity_child_rebate = trim($_POST["activity_child_claim_after_rebate"]);
+                            if($activity_child_rebate !=0)
                             {
-                                $activity_infant_claim_after_disc_exTAX  = $activity_infant_disc * ((100 - $tax_value)/100);
-                                $activity_infant_claim_after_disc = $activity_infant_claim_after_disc_exTAX;
+                                $activity_child_claim_after_rebate_exTAX  = $activity_child_rebate * ((100 - $tax_value)/100);
+                                $activity_child_claim_after_rebate = $activity_child_claim_after_rebate_exTAX;
                             }
                             else
                             {
-                                $activity_infant_claim_after_disc_exTAX = 0;
-                                $activity_infant_claim_after_disc = 0;
+                                $activity_child_claim_after_rebate_exTAX = 0;
+                                $activity_child_claim_after_rebate_exTAX = 0;
+                            }
+                            $activity_infant_rebate = trim($_POST["activity_infant_claim_after_rebate"]);
+                            if($activity_infant_rebate !=0)
+                            {
+                                $activity_infant_claim_after_rebate_exTAX  = $activity_infant_rebate * ((100 - $tax_value)/100);
+                                $activity_infant_claim_after_rebate = $activity_infant_claim_after_rebate_exTAX;
+                            }
+                            else
+                            {
+                                $activity_infant_claim_after_rebate_exTAX = 0;
+                                $activity_infant_claim_after_rebate = 0;
                             }
                             
                             if ($activity_rebate_type == 'Percentage')
                             {
-                                $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX * ((100-$activity_discount_percentage)/100);
-                                $activity_total_claim_after_disc = $activity_total_claim_after_disc_exTAX;
+                                $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX * ((100-$activity_rebate_percentage)/100);
+                                $activity_total_claim_after_rebate = $activity_total_claim_after_rebate_exTAX;
                             }
                             else if ($activity_rebate_type == 'Fixed Tariff')
                             {
-                                $activity_total_claim_after_disc_exTAX = (($activity_adult_amt * $activity_adult_claim_after_disc_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_disc_exTAX) + ($activity_child_amt * $activity_child_claim_after_disc_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_disc_exTAX));
-                                $activity_total_claim_after_disc = $activity_total_claim_after_disc_exTAX;
+                                $activity_total_claim_after_rebate_exTAX = (($activity_adult_amt * $activity_adult_claim_after_rebate_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_rebate_exTAX) + ($activity_child_amt * $activity_child_claim_after_rebate_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_rebate_exTAX));
+                                $activity_total_claim_after_rebate = $activity_total_claim_after_rebate_exTAX;
                             }
                             else if ($activity_rebate_type == 'FOC')
                             {
-                                $activity_total_claim_after_disc = 0;
-                                $activity_total_claim_after_disc_exTAX = 0;
+                                $activity_total_claim_after_rebate = 0;
+                                $activity_total_claim_after_rebate_exTAX = 0;
                             }
                             else 
                             {
-                                $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX;
-                                $activity_total_claim_after_disc = $activity_total_claim_after_disc_exTAX;
+                                $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX;
+                                $activity_total_claim_after_rebate = $activity_total_claim_after_rebate_exTAX;
                             }
                     }
                     else
@@ -458,75 +458,75 @@ try {
                         $id_product_service_cost_cur = $rowActivity["id_product_service_cost_cur"]; 
                         $activity_rebate_type = trim($_POST["activity_rebate_type"]);
                         $activity_rebate_approve_by = trim($_POST["activity_rebate_approve_by"]);
-                        $activity_discount_percentage = trim($_POST["activity_discount_percentage"]);
-                        $activity_adult_disc = trim($_POST["activity_adult_claim_after_disc"]);
-                        if($activity_adult_disc !=0)
+                        $activity_rebate_percentage = trim($_POST["activity_rebate_percentage"]);
+                        $activity_adult_rebate = trim($_POST["activity_adult_claim_after_rebate"]);
+                        if($activity_adult_rebate !=0)
                         {
-                            $adult_disc_markup_exTAX = ($activity_adult_disc - $activity_adult_cost) * ((100 - $tax_value)/100);
-                            $activity_adult_claim_after_disc_exTAX = $activity_adult_disc * ((100 - $tax_value)/100);
-                            $activity_adult_claim_after_disc = $activity_adult_claim_after_disc_exTAX;
+                            $adult_rebate_markup_exTAX = ($activity_adult_rebate - $activity_adult_cost) * ((100 - $tax_value)/100);
+                            $activity_adult_claim_after_rebate_exTAX = $activity_adult_rebate * ((100 - $tax_value)/100);
+                            $activity_adult_claim_after_rebate = $activity_adult_claim_after_rebate_exTAX;
                         }
                         else
                         {
-                            $activity_adult_claim_after_disc_exTAX = 0;
-                            $activity_adult_claim_after_disc = 0;
+                            $activity_adult_claim_after_rebate_exTAX = 0;
+                            $activity_adult_claim_after_rebate = 0;
                         }
-                        $activity_teen_disc = trim($_POST["activity_teen_claim_after_disc"]);
-                        if($activity_teen_disc !=0)
+                        $activity_teen_rebate = trim($_POST["activity_teen_claim_after_rebate"]);
+                        if($activity_teen_rebate !=0)
                         {
-                            $teen_disc_markup_exTAX = ($activity_teen_disc - $activity_teent_cost) * ((100 - $tax_value)/100);
-                            $activity_teen_claim_after_disc_exTAX = $activity_teen_disc * ((100 - $tax_value)/100);
-                            $activity_teen_claim_after_disc = $activity_teen_claim_after_disc_exTAX;
-                        }
-                        else
-                        {
-                            $activity_teen_claim_after_disc_exTAX = 0;
-                            $activity_teen_claim_after_disc = 0;
-                        }
-                        $activity_child_disc = trim($_POST["activity_child_claim_after_disc"]);
-                        if($activity_child_disc !=0)
-                        {
-                            $child_disc_markup_exTAX = ($activity_child_disc - $activity_childt_cost) * ((100 - $tax_value)/100);
-                            $activity_child_claim_after_disc_exTAX = $activity_child_disc * ((100 - $tax_value)/100);
-                            $activity_child_claim_after_disc = $activity_child_claim_after_disc_exTAX;
+                            $teen_rebate_markup_exTAX = ($activity_teen_rebate - $activity_teent_cost) * ((100 - $tax_value)/100);
+                            $activity_teen_claim_after_rebate_exTAX = $activity_teen_rebate * ((100 - $tax_value)/100);
+                            $activity_teen_claim_after_rebate = $activity_teen_claim_after_rebate_exTAX;
                         }
                         else
                         {
-                            $activity_child_claim_after_disc_exTAX = 0;
-                            $activity_child_claim_after_disc = 0;
+                            $activity_teen_claim_after_rebate_exTAX = 0;
+                            $activity_teen_claim_after_rebate = 0;
                         }
-                        $activity_infant_disc = trim($_POST["activity_infant_claim_after_disc"]);
-                        if($activity_infant_disc !=0)
+                        $activity_child_rebate = trim($_POST["activity_child_claim_after_rebate"]);
+                        if($activity_child_rebate !=0)
                         {
-                            $infant_disc_markup_exTAX = ($activity_infant_disc - $activity_infantt_cost) * ((100 - $tax_value)/100);
-                            $activity_infant_claim_after_disc_exTAX = $activity_infant_disc * ((100 - $tax_value)/100);
-                            $activity_infant_claim_after_disc = $activity_infant_claim_after_disc_exTAX;
+                            $child_rebate_markup_exTAX = ($activity_child_rebate - $activity_childt_cost) * ((100 - $tax_value)/100);
+                            $activity_child_claim_after_rebate_exTAX = $activity_child_rebate * ((100 - $tax_value)/100);
+                            $activity_child_claim_after_rebate = $activity_child_claim_after_rebate_exTAX;
                         }
                         else
                         {
-                            $activity_infant_claim_after_disc_exTAX = 0;
-                            $activity_infant_claim_after_disc = 0;
+                            $activity_child_claim_after_rebate_exTAX = 0;
+                            $activity_child_claim_after_rebate = 0;
+                        }
+                        $activity_infant_rebate = trim($_POST["activity_infant_claim_after_rebate"]);
+                        if($activity_infant_rebate !=0)
+                        {
+                            $infant_rebate_markup_exTAX = ($activity_infant_rebate - $activity_infantt_cost) * ((100 - $tax_value)/100);
+                            $activity_infant_claim_after_rebate_exTAX = $activity_infant_rebate * ((100 - $tax_value)/100);
+                            $activity_infant_claim_after_rebate = $activity_infant_claim_after_rebate_exTAX;
+                        }
+                        else
+                        {
+                            $activity_infant_claim_after_rebate_exTAX = 0;
+                            $activity_infant_claim_after_rebate = 0;
                         }
                         
                         if ($activity_rebate_type == 'Percentage')
                         {
-                            $activity_total_claim_after_disc = $activity_total_claim * ((100-$activity_discount_percentage)/100);
-                            $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX * ((100-$activity_discount_percentage)/100);
+                            $activity_total_claim_after_rebate = $activity_total_claim * ((100-$activity_rebate_percentage)/100);
+                            $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX * ((100-$activity_rebate_percentage)/100);
                         }
                         else if ($activity_rebate_type == 'Fixed Tariff')
                         {
-                            $activity_total_claim_after_disc = (($activity_adult_amt * $activity_adult_claim_after_disc) +($activity_teen_amt * $activity_teen_claim_after_disc) + ($activity_child_amt * $activity_child_claim_after_disc) +($activity_infant_amt * $activity_infant_claim_after_disc));
-                            $activity_total_claim_after_disc_exTAX = (($activity_adult_amt * $activity_adult_claim_after_disc_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_disc_exTAX) + ($activity_child_amt * $activity_child_claim_after_disc_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_disc_exTAX));
+                            $activity_total_claim_after_rebate = (($activity_adult_amt * $activity_adult_claim_after_rebate) +($activity_teen_amt * $activity_teen_claim_after_rebate) + ($activity_child_amt * $activity_child_claim_after_rebate) +($activity_infant_amt * $activity_infant_claim_after_rebate));
+                            $activity_total_claim_after_rebate_exTAX = (($activity_adult_amt * $activity_adult_claim_after_rebate_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_rebate_exTAX) + ($activity_child_amt * $activity_child_claim_after_rebate_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_rebate_exTAX));
                         }
                         else if ($activity_rebate_type == 'FOC')
                         {
-                            $activity_total_claim_after_disc = 0;
-                            $activity_total_claim_after_disc_exTAX = 0;
+                            $activity_total_claim_after_rebate = 0;
+                            $activity_total_claim_after_rebate_exTAX = 0;
                         }
                         else 
                         {
-                            $activity_total_claim_after_disc = $activity_total_claim;
-                            $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX;
+                            $activity_total_claim_after_rebate = $activity_total_claim;
+                            $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX;
                         }
                     }
                 }
@@ -644,71 +644,71 @@ try {
                         $id_product_service_cost_cur = $rowActivity["id_product_service_cost_cur"]; 
                         $activity_rebate_type = trim($_POST["activity_rebate_type"]);
                         $activity_rebate_approve_by = trim($_POST["activity_rebate_approve_by"]);
-                        $activity_discount_percentage = trim($_POST["activity_discount_percentage"]);
-                        $activity_adult_disc = trim($_POST["activity_adult_claim_after_disc"]);
-                        if($activity_adult_disc !=0)
+                        $activity_rebate_percentage = trim($_POST["activity_rebate_percentage"]);
+                        $activity_adult_rebate = trim($_POST["activity_adult_claim_after_rebate"]);
+                        if($activity_adult_rebate !=0)
                         {
-                            $activity_adult_claim_after_disc_exTAX = $activity_adult_disc * ((100 - $tax_value)/100);
-                            $activity_adult_claim_after_disc = $activity_adult_disc;
+                            $activity_adult_claim_after_rebate_exTAX = $activity_adult_rebate * ((100 - $tax_value)/100);
+                            $activity_adult_claim_after_rebate = $activity_adult_rebate;
                         }
                         else
                         {
-                            $activity_adult_claim_after_disc_exTAX = 0;
-                            $activity_adult_claim_after_disc = 0;
+                            $activity_adult_claim_after_rebate_exTAX = 0;
+                            $activity_adult_claim_after_rebate = 0;
                         }
-                        $activity_teen_disc = trim($_POST["activity_teen_claim_after_disc"]);
-                        if($activity_teen_disc !=0)
+                        $activity_teen_rebate = trim($_POST["activity_teen_claim_after_rebate"]);
+                        if($activity_teen_rebate !=0)
                         {
-                            $activity_teen_claim_after_disc_exTAX = $activity_teen_disc * ((100 - $tax_value)/100);
-                            $activity_teen_claim_after_disc = $activity_teen_disc;
-                        }
-                        else
-                        {
-                            $activity_teen_claim_after_disc_exTAX = 0;
-                            $activity_teen_claim_after_disc = 0;
-                        }
-                        $activity_child_disc = trim($_POST["activity_child_claim_after_disc"]);
-                        if($activity_child_disc !=0)
-                        {
-                            $activity_child_claim_after_disc_exTAX = $activity_child_disc * ((100 - $tax_value)/100);
-                            $activity_child_claim_after_disc = $activity_child_disc;
+                            $activity_teen_claim_after_rebate_exTAX = $activity_teen_rebate * ((100 - $tax_value)/100);
+                            $activity_teen_claim_after_rebate = $activity_teen_rebate;
                         }
                         else
                         {
-                            $activity_child_claim_after_disc_exTAX = 0;
-                            $activity_child_claim_after_disc = 0;
+                            $activity_teen_claim_after_rebate_exTAX = 0;
+                            $activity_teen_claim_after_rebate = 0;
                         }
-                        $activity_infant_disc = trim($_POST["activity_infant_claim_after_disc"]);
-                        if($activity_infant_disc !=0)
+                        $activity_child_rebate = trim($_POST["activity_child_claim_after_rebate"]);
+                        if($activity_child_rebate !=0)
                         {
-                            $activity_infant_claim_after_disc_exTAX = $activity_infant_disc * ((100 - $tax_value)/100);
-                            $activity_infant_claim_after_disc = $activity_infant_disc;
+                            $activity_child_claim_after_rebate_exTAX = $activity_child_rebate * ((100 - $tax_value)/100);
+                            $activity_child_claim_after_rebate = $activity_child_rebate;
                         }
                         else
                         {
-                            $activity_infant_claim_after_disc_exTAX = 0;
-                            $activity_infant_claim_after_disc = 0;
+                            $activity_child_claim_after_rebate_exTAX = 0;
+                            $activity_child_claim_after_rebate = 0;
+                        }
+                        $activity_infant_rebate = trim($_POST["activity_infant_claim_after_rebate"]);
+                        if($activity_infant_rebate !=0)
+                        {
+                            $activity_infant_claim_after_rebate_exTAX = $activity_infant_rebate * ((100 - $tax_value)/100);
+                            $activity_infant_claim_after_rebate = $activity_infant_rebate;
+                        }
+                        else
+                        {
+                            $activity_infant_claim_after_rebate_exTAX = 0;
+                            $activity_infant_claim_after_rebate = 0;
                         }
                         
                         if ($activity_rebate_type == 'Percentage')
                         {
-                            $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX * ((100-$activity_discount_percentage)/100);
-                            $activity_total_claim_after_disc = $activity_total_claim * ((100-$activity_discount_percentage)/100);
+                            $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX * ((100-$activity_rebate_percentage)/100);
+                            $activity_total_claim_after_rebate = $activity_total_claim * ((100-$activity_rebate_percentage)/100);
                         }
                         else if ($activity_rebate_type == 'Fixed Tariff')
                         {
-                            $activity_total_claim_after_disc_exTAX = (($activity_adult_amt * $activity_adult_claim_after_disc_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_disc_exTAX) + ($activity_child_amt * $activity_child_claim_after_disc_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_disc_exTAX));
-                            $activity_total_claim_after_disc = (($activity_adult_amt * $activity_adult_claim_after_disc) +($activity_teen_amt * $activity_teen_claim_after_disc) + ($activity_child_amt * $activity_child_claim_after_disc) +($activity_infant_amt * $activity_infant_claim_after_disc));
+                            $activity_total_claim_after_rebate_exTAX = (($activity_adult_amt * $activity_adult_claim_after_rebate_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_rebate_exTAX) + ($activity_child_amt * $activity_child_claim_after_rebate_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_rebate_exTAX));
+                            $activity_total_claim_after_rebate = (($activity_adult_amt * $activity_adult_claim_after_rebate) +($activity_teen_amt * $activity_teen_claim_after_rebate) + ($activity_child_amt * $activity_child_claim_after_rebate) +($activity_infant_amt * $activity_infant_claim_after_rebate));
                         }
                         else if ($activity_rebate_type == 'FOC')
                         {
-                            $activity_total_claim_after_disc_exTAX = 0;
-                            $activity_total_claim_after_disc = 0;
+                            $activity_total_claim_after_rebate_exTAX = 0;
+                            $activity_total_claim_after_rebate = 0;
                         }
                         else 
                         {
-                            $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX;
-                            $activity_total_claim_after_disc = $activity_total_claim;
+                            $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX;
+                            $activity_total_claim_after_rebate = $activity_total_claim;
                         }
                     }
                     else
@@ -827,70 +827,70 @@ try {
                         $id_product_service_cost_cur = $rowActivity["id_product_service_cost_cur"]; 
                         $activity_rebate_type = trim($_POST["activity_rebate_type"]);
                         $activity_rebate_approve_by = trim($_POST["activity_rebate_approve_by"]);
-                        $activity_discount_percentage = trim($_POST["activity_discount_percentage"]);
-                        $activity_adult_disc= trim($_POST["activity_adult_claim_after_disc"]);
-                         if($activity_adult_disc !=0){
-                            $adult_disc_markup_exTAX = ($activity_adult_disc - $activity_adult_cost)* ((100 - $tax_value)/100);
-                            $activity_adult_claim_after_disc_exTAX = $adult_disc_markup_exTAX + $activity_adult_cost;
-                            $activity_adult_claim_after_disc = $activity_adult_claim_after_disc_exTAX;
+                        $activity_rebate_percentage = trim($_POST["activity_rebate_percentage"]);
+                        $activity_adult_rebate= trim($_POST["activity_adult_claim_after_rebate"]);
+                         if($activity_adult_rebate !=0){
+                            $adult_rebate_markup_exTAX = ($activity_adult_rebate - $activity_adult_cost)* ((100 - $tax_value)/100);
+                            $activity_adult_claim_after_rebate_exTAX = $adult_rebate_markup_exTAX + $activity_adult_cost;
+                            $activity_adult_claim_after_rebate = $activity_adult_claim_after_rebate_exTAX;
                         }
                         else
                         {
-                            $activity_adult_claim_after_disc_exTAX = 0;
-                            $activity_adult_claim_after_disc = 0;
+                            $activity_adult_claim_after_rebate_exTAX = 0;
+                            $activity_adult_claim_after_rebate = 0;
                         }
-                        $activity_teen_disc= trim($_POST["activity_teen_claim_after_disc"]);
-                        if($activity_teen_disc !=0){
-                            $teen_disc_markup_exTAX = ($activity_teen_disc - $activity_teen_cost)* ((100 - $tax_value)/100);
-                            $activity_teen_claim_after_disc_exTAX = $teen_disc_markup_exTAX + $activity_teen_cost;
-                            $activity_teen_claim_after_disc = $activity_teen_claim_after_disc_exTAX;
-                        }
-                        else
-                        {
-                            $activity_teen_claim_after_disc_exTAX = 0;
-                            $activity_teen_claim_after_disc = 0;
-                        }
-                        $activity_child_disc= trim($_POST["activity_child_claim_after_disc"]);
-                        if($activity_child_disc !=0){
-                            $child_disc_markup_exTAX = ($activity_child_disc - $activity_child_cost)* ((100 - $tax_value)/100);
-                            $activity_child_claim_after_disc_exTAX = $child_disc_markup_exTAX + $activity_child_cost;
-                            $activity_child_claim_after_disc = $activity_child_claim_after_disc_exTAX;
+                        $activity_teen_rebate= trim($_POST["activity_teen_claim_after_rebate"]);
+                        if($activity_teen_rebate !=0){
+                            $teen_rebate_markup_exTAX = ($activity_teen_rebate - $activity_teen_cost)* ((100 - $tax_value)/100);
+                            $activity_teen_claim_after_rebate_exTAX = $teen_rebate_markup_exTAX + $activity_teen_cost;
+                            $activity_teen_claim_after_rebate = $activity_teen_claim_after_rebate_exTAX;
                         }
                         else
                         {
-                            $activity_child_claim_after_disc_exTAX = 0;
-                            $activity_child_claim_after_disc = 0;
+                            $activity_teen_claim_after_rebate_exTAX = 0;
+                            $activity_teen_claim_after_rebate = 0;
                         }
-                        $activity_infant_disc= trim($_POST["activity_infant_claim_after_disc"]);
-                        if($activity_child_disc !=0){
-                            $infant_disc_markup_exTAX = ($activity_infant_disc - $activity_infant_cost)* ((100 - $tax_value)/100);
-                            $activity_infant_claim_after_disc_exTAX = $infant_disc_markup_exTAX + $activity_infant_cost;
-                            $activity_infant_claim_after_disc = $activity_infant_claim_after_disc_exTAX;
+                        $activity_child_rebate= trim($_POST["activity_child_claim_after_rebate"]);
+                        if($activity_child_rebate !=0){
+                            $child_rebate_markup_exTAX = ($activity_child_rebate - $activity_child_cost)* ((100 - $tax_value)/100);
+                            $activity_child_claim_after_rebate_exTAX = $child_rebate_markup_exTAX + $activity_child_cost;
+                            $activity_child_claim_after_rebate = $activity_child_claim_after_rebate_exTAX;
                         }
                         else
                         {
-                            $activity_infant_claim_after_disc_exTAX = 0;
-                            $activity_infant_claim_after_disc = 0;
+                            $activity_child_claim_after_rebate_exTAX = 0;
+                            $activity_child_claim_after_rebate = 0;
+                        }
+                        $activity_infant_rebate= trim($_POST["activity_infant_claim_after_rebate"]);
+                        if($activity_child_rebate !=0){
+                            $infant_rebate_markup_exTAX = ($activity_infant_rebate - $activity_infant_cost)* ((100 - $tax_value)/100);
+                            $activity_infant_claim_after_rebate_exTAX = $infant_rebate_markup_exTAX + $activity_infant_cost;
+                            $activity_infant_claim_after_rebate = $activity_infant_claim_after_rebate_exTAX;
+                        }
+                        else
+                        {
+                            $activity_infant_claim_after_rebate_exTAX = 0;
+                            $activity_infant_claim_after_rebate = 0;
                         }
                          if ($activity_rebate_type == 'Percentage')
                         {
-                            $activity_total_claim_after_disc = $activity_total_claim * ((100-$activity_discount_percentage)/100);
-                            $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX * ((100-$activity_discount_percentage)/100);
+                            $activity_total_claim_after_rebate = $activity_total_claim * ((100-$activity_rebate_percentage)/100);
+                            $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX * ((100-$activity_rebate_percentage)/100);
                         }
                         else if ($activity_rebate_type == 'Fixed Tariff')
                         {
-                            $activity_total_claim_after_disc_exTAX = (($activity_adult_amt * $activity_adult_claim_after_disc_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_disc_exTAX) + ($activity_child_amt * $activity_child_claim_after_disc_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_disc_exTAX));
-                            $activity_total_claim_after_disc = (($activity_adult_amt * $activity_adult_claim_after_disc) +($activity_teen_amt * $activity_teen_claim_after_disc) + ($activity_child_amt * $activity_child_claim_after_disc) +($activity_infant_amt * $activity_infant_claim_after_disc));
+                            $activity_total_claim_after_rebate_exTAX = (($activity_adult_amt * $activity_adult_claim_after_rebate_exTAX) + ($activity_teen_amt * $activity_teen_claim_after_rebate_exTAX) + ($activity_child_amt * $activity_child_claim_after_rebate_exTAX) + ($activity_infant_amt * $activity_infant_claim_after_rebate_exTAX));
+                            $activity_total_claim_after_rebate = (($activity_adult_amt * $activity_adult_claim_after_rebate) +($activity_teen_amt * $activity_teen_claim_after_rebate) + ($activity_child_amt * $activity_child_claim_after_rebate) +($activity_infant_amt * $activity_infant_claim_after_rebate));
                         }
                         else if ($activity_rebate_type == 'FOC')
                         {
-                            $activity_total_claim_after_disc_exTAX = 0;
-                            $activity_total_claim_after_disc = 0;
+                            $activity_total_claim_after_rebate_exTAX = 0;
+                            $activity_total_claim_after_rebate = 0;
                         }
                         else 
                         {
-                            $activity_total_claim_after_disc_exTAX = $activity_total_claim_exTAX;
-                            $activity_total_claim_after_disc = $activity_total_claim;
+                            $activity_total_claim_after_rebate_exTAX = $activity_total_claim_exTAX;
+                            $activity_total_claim_after_rebate = $activity_total_claim;
                         }
                     }
                 }
@@ -960,21 +960,21 @@ try {
                     activity_total_claim,
                     activity_rebate_type,
                     activity_rebate_approve_by,
-                    activity_discount_percentage,
-                    activity_adult_disc,
-                    activity_adult_claim_after_disc_exTAX,
-                    activity_adult_claim_after_disc,
-                    activity_teen_disc,
-                    activity_teen_claim_after_disc,
-                    activity_teen_claim_after_disc_exTAX,
-                    activity_child_disc,
-                    activity_child_claim_after_disc,
-                    activity_child_claim_after_disc_exTAX,
-                    activity_infant_disc,
-                    activity_infant_claim_after_disc,
-                    activity_infant_claim_after_disc_exTAX,
-                    activity_total_claim_after_disc_exTAX,
-                    activity_total_claim_after_disc,
+                    activity_rebate_percentage,
+                    activity_adult_rebate,
+                    activity_adult_claim_after_rebate_exTAX,
+                    activity_adult_claim_after_rebate,
+                    activity_teen_rebate,
+                    activity_teen_claim_after_rebate,
+                    activity_teen_claim_after_rebate_exTAX,
+                    activity_child_rebate,
+                    activity_child_claim_after_rebate,
+                    activity_child_claim_after_rebate_exTAX,
+                    activity_infant_rebate,
+                    activity_infant_claim_after_rebate,
+                    activity_infant_claim_after_rebate_exTAX,
+                    activity_total_claim_after_rebate_exTAX,
+                    activity_total_claim_after_rebate,
                     activity_remarks,
                     activity_internal_remarks,
                     activity_status,
@@ -1017,21 +1017,21 @@ try {
                     :activity_total_claim,
                     :activity_rebate_type,
                     :activity_rebate_approve_by,
-                    :activity_discount_percentage,
-                    :activity_adult_disc,
-                    :activity_adult_claim_after_disc_exTAX,
-                    :activity_adult_claim_after_disc,
-                    :activity_teen_disc,
-                    :activity_teen_claim_after_disc,
-                    :activity_teen_claim_after_disc_exTAX,
-                    :activity_child_disc,
-                    :activity_child_claim_after_disc,
-                    :activity_child_claim_after_disc_exTAX,
-                    :activity_infant_disc,
-                    :activity_infant_claim_after_disc,
-                    :activity_infant_claim_after_disc_exTAX,
-                    :activity_total_claim_after_disc_exTAX,
-                    :activity_total_claim_after_disc,
+                    :activity_rebate_percentage,
+                    :activity_adult_rebate,
+                    :activity_adult_claim_after_rebate_exTAX,
+                    :activity_adult_claim_after_rebate,
+                    :activity_teen_rebate,
+                    :activity_teen_claim_after_rebate,
+                    :activity_teen_claim_after_rebate_exTAX,
+                    :activity_child_rebate,
+                    :activity_child_claim_after_rebate,
+                    :activity_child_claim_after_rebate_exTAX,
+                    :activity_infant_rebate,
+                    :activity_infant_claim_after_rebate,
+                    :activity_infant_claim_after_rebate_exTAX,
+                    :activity_total_claim_after_rebate_exTAX,
+                    :activity_total_claim_after_rebate,
 				    :activity_remarks,
 				    :activity_internal_remarks,
 				    :activity_status,
@@ -1076,21 +1076,21 @@ try {
                  ":activity_total_claim"                              =>$activity_total_claim,
                  ":activity_rebate_type"                            =>$activity_rebate_type,
                  ":activity_rebate_approve_by"                 =>$activity_rebate_approve_by,
-                 ":activity_discount_percentage"               =>$activity_discount_percentage,
-                 ":activity_adult_disc"                                =>$activity_adult_disc,
-                 ":activity_adult_claim_after_disc_exTAX"  =>$activity_adult_claim_after_disc_exTAX,
-                 ":activity_adult_claim_after_disc"              =>$activity_adult_claim_after_disc, 
-                 ":activity_teen_disc"                                  =>$activity_teen_disc,
-                 ":activity_teen_claim_after_disc"               =>$activity_teen_claim_after_disc,
-                 ":activity_teen_claim_after_disc_exTAX"    =>$activity_teen_claim_after_disc_exTAX,
-                 ":activity_child_disc"                                  =>$activity_child_disc,
-                 ":activity_child_claim_after_disc"               =>$activity_child_claim_after_disc,
-                 ":activity_child_claim_after_disc_exTAX"   =>$activity_child_claim_after_disc_exTAX,
-                 ":activity_infant_disc"                                =>$activity_infant_disc,
-                 ":activity_infant_claim_after_disc"             =>$activity_infant_claim_after_disc,
-                 ":activity_infant_claim_after_disc_exTAX" =>$activity_infant_claim_after_disc_exTAX,
-                 ":activity_total_claim_after_disc_exTAX"   =>$activity_total_claim_after_disc_exTAX,
-                 ":activity_total_claim_after_disc"              =>$activity_total_claim_after_disc,
+                 ":activity_rebate_percentage"               =>$activity_rebate_percentage,
+                 ":activity_adult_rebate"                                =>$activity_adult_rebate,
+                 ":activity_adult_claim_after_rebate_exTAX"  =>$activity_adult_claim_after_rebate_exTAX,
+                 ":activity_adult_claim_after_rebate"              =>$activity_adult_claim_after_rebate, 
+                 ":activity_teen_rebate"                                  =>$activity_teen_rebate,
+                 ":activity_teen_claim_after_rebate"               =>$activity_teen_claim_after_rebate,
+                 ":activity_teen_claim_after_rebate_exTAX"    =>$activity_teen_claim_after_rebate_exTAX,
+                 ":activity_child_rebate"                                  =>$activity_child_rebate,
+                 ":activity_child_claim_after_rebate"               =>$activity_child_claim_after_rebate,
+                 ":activity_child_claim_after_rebate_exTAX"   =>$activity_child_claim_after_rebate_exTAX,
+                 ":activity_infant_rebate"                                =>$activity_infant_rebate,
+                 ":activity_infant_claim_after_rebate"             =>$activity_infant_claim_after_rebate,
+                 ":activity_infant_claim_after_rebate_exTAX" =>$activity_infant_claim_after_rebate_exTAX,
+                 ":activity_total_claim_after_rebate_exTAX"   =>$activity_total_claim_after_rebate_exTAX,
+                 ":activity_total_claim_after_rebate"              =>$activity_total_claim_after_rebate,
                  ":activity_remarks"                                    =>$activity_remarks,
                  ":activity_internal_remarks"                      =>$activity_internal_remarks,
                  ":activity_status"                                       =>$activity_status,
@@ -1224,21 +1224,21 @@ try {
                     activity_total_claim,
                     activity_rebate_type,
                     activity_rebate_approve_by,
-                    activity_discount_percentage,
-                    activity_adult_disc,
-                    activity_adult_claim_after_disc_exTAX,
-                    activity_adult_claim_after_disc,
-                    activity_teen_disc,
-                    activity_teen_claim_after_disc,
-                    activity_teen_claim_after_disc_exTAX,
-                    activity_child_disc,
-                    activity_child_claim_after_disc,
-                    activity_child_claim_after_disc_exTAX,
-                    activity_infant_disc,
-                    activity_infant_claim_after_disc,
-                    activity_infant_claim_after_disc_exTAX,
-                    activity_total_claim_after_disc_exTAX,
-                    activity_total_claim_after_disc,
+                    activity_rebate_percentage,
+                    activity_adult_rebate,
+                    activity_adult_claim_after_rebate_exTAX,
+                    activity_adult_claim_after_rebate,
+                    activity_teen_rebate,
+                    activity_teen_claim_after_rebate,
+                    activity_teen_claim_after_rebate_exTAX,
+                    activity_child_rebate,
+                    activity_child_claim_after_rebate,
+                    activity_child_claim_after_rebate_exTAX,
+                    activity_infant_rebate,
+                    activity_infant_claim_after_rebate,
+                    activity_infant_claim_after_rebate_exTAX,
+                    activity_total_claim_after_rebate_exTAX,
+                    activity_total_claim_after_rebate,
                     activity_remarks,
                     activity_internal_remarks,
                     activity_status,
@@ -1285,21 +1285,21 @@ try {
                     :activity_total_claim,
                     :activity_rebate_type,
                     :activity_rebate_approve_by,
-                    :activity_discount_percentage,
-                    :activity_adult_disc,
-                    :activity_adult_claim_after_disc_exTAX,
-                    :activity_adult_claim_after_disc,
-                    :activity_teen_disc,
-                    :activity_teen_claim_after_disc,
-                    :activity_teen_claim_after_disc_exTAX,
-                    :activity_child_disc,
-                    :activity_child_claim_after_disc,
-                    :activity_child_claim_after_disc_exTAX,
-                    :activity_infant_disc,
-                    :activity_infant_claim_after_disc,
-                    :activity_infant_claim_after_disc_exTAX,
-                    :activity_total_claim_after_disc_exTAX,
-                    :activity_total_claim_after_disc,
+                    :activity_rebate_percentage,
+                    :activity_adult_rebate,
+                    :activity_adult_claim_after_rebate_exTAX,
+                    :activity_adult_claim_after_rebate,
+                    :activity_teen_rebate,
+                    :activity_teen_claim_after_rebate,
+                    :activity_teen_claim_after_rebate_exTAX,
+                    :activity_child_rebate,
+                    :activity_child_claim_after_rebate,
+                    :activity_child_claim_after_rebate_exTAX,
+                    :activity_infant_rebate,
+                    :activity_infant_claim_after_rebate,
+                    :activity_infant_claim_after_rebate_exTAX,
+                    :activity_total_claim_after_rebate_exTAX,
+                    :activity_total_claim_after_rebate,
                     :activity_remarks,
                     :activity_internal_remarks,
                     :activity_status,
@@ -1347,21 +1347,21 @@ try {
                  ":activity_total_claim"                              =>$activity_total_claim,
                  ":activity_rebate_type"                            =>$activity_rebate_type,
                  ":activity_rebate_approve_by"                 =>$activity_rebate_approve_by,
-                 ":activity_discount_percentage"               =>$activity_discount_percentage,
-                 ":activity_adult_disc"                                =>$activity_adult_disc,
-                 ":activity_adult_claim_after_disc_exTAX"  =>$activity_adult_claim_after_disc_exTAX,
-                 ":activity_adult_claim_after_disc"              =>$activity_adult_claim_after_disc, 
-                 ":activity_teen_disc"                                  =>$activity_teen_disc,
-                 ":activity_teen_claim_after_disc"               =>$activity_teen_claim_after_disc,
-                 ":activity_teen_claim_after_disc_exTAX"    =>$activity_teen_claim_after_disc_exTAX,
-                 ":activity_child_disc"                                  =>$activity_child_disc,
-                 ":activity_child_claim_after_disc"               =>$activity_child_claim_after_disc,
-                 ":activity_child_claim_after_disc_exTAX"   =>$activity_child_claim_after_disc_exTAX,
-                 ":activity_infant_disc"                                =>$activity_infant_disc,
-                 ":activity_infant_claim_after_disc"             =>$activity_infant_claim_after_disc,
-                 ":activity_infant_claim_after_disc_exTAX" =>$activity_infant_claim_after_disc_exTAX,
-                 ":activity_total_claim_after_disc_exTAX"   =>$activity_total_claim_after_disc_exTAX,
-                 ":activity_total_claim_after_disc"              =>$activity_total_claim_after_disc,
+                 ":activity_rebate_percentage"               =>$activity_rebate_percentage,
+                 ":activity_adult_rebate"                                =>$activity_adult_rebate,
+                 ":activity_adult_claim_after_rebate_exTAX"  =>$activity_adult_claim_after_rebate_exTAX,
+                 ":activity_adult_claim_after_rebate"              =>$activity_adult_claim_after_rebate, 
+                 ":activity_teen_rebate"                                  =>$activity_teen_rebate,
+                 ":activity_teen_claim_after_rebate"               =>$activity_teen_claim_after_rebate,
+                 ":activity_teen_claim_after_rebate_exTAX"    =>$activity_teen_claim_after_rebate_exTAX,
+                 ":activity_child_rebate"                                  =>$activity_child_rebate,
+                 ":activity_child_claim_after_rebate"               =>$activity_child_claim_after_rebate,
+                 ":activity_child_claim_after_rebate_exTAX"   =>$activity_child_claim_after_rebate_exTAX,
+                 ":activity_infant_rebate"                                =>$activity_infant_rebate,
+                 ":activity_infant_claim_after_rebate"             =>$activity_infant_claim_after_rebate,
+                 ":activity_infant_claim_after_rebate_exTAX" =>$activity_infant_claim_after_rebate_exTAX,
+                 ":activity_total_claim_after_rebate_exTAX"   =>$activity_total_claim_after_rebate_exTAX,
+                 ":activity_total_claim_after_rebate"              =>$activity_total_claim_after_rebate,
                  ":activity_remarks"                                    =>$activity_remarks,
                  ":activity_internal_remarks"                      =>$activity_internal_remarks,
                  ":activity_status"                                       =>$activity_status,
@@ -1441,9 +1441,9 @@ try {
             ":activity_child_cost"                        => $activity_child_cost,
             ":activity_infant_cost"                      => $activity_infant_cost,
             ":activity_total_cost"                        => $activity_total_cost,
-             ":id_user"                                                  => $id_user,
-             ":uname"                                                   => $uname,
-             ":log_status"                                              => $log_status
+             ":id_user"                                        => $id_user,
+             ":uname"                                         => $uname,
+             ":log_status"                                    => $log_status
             ));
        
     $bookingActivity_result= array("OUTCOME" => "OK", "id_booking"=>$id_booking, "id_booking_activity_claim"=>$id_booking_activity_claim, "created_by" =>$created_name);
