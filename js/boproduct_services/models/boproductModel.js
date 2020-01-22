@@ -47,8 +47,9 @@ $("#btnSaveProduct").click(function () {
                     if (data.OUTCOME == "ERROR_NAME") { 
                         swal("Duplicate", "Product Name Duplicate...", "error");
                     } else { 
+                        var addedProduct = true;
                         resetFormAddProduct();
-                        allProductGridCost(data);
+                        allProductGridCost(data, addedProduct);
                     }
                 },
                 error: function(error) {
