@@ -258,8 +258,8 @@ try {
             VALUES 
             (5, 'Booster Seat', $id_product_service, 'Booster Seat (On Request)', 'UNIT'),
             (3, 'Baby Seat', $id_product_service, 'Baby Seat (On Request)', 'UNIT'),
-            (4, 'Child Seat', $id_product_service, 'Child Seat (On Request)', 'UNIT'),
-            (6, 'Extra Vehicle', $id_product_service, 'Extra Vehicle (On Request)', 'UNIT'),
+            (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT'),
+            (6, 'Extra Vehicle', $id_product_service, 'Extra Vehicle', 'UNIT'),
             (7, 'Surcharge - Specific Vehicle', $id_product_service, 'Surcharge - Specific Vehicle', 'UNIT')";
             $stmt1 = $con->prepare($sqlExtra1);
             $stmt1->execute(array());
@@ -306,10 +306,10 @@ try {
                     ($id_product_service_cost, $id_product_service, 3, 'Baby Seat (On Request)', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
-                    ($id_product_service_cost, $id_product_service, 4, 'Child Seat (On Request)', '$valid_from', '$valid_to', 0, 
+                    ($id_product_service_cost, $id_product_service, 4, 'Child Seat', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
-                    ($id_product_service_cost, $id_product_service, 6, 'Extra Vehicle (On Request)', '$valid_from', '$valid_to', 0, 
+                    ($id_product_service_cost, $id_product_service, 6, 'Extra Vehicle', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
                     ($id_product_service_cost, $id_product_service, 6, 'Surcharge - Specific Vehicle', '$valid_from', '$valid_to', 0, 
