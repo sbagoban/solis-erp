@@ -52,9 +52,21 @@ try {
     $arr_params = array_merge($arr_main_params,$arr_spo_params);
         
     $outcome = _rates_calculator($con, $arr_params);
+    
+    
+    $arr_params["max_pax"] = $arr_params["spo_party_pax"];
+    $arr_params["booking_date"] = $arr_params["spo_booking_date"];
+    $arr_params["travel_date"] = $arr_params["spo_travel_date"];
+    $arr_params["wedding_interested"] = $arr_params["spo_chk_is_wedding"];
+    $arr_params["suppmealplan"] = $arr_params["supp_mealplan"];
+    $arr_params["arr_adults"] = $arr_params["adults"];
+    $arr_params["arr_children"] = $arr_params["children"];
+    
+    $test = array();
+    //$test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params);
+            
 
-
-    echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome));
+    echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome, "TEST"=>$test));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

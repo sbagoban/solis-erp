@@ -74,7 +74,7 @@
             </div>
         </div>
         <!-- Column 2 -->
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
             
             <div class="col-md-12">
                 
@@ -83,7 +83,6 @@
                         <h3 class="panel-title">Latest Product Services</h3>
                     </div>
                     <div class="panel-body">
-                        <!-- Panel -->
                         <div class="panel panel-theme">
                             <div class="panel-heading">Product Name</div>
                             <div class="panel-body">
@@ -114,7 +113,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 

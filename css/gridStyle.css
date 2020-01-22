@@ -255,3 +255,16 @@ td.deleteBtnCol {
   .lte8 .wrapperXXX:hover .tooltip {
   display: block;
   }
+
+  tr.DTTT_selected td {
+    animation: background-fade 10s forwards;
+}
+
+@keyframes background-fade {
+    50% {
+        background:#E1FEE0;
+    }
+    100% {
+        background:#fafafa;
+    }
+}

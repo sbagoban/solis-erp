@@ -99,7 +99,7 @@ $('#btn-saveProductServices').click(function () {
     var service_name_transfer = $('#service_name_transfer').val();
     var special_name_transfer = $('#special_name_transfer').val();
 
-    if (servicetype == "ACTIVITY") { 
+    if (servicetype == "ACTIVITY" || servicetype =="OTHER") { 
         if (charge == null || charge == "") {
             alert("Please choose a Charge Pax / Unit");
             document.getElementById('id_tax').style.border ="1px solid #aaa";

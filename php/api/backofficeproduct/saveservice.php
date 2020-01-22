@@ -256,9 +256,11 @@ try {
             echo $valid_from;
             $sqlExtra1 = "INSERT INTO product_service_extra (id_service_extra, extra_name, 	id_product_service, extra_description, charge) 
             VALUES 
-            (5, 'Booster Seat', $id_product_service, 'Booster Seat', '$charge'),
-            (3, 'Baby Seat', $id_product_service, 'Baby Seat', '$charge'),
-            (4, 'Child Seat', $id_product_service, 'Child Seat', '$charge')";
+            (5, 'Booster Seat', $id_product_service, 'Booster Seat (On Request)', 'UNIT'),
+            (3, 'Baby Seat', $id_product_service, 'Baby Seat (On Request)', 'UNIT'),
+            (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT'),
+            (6, 'Extra Vehicle', $id_product_service, 'Extra Vehicle', 'UNIT'),
+            (7, 'Surcharge - Specific Vehicle', $id_product_service, 'Surcharge - Specific Vehicle', 'UNIT')";
             $stmt1 = $con->prepare($sqlExtra1);
             $stmt1->execute(array());
 
@@ -276,7 +278,7 @@ try {
                 currency
                 ) 
             VALUES 
-            ($id_product_service, '$valid_from', '$valid_to', $id_dept, '$charge', 0, 0, 0, 0, 5, 'MRU')";
+            ($id_product_service, '$valid_from', '$valid_to', $id_dept, 'UNIT', 0, 0, 0, 0, 5, 'MRU')";
             $stmt2 = $con->prepare($sqlCostTrasnfer);
             $stmt2->execute(array());
             // last id id_product_service_cost
@@ -298,14 +300,20 @@ try {
             id_currency, 
             currency) 
                 VALUES (
-                    $id_product_service_cost, $id_product_service, 5, 'Booster Seat', '$valid_from', '$valid_to', 0, 
-                    0, 0, 0, '$charge', 5, 'MRU'),
+                    $id_product_service_cost, $id_product_service, 5, 'Booster Seat (On Request)', '$valid_from', '$valid_to', 0, 
+                    0, 0, 0, 'UNIT', 5, 'MRU'),
 
-                    ($id_product_service_cost, $id_product_service, 3, 'Baby Seat', '$valid_from', '$valid_to', 0, 
-                    0, 0, 0, '$charge', 5, 'MRU'),
+                    ($id_product_service_cost, $id_product_service, 3, 'Baby Seat (On Request)', '$valid_from', '$valid_to', 0, 
+                    0, 0, 0, 'UNIT', 5, 'MRU'),
 
                     ($id_product_service_cost, $id_product_service, 4, 'Child Seat', '$valid_from', '$valid_to', 0, 
-                    0, 0, 0, '$charge', 5, 'MRU')";
+                    0, 0, 0, 'UNIT', 5, 'MRU'),
+
+                    ($id_product_service_cost, $id_product_service, 6, 'Extra Vehicle', '$valid_from', '$valid_to', 0, 
+                    0, 0, 0, 'UNIT', 5, 'MRU'),
+
+                    ($id_product_service_cost, $id_product_service, 6, 'Surcharge - Specific Vehicle', '$valid_from', '$valid_to', 0, 
+                    0, 0, 0, 'UNIT', 5, 'MRU')";
 
             $stmt3 = $con->prepare($sqlExtraCostTransfer);
             $stmt3->execute(array());

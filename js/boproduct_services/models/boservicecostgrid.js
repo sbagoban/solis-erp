@@ -2,7 +2,7 @@ $(document).ready(function(){
     allServicesGridCost();
 });
 
-function allServicesGridCost() {
+function allServicesGridCost(addedCost) {
 
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
@@ -20,6 +20,7 @@ function allServicesGridCost() {
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 4,
+        "aaSorting": [ [0,'desc'] ],
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"
@@ -103,6 +104,11 @@ function allServicesGridCost() {
                     var data = table.row( $(this).parents('tr') ).data();
                     addServiceClaim(data);
                 })
+                
+                if (addedCost == true) {
+                    row = $('#tbl-productServicesCost tr:first-child');
+                    $(row).addClass('DTTT_selected');
+                }
         }
     });
     

@@ -580,7 +580,8 @@ function addClaimProductService(){
             });
         }
     }
-    allServicesGridClaim(id_product_service_cost, 0);
+    var addedClaim = true;
+    allServicesGridClaim(id_product_service_cost, 0, addedClaim);
 }
 
 function resetProductServicesClaim() {

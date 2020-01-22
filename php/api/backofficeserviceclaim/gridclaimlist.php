@@ -39,7 +39,8 @@ JOIN product_service PS on PRSC.id_product_service = PS.id_product_service
 JOIN product PR on PS.id_product = PR.id_product
 WHERE PRSC.id_product_service_cost = :id_product_service_cost
 AND PRSC.id_product_service_claim <> :id_product_service_claim
-AND PRSC.active = 1");
+AND PRSC.active = 1
+ORDER BY id_product_service_claim DESC;");
 $query_c->execute(array(
     ":id_product_service_cost"=>$id_product_service_cost,    
     ":id_product_service_claim"=>$id_product_service_claim

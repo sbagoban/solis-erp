@@ -2,7 +2,8 @@ $(document).ready(function(){
     allProductGridCost();
 });
 
-function allProductGridCost() {
+function allProductGridCost(x, addedProduct) {
+    console.log('test', addedProduct);
     // Request call everything from database
     $('#productServiceSort').DataTable({       
         "processing" : true,
@@ -16,6 +17,7 @@ function allProductGridCost() {
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 4,
+        "aaSorting": [ [0,'desc'] ],
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"
@@ -49,22 +51,30 @@ function allProductGridCost() {
                 '<i  id="btnEditProduct"class="fa fa-fw fa-edit"></i>' +
                 '<i id="btnDeleteProduct"  class="fa fa-fw fa-trash-o"></i></div>'
             }
-        ]
-    });
-    $('#productServiceSort tbody').on( 'click', '#btnDeleteProduct', function () {
-        var table = $('#productServiceSort').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        alertDelete(data);
-    });
-    $('#productServiceSort tbody').on( 'click', '#btnEditProduct', function () {
-        var table = $('#productServiceSort').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        productServiceClaimEdit(data);
-    });
-    $('#productServiceSort tbody').on( 'click', '#btnAddProductServices', function () {
-        var table = $('#productServiceSort').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        addProductServices(data);
+        ],
+        "initComplete": function () {
+            $('#productServiceSort tbody')
+                .off()
+                .on( 'click', '#btnDeleteProduct', function (e) {
+                    var table = $('#productServiceSort').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    alertDelete(data);
+                })
+                .on( 'click', '#btnEditProduct', function (e) {
+                    var table = $('#productServiceSort').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    productServiceClaimEdit(data);
+                })
+                .on( 'click', '#btnAddProductServices', function (e) {
+                    var table = $('#productServiceSort').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addProductServices(data);
+                })
+                if (addedProduct == true) {
+                    row = $('#productServiceSort tr:first-child');
+                    $(row).addClass('DTTT_selected');
+                }
+        }
     });
 }
 

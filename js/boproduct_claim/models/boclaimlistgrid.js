@@ -14,8 +14,7 @@ $(document).ready(function(){
     allServicesGridClaim(id_product_service_cost, id_product_service_claim); 
 });
 
-function allServicesGridClaim(id_product_service_cost,id_product_service_claim ) {
-    
+function allServicesGridClaim(id_product_service_cost,id_product_service_claim, addedClaim) {    
    // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     $('#tbl-productServicesClaim').DataTable({     
         "processing" : true,
@@ -29,6 +28,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 5,
+        "aaSorting": [ [0,'desc'] ],
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
         +"<'row'<'col-sm-12'tr>>"
@@ -110,7 +110,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                     editServiceClaim(data);
                     extraServiceGridClaim(data);
                 })
-                .on('click', 'td', function(e) {             
+                .on('click', 'td', function(e) {
                     var table = $('#tbl-productServicesClaim').DataTable();
                     var rowData = table.row( $(this).parents('tr') ).data();
                     if (rowData.specific_to == 'C') {
@@ -136,7 +136,10 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim )
                         top: e.pageY
                     });
                 });
-    
+                if (addedClaim == true) {
+                    row = $('#tbl-productServicesClaim tr:first-child');
+                    $(row).addClass('DTTT_selected');
+                }
         }
     });
 }
