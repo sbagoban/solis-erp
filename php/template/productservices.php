@@ -8,6 +8,16 @@
 						<h3 class="box-title">Services</h3>
 						<div id="idService" style="display:none;">0</div>
 						<div id="chargeDetail" style="display:none;">0</div>
+						<!-- Add Toggle here -->
+						<div class="checkbox_tgl pull-right">
+							<label>
+								<input id="on_api" type="checkbox" data-toggle="toggle" data-on="On Api" data-off="Off by Api" data-onstyle="success">
+							</label>
+						
+							<label>
+								<input id="on_approved" type="checkbox" data-toggle="toggle" data-on="Approved" data-off="Disapproved" data-onstyle="success">
+							</label>
+						</div>
 					</div>
 					<!-- /.box-header -->
 					<!-- form start -->
@@ -333,7 +343,7 @@
 									<br>
 								</div>
 							</div>
-						
+							
 							<div class="pager pull-right">
 								<button type="button" class="btn btn-default" id="btn-productServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 								<button type="button" class="btn btn-default" onclick="resetServicesForm()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>

@@ -67,6 +67,9 @@ if (isset($_GET["m"])) {
         <!-- To downalod -->
         <link rel='stylesheet' href='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.css'>
         <!-- To downalod -->
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
         <?php
         $menu = "";
         if (isset($_GET["m"])) {

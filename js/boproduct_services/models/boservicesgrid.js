@@ -176,6 +176,20 @@ function serviceDelete(data) {
 
 // // Edit Product
 function serviceEdit(data) {
+    if (data.on_api == 1) { 
+        $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
+        $('#on_api').prop('checked', true);
+    } else { 
+        $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
+        $('#on_api').prop('checked', false);
+    }
+    if (data.on_approved == 1) { 
+        $('.toggle:eq(1)').addClass('btn-success').removeClass('btn-default off');
+        $('#on_approved').prop('checked', true);
+    } else { 
+        $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+        $('#on_approved').prop('checked', false);
+    }
     specificServiceSelected(data);
     loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;

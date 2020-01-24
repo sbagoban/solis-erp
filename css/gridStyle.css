@@ -268,3 +268,7 @@ td.deleteBtnCol {
         background:#fafafa;
     }
 }
+
+.checkbox_tgl { 
+  display: inline-block;
+}
