@@ -98,10 +98,10 @@ var target_action = 'NULL';
 		});
 	//.Client
     
-    //Approved Discount List
-	const url_search_discountUserList = "php/api/users/approveDiscountUser.php?t=" + encodeURIComponent(global_token);
+    //Approved rebate List
+	const url_search_rebateUserList = "php/api/users/approverebateUser.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
-		url: url_search_discountUserList,
+		url: url_search_rebateUserList,
 		method: "POST",
 		dataType: "json",
 		success: function (data) 
@@ -120,5 +120,5 @@ var target_action = 'NULL';
 			console.log('Error ${error}');
 		}
 	});
-	//.Approved Discount List
+	//.Approved rebate List
 });

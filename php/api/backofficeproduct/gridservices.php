@@ -31,7 +31,7 @@ PRS.id_dept, PRS.id_country, PRS.id_coast, PR.product_name, PRS.id_dept, DP.dept
 PRS.comments, PRS.cancellation, PRS.description, PRS.age_child_to, PRS.age_inf_to, PRS.age_teen_to, PRS.min_pax, PRS.max_pax, 
 PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday, PRS.id_creditor,
 PRS.for_infant, PRS.for_child, PRS.for_teen, PRS.age_child_from, PRS.age_inf_from, PRS.age_teen_from, PRS.min_age, PRS.max_age, PRS.for_adult,  PRS.is_pakage, PRS.special_name, 
-PRS.max_adult
+PRS.max_adult, PRS.on_api, PRS.on_approved
 FROM product_service PRS
 JOIN product PR on PRS.id_product = PR.id_product
 JOIN tbldepartments DP on PRS.id_dept = DP.id
@@ -89,7 +89,9 @@ if ($row_count_c > 0) {
             'for_adult' => $row['for_adult'], 
             'is_pakage' => $row['is_pakage'],
             'special_name' => $row['special_name'],
-            'max_adult' => $row['max_adult']        
+            'max_adult' => $row['max_adult'],
+            'on_api' => $row['on_api'],
+            'on_approved' => $row['on_approved'] 
         );
     }
     $myData = $services;
@@ -140,7 +142,9 @@ if ($row_count_c > 0) {
         'for_adult' => '-', 
         'is_pakage' => '-', 
         'special_name' => '-',
-        'max_adult' => '-'
+        'max_adult' => '-', 
+        'on_api' => '-',
+        'on_approved' => '-'
     );
     $myData = $services;
     echo json_encode($myData);

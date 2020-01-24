@@ -15,6 +15,7 @@ $(document).ready(function(){
     if (servicetype == 'TRANSFER') {
         $('.adult_blk').css("display", "block");
     }
+    
 });
 
 function changeTransfer() {
@@ -82,7 +83,19 @@ function saveService() {
     var is_pakage = $('#is_pakage').val();
     var id_product_service_induded = $('#services_cost').val();
     var max_adult = $('#max_adult').val();
+    var on_approved_chk = $('#on_approved').prop('checked');
+    var on_api_chk = $('#on_api').prop('checked');
+    if (on_api_chk == true) { 
+        var on_api_1 = 1;
+    } else { 
+        var on_api_1 = 0;
+    }
 
+    if (on_approved_chk == true) { 
+        var on_approved_1 = 1;
+    } else  { 
+        var on_approved_1 = 0;
+    }
     if (is_pakage == 'N') { 
         id_product_service_induded = 0;
     } 
@@ -212,7 +225,9 @@ function saveService() {
             id_product_type : id_product_type, 
             special_name : special_name,
             servicetype : servicetype, 
-            max_adult : max_adult
+            max_adult : max_adult, 
+            on_api : on_api_1, 
+            on_approved : on_approved_1
         };
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
         if (is_pakage == 'N' || (is_pakage == 'Y' &&  id_product_service_induded.length > 0)) { 
@@ -285,11 +300,11 @@ function saveService() {
             is_pakage : is_pakage, 
             special_name : special_name,            
             servicetype : servicetype, 
-            max_adult : max_adult
+            max_adult : max_adult,
+            on_api : on_api_1, 
+            on_approved : on_approved_1
         };
 
-        // HERE !!!
-        
         var chargeDetail = document.getElementById("chargeDetail").innerHTML;
         if (chargeDetail == charge) {
             $.ajax({
@@ -392,6 +407,11 @@ function resetServicesForm() {
     $('#special_name_transfer').val('');
     $('#special_name').val('');
     $('#max_adult').val('');
+    $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
+    $('#on_api').prop('checked', false);
+    $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+    $('#on_approved').prop('checked', false);
+    
 }
 
 function specificServiceSelected(val) { 

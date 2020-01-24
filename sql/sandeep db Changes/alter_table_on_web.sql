@@ -1,0 +1,1 @@
+ALTER TABLE product_service CHANGE `on_web` `on_approved` smallint(1)

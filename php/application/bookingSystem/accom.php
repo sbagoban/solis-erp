@@ -1,3 +1,17 @@
+<?php
+require_once("../../api/ratescalculator/_rates_get_contract.php");
+require_once("../../api/ratescalculator/_rates_calculator.php");
+require_once("../../api//hotelspecialoffers/_spo_taxcommi.php");
+require_once("../../api/hotelcontracts/_contract_capacityarr.php");
+require_once("../../api/hotelcontracts/_contract_exchangerates.php");
+require_once("../../api/hotelcontracts/_contract_calculatesp.php");
+require_once("../../api/hotelcontracts/_contract_taxcommi.php");
+require_once("../../api/hotelcontracts/_contract_combinations_rooms.php");
+require_once("../../globalvars/globalvars.php");
+require_once("../../utils/utilities.php");
+?>
+<script src="php/application/bookingSystem/js/bookingAccom.js"></script>
+<script src="php/application/bookingSystem/js/newAccom.js"></script>
 <!-- Accommodation Tab -->
 <div class="tab-pane active in fade" id="accom">
 <!-- left column -->	
@@ -6,55 +20,75 @@
 		<form class="form-horizontal">
 			<!-- .box-body -->
 			<div class="box-body">
-				<div class="form-group">
-					<label class="col-sm-1 control-label">Paid By</label>
-					<div class="col-sm-3">
-						<select class="form-control" id="accom_paidBy">
-							<option value="TO">Tour Operator</option>
-							<option value="Client">Client</option>
-						</select>
+                <div class="form-group" style="">
+					<label class="col-sm-2 control-label">ID BOOKING ACCOM</label>
+					<div class="col-sm-2">
+						<input type="text" class="form-control bookingAccom" id="id_booking_accom_claim" placeholder="000" readonly>
 					</div>
+				</div>
+                
+				<div class="form-group">
+					<label class="col-sm-1 control-label">Booking Date</label>
 					<div class="col-sm-3">
-						<select class="form-control" id="accom_tourOperator">
-							<option value="TO">Tour Operator</option>
-							<option value="Client">Client</option>
+						<input type="text" class="form-control bookingAccom" id="accom_bookingDate" placeholder="00/00/0000">
+					</div>
+					<label class="col-sm-1 control-label">Status</label>
+					<div class="col-sm-7">
+						<select class="form-control bookingAccom select2" id="accom_status">
+							<option value="QUOTE" selected>QUOTE</option>
+							<option value="CONFIRM">CONFIRM</option>
+							<option value="CANCEL">CANCEL</option>
+							<option value="CANCEL WITH FEE">CANCEL WITH FEE</option>
 						</select>
 					</div>
 				</div>
-
+                
+				<div class="form-group">
+					<label class="col-sm-1 control-label">Paid By</label>
+					<div class="col-sm-3">
+						<select class="form-control bookingAccom" id="accom_paidBy">
+							<option value="TO">Tour Operator</option>
+							<!--<option value="Client">Client</option>-->
+						</select>
+					</div>
+					<div class="col-sm-8">
+						<select class="form-control bookingAccom" id="accom_payer">
+						</select>
+					</div>
+				</div>
+                
 				<div class="form-group">
 					<label class="col-sm-1 control-label">Stay</label>
-					<div class="col-sm-4">
+					<div class="col-sm-3">
 						<input type="text" class="form-control" id="accom_stay" placeholder="00/00/0000">
 					</div>
-					
+					<label class="col-sm-1 control-label">Night</label>
 					<div class="col-sm-2">
-						<input type="text" class="form-control" id="accom_night" placeholder="0">
-					</div>
-					<label class="col-sm-2 control-label">Book Date</label>
-					<div class="col-sm-3">
-						<input type="text" class="form-control" id="accom_bookingDate" placeholder="00/00/0000">
+						<input type="text" class="form-control" id="accom_night" placeholder="0" readonly>
 					</div>
 				</div>
 				
 				<div class="form-group">
-					<label class="col-sm-1 control-label">Room</label>
-					<div class="col-sm-4">
+					<label class="col-sm-1 control-label">Hotel</label>
+					<div class="col-sm-7">
 						<select class="form-control" id="accom_hotel">
-							<option value="TO">Hotel</option>
 						</select>
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-4">
 						<select class="form-control" id="accom_mealPlan">
-							<option value="TO">Half Board</option>
 						</select>
 					</div>
-					<div class="col-sm-5">
+                </div>
+                
+				<div class="form-group">
+					<label class="col-sm-1 control-label">Room</label>
+					<div class="col-sm-7">
 						<select class="form-control" id="accom_room">
-							<option value="TO">STANDARD ROOM</option>
-							<option value="TO">JUNIOR SUITE  </option>
-							<option value="TO">GARDEN VIEW ROOM</option>
-							<option value="TO">ZEN SUITE</option>
+						</select>
+					</div>
+					<div class="col-sm-4">
+						<select class="form-control" id="accom_occupancy" placeholder="Occupancy">
+							<option value="TO">OCCUPANCY</option>
 						</select>
 					</div>
 				</div>
@@ -62,9 +96,7 @@
 				<div class="form-group">
 					<label class="col-sm-1 control-label">Client</label>
 					<div class="col-sm-11">
-						<select class="form-control" id="accom_hotel">
-							<option value="TO">Tour Operator</option>
-							<option value="Client">Client</option>
+						<select class="form-control bookingAccom selectpicker" multiple data-live-search="true" data-actions-box="true" id="accom_client" multiple="multiple">
 						</select>
 					</div>
 				</div>

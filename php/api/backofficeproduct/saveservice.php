@@ -53,30 +53,26 @@ try {
     $min_pax = trim($_POST["min_pax"]);
     $max_pax = trim($_POST["max_pax"]);
     $id_creditor = trim($_POST["id_creditor"]);
-
     $min_age = trim($_POST["min_age"]);
     $max_age = trim($_POST["max_age"]);
     $max_adult = trim($_POST["max_adult"]);
-
     $age_inf_from = trim($_POST["age_inf_from"]);
     $age_child_from = trim($_POST["age_child_from"]);
     $age_teen_from = trim($_POST["age_teen_from"]);
     $for_infant = trim($_POST["for_infant"]);
     $for_child = trim($_POST["for_child"]);
-    $for_teen = trim($_POST["for_teen"]);	
-
+    $for_teen = trim($_POST["for_teen"]);
     $is_pakage = trim($_POST["is_pakage"]);
     $id_service_type = $_POST["id_service_type"];
     $id_product_type = $_POST["id_product_type"];
     $id_product_service_induded = $_POST["id_product_service_induded"];
-
     $servicetype = $_POST["servicetype"];
-
     $special_name = strtoupper(trim($_POST["special_name"]));
-    
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
     $log_status = "CREATE";
+    $on_api = trim($_POST["on_api"]);
+    $on_approved = trim($_POST["on_approved"]);
 
     if ($servicetype == 'TRANSFER') {
         $id_coast = 0;
@@ -181,11 +177,14 @@ try {
                     special_name,
                     max_adult,
                     id_service_type,
-                    id_product_type)
+                    id_product_type, 
+                    on_api,
+                    on_approved)
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
                 :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :age_inf_from, :age_child_from, :age_teen_from,
-                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name, :max_adult, :id_service_type, :id_product_type)";
+                :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name, :max_adult, :id_service_type, :id_product_type,
+                :on_api, :on_approved)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -228,7 +227,9 @@ try {
             ":special_name" => $special_name,
             ":max_adult" => $max_adult,
             ":id_service_type" => $id_service_type,
-            ":id_product_type" => $id_product_type));
+            ":id_product_type" => $id_product_type,
+            ":on_api" => $on_api,
+            ":on_approved" => $on_approved));
         
             $id_product_service = $con->lastInsertId();
 
@@ -256,11 +257,10 @@ try {
             echo $valid_from;
             $sqlExtra1 = "INSERT INTO product_service_extra (id_service_extra, extra_name, 	id_product_service, extra_description, charge) 
             VALUES 
-            (5, 'Booster Seat', $id_product_service, 'Booster Seat', 'UNIT'),
-            (3, 'Baby Seat', $id_product_service, 'Baby Seat', 'UNIT'),
+            (5, 'Booster Seat', $id_product_service, 'Booster Seat (On Request)', 'UNIT'),
+            (3, 'Baby Seat', $id_product_service, 'Baby Seat (On Request)', 'UNIT'),
             (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT'),
-            (6, 'Extra Vehicle', $id_product_service, 'Extra Vehicle', 'UNIT'),
-            (7, 'Surcharge - Specific Vehicle', $id_product_service, 'Surcharge - Specific Vehicle', 'UNIT')";
+            (6, 'Surcharge - Specific Vehicle', $id_product_service, 'Surcharge - Specific Vehicle', 'UNIT')";
             $stmt1 = $con->prepare($sqlExtra1);
             $stmt1->execute(array());
 
@@ -300,16 +300,13 @@ try {
             id_currency, 
             currency) 
                 VALUES (
-                    $id_product_service_cost, $id_product_service, 5, 'Booster Seat', '$valid_from', '$valid_to', 0, 
+                    $id_product_service_cost, $id_product_service, 5, 'Booster Seat (On Request)', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
-                    ($id_product_service_cost, $id_product_service, 3, 'Baby Seat', '$valid_from', '$valid_to', 0, 
+                    ($id_product_service_cost, $id_product_service, 3, 'Baby Seat (On Request)', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
-                    ($id_product_service_cost, $id_product_service, 4, 'Child Seat', '$valid_from', '$valid_to', 0, 
-                    0, 0, 0, 'UNIT', 5, 'MRU'),
-
-                    ($id_product_service_cost, $id_product_service, 6, 'Extra Vehicle', '$valid_from', '$valid_to', 0, 
+                    ($id_product_service_cost, $id_product_service, 4, 'Child Seat', '$valid_from', '$valid_to', 0,
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
                     ($id_product_service_cost, $id_product_service, 6, 'Surcharge - Specific Vehicle', '$valid_from', '$valid_to', 0, 
@@ -492,7 +489,9 @@ $stmt = $con->prepare($sqlLog);
                 special_name=:special_name, 
                 max_adult=:max_adult, 
                 id_service_type=:id_service_type, 
-                id_product_type=:id_product_type
+                id_product_type=:id_product_type, 
+                on_api=:on_api, 
+                on_approved=:on_approved
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);
@@ -536,7 +535,9 @@ $stmt = $con->prepare($sqlLog);
             ":special_name" => $special_name,
             ":max_adult" => $max_adult, 
             ":id_service_type" => $id_service_type,
-            ":id_product_type" => $id_product_type));
+            ":id_product_type" => $id_product_type, 
+            ":on_api" => $on_api,
+            ":on_approved" => $on_approved));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
 } catch (Exception $ex) {

@@ -74,14 +74,14 @@ $(function(){
 			{
 				if ($('#activity_approvedBy').val() == "" ||$('#activity_approvedBy').val() == 0 ||$('#activity_approvedBy').val() == "None" ||$('#activity_approvedBy').val() == null  )
 					{
-						alert("Select discount approver");
+						alert("Select rebate approver");
 						saveError = true;
 					}
 				else if($('#activity_rebate').val() == "Percentage")
 					{
 						if($('#activity_percentageRebate').val() == ""||$('#activity_percentageRebate').val() == 0)
 							{
-								alert("Input discount rebate");
+								alert("Input rebate rebate");
 								saveError = true;
 							}
 					}
@@ -205,69 +205,69 @@ function saveActivity(activityData) {
 	if (activity_rebate_type == "Percentage")
 		{
 			var activity_rebate_approve_by = $('#activity_approvedBy').val();
-			var activity_discount_percentage = $('#activity_percentageRebate').val();
-			var activity_adult_claim_after_disc = 0;
-			var activity_teen_claim_after_disc = 0;
-			var activity_child_claim_after_disc = 0;
-			var activity_infant_claim_after_disc = 0;
+			var activity_rebate_percentage = $('#activity_percentageRebate').val();
+			var activity_adult_claim_after_rebate = 0;
+			var activity_teen_claim_after_rebate = 0;
+			var activity_child_claim_after_rebate = 0;
+			var activity_infant_claim_after_rebate = 0;
 		}
 	else if (activity_rebate_type == "Fixed Tariff")
 		{
 			var activity_rebate_approve_by = $('#activity_approvedBy').val();
-			var activity_discount_percentage = 0;
+			var activity_rebate_percentage = 0;
 			if (activity_adult_amt == 0)
 			{
-				var activity_adult_claim_after_disc = 0;
+				var activity_adult_claim_after_rebate = 0;
 			}
 			else
 			{
-				var activity_adult_claim_after_disc = $('#activity_adultRebate').val();
+				var activity_adult_claim_after_rebate = $('#activity_adultRebate').val();
 			}
 			
 			if (activity_teen_amt == 0)
 			{
-				var activity_teen_claim_after_disc = 0;
+				var activity_teen_claim_after_rebate = 0;
 			}
 			else
 			{
-				var activity_teen_claim_after_disc = $('#activity_teenRebate').val();
+				var activity_teen_claim_after_rebate = $('#activity_teenRebate').val();
 			}
 			
 			if (activity_child_amt == 0)
 			{
-				var activity_child_claim_after_disc = 0;
+				var activity_child_claim_after_rebate = 0;
 			}
 			else
 			{
-				var activity_child_claim_after_disc = $('#activity_childRebate').val();
+				var activity_child_claim_after_rebate = $('#activity_childRebate').val();
 			}
 			
 			if (activity_infant_amt == 0)
 			{
-				var activity_infant_claim_after_disc = 0;
+				var activity_infant_claim_after_rebate = 0;
 			}
 			else
 			{
-				var activity_infant_claim_after_disc = $('#activity_InfantRebate').val();
+				var activity_infant_claim_after_rebate = $('#activity_InfantRebate').val();
 			}
 		}
 	else if (activity_rebate_type == "FOC")
 		{
 			var activity_rebate_approve_by = $('#activity_approvedBy').val();
-			var activity_discount_percentage = 100;
-			var activity_adult_claim_after_disc = 0;
-			var activity_teen_claim_after_disc = 0;
-			var activity_child_claim_after_disc = 0;
-			var activity_infant_claim_after_disc = 0;
+			var activity_rebate_percentage = 100;
+			var activity_adult_claim_after_rebate = 0;
+			var activity_teen_claim_after_rebate = 0;
+			var activity_child_claim_after_rebate = 0;
+			var activity_infant_claim_after_rebate = 0;
 		}
 	else
 		{
 			var activity_rebate_approve_by = 0;
-			var activity_discount_percentage = 0;
-			var activity_adult_claim_after_disc = 0;
-			var activity_teen_claim_after_disc = 0;
-			var activity_child_claim_after_disc = 0;
-			var activity_infant_claim_after_disc = 0;
+			var activity_rebate_percentage = 0;
+			var activity_adult_claim_after_rebate = 0;
+			var activity_teen_claim_after_rebate = 0;
+			var activity_child_claim_after_rebate = 0;
+			var activity_infant_claim_after_rebate = 0;
 		}
     //var activity_client_room_no = $('#activity_pickupRoomNo').val();
     //var id_language = $('#activity_language').val();
@@ -297,11 +297,11 @@ function saveActivity(activityData) {
 		activity_total_pax:activity_total_pax,
         activity_rebate_type: activity_rebate_type,
         activity_rebate_approve_by: activity_rebate_approve_by,
-        activity_discount_percentage: activity_discount_percentage,
-        activity_adult_claim_after_disc: activity_adult_claim_after_disc,
-        activity_teen_claim_after_disc: activity_teen_claim_after_disc,
-        activity_child_claim_after_disc: activity_child_claim_after_disc,
-        activity_infant_claim_after_disc: activity_infant_claim_after_disc,
+        activity_rebate_percentage: activity_rebate_percentage,
+        activity_adult_claim_after_rebate: activity_adult_claim_after_rebate,
+        activity_teen_claim_after_rebate: activity_teen_claim_after_rebate,
+        activity_child_claim_after_rebate: activity_child_claim_after_rebate,
+        activity_infant_claim_after_rebate: activity_infant_claim_after_rebate,
         activity_remarks: activity_remarks,
         activity_internal_remarks: activity_internal_remarks,
         activity_status: activity_status,

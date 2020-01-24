@@ -82,7 +82,6 @@ $( "#ddlType" ).change(function () {
     });
 }).change();
 
-
 $('#btn-saveProductServices').click(function () {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);

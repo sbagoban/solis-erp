@@ -67,19 +67,18 @@
         $for_infant = trim($_POST["for_infant"]);
         $for_child = trim($_POST["for_child"]);
         $for_teen = trim($_POST["for_teen"]);
-        $for_adult = trim($_POST["for_adult"]);
-		
+        $for_adult = trim($_POST["for_adult"]);		
         $min_age = trim($_POST["min_age"]);
         $max_age = trim($_POST["max_age"]);
         $max_adult = trim($_POST["max_adult"]);
-
         $is_pakage = trim($_POST["is_pakage"]);
         $special_name = strtoupper(trim($_POST["special_name"]));
-
         $servicetype = $_POST["servicetype"];
         $id_user = $_SESSION["solis_userid"];
         $uname = $_SESSION["solis_username"];
         $log_status = "UPDATE";
+        $on_api = trim($_POST["on_api"]);
+        $on_approved = trim($_POST["on_approved"]);
 
         if ($servicetype == 'TRANSFER') {
             $id_coast = 0;
@@ -157,7 +156,9 @@
                 for_adult =:for_adult,
                 is_pakage =:is_pakage, 
                 special_name =:special_name,
-                max_adult =:max_adult
+                max_adult =:max_adult, 
+                on_api =:on_api,
+                on_approved =:on_approved
                 WHERE id_product_service=:id_product_service";
 
         $stmt = $con->prepare($sql);                        
@@ -201,7 +202,9 @@
                 ":for_adult" => $for_adult,
                 ":is_pakage" => $is_pakage, 
                 ":special_name" => $special_name, 
-                ":max_adult" => $max_adult));
+                ":max_adult" => $max_adult, 
+                ":on_api" => $on_api, 
+                ":on_approved" => $on_approved));
 
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 

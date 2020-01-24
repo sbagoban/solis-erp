@@ -33,14 +33,14 @@ $('#tbl-bookingActivity').DataTable({
         },{
             "data" : "activity_date"
         },{
-            "data" : "activity_rebate_type"
+            "data" : "activity_rebate_claim_type"
         },{
             
             data: null,
                 render: function ( data, type, row ) {
-                    return data.activity_total_claim_after_disc+' '+data.currency_code;
+                    return data.activity_total_claim_after_rebate+' '+data.currency_code;
                 },
-                editField: ['activity_total_claim_after_disc', 'currency_code']
+                editField: ['activity_total_claim_after_rebate', 'currency_code']
         },{
                 "targets": -1,
                 "data": null,                
@@ -263,7 +263,7 @@ function displayActivity(activityDetails) {
             $("#activity_approvedBy").val(activityDetails[0].activity_rebate_approve_by);
             $('#activity_approvedBy').select2().trigger('change');
             $("#activity_percentageRebate").show();
-            $("#activity_percentageRebate").val(activityDetails[0].activity_discount_percentage);
+            $("#activity_percentageRebate").val(activityDetails[0].activity_rebate_percentage);
             $("#rebate_fix").hide();
             $("#activity_adultRebate").val('');
             $("#activity_teenRebate").val('');
@@ -274,10 +274,10 @@ function displayActivity(activityDetails) {
         {
             $("#rebateSection").show();
             $("#rebate_fix").show();
-            $("#activity_adultRebate").val(activityDetails[0].activity_adult_disc);
-            $("#activity_teenRebate").val(activityDetails[0].activity_teen_disc);
-            $("#activity_childRebate").val(activityDetails[0].activity_child_disc);
-            $("#activity_InfantRebate").val(activityDetails[0].activity_infant_disc);
+            $("#activity_adultRebate").val(activityDetails[0].activity_adult_rebate);
+            $("#activity_teenRebate").val(activityDetails[0].activity_teen_rebate);
+            $("#activity_childRebate").val(activityDetails[0].activity_child_rebate);
+            $("#activity_InfantRebate").val(activityDetails[0].activity_infant_rebate);
             $("#activity_percentageRebate").hide();
             $("#activity_approvedBy").prop("disabled", false);
             $("#activity_percentageRebate").val('');
