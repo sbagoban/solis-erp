@@ -445,9 +445,9 @@ function _rates_calculator_split_SP_per_pax(&$arr, $arr_columns, $arr_params, $c
         $category_initial_total = $arr_category_total["INITIAL_TOTAL"];
         $category_cost_total = $arr_category_total["COST_TOTAL"];
         $category_sp_total = $arr_category_total["SELL_PRICE_TOTAL"];
-        
-        $cost_index = $arr_category_total["COST_INDEX"] ;
-        $sprice_index = $arr_category_total["SELL_PRICE_INDEX"] ;
+
+        $cost_index = $arr_category_total["COST_INDEX"];
+        $sprice_index = $arr_category_total["SELL_PRICE_INDEX"];
 
 
         //==========================================================
@@ -463,19 +463,19 @@ function _rates_calculator_split_SP_per_pax(&$arr, $arr_columns, $arr_params, $c
         //==========================================================
         //now split the total prorata for each pax of that category based on the cost price
         $row_index = 0;
-        
+
         $cumul_prorata_sp = 0;
         $cumul_prorata_cost = 0;
-        
+
         for ($i = 0; $i < count($arr); $i++) {
             if (isset($arr[$i]["CATEGORY"])) {
                 if ($category == $arr[$i]["CATEGORY"]) {
                     $row_index++;
 
                     _rates_calculator_split_SP_per_pax_reflect_columns($arr[$i]["COSTINGS"], $arr_columns);
-                    
+
                     $base_initial = $arr[$i]["COSTINGS"][0]["VALUE"];
-                    
+
                     $pro_rata_cost = 0;
                     $pro_rata_sp = 0;
 
@@ -483,19 +483,17 @@ function _rates_calculator_split_SP_per_pax(&$arr, $arr_columns, $arr_params, $c
                         //last row: place the difference
                         $pro_rata_cost = $category_cost_total - $cumul_prorata_cost;
                         $pro_rata_sp = $category_sp_total - $cumul_prorata_sp;
-                        
-                    } else 
-                    {
-                        
+                    } else {
+
                         //calculate the values prorata
                         if ($category_initial_total > 0) {
-                            
+
                             $pro_rata_cost = round(($base_initial / $category_initial_total) * $category_cost_total);
                             $cumul_prorata_cost += $pro_rata_cost;
-                       
+
                             $pro_rata_sp = round(($base_initial / $category_initial_total) * $category_sp_total);
                             $cumul_prorata_sp += $pro_rata_sp;
-                        }                            
+                        }
                     }
 
                     $arr[$i]["COSTINGS"][$cost_index]["VALUE"] = $pro_rata_cost;
@@ -523,10 +521,10 @@ function _rates_calculator_split_SP_per_pax_get_total($arr, $category) {
     $category_sp_total = 0;
     $category_initial_total = 0;
     $category_cost_total = 0;
-    
+
     $cost_index = 0;
     $final_sp_index = 0;
-    
+
     for ($i = 0; $i < count($arr); $i++) {
         $item = $arr[$i];
         if (isset($item["CATEGORY"])) {
@@ -541,8 +539,7 @@ function _rates_calculator_split_SP_per_pax_get_total($arr, $category) {
                     if ($cost_item["CAPTION"] == "FINAL SELLING PRICE") {
                         $category_sp_total = $cost_item["VALUE"];
                         $final_sp_index = $j;
-                    }
-                    else if ($cost_item["CAPTION"] == "COST PRICE") {
+                    } else if ($cost_item["CAPTION"] == "COST PRICE") {
                         $category_cost_total = $cost_item["VALUE"];
                         $cost_index = $j;
                     }
@@ -551,9 +548,9 @@ function _rates_calculator_split_SP_per_pax_get_total($arr, $category) {
         }
     }
 
-    return array("INITIAL_TOTAL" => $category_initial_total, 
-                 "COST_TOTAL" => $category_cost_total, "COST_INDEX" => $cost_index,
-                  "SELL_PRICE_TOTAL" => $category_sp_total, "SELL_PRICE_INDEX"=>$final_sp_index);
+    return array("INITIAL_TOTAL" => $category_initial_total,
+        "COST_TOTAL" => $category_cost_total, "COST_INDEX" => $cost_index,
+        "SELL_PRICE_TOTAL" => $category_sp_total, "SELL_PRICE_INDEX" => $final_sp_index);
 }
 
 function _rate_calculator_taxcommi_for_room($arr_buy_sell, $hotelroom) {
@@ -894,7 +891,7 @@ function _rates_calculator_adch_capacity($arr_params, $this_date) {
 
         $adult = count($arr_params["adults"]);
 
-        if ($adult == 0 && count($children) == 0) {
+        if ($adult == 0) {
             //means that we are going towards child in OWN room
             return array("MSG" => "OK", "INDEX" => "<font color='green'>GOING TO CHILD IN OWN ROOM...</font>");
         }
@@ -4607,7 +4604,10 @@ function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &
         return;
     }
 
-    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: <b>" . $capacity_test_adch["INDEX"] . "</b>",
+    $test_4_index = $capacity_test_adch["INDEX"];
+
+    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: <b>" . $test_4_index . "</b>",
+        "COMBINATION_INDEX" => $test_4_index,
         "COSTINGS" => array());
     //========================================================
     //========================================================
@@ -4622,6 +4622,7 @@ function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &
     }
 
     $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM. COMBINATION INDEX: <b>" . $capacity_test_ch_ownroom["INDEX"] . "</b>",
+        "COMBINATION_INDEX" => $capacity_test_ch_ownroom["INDEX"],
         "COSTINGS" => array());
     //========================================================
     //all ok finally
@@ -6347,70 +6348,58 @@ function _rates_calculator_reservation_get_applicable_spos($con, $arr_params) {
      * generates choice of all applicable SPOs for reservation parameters
      * returns an array of SPOs with the LOWEST claim price for each option
      *
-     **/
-    
+     * */
     //now launch the rates calculator to lookup SPO choices
     $arr_params["spo_chosen"] = "CHOICE";
-    
+
     $arr_outcome = _rates_calculator($con, $arr_params);
     $outcome = $arr_outcome["OUTCOME"];
 
     if ($outcome != "OK") {
         return array("OUTCOME" => $outcome);
     }
-    
-    
+
+
     $arr_choices = array();
-    if(isset($arr_outcome["CHOICES"]))
-    {
+    if (isset($arr_outcome["CHOICES"])) {
         $arr_choices = $arr_outcome["CHOICES"];
     }
-    
+
     //get the lowest SPO combination
     $index = -1;
     $lowest_total = 0;
-    for($i = 0; $i < count($arr_choices); $i++)
-    {
+    for ($i = 0; $i < count($arr_choices); $i++) {
         $single_combined = $arr_choices[$i]["SINGLE_COMBINED"];
-        if($single_combined != "NONE")
-        {
-            if($index == -1)
-            {
+        if ($single_combined != "NONE") {
+            if ($index == -1) {
                 $index = $i;
                 $lowest_total = $arr_choices[$i]["TOTAL_SELL"];
-            }
-            else
-            {
-                if($arr_choices[$i]["TOTAL_SELL"] < $lowest_total)
-                {
+            } else {
+                if ($arr_choices[$i]["TOTAL_SELL"] < $lowest_total) {
                     $lowest_total = $arr_choices[$i]["TOTAL_SELL"];
                     $index = $i;
                 }
             }
         }
     }
-    
+
     //====================================
     //now get the list of spos with lowest price
-    $arr_spos = array("DISCOUNTED_CLAIM_AMOUNT"=>null, "SPOS"=>array());
-    if($index >= 0)
-    {
+    $arr_spos = array("DISCOUNTED_CLAIM_AMOUNT" => null, "SPOS" => array());
+    if ($index >= 0) {
         $arr_spos["TOTAL_DISCOUNTED_CLAIM_AMOUNT"] = $lowest_total;
-        
+
         $arr_list_spos = $arr_choices[$index]["ARR_SPOS"];
-        for($i = 0; $i < count($arr_list_spos); $i++)
-        {
-           $arr_spos["SPOS"][] = array("SPO_ID"=>$arr_list_spos[$i]["SPOID"], 
-                                       "SPO_NAME"=>$arr_list_spos[$i]["NAME"]); 
+        for ($i = 0; $i < count($arr_list_spos); $i++) {
+            $arr_spos["SPOS"][] = array("SPO_ID" => $arr_list_spos[$i]["SPOID"],
+                "SPO_NAME" => $arr_list_spos[$i]["NAME"]);
         }
     }
-    
-    
+
+
     $arr_return = array("OUTCOME" => $outcome, "SPOS" => $arr_spos);
 
     return $arr_return;
-
-    
 }
 
 function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_resa) {
@@ -6473,16 +6462,14 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
 
     //preformat the $arr_children to know if SHARING or OWN
     $flg_sharing_own = "SHARING";
-    if(count($arr_adults) == 0)
-    {
+    if (count($arr_adults) == 0) {
         $flg_sharing_own = "OWN";
     }
-    for($i = 0; $i < count($arr_children); $i++)
-    {
+    for ($i = 0; $i < count($arr_children); $i++) {
         $arr_children[$i]["sharing_own"] = $flg_sharing_own;
     }
-    
-    
+
+
     $resa_rates = -1; //to be decided below:
     //=========================================
     //get the country of the TO
@@ -6526,8 +6513,8 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     } else {
         $resa_rates = $standard_rate_id;
     }
-    
-  
+
+
     //============================================
     //=========================================
     //reset my parameters
@@ -6550,18 +6537,17 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     $arr_params["spo_chk_is_wedding"] = $wedding_interested;
     $arr_params["adults"] = $arr_adults;
     $arr_params["children"] = $arr_children;
-    
-    
+
+
     //==========================================
     //get the SPO 
     $arr_params["spo_chosen"] = "CHOICE";
     $arr_spos = _rates_calculator_reservation_get_applicable_spos($con, $arr_params);
-    if($arr_spos["OUTCOME"] != "OK")
-    {
+    if ($arr_spos["OUTCOME"] != "OK") {
         return $arr_spos["OUTCOME"];
     }
-    
-    
+
+
     //================================================================
     //get age policies
     $_arr_params = $arr_params;
@@ -6577,7 +6563,7 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $room_variant = $row["variant"];
-    }    
+    }
     //===========================================================
     //get the contract Cost Currency Id
     $currency_cost_id = "-1";
@@ -6607,20 +6593,20 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     if ($outcome != "OK") {
         return array("OUTCOME" => $outcome);
     }
-    
+
 
     //==========================================================
     //success in lookup
     //proceed with extracting the amounts
 
-    
+
     $currency_sell_id = $arr_outcome_without_spo["DAILY"][0]["CURRENCY_SELL_ID"];
-    
+
     $arr_colidx = _rates_calculator_reservation_get_columns_cost_sp_colindex($arr_outcome_without_spo["COLUMNS"]);
     $cost_colidx = $arr_colidx["COST_IDX"];
     $sp_colidx = $arr_colidx["SP_IDX"];
-    
-    
+
+
     //for each adult in arr_adults, lookup the amounts
     $arr_adult_rates = _rates_calculator_reservation_get_cost_claim_per_pax(
             $arr_outcome_without_spo["DAILY"][0]["COSTINGS_WORKINGS"],
@@ -6635,199 +6621,309 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
             $arr_outcome_with_spo["DAILY"][0]["COSTINGS_WORKINGS"],
             "ROOM",
             "CHILDREN", $cost_colidx, $sp_colidx);
-    
-    
-    
+
+
+
     $arr_amounts = _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant);
-    
-    
-    $arr_return = array("OUTCOME" => "OK", 
-                        "CONTRACT_ID"=>$contractid,
-                        "ROOM_TYPE"=>$room_variant,
-                        "ROOM_ID" => $hotelroom,
-                        "COST_CURRENCY_ID"=>$currency_cost_id,
-                        "CLAIM_CURRENCY_ID"=>$currency_sell_id, 
-                        "COST_CLAIM_AMOUNTS" => $arr_amounts,
-                        "AGE_POLICIES"=>$arr_age_policies,
-                        "SPECIAL_OFFERS"=>$arr_spos["SPOS"]);
-    
-    
+
+
+    $arr_return = array("OUTCOME" => "OK",
+        "CONTRACT_ID" => $contractid,
+        "ROOM_TYPE" => $room_variant,
+        "ROOM_ID" => $hotelroom,
+        "COST_CURRENCY_ID" => $currency_cost_id,
+        "CLAIM_CURRENCY_ID" => $currency_sell_id,
+        "COST_CLAIM_AMOUNTS" => $arr_amounts,
+        "AGE_POLICIES" => $arr_age_policies,
+        "SPECIAL_OFFERS" => $arr_spos["SPOS"]);
+
+
 
     return $arr_return;
 }
 
-function _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant)
-{
-    if($room_variant == "PERSONS")
-    {   
+function _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant) {
+    if ($room_variant == "PERSONS") {
         $arr_adults = array();
         $adults_index = 0;
-        
+
         $arr_children = array();
         $children_index = 0;
-        
+
         //============== adults ================
-        for($i = 0; $i < count($arr_adult_rates); $i++)
-        {
-            
-                $adults_index ++;
-                $arr_adults[] = array("INDEX"=>$adults_index,
-                                      "BRIDE_GROOM"=>$arr_adult_rates[$i]["BRIDE_GROOM"],
-                                            "COST"=>$arr_adult_rates[$i]["COST"],
-                                            "CLAIM_WITHOUT_SPO"=>$arr_adult_rates[$i]["CLAIM_WITHOUT_SPO"],
-                                            "CLAIM_WITH_SPO"=>$arr_adult_rates[$i]["CLAIM_WITH_SPO"]);
-            
+        for ($i = 0; $i < count($arr_adult_rates); $i++) {
+
+            $adults_index++;
+            $arr_adults[] = array("INDEX" => $adults_index,
+                "BRIDE_GROOM" => $arr_adult_rates[$i]["BRIDE_GROOM"],
+                "COST" => $arr_adult_rates[$i]["COST"],
+                "CLAIM_WITHOUT_SPO" => $arr_adult_rates[$i]["CLAIM_WITHOUT_SPO"],
+                "CLAIM_WITH_SPO" => $arr_adult_rates[$i]["CLAIM_WITH_SPO"]);
         }
-        
+
         //========== children ==============
-        for($i = 0; $i < count($arr_children_rates); $i++)
-        {
-            
-                $children_index ++;
-                $arr_children[] = array("INDEX"=>$children_index,
-                                            "AGE"=>$arr_children_rates[$i]["AGE"],
-                                            "COST"=>$arr_children_rates[$i]["COST"],
-                                            "CLAIM_WITHOUT_SPO"=>$arr_children_rates[$i]["CLAIM_WITHOUT_SPO"],
-                                            "CLAIM_WITH_SPO"=>$arr_children_rates[$i]["CLAIM_WITH_SPO"]);
-           
+        for ($i = 0; $i < count($arr_children_rates); $i++) {
+
+            $children_index++;
+            $arr_children[] = array("INDEX" => $children_index,
+                "AGE" => $arr_children_rates[$i]["AGE"],
+                "COST" => $arr_children_rates[$i]["COST"],
+                "CLAIM_WITHOUT_SPO" => $arr_children_rates[$i]["CLAIM_WITHOUT_SPO"],
+                "CLAIM_WITH_SPO" => $arr_children_rates[$i]["CLAIM_WITH_SPO"]);
         }
-        
-        return array("ADULTS"=>$arr_adults,
-                     "CHILDREN"=>$arr_children);
-    }
-    else
-    {
+
+        return array("ADULTS" => $arr_adults,
+            "CHILDREN" => $arr_children);
+    } else {
         //UNITS
-        
         //merge the unit costs and claim
         //also extract the extra adults and children amounts
         $unit_cost = 0;
         $unit_claim_before_spo = 0;
         $unit_claim_after_spo = 0;
-        
-        
+
+
         $arr_extra_adults = array();
         $extra_adults_index = 0;
-        
+
         $arr_extra_children = array();
         $extra_children_index = 0;
-        
+
         //============== adults ================
-        for($i = 0; $i < count($arr_adult_rates); $i++)
-        {
-            if($arr_adult_rates[$i]["EXTRA"] == "")
-            {
-                 $unit_cost += $arr_adult_rates[$i]["COST"];
-                 $unit_claim_before_spo += $arr_adult_rates[$i]["CLAIM_WITHOUT_SPO"];
-                 $unit_claim_after_spo += $arr_adult_rates[$i]["CLAIM_WITH_SPO"];
-            }
-            else
-            {
-                $extra_adults_index ++;
-                $arr_extra_adults[] = array("INDEX"=>$extra_adults_index,
-                                            "COST"=>$arr_adult_rates[$i]["COST"],
-                                            "CLAIM_WITHOUT_SPO"=>$arr_adult_rates[$i]["CLAIM_WITHOUT_SPO"],
-                                            "CLAIM_WITH_SPO"=>$arr_adult_rates[$i]["CLAIM_WITH_SPO"]);
+        for ($i = 0; $i < count($arr_adult_rates); $i++) {
+            if ($arr_adult_rates[$i]["EXTRA"] == "") {
+                $unit_cost += $arr_adult_rates[$i]["COST"];
+                $unit_claim_before_spo += $arr_adult_rates[$i]["CLAIM_WITHOUT_SPO"];
+                $unit_claim_after_spo += $arr_adult_rates[$i]["CLAIM_WITH_SPO"];
+            } else {
+                $extra_adults_index++;
+                $arr_extra_adults[] = array("INDEX" => $extra_adults_index,
+                    "COST" => $arr_adult_rates[$i]["COST"],
+                    "CLAIM_WITHOUT_SPO" => $arr_adult_rates[$i]["CLAIM_WITHOUT_SPO"],
+                    "CLAIM_WITH_SPO" => $arr_adult_rates[$i]["CLAIM_WITH_SPO"]);
             }
         }
-        
+
         //========== children ==============
-        for($i = 0; $i < count($arr_children_rates); $i++)
-        {
-            if($arr_children_rates[$i]["EXTRA"] == "")
-            {
-                 $unit_cost += $arr_children_rates[$i]["COST"];
-                 $unit_claim_before_spo += $arr_children_rates[$i]["CLAIM_WITHOUT_SPO"];
-                 $unit_claim_after_spo += $arr_children_rates[$i]["CLAIM_WITH_SPO"];
-            }
-            else
-            {
-                $extra_children_index ++;
-                $arr_extra_children[] = array("INDEX"=>$extra_children_index,
-                                            "AGE"=>$arr_children_rates[$i]["AGE"],
-                                            "COST"=>$arr_children_rates[$i]["COST"],
-                                            "CLAIM_WITHOUT_SPO"=>$arr_children_rates[$i]["CLAIM_WITHOUT_SPO"],
-                                            "CLAIM_WITH_SPO"=>$arr_children_rates[$i]["CLAIM_WITH_SPO"]);
+        for ($i = 0; $i < count($arr_children_rates); $i++) {
+            if ($arr_children_rates[$i]["EXTRA"] == "") {
+                $unit_cost += $arr_children_rates[$i]["COST"];
+                $unit_claim_before_spo += $arr_children_rates[$i]["CLAIM_WITHOUT_SPO"];
+                $unit_claim_after_spo += $arr_children_rates[$i]["CLAIM_WITH_SPO"];
+            } else {
+                $extra_children_index++;
+                $arr_extra_children[] = array("INDEX" => $extra_children_index,
+                    "AGE" => $arr_children_rates[$i]["AGE"],
+                    "COST" => $arr_children_rates[$i]["COST"],
+                    "CLAIM_WITHOUT_SPO" => $arr_children_rates[$i]["CLAIM_WITHOUT_SPO"],
+                    "CLAIM_WITH_SPO" => $arr_children_rates[$i]["CLAIM_WITH_SPO"]);
             }
         }
-        
-        return array("UNIT_COST"=> $unit_cost, 
-                     "UNIT_CLAIM_WITHOUT_SPO"=> $unit_claim_before_spo,
-                     "UNIT_CLAIM_WITH_SPO"=> $unit_claim_after_spo,
-                     "EXTRA_ADULTS"=>$arr_extra_adults,
-                     "EXTRA_CHILDREN"=>$arr_extra_children);
+
+        return array("UNIT_COST" => $unit_cost,
+            "UNIT_CLAIM_WITHOUT_SPO" => $unit_claim_before_spo,
+            "UNIT_CLAIM_WITH_SPO" => $unit_claim_after_spo,
+            "EXTRA_ADULTS" => $arr_extra_adults,
+            "EXTRA_CHILDREN" => $arr_extra_children);
     }
 }
 
-function _rates_calculator_reservation_get_columns_cost_sp_colindex($columns)
-{
+function _rates_calculator_reservation_get_columns_cost_sp_colindex($columns) {
     $sp_colidx = 0;
     $cost_colidx = 0;
-    
-    for($i = 0; $i < count($columns); $i++)
-    {
+
+    for ($i = 0; $i < count($columns); $i++) {
         $colitem = $columns[$i];
-        if($colitem["CAPTION"] == "COST PRICE")
-        {
+        if ($colitem["CAPTION"] == "COST PRICE") {
             $cost_colidx = $i;
-        }
-        else if($colitem["CAPTION"] == "FINAL SELLING PRICE")
-        {
+        } else if ($colitem["CAPTION"] == "FINAL SELLING PRICE") {
             $sp_colidx = $i;
         }
     }
-    
-    return array("COST_IDX"=>$cost_colidx, "SP_IDX"=>$sp_colidx);
+
+    return array("COST_IDX" => $cost_colidx, "SP_IDX" => $sp_colidx);
 }
-function _rates_calculator_reservation_get_cost_claim_per_pax($arr_before_spo, 
-                                                              $arr_afer_spo, $category, $adch,
-                                                              $cost_colidx, $sp_colidx) {
+
+function _rates_calculator_reservation_get_cost_claim_per_pax($arr_before_spo,
+        $arr_afer_spo, $category, $adch,
+        $cost_colidx, $sp_colidx) {
     $pax_arr = array();
-    
-    
-    for($i = 0; $i < count($arr_before_spo); $i++)
-    {
-        if(isset($arr_before_spo[$i]["CATEGORY"]))
-        {
+
+
+    for ($i = 0; $i < count($arr_before_spo); $i++) {
+        if (isset($arr_before_spo[$i]["CATEGORY"])) {
             if ($category == $arr_before_spo[$i]["CATEGORY"]) {
-                if($arr_before_spo[$i]["ADCH"] == $adch)
-                {
+                if ($arr_before_spo[$i]["ADCH"] == $adch) {
                     $age = $arr_before_spo[$i]["AGE"];
-                    
+
                     $bridegroom = $arr_before_spo[$i]["BRIDEGROOM"];
-                    if($bridegroom != "BRIDE" && $bridegroom != "GROOM")
-                    {
+                    if ($bridegroom != "BRIDE" && $bridegroom != "GROOM") {
                         $bridegroom = "";
                     }
-                    
+
                     $extra = "";
-                    if(isset($arr_before_spo[$i]["EXTRA"]))
-                    {
+                    if (isset($arr_before_spo[$i]["EXTRA"])) {
                         $extra = $arr_before_spo[$i]["EXTRA"];
                     }
-                    
+
                     $cost_value = $arr_before_spo[$i]["COSTINGS"][$cost_colidx]["VALUE"];
                     $sp_value_without_spo = $arr_before_spo[$i]["COSTINGS"][$sp_colidx]["VALUE"];
                     $sp_value_with_spo = $arr_afer_spo[$i]["COSTINGS"][$sp_colidx]["VALUE"];
-                    
-                    if($adch == "ADULT")
-                    {
-                        $pax_arr[] = array("AGE"=>$age,"EXTRA"=>$extra, "BRIDE_GROOM"=>$bridegroom,
-                                           "COST"=>$cost_value,"CLAIM_WITH_SPO"=>$sp_value_with_spo,
-                                            "CLAIM_WITHOUT_SPO"=>$sp_value_without_spo);
-                    }
-                    else
-                    {
-                        $pax_arr[] = array("AGE"=>$age,"EXTRA"=>$extra, 
-                                           "COST"=>$cost_value,"CLAIM_WITH_SPO"=>$sp_value_with_spo,
-                                           "CLAIM_WITHOUT_SPO"=>$sp_value_without_spo);
+
+                    if ($adch == "ADULT") {
+                        $pax_arr[] = array("AGE" => $age, "EXTRA" => $extra, "BRIDE_GROOM" => $bridegroom,
+                            "COST" => $cost_value, "CLAIM_WITH_SPO" => $sp_value_with_spo,
+                            "CLAIM_WITHOUT_SPO" => $sp_value_without_spo);
+                    } else {
+                        $pax_arr[] = array("AGE" => $age, "EXTRA" => $extra,
+                            "COST" => $cost_value, "CLAIM_WITH_SPO" => $sp_value_with_spo,
+                            "CLAIM_WITHOUT_SPO" => $sp_value_without_spo);
                     }
                 }
             }
-        }            
+        }
+    }
+
+    return $pax_arr;
+}
+
+function _rates_calculator_reservation_get_ad_ch_categories($con, $contractid, $arr_params_resa) {
+    //get the cost and claim amount per pax
+
+    /**
+     * Summary.
+     *
+     * returns an array of cost/claim amount per pax for the parameters provided
+     *
+     *
+     * @param PDOConnection  $con PDO Connection Object
+     * @param Integer $contractid contract id    
+     * @param array $arr_params_resa {
+     *     Array of parameters from reservation
+     *
+     *     @type Integer    $hotelroom          hotel room id
+     *     @type Date       $checkin_date       checkin date in yyyy-mm-dd
+     *     @type Date       $checkout_date      checkout date in yyyy-mm-dd
+     * }
+     * @return array of adult/children single/double/triple....
+     * 
+     */
+    $hotelroom = $arr_params_resa["hotelroom"];
+    $checkin_date = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
+    $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
+    
+    
+    
+    $arr_capacity = _contract_capacityarr($con, $contractid);    
+    
+    //reformat my parameters
+    $arr_params["arr_capacity"] = $arr_capacity;
+    $arr_params["hotelroom"] = $hotelroom;
+    
+    $room_details = _rates_calculator_get_room_details($arr_params);
+    
+    //get the room type
+    $room_variant = $room_details["room_variants"];
+
+    //get the arr_capacity for that date
+    $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $checkin_date);
+
+
+    if (is_null($rules)) {
+
+        $arr_return = array("OUTCOME" => "NO DEFINITIONS FOUND FOR THIS DATE",
+            "ROOM_TYPE" => $room_variant, "ADULT" => array());
+    }
+
+    //=================================================
+    //=================================================
+    //GENERATE THE ADULT GRID
+    $arr_adults = array();
+    
+    $arr_adultpolicies_rules = $rules["date_adultpolicies_rules"];
+            
+    //get the adult max and min
+    if($room_variant == "PERSONS")
+    {
+        $adult_max = _rates_calculator_reservation_get_ad_max($rules["date_capacity_rules"], "ADULT");
+        
+        for($i = 1; $i <= $adult_max; $i++)
+        {   
+            //===========================
+            
+            $basis = "";
+            for ($b = 0; $b < count($arr_adultpolicies_rules); $b++) {
+                if ($i == $arr_adultpolicies_rules[$b]["rule_category"]) {
+                    $arr_rule_policy = $arr_adultpolicies_rules[$b]["rule_policy"];
+                    $basis = _rates_calculator_lookup_rates_valuebasis($arr_rule_policy, "basis");
+
+                    if ($basis == "1/n") {
+                        $basis = "1/$i";
+                    } else if ($basis == "n") {
+                        $basis = "$i";
+                    } 
+                }
+            }
+            
+            //===========================
+            
+            if ($i == 1) {
+                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"SINGLE", "BASIS"=>$basis);
+            } else if ($i == 2) {
+                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"DOUBLE", "BASIS"=>$basis);
+            } else if ($i == 3) {
+                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"TRIPLE", "BASIS"=>$basis);
+            } else if ($i == 4) {
+                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"QUADRUPLE", "BASIS"=>$basis);
+            } else if ($i >= 5) {
+                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"$i-PAX", "BASIS"=>$basis);
+            }
+            
+            //===========================
+        }    
+    }
+    else
+    {
+        $adult_max = _rates_calculator_reservation_get_ad_max($rules["date_capacity_rules"], "ADDITIONALPERSONS");
+        
+        for($i = 1; $i <= $adult_max; $i++)
+        {
+            $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"EXTRA ADULT $i");
+        }
     }
     
-    return $pax_arr;
+   
+    $arr_return = array("OUTCOME" => "OK",
+            "ROOM_TYPE" => $room_variant, "ADULT" => $arr_adults);
+    
+    
+    return $arr_return;
+}
+
+function _rates_calculator_reservation_get_ad_max($rules, $category) {
+    $max_adult_count = 0;
+		
+    for ($j = 0; $j < count($rules); $j++) {
+
+        $arrrule_capacity = $rules[$j]["rule_capacity"];
+        for ($k = 0; $k < count($arrrule_capacity); $k++) {
+
+            $capacity_category = $arrrule_capacity[$k]["capacity_category"];
+            $capacity_minpax = $arrrule_capacity[$k]["capacity_minpax"];
+            $capacity_maxpax = $arrrule_capacity[$k]["capacity_maxpax"];
+
+            if ($capacity_category == $category) {
+                if ($max_adult_count < $capacity_minpax) {
+                    $max_adult_count = $capacity_minpax;
+                }
+                if ($max_adult_count < $capacity_maxpax) {
+                    $max_adult_count = $capacity_maxpax;
+                }
+            }
+        }
+    }
+
+    return $max_adult_count;
 }
 ?>
 

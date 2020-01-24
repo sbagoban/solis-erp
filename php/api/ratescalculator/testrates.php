@@ -64,7 +64,7 @@ try {
     
     $test = array();
     //$test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params);
-            
+    //$test = _rates_calculator_reservation_get_ad_ch_categories($con, 5, $arr_params);
 
     echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome, "TEST"=>$test));
 } catch (Exception $ex) {

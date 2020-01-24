@@ -7959,7 +7959,9 @@ function hotelcontracts()
         var currencyid = c.getAttribute("currencyid");
         var agefrom = c.getAttribute("agefrom");
         var ageto = c.getAttribute("ageto");
-
+        var rule_ageranges = c.getAttribute("rule_ageranges"); //++
+        
+        
         var capacity_date_obj = lookupCapacityRoomDateObj(roomid, date_rwid);
         if (!capacity_date_obj)
         {

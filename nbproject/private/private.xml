@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="871">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="873">
         <file>
             <url>js/bckoffhotels/bckoffhotels.js</url>
             <bookmark id="30">
@@ -164,24 +164,9 @@
         </file>
         <file>
             <url>php/api/ratescalculator/_rates_calculator.php</url>
-            <bookmark id="868">
+            <bookmark id="873">
                 <name/>
-                <line>207</line>
-                <key/>
-            </bookmark>
-            <bookmark id="870">
-                <name/>
-                <line>449</line>
-                <key/>
-            </bookmark>
-            <bookmark id="869">
-                <name/>
-                <line>6477</line>
-                <key/>
-            </bookmark>
-            <bookmark id="871">
-                <name/>
-                <line>6699</line>
+                <line>4600</line>
                 <key/>
             </bookmark>
         </file>

@@ -419,7 +419,9 @@ function _contract_combinationscapacitydates_persons_combinations($arr_rules) {
 
     for ($i = 0; $i < count($arr_rules); $i++) {
         $therulerow = $arr_rules[$i];
-
+        
+        $capacity_rule_id = $therulerow["rule_rwid"];
+                
         if ($therulerow["rule_action"] != "DELETE") {
 
             $therulecapacities_arr = $therulerow["rule_capacity"];
@@ -441,6 +443,8 @@ function _contract_combinationscapacitydates_persons_combinations($arr_rules) {
             $mycombinations_arr = array_values(array_unique($mycombinations_arr, SORT_REGULAR));
         }
     }
+    
+    
 
     return $mycombinations_arr;
 }
@@ -477,6 +481,8 @@ function _contract_combinations_getageranges_persons($therulecapacities_arr) {
     //now get children
     for ($i = 0; $i < count($therulecapacities_arr); $i++) {
         if ($therulecapacities_arr[$i]["capacity_action"] != "DELETE") {
+            
+            
             $capacity_category = $therulecapacities_arr[$i]["capacity_category"];
             $capacity_child_agefrom = $therulecapacities_arr[$i]["capacity_child_agefrom"];
             $capacity_child_ageto = $therulecapacities_arr[$i]["capacity_child_ageto"];
