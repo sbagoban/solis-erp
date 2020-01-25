@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="873">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="879">
         <file>
             <url>js/bckoffhotels/bckoffhotels.js</url>
             <bookmark id="30">
@@ -103,6 +103,19 @@
             </bookmark>
         </file>
         <file>
+            <url>js/hotelcontracts/hotelcontracts.js</url>
+            <bookmark id="875">
+                <name/>
+                <line>7891</line>
+                <key/>
+            </bookmark>
+            <bookmark id="876">
+                <name/>
+                <line>7960</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>php/api/hotelcontracts/grid_taxcomm_buy_xml.php</url>
             <bookmark id="472">
                 <name/>
@@ -164,9 +177,14 @@
         </file>
         <file>
             <url>php/api/ratescalculator/_rates_calculator.php</url>
-            <bookmark id="873">
+            <bookmark id="878">
                 <name/>
-                <line>4600</line>
+                <line>1870</line>
+                <key/>
+            </bookmark>
+            <bookmark id="879">
+                <name/>
+                <line>6842</line>
                 <key/>
             </bookmark>
         </file>
@@ -190,8 +208,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/var/www/html/soliserp/php/api/ratescalculator/testrates.php</file>
-            <file>file:/var/www/html/soliserp/js/ratescalculator/ratescalculator.js</file>
-            <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_get_contract.php</file>
+            <file>file:/var/www/html/soliserp/js/hotelcontracts/hotelcontracts.js</file>
+            <file>file:/var/www/html/soliserp/js/hotelspecialoffers/hotelspecialoffers.js</file>
             <file>file:/var/www/html/soliserp/php/api/ratescalculator/_rates_calculator.php</file>
         </group>
     </open-files>

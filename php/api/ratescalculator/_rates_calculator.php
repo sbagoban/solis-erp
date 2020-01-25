@@ -6808,6 +6808,7 @@ function _rates_calculator_reservation_get_ad_ch_categories($con, $contractid, $
      * @return array of adult/children single/double/triple....
      * 
      */
+    
     $hotelroom = $arr_params_resa["hotelroom"];
     $checkin_date = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
     $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
@@ -6924,6 +6925,7 @@ function _rates_calculator_reservation_get_ad_max($rules, $category) {
     }
 
     return $max_adult_count;
+    
 }
 ?>
 
