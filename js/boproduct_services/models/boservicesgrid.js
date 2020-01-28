@@ -199,7 +199,7 @@ function serviceEdit(data) {
         $('#on_approved').prop('checked', false);
     }
     specificServiceSelected(data);
-    loadSelectedService(data);
+    // loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
     document.getElementById("chargeDetail").innerHTML = data.charge;
 

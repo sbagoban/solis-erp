@@ -339,12 +339,10 @@ function saveService() {
         }
 		allServicesGrid();
     }
-    document.getElementById("idService").innerHTML = 0;
-    document.getElementById("chargeDetail").innerHTML = 0;
 }
 
 function dateManipulationDuration() {
-    var hrs = document.getElementById('duration1').value;    
+    var hrs = document.getElementById('duration1').value;
     var min = document.getElementById('duration2').value;
     console.log(hrs);
     if (hrs == '' || min =='') {
@@ -413,6 +411,9 @@ function resetServicesForm() {
     $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
     $('#on_approved').prop('checked', false);
     
+    document.getElementById("idService").innerHTML = 0;
+    document.getElementById("chargeDetail").innerHTML = '';
+    
 }
 
 function specificServiceSelected(val) { 
@@ -435,7 +436,6 @@ function specificServiceSelected(val) {
 
 function loadSelectedService(value) {
     $("#services_block").css("display", "block");
-    console.log('-->', value);
     const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
         type: "POST",
