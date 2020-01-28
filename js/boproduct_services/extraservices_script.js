@@ -39,7 +39,8 @@ $(document).ready(function(){
                 // Loop through each of the results and append the option to the dropdown
                 $.each(result, function(data, result) {
                     console.log('check', result.charge);
-                    dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+',*'+result.charge+'">' + result.charge + '</option>');
+                    // dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+',*'+result.charge+'">' + result.charge + '</option>');
+                    dropdown.append('<option value="' + result.id_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + '</option>');
                 });
             }
             // Extra service - does not change - extras
@@ -82,7 +83,7 @@ $.ajax({
         helpersDropdownExtraCreated.buildDropdown(
             jQuery.parseJSON(data),
             $('#id_product_service_extra_1'),
-            'Select an option' 
+            'Select an option'
         );
     }, 
     error:function(error) {
@@ -99,8 +100,28 @@ var helpersDropdownExtraCreated = {
         if(result != '') {
             // Loop through each of the results and append the option to the dropdown
             $.each(result, function(data, result) {
-                dropdown.append('<option value="' + result.id_product_service_extra + '" name="'+result.extra_name+'">' + result.extra_name + ' - ' + result.extra_description  +'</option>');
+                dropdown.append('<option value="' + result.id_product_service_extra + '" name="'+result.extra_name+',*'+result.charge+'">' + result.extra_name + ' - ' + result.extra_description  +'</option>');
             });
         }
+        
+            $("#id_product_service_extra_1").on('change', function() {
+            
+                var charge2 = $('#id_product_service_extra_1').find('option:selected').attr("name");
+    
+                var chargeChk = charge2.split(',*');
+                console.log('ghjugh', charge2);
+                if (chargeChk[1] == 'UNIT') {
+                    $('#charge_1').val(chargeChk[1]);
+                    $(".blockPax").hide();
+                    $(".blockUnit").show();
+                } 
+                else 
+                {
+                    $('#charge_1').val(chargeChk[1]);
+                    $(".blockPax").show();
+                    $(".blockUnit").hide();
+                }
+            });
     }
 }
+

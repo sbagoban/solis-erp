@@ -20,15 +20,15 @@ function editAllExtraServiceCost(data) {
             $("#ps_teen_cost_ex").val(data.ps_teen_cost);
         }
     }
-    $("#charge_1").on('change', function() {
-        if ($(this).val() == 'UNIT'){
-            $(".blockPax").hide();
-			$(".blockUnit").show();
-        } else {
-            $(".blockPax").show();
-            $(".blockUnit").hide();
-        }
-    });
+    // $("#charge_1").on('change', function() {
+    //     if ($(this).val() == 'UNIT'){
+    //         $(".blockPax").hide();
+	// 		$(".blockUnit").show();
+    //     } else {
+    //         $(".blockPax").show();
+    //         $(".blockUnit").hide();
+    //     }
+    // });
     $('#modal-extraServices').on('hidden.bs.modal', function() {
         $(this).find("input,select").val('').end();
     });
