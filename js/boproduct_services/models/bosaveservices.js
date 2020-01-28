@@ -346,7 +346,8 @@ function saveService() {
 function dateManipulationDuration() {
     var hrs = document.getElementById('duration1').value;    
     var min = document.getElementById('duration2').value;
-    if (hrs == ' ' || min ==' ') {
+    console.log(hrs);
+    if (hrs == '' || min =='') {
         ret = '00:00';
     } else {
         var ret = "";
