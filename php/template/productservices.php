@@ -12,12 +12,12 @@
 						<div class="checkbox_tgl pull-right">
 							
 							<button type="button" class="btn btn-default" id="modalClosureDate" data-toggle="modal" data-target="#modal-closureDate">Special Closure Date</button>
+
+							<label>
+								<input id="on_approved" type="checkbox" data-toggle="toggle" data-on="Approved" data-off="Not approved" data-onstyle="success">
+							</label>
 							<label>
 								<input id="on_api" type="checkbox" data-toggle="toggle" data-on="On Api" data-off="Off by Api" data-onstyle="success">
-							</label>
-						
-							<label>
-								<input id="on_approved" type="checkbox" data-toggle="toggle" data-on="Approved" data-off="Disapproved" data-onstyle="success">
 							</label>
 						</div>
 					</div>

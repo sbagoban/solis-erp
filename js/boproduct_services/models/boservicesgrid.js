@@ -390,13 +390,13 @@ function addServiceExtra(data) {
 }
 
 function duplicateProductServices(data) {
+    console.log('--.', data) 
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams); 
 
     var id_service_type = urlParams.get("id_service_type"); 
     var id_product_type = urlParams.get("id_product_type");
     var servicetype = urlParams.get("servicetype");
-console.log(data);
     var objServiceDuplicate = {
         id_product_service :-1, //for new items, id is always -1
         id_product : data.id_product,
@@ -442,7 +442,9 @@ console.log(data);
         id_product_service_induded : 0,
         servicetype : servicetype,
         special_name : data.special_name,
-        max_adult : data.max_adult
+        max_adult : data.max_adult,
+        on_api : 0, 
+        on_approved : 0
     };
 
     const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);

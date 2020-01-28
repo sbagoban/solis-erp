@@ -12,6 +12,8 @@ $(document).ready(function(){
         $("#ps_teen_cost_addon").css("display", "none");        
         $("#ps_child_cost_addon").css("display", "none");
         $("#ps_infant_cost_addon").css("display", "none");
+        $('#ps_adult_cost_addon').text('Unit');
+        $('#ps_adult_cost').attr("placeholder", "Unit");
     }
 });
 

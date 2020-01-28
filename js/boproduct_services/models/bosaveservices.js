@@ -96,6 +96,7 @@ function saveService() {
     } else  { 
         var on_approved_1 = 0;
     }
+
     if (is_pakage == 'N') { 
         id_product_service_induded = 0;
     } 
