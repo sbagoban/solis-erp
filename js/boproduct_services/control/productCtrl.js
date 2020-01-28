@@ -8,6 +8,15 @@ $(document).ready(function () {
     $("#age_child_to").prop("readonly", true);
     $("#age_teen_from").prop("readonly", true);
     $("#age_teen_to").prop("readonly", true);
+
+    $('#closure_date').daterangepicker({
+		"showDropdowns": true,
+		"autoApply": true,
+		"opens": "center",
+		locale: {
+					format: 'DD/MM/YYYY'
+				}
+    });
 });
 
 function productCtrl() {

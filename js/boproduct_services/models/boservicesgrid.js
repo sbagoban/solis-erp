@@ -12,17 +12,19 @@ function allServicesGrid(added) {
             if ( aData.is_pakage == "Y" ){
                 $('td', nRow).css('background-color', '#bde8ff');
             }
-            $('#btnAddClaimTransfer', nRow).css('display', 'none');  
+            $('#btnAddClaimTransfer', nRow).css('display', 'none');
+            $('#btnAddClaimPackage', nRow).css('display', 'none');       
             if (servicetype == "TRANSFER") {
                 $('#btnAddProductServices', nRow).css('display', 'none');   
-                $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
+                $('#btnAddProductServicesExtra', nRow).css('display', 'none');
+                $('#btnAddClaimPackage', nRow).css('display', 'none');                
                 $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
             }
 
             if (servicetype == "ACTIVITY" && aData.is_pakage == "Y") {
                 $('#btnAddProductServices', nRow).css('display', 'none');   
                 $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
-                $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
+                $('#btnAddClaimPackage', nRow).css('display', 'inline-flex');
             }
         },  
         "processing" : true,
@@ -88,7 +90,8 @@ function allServicesGrid(added) {
                 "defaultContent": 
                 '<div class="btn-group">' +
                 '<i id="btnAddProductServices" class="fa fa-fw fa-plus-circle" title="Product Service Cost"></i>' +
-                '<i id="btnAddClaimTransfer" class="fa fa-fw fa-money" title="Add Claim"></i>' +
+                '<i id="btnAddClaimTransfer" class="fa fa-fw fa-money" title="Add Claim Transfer"></i>' +
+                '<i id="btnAddClaimPackage" class="fa fa-fw fa-money" title="Add Claim Package"></i>' +
                 '<i id="btnAddProductServicesExtra"  class="fa fa-gg-circle" title="Extra Service"></i>' + 
                 '<i id="btnEditProduct" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
                 '<i id="btnDuplicateProductService" class="fa fa-fw fa-clone" title="Duplicate line"></i>' +
@@ -102,6 +105,11 @@ function allServicesGrid(added) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
                     addCostTransfer(data);
+                })
+                .on( 'click', '#btnAddClaimPackage', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addCostPackage(data);
                 })
                 .on( 'click', '#btnDuplicateProductService', function (e) {
                     var table = $('#tbl-productServices').DataTable();
@@ -531,7 +539,6 @@ function duplicateIncludedServices(data, id_prod_serv) {
 }
 
 function addCostTransfer(value) { 
-    console.log('check -->', value.id_product_service);
     var objtransfercostdetails = {id_product_service: value.id_product_service};
     const url_transfer_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
     $.ajax({
@@ -550,3 +557,23 @@ function addCostTransfer(value) {
     });    
 }
 
+
+function addCostPackage(value) {
+    console.log(value);
+    var objpackagecostdetails = {id_product_service: value.id_product_service};
+    const url_package_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
+    $.ajax({
+        url : url_package_cost_details,
+        method : "POST",
+        data : objpackagecostdetails,
+        dataType: "json",
+        success : function(data){
+            id_product_service_cost = data[0].id_product_service_cost;
+            var params = jQuery.param(value);
+            window.location.href = "index.php?m=servicerate_claim&data=" +params + "&servicetype=" +"ACTIVITY"+ "&id_product_service_cost="+id_product_service_cost;
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });    
+}

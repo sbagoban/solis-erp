@@ -10,6 +10,8 @@
 						<div id="chargeDetail" style="display:none;">0</div>
 						<!-- Add Toggle here -->
 						<div class="checkbox_tgl pull-right">
+							
+							<button type="button" class="btn btn-default" id="modalClosureDate" data-toggle="modal" data-target="#modal-closureDate">Special Closure Date</button>
 							<label>
 								<input id="on_api" type="checkbox" data-toggle="toggle" data-on="On Api" data-off="Off by Api" data-onstyle="success">
 							</label>
@@ -241,6 +243,7 @@
 									</form>
 								</div>
 							</div>
+							
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cancellation</label>
 								<div class="col-sm-10">
@@ -464,6 +467,73 @@
 		</div>
 	</div>
 </div>
+<!-- Modal 2 -->
+
+<!-- Modal -->
+<div class="modal fade" id="modal-closureDate" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Special Closure Date</h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-md-12">
+					<!-- col 6 -->
+						<!-- date picker -->
+						<!-- description -->
+						<!-- Add Button -->
+					<!-- col 6 -->
+						<!-- table -->
+					<table class="table">
+						<thead>
+						</thead>
+						<tbody>
+							<tr id="addRow">
+								<td class="col-xs-3">
+									<div class="input-group date datepicker-in">
+										<input type="text" name="daterange" id="closure_date" class="form-control" placeholder="dd-mm-yyyy"/>
+										<div class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</div>
+									</div>
+								</td>
+
+								<td class="col-xs-3">
+									<input class="form-control" type="text" name="addDesc" placeholder="Enter Descrition" />
+								</td>
+								
+								<td class="col-xs-1 text-center">
+									<span class="addBtn" id="btnAddSpecialClosureDate">
+										<i class="fa fa-plus fa-lg" data-toggle="tooltip" title="Add Extra Field"></i>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="row" id="extraService">
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<table class="table responsive" id="tbl-extraService">
+								<thead>
+									<tr>
+										<th scope="col">Name</th>
+										<th scope="col">Description</th>
+										<th scope="col">Charge Per Unit / Pax</th>
+										<th scope="col"></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="pager"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal 2 end -->
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
