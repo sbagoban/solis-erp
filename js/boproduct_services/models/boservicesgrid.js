@@ -199,7 +199,7 @@ function serviceEdit(data) {
         $('#on_approved').prop('checked', false);
     }
     specificServiceSelected(data);
-    // loadSelectedService(data);
+    loadSelectedService(data);
     document.getElementById("idService").innerHTML = data.id_product_service;
     document.getElementById("chargeDetail").innerHTML = data.charge;
 
@@ -539,6 +539,7 @@ function duplicateIncludedServices(data, id_prod_serv) {
 }
 
 function addCostTransfer(value) { 
+    console.log('1', value);
     var objtransfercostdetails = {id_product_service: value.id_product_service};
     const url_transfer_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
     $.ajax({
@@ -546,7 +547,8 @@ function addCostTransfer(value) {
         method : "POST",
         data : objtransfercostdetails, 
         dataType: "json",                                                                                 
-        success : function(data){
+        success : function(data){            
+            console.log('test 1', data);
             id_product_service_cost = data[0].id_product_service_cost;
             var params = jQuery.param(value);
             window.location.href = "index.php?m=servicerate_claim&data=" +params + "&servicetype=" +"TRANSFER"+ "&id_product_service_cost="+id_product_service_cost;
@@ -559,7 +561,7 @@ function addCostTransfer(value) {
 
 
 function addCostPackage(value) {
-    console.log(value);
+    console.log('2', value);
     var objpackagecostdetails = {id_product_service: value.id_product_service};
     const url_package_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
     $.ajax({
@@ -568,6 +570,7 @@ function addCostPackage(value) {
         data : objpackagecostdetails,
         dataType: "json",
         success : function(data){
+            console.log('test', data);
             id_product_service_cost = data[0].id_product_service_cost;
             var params = jQuery.param(value);
             window.location.href = "index.php?m=servicerate_claim&data=" +params + "&servicetype=" +"ACTIVITY"+ "&id_product_service_cost="+id_product_service_cost;

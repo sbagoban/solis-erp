@@ -15,7 +15,7 @@ $(document).ready(function(){
     if (servicetype == 'TRANSFER') {
         $('.adult_blk').css("display", "block");
     }
-    
+   // loadSelectedService();
 });
 
 function changeTransfer() {
@@ -339,6 +339,8 @@ function saveService() {
         }
 		allServicesGrid();
     }
+    document.getElementById("idService").innerHTML = 0;
+    document.getElementById("chargeDetail").innerHTML = '';
 }
 
 function dateManipulationDuration() {
@@ -409,8 +411,7 @@ function resetServicesForm() {
     $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
     $('#on_api').prop('checked', false);
     $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
-    $('#on_approved').prop('checked', false);
-    
+    $('#on_approved').prop('checked', false);    
     document.getElementById("idService").innerHTML = 0;
     document.getElementById("chargeDetail").innerHTML = '';
     
@@ -435,7 +436,6 @@ function specificServiceSelected(val) {
 }
 
 function loadSelectedService(value) {
-    $("#services_block").css("display", "block");
     const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
     $.ajax({
         type: "POST",
