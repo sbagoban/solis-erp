@@ -10,9 +10,53 @@ var target_action = 'NULL';
     
     $("#dossierService").collapse('show');
     $("#serviceDetails").collapse('hide');
-    $(".panel-title").click(function(){
-        $(".panel-collapse").collapse('toggle');
+    $('.panel-title').click(function(){
+        var targetPanel = $(this).attr("panel");
+        if (targetPanel == "dossierService")
+            {
+                if($('#dossierService').hasClass('in') === false)
+                {
+                    $("#serviceDetails").collapse('toggle');  
+                    $("#dossierService").collapse('toggle');  
+                } 
+            }
+        else if (targetPanel == "serviceDetails" && $("#id_product_service_claim").val() == "")
+            {
+                 alert("No service selected");
+            }
+        else if (targetPanel == "serviceDetails" && $("#id_product_service_claim").val() != "")
+            {
+                if($('#dossierService').hasClass('in') === true && $('#serviceDetails').hasClass('in') === false )
+                {
+                    $("#serviceDetails").collapse('toggle');  
+                    $("#dossierService").collapse('toggle');  
+                }
+                else if ($('#dossierService').hasClass('in') === false && $('#serviceDetails').hasClass('in') === false )
+                {
+                    $("#serviceDetails").collapse('toggle');  
+                }
+                else if($('#dossierService').hasClass('in') === true && $('#serviceDetails').hasClass('in') === true )
+                {
+                    $("#dossierService").collapse('toggle');  
+                }
+            }
     });
+    /*
+    if (targetPanel == "#serviceDetails" && $("#id_product_service_claim").val() == "")
+        {
+            console.log("Service Details");
+            alert("No service selected");
+            if($('#serviceDetails').hasClass('in') === true) {
+                $("#serviceDetails").collapse('toggle');  
+                $("#dossierService").collapse('toggle');  
+            } 
+        }
+    else if (targetPanel == "#dossierService")
+        {
+          //  if ($(this).attr("aria-expanded"));
+        }
+    });*/
+
     
 	var id_booking = $('#id_booking').val();
     var activityData = {
@@ -106,12 +150,17 @@ var target_action = 'NULL';
 		dataType: "json",
 		success: function (data) 
 		{
-			$("#activity_approvedBy").empty();
-			$("#activity_approvedBy").append('<option value="0">None</option>');
+			$("#activity_claimApprovedBy").empty();
+			$("#activity_claimApprovedBy").append('<option value="0">None</option>');
+			$("#activity_costApprovedBy").empty();
+			$("#activity_costApprovedBy").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#activity_approvedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
-			$("#activity_approvedBy").val('0');
-			$('#activity_approvedBy').select2().trigger('change');	
+			$("#activity_claimApprovedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
+			$("#activity_claimApprovedBy").val('0');
+			$('#activity_claimApprovedBy').select2().trigger('change');	
+			$("#activity_costApprovedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
+			$("#activity_costApprovedBy").val('0');
+			$('#activity_costApprovedBy').select2().trigger('change');	
 			}); 
 
 		},

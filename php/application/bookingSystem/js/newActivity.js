@@ -6,7 +6,8 @@ var target_action = 'NULL';
 
 $(function(){
 	$('#activity_date').val('');
-    $("#rebateSection").hide();
+    $("#claimRebateSection").hide();
+    $("#costRebateSection").hide();
     
 	// Activity Date
 	$('#activity_date').on('apply.daterangepicker', function(ev, picker) {
@@ -23,8 +24,29 @@ $(function(){
 			activity_day :activity_day
 			
 		}
-        
-       loadActivity(activityData)
+       
+        $("#activity_claim_rebate").val("None");
+        $('#activity_claim_rebate').select2().trigger('change'); 
+        $("#activity_claim_rebate").prop("disabled", true);
+        $("#activity_cost_rebate").val("None");
+        $('#activity_cost_rebate').select2().trigger('change'); 
+        $("#activity_cost_rebate").prop("disabled", true);
+        $("#activity_representative").val("0");
+        $('#activity_representative').select2().trigger('change'); 
+        $("#activity_representative").prop("disabled", true);
+        $("#activity_pickupHotel").val("0");
+        $('#activity_pickupHotel').select2().trigger('change'); 
+        $("#activity_pickupHotel").prop("disabled", true);
+        $("#activity_language").val("0");
+        $('#activity_language').select2().trigger('change'); 
+        $("#activity_language").prop("disabled", true);
+        $("#activity_claimApprovedBy").val('0');
+        $('#activity_claimApprovedBy').select2().trigger('change');	
+        $("#activity_claimApprovedBy").prop("disabled", true);
+        $("#activity_costApprovedBy").val('0');
+        $('#activity_costApprovedBy').select2().trigger('change');	
+        $("#activity_costApprovedBy").prop("disabled", true); 
+       loadActivity(activityData);
 	});
 	//. Activity Date
     
@@ -42,8 +64,30 @@ $(function(){
 			activity_day :activity_day,
 			activity_product :$('#activity_type').val()
 		}
+        
         resetClient();
 		loadActivityService(activityData);
+        $("#activity_claim_rebate").val("None");
+        $('#activity_claim_rebate').select2().trigger('change'); 
+        $("#activity_claim_rebate").prop("disabled", true);
+        $("#activity_cost_rebate").val("None");
+        $('#activity_cost_rebate').select2().trigger('change'); 
+        $("#activity_cost_rebate").prop("disabled", true);
+        $("#activity_representative").val("0");
+        $('#activity_representative').select2().trigger('change'); 
+        $("#activity_representative").prop("disabled", true);
+        $("#activity_pickupHotel").val("0");
+        $('#activity_pickupHotel').select2().trigger('change'); 
+        $("#activity_pickupHotel").prop("disabled", true);
+        $("#activity_language").val("0");
+        $('#activity_language').select2().trigger('change'); 
+        $("#activity_language").prop("disabled", true);
+        $("#activity_claimApprovedBy").val('0');
+        $('#activity_claimApprovedBy').select2().trigger('change');	
+        $("#activity_claimApprovedBy").prop("disabled", true);
+        $("#activity_costApprovedBy").val('0');
+        $('#activity_costApprovedBy').select2().trigger('change');	
+        $("#activity_costApprovedBy").prop("disabled", true);
 	});
 	// .Activity Type
     
@@ -471,54 +515,107 @@ $(function(){
 	});
 	//. Activity Client
     
-	//Rebate
-	$("#activity_rebate").change(function(){
-		if ($("#activity_rebate").val() == 'None')
+	//Rebate Claim
+	$("#activity_claim_rebate").change(function(){
+        if ($("#activity_claim_rebate").val() == 'None')
 			{
-				$("#rebateSection").hide();
-				$("#activity_approvedBy").val('');
-				$('#activity_approvedBy').select2().trigger('change');
-				$("#activity_approvedBy").prop("disabled", true);
-				$("#activity_percentageRebate").val('');
-				$("#activity_adultRebate").val('');
-				$("#activity_teenRebate").val('');
+				$("#claimRebateSection").hide();
+				$("#activity_claimApprovedBy").val('');
+				$('#activity_claimApprovedBy').select2().trigger('change');
+				$("#activity_claimApprovedBy").prop("disabled", true);
+				$("#activity_percentageClaimRebate").val('');
+				$("#activity_adultClaimRebate").val('');
+				$("#activity_teenClaimRebate").val('');
 				$("#activity_childRebate").val('');
-				$("#activity_InfantRebate").val('');
+				$("#activity_InfantClaimRebate").val('');
 			}
-		else if ($("#activity_rebate").val() == 'Percentage')
+		else if ($("#activity_claim_rebate").val() == 'Percentage')
 			{
-				$("#rebateSection").show();
-				$("#activity_percentageRebate").show();
-				$("#rebate_fix").hide();
-				$("#activity_approvedBy").prop("disabled", false);
-				$("#activity_adultRebate").val('');
-				$("#activity_teenRebate").val('');
+				$("#claimRebate_fix").hide();
+				$("#claimRebateAmount").html('Claim Rebate %');
+				$("#activity_claimApprovedBy").prop("disabled", false);
+				$("#activity_adultClaimRebate").val('');
+				$("#activity_teenClaimRebate").val('');
 				$("#activity_childRebate").val('');
-				$("#activity_InfantRebate").val('');
+				$("#activity_InfantClaimRebate").val('');
+				$("#claimRebateSection").show();
+				$("#activity_percentageClaimRebate").show();
 			}
-		else if ($("#activity_rebate").val() == 'Fixed Tariff')
+		else if ($("#activity_claim_rebate").val() == 'Fixed Tariff')
 			{
-				$("#rebateSection").show();
-				$("#activity_percentageRebate").hide();
-				$("#rebate_fix").show();
-				$("#activity_approvedBy").prop("disabled", false);
-				$("#activity_percentageRebate").val('');
+				$("#activity_percentageClaimRebate").hide();
+				$("#claimRebateAmount").html('Claim Rebate Tariff');
+				$("#activity_claimApprovedBy").prop("disabled", false);
+				$("#activity_percentageClaimRebate").val('');
+				$("#claimRebateSection").show();
+				$("#claimRebate_fix").show();
 			}
-		else if ($("#activity_rebate").val() == 'FOC')
+		else if ($("#activity_claim_rebate").val() == 'FOC')
 			{
-				$("#activity_percentageRebate").hide();
-				$("#rebateSection").hide();
-				$("#activity_approvedBy").val('');
-				$("#activity_approvedBy").prop("disabled", false);
-				$('#activity_approvedBy').select2().trigger('change');
-				$("#activity_percentageRebate").val('');
-				$("#activity_adultRebate").val('');
-				$("#activity_teenRebate").val('');
+				$("#activity_percentageClaimRebate").hide();
+				$("#claimRebateSection").hide();
+				$("#activity_claimApprovedBy").val('');
+				$("#activity_claimApprovedBy").prop("disabled", false);
+				$('#activity_claimApprovedBy').select2().trigger('change');
+				$("#activity_percentageClaimRebate").val('');
+				$("#activity_adultClaimRebate").val('');
+				$("#activity_teenClaimRebate").val('');
 				$("#activity_childRebate").val('');
-				$("#activity_InfantRebate").val('');
+				$("#activity_InfantClaimRebate").val('');
 			}
 	});
-	//.Rebate
+	//.Rebate Claim
+    
+	//Rebate Cost
+	$("#activity_cost_rebate").change(function(){
+        if ($("#activity_cost_rebate").val() == 'None')
+			{
+				$("#costRebateSection").hide();
+				$("#activity_costApprovedBy").val('');
+				$('#activity_costApprovedBy').select2().trigger('change');
+				$("#activity_costApprovedBy").prop("disabled", true);
+				$("#activity_percentageCostRebate").val('');
+				$("#activity_adultCostRebate").val('');
+				$("#activity_teenCostRebate").val('');
+				$("#activity_childCostRebate").val('');
+				$("#activity_InfantCostRebate").val('');
+			}
+		else if ($("#activity_cost_rebate").val() == 'Percentage')
+			{
+				$("#costRebate_fix").hide();
+				$("#costRebateAmount").html('Cost Rebate %');
+				$("#activity_costApprovedBy").prop("disabled", false);
+				$("#activity_adultCostRebate").val('');
+				$("#activity_teenCostRebate").val('');
+				$("#activity_childRebate").val('');
+				$("#activity_InfantCostRebate").val('');
+				$("#costRebateSection").show();
+				$("#activity_percentageCostRebate").show();
+			}
+		else if ($("#activity_cost_rebate").val() == 'Fixed Tariff')
+			{
+				$("#activity_percentageCostRebate").hide();
+				$("#costRebateAmount").html('Cost Rebate Tariff');
+				$("#activity_costApprovedBy").prop("disabled", false);
+				$("#activity_percentageCostRebate").val('');
+				$("#costRebateSection").show();
+				$("#costRebate_fix").show();
+			}
+		else if ($("#activity_cost_rebate").val() == 'FOC')
+			{
+				$("#activity_percentageCostRebate").hide();
+				$("#costRebateSection").hide();
+				$("#activity_costApprovedBy").val('');
+				$("#activity_costApprovedBy").prop("disabled", false);
+				$('#activity_costApprovedBy').select2().trigger('change');
+				$("#activity_percentageCostRebate").val('');
+				$("#activity_adultCostRebate").val('');
+				$("#activity_teenCostRebate").val('');
+				$("#activity_childRebate").val('');
+				$("#activity_InfantCostRebate").val('');
+			}
+	});
+	//.Rebate Cost
 	
 });
 
@@ -532,15 +629,23 @@ function newActivity(dataDetails){
 	$('#activity_status').select2().trigger('change'); 
 	$("#activity_paidBy").val("TO");
 	$('#activity_paidBy').select2().trigger('change'); 
-	$("#activity_rebate").val("None");
-	$('#activity_rebate').select2().trigger('change'); 
+	$("#activity_claim_rebate").val("None");
+	$('#activity_claim_rebate').select2().trigger('change'); 
+	$("#activity_claim_rebate").prop("disabled", true);
+	$("#activity_cost_rebate").val("None");
+	$('#activity_cost_rebate').select2().trigger('change'); 
+	$("#activity_cost_rebate").prop("disabled", true);
 	$("#activity_representative").val("0");
 	$('#activity_representative').select2().trigger('change'); 
+	$("#activity_representative").prop("disabled", true);
 	$("#activity_pickupHotel").val("0");
 	$('#activity_pickupHotel').select2().trigger('change'); 
+	$("#activity_pickupHotel").prop("disabled", true);
 	$("#activity_language").val("0");
 	$('#activity_language').select2().trigger('change'); 
-	$("#activity_approvedBy").prop("disabled", true);
+	$("#activity_language").prop("disabled", true);
+	$("#activity_claimApprovedBy").prop("disabled", true);
+	$("#activity_costApprovedBy").prop("disabled", true);
 	$('#activity_date').val('');
     // Booking Date
     var dateToday = new Date(); 
@@ -683,8 +788,19 @@ function loadActivityClaim(activityData){
                     var charge = data[0].charge;
                     if (charge == 'PAX')
                         {
-                            $(".pax_charge").show();
+                            
                             $(".unit_charge").hide();
+                            $(".pax_charge").show();
+                            $(".pax_charge").show();
+                            $("#activity_teenClaimRebate").show();
+                            $("#activity_teenCostRebate").show();
+                            $(".rebateTeen").show();
+                            $("#activity_childClaimRebate").show();
+                            $("#activity_childCostRebate").show();
+                            $(".rebateChild").show();
+                            $("#activity_InfantClaimRebate").show();
+                            $("#activity_InfantCostRebate").show();
+                            $(".rebateInfant").show();
                             $(".rebateAdult").html();
                             $(".rebateAdult").html('Adult');
                             $("#min_pax").html(data[0].min_pax);
@@ -692,7 +808,10 @@ function loadActivityClaim(activityData){
                             if(data[0].for_adult == 0)
                                 {
                                     $(".adult_details").hide();
-                                    $("#adult_policy").html("")
+                                    $("#adult_policy").html("");
+                                    $("#rebateAdult").hide();
+                                    $("#activity_adultClaimRebate").hide();
+                                    $("#activity_adultCostRebate").hide();
                                 }
                             else
                                 {
@@ -702,6 +821,8 @@ function loadActivityClaim(activityData){
                                 {
                                     $(".teen_details").hide();
                                     $("#teen_policy").html("")
+                                    $("#activity_teenClaimRebate").hide();
+                                    $("#activity_teenCostRebate").hide();
                                 }
                             else
                                 {
@@ -715,6 +836,8 @@ function loadActivityClaim(activityData){
                                 {
                                     $(".child_details").hide();
                                     $("#child_policy").html("");
+                                    $("#activity_childClaimRebate").hide();
+                                    $("#activity_childCostRebate").hide();
                                 }
                             else
                                 {
@@ -728,6 +851,8 @@ function loadActivityClaim(activityData){
                                 {
                                     $(".infant_details").hide();
                                     $("#infant_policy").html("");
+                                    $("#activity_InfantClaimRebate").hide();
+                                    $("#activity_InfantCostRebate").hide();
                                 }
                             else
                                 {
@@ -761,11 +886,14 @@ function loadActivityClaim(activityData){
                             $(".unit_charge").show();
                             $(".pax_charge").hide();
                             $(".pax_charge").hide();
-                            $("#activity_teenRebate").hide();
+                            $("#activity_teenClaimRebate").hide();
+                            $("#activity_teenCostRebate").hide();
                             $(".rebateTeen").hide();
-                            $("#activity_childRebate").hide();
+                            $("#activity_childClaimRebate").hide();
+                            $("#activity_childCostRebate").hide();
                             $(".rebateChild").hide();
-                            $("#activity_InfantRebate").hide();
+                            $("#activity_InfantClaimRebate").hide();
+                            $("#activity_InfantCostRebate").hide();
                             $(".rebateInfant").hide();
                             $("#rebateAdult").html();
                             $(".rebateAdult").html('Unit');
@@ -889,9 +1017,18 @@ function loadActivityClaim(activityData){
                         {
                             $("#activty_policy").html(pax_eligible);
                         }
-                    $(".panel-collapse").collapse('toggle');
+                  //  $(".panel-collapse").collapse('toggle');
                     
                     loadActivityExtra(data[0].id_product_service_claim);
+                    if($('#serviceDetails').hasClass('in') === false) {
+                        $("#serviceDetails").collapse('toggle');  
+                        $("#dossierService").collapse('toggle');  
+                    } 
+                    $("#activity_claim_rebate").prop("disabled", false);
+                    $("#activity_cost_rebate").prop("disabled", false);
+                    $("#activity_representative").prop("disabled", false);
+                    $("#activity_pickupHotel").prop("disabled", false);
+                    $("#activity_language").prop("disabled", false);
                 }
                 else
                  {

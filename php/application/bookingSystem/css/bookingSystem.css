@@ -7,3 +7,6 @@ Developer : slouis@slois360.com*/
 .form-horizontal .control-label.text-left{
     text-align: left;
 }
+.panel-title {
+    cursor: pointer;
+}

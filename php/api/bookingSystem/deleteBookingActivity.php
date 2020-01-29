@@ -89,19 +89,19 @@ try {
             $activity_infant_claim = $row['activity_infant_claim'];
             $activity_total_claim_exTAX = $row['activity_total_claim_exTAX'];
             $activity_total_claim = $row['activity_total_claim'];
-            $activity_rebate_type = $row['activity_rebate_type'];
-            $activity_rebate_approve_by = $row['activity_rebate_approve_by'];
-            $activity_rebate_percentage = $row['activity_rebate_percentage'];
-            $activity_adult_rebate = $row['activity_adult_rebate'];
+            $activity_rebate_claim_type = $row['activity_rebate_claim_type'];
+            $activity_rebate_claim_approve_by = $row['activity_rebate_claim_approve_by'];
+            $activity_rebate_claim_percentage = $row['activity_rebate_claim_percentage'];
+            $activity_adult_claim_rebate = $row['activity_adult_claim_rebate'];
             $activity_adult_claim_after_rebate_exTAX = $row['activity_adult_claim_after_rebate_exTAX'];
             $activity_adult_claim_after_rebate = $row['activity_adult_claim_after_rebate'];
-            $activity_teen_rebate = $row['activity_teen_rebate'];
+            $activity_teen_claim_rebate = $row['activity_teen_claim_rebate'];
             $activity_teen_claim_after_rebate = $row['activity_teen_claim_after_rebate'];
             $activity_teen_claim_after_rebate_exTAX = $row['activity_teen_claim_after_rebate_exTAX'];
-            $activity_child_rebate = $row['activity_child_rebate'];
+            $activity_child_claim_rebate = $row['activity_child_claim_rebate'];
             $activity_child_claim_after_rebate = $row['activity_child_claim_after_rebate'];
             $activity_child_claim_after_rebate_exTAX = $row['activity_child_claim_after_rebate_exTAX'];
-            $activity_infant_rebate = $row['activity_infant_rebate'];
+            $activity_infant_claim_rebate = $row['activity_infant_claim_rebate'];
             $activity_infant_claim_after_rebate = $row['activity_infant_claim_after_rebate'];
             $activity_infant_claim_after_rebate_exTAX = $row['activity_infant_claim_after_rebate_exTAX'];
             $activity_total_claim_after_rebate_exTAX = $row['activity_total_claim_after_rebate_exTAX'];
@@ -148,7 +148,27 @@ try {
                     $activity_teen_cost = $row['activity_teen_cost'];
                     $activity_child_cost = $row['activity_child_cost'];
                     $activity_infant_cost = $row['activity_infant_cost'];
+                    $activity_total_cost_exTAX = $row['activity_total_cost_exTAX'];
                     $activity_total_cost = $row['activity_total_cost'];
+                    $activity_rebate_cost_type = $row['activity_rebate_cost_type'];
+                    $activity_rebate_cost_approve_by = $row['activity_rebate_cost_approve_by'];
+                    $activity_rebate_cost_percentage = $row['activity_rebate_cost_percentage'];
+                    $activity_adult_cost_rebate = $row['activity_adult_cost_rebate'];
+                    $activity_adult_cost_after_rebate_exTAX = $row['activity_adult_cost_after_rebate_exTAX'];
+                    $activity_adult_cost_after_rebate = $row['activity_adult_cost_after_rebate'];
+                    $activity_teen_cost_rebate = $row['activity_teen_cost_rebate'];
+                    $activity_teen_cost_after_rebate_exTAX = $row['activity_teen_cost_after_rebate_exTAX'];
+                    $activity_teen_cost_after_rebate = $row['activity_teen_cost_after_rebate'];
+                    $activity_child_cost_rebate = $row['activity_child_cost_rebate'];
+                    $activity_child_cost_after_rebate = $row['activity_child_cost_after_rebate'];
+                    $activity_child_cost_after_rebate_exTAX = $row['activity_child_cost_after_rebate_exTAX'];
+                    $activity_infant_cost_rebate = $row['activity_infant_cost_rebate'];
+                    $activity_infant_cost_after_rebate = $row['activity_infant_cost_after_rebate'];
+                    $activity_infant_cost_after_rebate_exTAX = $row['activity_infant_cost_after_rebate_exTAX'];
+                    $activity_total_cost_after_rebate_exTAX = $row['activity_total_cost_after_rebate_exTAX'];
+                    $activity_total_cost_after_rebate = $row['activity_total_cost_after_rebate'];
+                    $created_by = $row['created_by'];
+                    $created_name = $row['activity_total_cost_after_rebate'];
             }    
 	
             $qryBookingActivityCostDelete = $con->prepare("UPDATE booking_activity_cost SET active=0 WHERE id_booking_activity_claim = :id_booking_activity_claim");
@@ -218,19 +238,19 @@ try {
                     activity_infant_claim,
                     activity_total_claim_exTAX,
                     activity_total_claim,
-                    activity_rebate_type,
-                    activity_rebate_approve_by,
-                    activity_rebate_percentage,
-                    activity_adult_rebate,
+                    activity_rebate_claim_type,
+                    activity_rebate_claim_approve_by,
+                    activity_rebate_claim_percentage,
+                    activity_adult_claim_rebate,
                     activity_adult_claim_after_rebate_exTAX,
                     activity_adult_claim_after_rebate,
-                    activity_teen_rebate,
+                    activity_teen_claim_rebate,
                     activity_teen_claim_after_rebate_exTAX,
                     activity_teen_claim_after_rebate,
-                    activity_child_rebate,
+                    activity_child_claim_rebate,
                     activity_child_claim_after_rebate_exTAX,
                     activity_child_claim_after_rebate,
-                    activity_infant_rebate,
+                    activity_infant_claim_rebate,
                     activity_infant_claim_after_rebate_exTAX,
                     activity_infant_claim_after_rebate,
                     activity_total_claim_after_rebate_exTAX,
@@ -290,19 +310,19 @@ try {
                     :activity_infant_claim,
                     :activity_total_claim_exTAX,
                     :activity_total_claim,
-                    :activity_rebate_type,
-                    :activity_rebate_approve_by,
-                    :activity_rebate_percentage,
-                    :activity_adult_rebate,
+                    :activity_rebate_claim_type,
+                    :activity_rebate_claim_approve_by,
+                    :activity_rebate_claim_percentage,
+                    :activity_adult_claim_rebate,
                     :activity_adult_claim_after_rebate_exTAX,
                     :activity_adult_claim_after_rebate,
-                    :activity_teen_rebate,
+                    :activity_teen_claim_rebate,
                     :activity_teen_claim_after_rebate_exTAX,
                     :activity_teen_claim_after_rebate,
-                    :activity_child_rebate,
+                    :activity_child_claim_rebate,
                     :activity_child_claim_after_rebate_exTAX,
                     :activity_child_claim_after_rebate,
-                    :activity_infant_rebate,
+                    :activity_infant_claim_rebate,
                     :activity_infant_claim_after_rebate_exTAX,
                     :activity_infant_claim_after_rebate,
                     :activity_total_claim_after_rebate_exTAX,
@@ -363,19 +383,19 @@ try {
                     "activity_infant_claim" => $activity_infant_claim,
                     "activity_total_claim_exTAX" => $activity_total_claim_exTAX,
                     "activity_total_claim" => $activity_total_claim,
-                    "activity_rebate_type" => $activity_rebate_type,
-                    "activity_rebate_approve_by" => $activity_rebate_approve_by,
-                    "activity_rebate_percentage" => $activity_rebate_percentage,
-                    "activity_adult_rebate" => $activity_adult_rebate,
+                    "activity_rebate_claim_type" => $activity_rebate_claim_type,
+                    "activity_rebate_claim_approve_by" => $activity_rebate_claim_approve_by,
+                    "activity_rebate_claim_percentage" => $activity_rebate_claim_percentage,
+                    "activity_adult_claim_rebate" => $activity_adult_claim_rebate,
                     "activity_adult_claim_after_rebate_exTAX" => $activity_adult_claim_after_rebate_exTAX,
                     "activity_adult_claim_after_rebate" => $activity_adult_claim_after_rebate,
-                    "activity_teen_rebate" => $activity_teen_rebate,
+                    "activity_teen_claim_rebate" => $activity_teen_claim_rebate,
                     "activity_teen_claim_after_rebate_exTAX" => $activity_teen_claim_after_rebate_exTAX,
                     "activity_teen_claim_after_rebate" => $activity_teen_claim_after_rebate,
-                    "activity_child_rebate" => $activity_child_rebate,
+                    "activity_child_claim_rebate" => $activity_child_claim_rebate,
                     "activity_child_claim_after_rebate_exTAX" => $activity_child_claim_after_rebate_exTAX,
                     "activity_child_claim_after_rebate" => $activity_child_claim_after_rebate,
-                    "activity_infant_rebate" => $activity_infant_rebate,
+                    "activity_infant_claim_rebate" => $activity_infant_claim_rebate,
                     "activity_infant_claim_after_rebate_exTAX" => $activity_infant_claim_after_rebate_exTAX,
                     "activity_infant_claim_after_rebate" => $activity_infant_claim_after_rebate,
                     "activity_total_claim_after_rebate_exTAX" => $activity_total_claim_after_rebate_exTAX,
@@ -416,7 +436,25 @@ try {
                     activity_teen_cost,
                     activity_child_cost,
                     activity_infant_cost,
+                    activity_total_cost_exTAX,
                     activity_total_cost,
+                    activity_rebate_cost_type,
+                    activity_rebate_cost_approve_by,
+                    activity_rebate_cost_percentage,
+                    activity_adult_cost_rebate,
+                    activity_adult_cost_after_rebate_exTAX,
+                    activity_adult_cost_after_rebate,
+                    activity_teen_cost_rebate,
+                    activity_teen_cost_after_rebate,
+                    activity_teen_cost_after_rebate_exTAX,
+                    activity_child_cost_rebate,
+                    activity_child_cost_after_rebate,
+                    activity_child_cost_after_rebate_exTAX,
+                    activity_infant_cost_rebate,
+                    activity_infant_cost_after_rebate,
+                    activity_infant_cost_after_rebate_exTAX,
+                    activity_total_cost_after_rebate_exTAX,
+                    activity_total_cost_after_rebate,
                     id_user,
                     uname,
                     log_status
@@ -440,7 +478,25 @@ try {
                     :activity_teen_cost,
                     :activity_child_cost,
                     :activity_infant_cost,
+                    :activity_total_cost_exTAX,
                     :activity_total_cost,
+                    :activity_rebate_cost_type,
+                    :activity_rebate_cost_approve_by,
+                    :activity_rebate_cost_percentage,
+                    :activity_adult_cost_rebate,
+                    :activity_adult_cost_after_rebate_exTAX,
+                    :activity_adult_cost_after_rebate,
+                    :activity_teen_cost_rebate,
+                    :activity_teen_cost_after_rebate,
+                    :activity_teen_cost_after_rebate_exTAX,
+                    :activity_child_cost_rebate,
+                    :activity_child_cost_after_rebate,
+                    :activity_child_cost_after_rebate_exTAX,
+                    :activity_infant_cost_rebate,
+                    :activity_infant_cost_after_rebate,
+                    :activity_infant_cost_after_rebate_exTAX,
+                    :activity_total_cost_after_rebate_exTAX,
+                    :activity_total_cost_after_rebate,
                     :id_user,
                     :uname,
                     :log_status
@@ -464,7 +520,25 @@ try {
                     ":activity_teen_cost" => $activity_teen_cost,
                     ":activity_child_cost" => $activity_child_cost,
                     ":activity_infant_cost" => $activity_infant_cost,
-                    ":activity_total_cost" => $activity_total_cost,
+                    ":activity_total_cost_exTAX"            =>$activity_total_cost_exTAX,
+                    ":activity_total_cost"                        => $activity_total_cost,
+                    ":activity_rebate_cost_type"            => $activity_rebate_cost_type,
+                    ":activity_rebate_cost_approve_by" => $activity_rebate_cost_approve_by,
+                    ":activity_rebate_cost_percentage"  => $activity_rebate_cost_percentage,
+                    ":activity_adult_cost_rebate"            => $activity_adult_cost_rebate,
+                    ":activity_adult_cost_after_rebate_exTAX" => $activity_adult_cost_after_rebate_exTAX,
+                    ":activity_adult_cost_after_rebate"   => $activity_adult_cost_after_rebate,
+                    ":activity_teen_cost_rebate"             => $activity_teen_cost_rebate,
+                    ":activity_teen_cost_after_rebate"    => $activity_teen_cost_after_rebate,
+                    ":activity_teen_cost_after_rebate_exTAX" => $activity_teen_cost_after_rebate_exTAX,
+                    ":activity_child_cost_rebate"             => $activity_child_cost_rebate,
+                    ":activity_child_cost_after_rebate"    => $activity_child_cost_after_rebate,
+                    ":activity_child_cost_after_rebate_exTAX"   =>$activity_child_cost_after_rebate_exTAX,
+                    ":activity_infant_cost_rebate"                      =>$activity_infant_cost_rebate,
+                    ":activity_infant_cost_after_rebate"             =>$activity_infant_cost_after_rebate,
+                    ":activity_infant_cost_after_rebate_exTAX"  =>$activity_infant_cost_after_rebate_exTAX,
+                    ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_after_rebate_exTAX,
+                    ":activity_total_cost_after_rebate"                =>$activity_total_cost_after_rebate,   
                     ":id_user" => $id_user,
                     ":uname" => $uname,
                     ":log_status" => $log_status

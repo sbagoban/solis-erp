@@ -22,6 +22,11 @@ $(function(){
 		var teenClaim = $("#ps_teen_claim").html();
 		var childClaim = $("#ps_child_claim").html();
 		var infantClaim = $("#ps_infant_claim").html();
+		var adultCost = $("#ps_adult_cost").html();
+		var unitCost = $("#ps_unit_cost").html();
+		var teenCost = $("#ps_teen_cost").html();
+		var childCost = $("#ps_child_cost").html();
+		var infantCost = $("#ps_infant_cost").html();
         
 		if($('#activity_paidBy').val() == "" || $('#activity_paidBy').val() == 0)
 			{
@@ -70,60 +75,142 @@ $(function(){
 				alert("Select your client");
 				saveError = true;
 			}
-		else if($('#activity_rebate').val() != "None")
+		else if($('#activity_claim_rebate').val() != "None")
 			{
-				if ($('#activity_approvedBy').val() == "" ||$('#activity_approvedBy').val() == 0 ||$('#activity_approvedBy').val() == "None" ||$('#activity_approvedBy').val() == null  )
+				if ($('#activity_claimApprovedBy').val() == "" ||$('#activity_claimApprovedBy').val() == 0 ||$('#activity_claimApprovedBy').val() == "None" ||$('#activity_claimApprovedBy').val() == null  )
 					{
-						alert("Select rebate approver");
+						alert("Select rebate claim approver");
 						saveError = true;
 					}
-				else if($('#activity_rebate').val() == "Percentage")
+				else if($('#activity_claim_rebate').val() == "Percentage")
 					{
-						if($('#activity_percentageRebate').val() == ""||$('#activity_percentageRebate').val() == 0)
+						if($('#activity_percentageClaimRebate').val() == ""||$('#activity_percentageClaimRebate').val() == 0)
 							{
-								alert("Input rebate rebate");
+								alert("Input percentage claim rebate");
 								saveError = true;
 							}
 					}
-				else if($('#activity_rebate').val() == "Fixed Tariff")
+				else if($('#activity_claim_rebate').val() == "Fixed Tariff")
 					{
                         if (claimType == 'UNIT')
                             {
-                                if ($('#activity_adultAmt').val() > 0 && $('#activity_adultRebate').val() == "")
+                                if ($('#activity_adultAmt').val() > 0 && $('#activity_adultClaimRebate').val() == "")
                                     {
-                                        alert("Insert rebate amount");
+                                        alert("Insert claim rebate amount");
                                         saveError = true;
                                     }
-                                else if ($('#activity_adultRebate').val() > unitClaim)
+                                else if ($('#activity_adultClaimRebate').val() > unitClaim)
                                     {
-                                        alert("Rebate amount cannot be greater than initial claim");
-                                        console.log("Unit Claim : "+unitClaim+" Unit Rebate :"+$('#activity_adultRebate').val());
+                                        alert("ClaimRebate amount cannot be greater than initial claim");
+                                        console.log("Unit Claim : "+unitClaim+" Unit Rebate :"+$('#activity_adultClaimRebate').val());
                                         saveError = true;
                                     }
                                 
                             }
                         else if (claimType == 'PAX')
                             {
-                                if ($('#activity_adultAmt').val() > 0 && $('#activity_adultRebate').val() == "")
+                                if ($('#activity_adultAmt').val() > 0 && $('#activity_adultClaimRebate').val() == "")
                                     {
-                                        alert("Insert rebate for Adult");
+                                        alert("Insert claim rebate for Adult");
                                         saveError = true;
                                     }
-                                else if ($('#activity_adultRebate').val() > adultClaim)
+                                else if ($('#activity_adultClaimRebate').val() > adultClaim)
                                     {
-                                        alert("Adult Rebate cannot be greater than initial claim");
-                                        console.log("Adult Claim : "+adultClaim+" Adult Rebate :"+$('#activity_adultRebate').val());
+                                        alert("Adult Claim Rebate cannot be greater than initial claim");
+                                        console.log("Adult Claim : "+adultClaim+" Adult Rebate :"+$('#activity_adultClaimRebate').val());
                                         saveError = true;
                                     }
-                                else if ($('#activity_teenAmt').val() > 0 && $('#activity_teenRebate').val() == "")
+                                else if ($('#activity_teenAmt').val() > 0 && $('#activity_teenClaimRebate').val() == "")
                                     {
-                                        alert("Insert rebate for Teen");
+                                        alert("Insert claim rebate for Teen");
                                         saveError = true;
                                     }
-                                else if ($('#activity_teenRebate').val() > teenClaim)
+                                else if ($('#activity_teenClaimRebate').val() > teenClaim)
+                                    {
+                                        alert("Teen Claim Rebate cannot be greater than initial claim");
+                                        console.log("Teen Claim : "+teenClaim+" Teen Rebate :"+$('#activity_teenClaimRebate').val());
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_childAmt').val() > 0 && $('#activity_childRebate').val() == "")
+                                    {
+                                        alert("Insert claim rebate for Child");
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_childRebate').val() > childClaim)
+                                    {
+                                        alert("Child Claim Rebate cannot be greater than initial claim");
+                                        console.log("Child Claim : "+childClaim+" Child Rebate :"+$('#activity_childRebate').val());
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_infantAmt').val() > 0 && $('#activity_InfantClaimRebate').val() == "")
+                                    {
+                                        alert("Insert claim rebate for Infant");
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_InfantClaimRebate').val() > childClaim)
+                                    {
+                                        alert("Infant Claim Rebate cannot be greater than initial claim");
+                                        console.log("Infant Claim : "+infantClaim+" Infant Rebate :"+$('#activity_InfantClaimRebate').val());
+                                        saveError = true;
+                                    }
+                                
+                            }
+					}
+			}
+		if($('#activity_cost_rebate').val() != "None")
+			{
+				if ($('#activity_costApprovedBy').val() == "" ||$('#activity_costApprovedBy').val() == 0 ||$('#activity_costApprovedBy').val() == "None" ||$('#activity_costApprovedBy').val() == null  )
+					{
+						alert("Select rebate cost approver");
+						saveError = true;
+					}
+				else if($('#activity_cost_rebate').val() == "Percentage")
+					{
+						if($('#activity_percentageCostRebate').val() == ""||$('#activity_percentageCostRebate').val() == 0)
+							{
+								alert("Input percentage cost rebate");
+								saveError = true;
+							}
+					}
+				else if($('#activity_cost_rebate').val() == "Fixed Tariff")
+					{
+                        if (claimType == 'UNIT')
+                            {
+                                if ($('#activity_adultAmt').val() > 0 && $('#activity_adultCostRebate').val() == "")
+                                    {
+                                        alert("Insert cost rebate amount");
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_adultCostRebate').val() > unitCost)
+                                    {
+                                        alert("Rebate amount cannot be greater than initial cost");
+                                        console.log("Unit Cost: "+unitCost+" Unit Rebate :"+$('#activity_adultCostRebate').val());
+                                        saveError = true;
+                                    }
+                                
+                            }
+                        else if (claimType == 'PAX')
+                            {
+                                if ($('#activity_adultAmt').val() > 0 && $('#activity_adultCostRebate').val() == "")
+                                    {
+                                        alert("Insert cost rebate for Adult");
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_adultCostRebate').val() > adultCost)
+                                    {
+                                        alert("Adult Rebate cannot be greater than initial cost");
+                                        console.log("Adult Cost : "+adultCost+" Adult Rebate :"+$('#activity_adultCostRebate').val());
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_teenAmt').val() > 0 && $('#activity_teenCostRebate').val() == "")
+                                    {
+                                        alert("Insert costrebate for Teen");
+                                        saveError = true;
+                                    }
+                                else if ($('#activity_teenCostRebate').val() > teenCost)
                                     {
                                         alert("Teen Rebate cannot be greater than initial claim");
-                                        console.log("Teen Claim : "+teenClaim+" Teen Rebate :"+$('#activity_teenRebate').val());
+                                        console.log("Teen Claim : "+teenClaim+" Teen Rebate :"+$('#activity_teenClaimRebate').val());
                                         saveError = true;
                                     }
                                 else if ($('#activity_childAmt').val() > 0 && $('#activity_childRebate').val() == "")
@@ -137,15 +224,15 @@ $(function(){
                                         console.log("Child Claim : "+childClaim+" Child Rebate :"+$('#activity_childRebate').val());
                                         saveError = true;
                                     }
-                                else if ($('#activity_infantAmt').val() > 0 && $('#activity_InfantRebate').val() == "")
+                                else if ($('#activity_infantAmt').val() > 0 && $('#activity_InfantClaimRebate').val() == "")
                                     {
                                         alert("Insert rebate for Infant");
                                         saveError = true;
                                     }
-                                else if ($('#activity_infantRebate').val() > childClaim)
+                                else if ($('#activity_InfantClaimRebate').val() > childClaim)
                                     {
                                         alert("Infant Rebate cannot be greater than initial claim");
-                                        console.log("Infant Claim : "+infantClaim+" Infant Rebate :"+$('#activity_infantRebate').val());
+                                        console.log("Infant Claim : "+infantClaim+" Infant Rebate :"+$('#activity_InfantClaimRebate').val());
                                         saveError = true;
                                     }
                                 
@@ -201,27 +288,27 @@ function saveActivity(activityData) {
     var activity_infant_amt = $('#activity_infantAmt').val();
     var activity_total_pax = parseInt(activity_adult_amt) + parseInt(activity_teen_amt) + parseInt(activity_child_amt) + parseInt(activity_infant_amt);
     var id_product_service_claim = $('#id_product_service_claim').val();
-    var activity_rebate_type = $('#activity_rebate').val();
-	if (activity_rebate_type == "Percentage")
+    var activity_rebate_claim_type = $('#activity_claim_rebate').val();
+	if (activity_rebate_claim_type == "Percentage")
 		{
-			var activity_rebate_approve_by = $('#activity_approvedBy').val();
-			var activity_rebate_percentage = $('#activity_percentageRebate').val();
+			var activity_rebate_claim_approve_by = $('#activity_claimApprovedBy').val();
+			var activity_rebate_claim_percentage = $('#activity_percentageClaimRebate').val();
 			var activity_adult_claim_after_rebate = 0;
 			var activity_teen_claim_after_rebate = 0;
 			var activity_child_claim_after_rebate = 0;
 			var activity_infant_claim_after_rebate = 0;
 		}
-	else if (activity_rebate_type == "Fixed Tariff")
+	else if (activity_rebate_claim_type == "Fixed Tariff")
 		{
-			var activity_rebate_approve_by = $('#activity_approvedBy').val();
-			var activity_rebate_percentage = 0;
+			var activity_rebate_claim_approve_by = $('#activity_claimApprovedBy').val();
+			var activity_rebate_claim_percentage = 0;
 			if (activity_adult_amt == 0)
 			{
 				var activity_adult_claim_after_rebate = 0;
 			}
 			else
 			{
-				var activity_adult_claim_after_rebate = $('#activity_adultRebate').val();
+				var activity_adult_claim_after_rebate = $('#activity_adultClaimRebate').val();
 			}
 			
 			if (activity_teen_amt == 0)
@@ -230,7 +317,7 @@ function saveActivity(activityData) {
 			}
 			else
 			{
-				var activity_teen_claim_after_rebate = $('#activity_teenRebate').val();
+				var activity_teen_claim_after_rebate = $('#activity_teenClaimRebate').val();
 			}
 			
 			if (activity_child_amt == 0)
@@ -248,13 +335,13 @@ function saveActivity(activityData) {
 			}
 			else
 			{
-				var activity_infant_claim_after_rebate = $('#activity_InfantRebate').val();
+				var activity_infant_claim_after_rebate = $('#activity_InfantClaimRebate').val();
 			}
 		}
-	else if (activity_rebate_type == "FOC")
+	else if (activity_rebate_claim_type == "FOC")
 		{
-			var activity_rebate_approve_by = $('#activity_approvedBy').val();
-			var activity_rebate_percentage = 100;
+			var activity_rebate_claim_approve_by = $('#activity_claimApprovedBy').val();
+			var activity_rebate_claim_percentage = 100;
 			var activity_adult_claim_after_rebate = 0;
 			var activity_teen_claim_after_rebate = 0;
 			var activity_child_claim_after_rebate = 0;
@@ -262,12 +349,80 @@ function saveActivity(activityData) {
 		}
 	else
 		{
-			var activity_rebate_approve_by = 0;
-			var activity_rebate_percentage = 0;
+			var activity_rebate_claim_approve_by = 0;
+			var activity_rebate_claim_percentage = 0;
 			var activity_adult_claim_after_rebate = 0;
 			var activity_teen_claim_after_rebate = 0;
 			var activity_child_claim_after_rebate = 0;
 			var activity_infant_claim_after_rebate = 0;
+		}
+    var activity_rebate_cost_type = $('#activity_cost_rebate').val();
+	if (activity_rebate_cost_type == "Percentage")
+		{
+			var activity_rebate_cost_approve_by = $('#activity_costApprovedBy').val();
+			var activity_rebate_cost_percentage = $('#activity_percentageCostRebate').val();
+			var activity_adult_cost_after_rebate = 0;
+			var activity_teen_cost_after_rebate = 0;
+			var activity_child_cost_after_rebate = 0;
+			var activity_infant_cost_after_rebate = 0;
+		}
+	else if (activity_rebate_cost_type == "Fixed Tariff")
+		{
+			var activity_rebate_cost_approve_by = $('#activity_costApprovedBy').val();
+			var activity_rebate_cost_percentage = 0;
+			if (activity_adult_amt == 0)
+			{
+				var activity_adult_cost_after_rebate = 0;
+			}
+			else
+			{
+				var activity_adult_cost_after_rebate = $('#activity_adultCostRebate').val();
+			}
+			
+			if (activity_teen_amt == 0)
+			{
+				var activity_teen_cost_after_rebate = 0;
+			}
+			else
+			{
+				var activity_teen_cost_after_rebate = $('#activity_teenCostRebate').val();
+			}
+			
+			if (activity_child_amt == 0)
+			{
+				var activity_child_cost_after_rebate = 0;
+			}
+			else
+			{
+				var activity_child_cost_after_rebate = $('#activity_childRebate').val();
+			}
+			
+			if (activity_infant_amt == 0)
+			{
+				var activity_infant_cost_after_rebate = 0;
+			}
+			else
+			{
+				var activity_infant_cost_after_rebate = $('#activity_InfantCostRebate').val();
+			}
+		}
+	else if (activity_rebate_cost_type == "FOC")
+		{
+			var activity_rebate_cost_approve_by = $('#activity_costApprovedBy').val();
+			var activity_rebate_cost_percentage = 100;
+			var activity_adult_cost_after_rebate = 0;
+			var activity_teen_cost_after_rebate = 0;
+			var activity_child_cost_after_rebate = 0;
+			var activity_infant_cost_after_rebate = 0;
+		}
+	else
+		{
+			var activity_rebate_cost_approve_by = 0;
+			var activity_rebate_cost_percentage = 0;
+			var activity_adult_cost_after_rebate = 0;
+			var activity_teen_cost_after_rebate = 0;
+			var activity_child_cost_after_rebate = 0;
+			var activity_infant_cost_after_rebate = 0;
 		}
     //var activity_client_room_no = $('#activity_pickupRoomNo').val();
     //var id_language = $('#activity_language').val();
@@ -295,13 +450,20 @@ function saveActivity(activityData) {
 		activity_child_amt:activity_child_amt,
 		activity_infant_amt:activity_infant_amt,
 		activity_total_pax:activity_total_pax,
-        activity_rebate_type: activity_rebate_type,
-        activity_rebate_approve_by: activity_rebate_approve_by,
-        activity_rebate_percentage: activity_rebate_percentage,
+        activity_rebate_claim_type: activity_rebate_claim_type,
+        activity_rebate_claim_approve_by: activity_rebate_claim_approve_by,
+        activity_rebate_claim_percentage: activity_rebate_claim_percentage,
         activity_adult_claim_after_rebate: activity_adult_claim_after_rebate,
         activity_teen_claim_after_rebate: activity_teen_claim_after_rebate,
         activity_child_claim_after_rebate: activity_child_claim_after_rebate,
         activity_infant_claim_after_rebate: activity_infant_claim_after_rebate,
+        activity_rebate_cost_type: activity_rebate_cost_type,
+        activity_rebate_cost_approve_by: activity_rebate_cost_approve_by,
+        activity_rebate_cost_percentage: activity_rebate_cost_percentage,
+        activity_adult_cost_after_rebate: activity_adult_cost_after_rebate,
+        activity_teen_cost_after_rebate: activity_teen_cost_after_rebate,
+        activity_child_cost_after_rebate: activity_child_cost_after_rebate,
+        activity_infant_cost_after_rebate: activity_infant_cost_after_rebate,
         activity_remarks: activity_remarks,
         activity_internal_remarks: activity_internal_remarks,
         activity_status: activity_status,
