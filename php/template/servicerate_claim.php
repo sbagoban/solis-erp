@@ -141,7 +141,7 @@
 						</div>
 						
 							<!-- Main content -->
-							<section class="content">
+							<section class="content" id="block_extra">
 								<div class="row">
 									<div class="col-xs-12">
 										<div class="box box-info">

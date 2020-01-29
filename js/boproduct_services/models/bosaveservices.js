@@ -313,7 +313,7 @@ function saveService() {
                 data : objServiceUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 success : function(data){
                     console.log('value', data);
-                    resetServicesForm();
+                    //resetServicesForm();
                     //allServicesGrid();
                     $('.toast_update').stop().fadeIn(400).delay(3000).fadeOut(500);
                 },
@@ -360,12 +360,12 @@ function dateManipulationDuration() {
 function resetServicesForm() {
     $('#valid_from').val('');
     $('#valid_to').val('');
-    $('#id_dept').val('');
-    $('#id_country').val('');
-    $('#id_coast').val('');
+    $('#id_dept').val(19);
+    $('#id_country').val(913);
+    $('#id_coast').val('Select an option');
     $('#service_name').val('');
-    $('#id_tax').val('');
-    $('#charge').val('');
+    $('#id_tax').val(3);
+    $('#charge').val('PAX');
     $('#duration1').val('');    
     $('#duration2').val('');
     //$('#transfer_included').val('');

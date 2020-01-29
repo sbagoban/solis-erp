@@ -34,6 +34,8 @@ function dateRangePickerValid() {
 	var valid_to1 = valid_to[2]+"/"+valid_to[1]+"/"+valid_to[0];
     //var valid_to1 = new Date(valid_to);
     $('#daterangeServiceFromTo').daterangepicker({
+        "showDropdowns": true,
+		"opens": "center",
         locale: {
             format: 'DD/MM/YYYY'
         },
@@ -121,7 +123,7 @@ function addCostProductService() {
                 data : objServiceCostEdit,                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 success : function(data){
                     console.log('value', data);
-                    resetFormAddServiceCost();
+                   // resetFormAddServiceCost();
                     allServicesGridCost();
                 },
                 error: function(error) {

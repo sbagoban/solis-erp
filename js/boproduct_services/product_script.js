@@ -232,39 +232,39 @@ function applyFor() {
             $("#age_teen_to").prop("readonly", true);
         }
 
-        if (chkadult.checked && chkteen.checked == false && chkchild.checked == false && chkinfant.checked == false) {
-            $('#min_age').css("border", "2px solid orange");
-            $('#max_age').css("border", "2px solid orange");
+        // if (chkadult.checked && chkteen.checked == false && chkchild.checked == false && chkinfant.checked == false) {
+        //     $('#min_age').css("border", "2px solid orange");
+        //     $('#max_age').css("border", "2px solid orange");
 
-            var minage = Number ($('#min_age').val());
-            var maxage = Number ($('#max_age').val());
-            if (minage == '' || maxage == '') {
-                $('#btn-saveProductServices').attr('disabled', true); 
-            } else {
-                $('#btn-saveProductServices').attr('disabled', false); 
-            }
-        }
-        if (chkadult.checked == false || chkteen.checked || chkchild.checked || chkinfant.checked) {
-            $('#min_age').css("border", "1px solid black");
-            $('#max_age').css("border", "1px solid black");
-        }
+        //     var minage = Number ($('#min_age').val());
+        //     var maxage = Number ($('#max_age').val());
+        //     if (minage == '' || maxage == '') {
+        //         $('#btn-saveProductServices').attr('disabled', true); 
+        //     } else {
+        //         $('#btn-saveProductServices').attr('disabled', false); 
+        //     }
+        // }
+        // if (chkadult.checked == false || chkteen.checked || chkchild.checked || chkinfant.checked) {
+        //     $('#min_age').css("border", "1px solid black");
+        //     $('#max_age').css("border", "1px solid black");
+        // }
     });
 }
 
-$('#max_age').change(function(){
-    var minage = Number ($('#min_age').val());
-    var maxage = Number ($('#max_age').val());
-    if (minage > maxage){        
-        $('#max_age').css("border", "2px solid orange");
-        alert ('Choose a number greater than ' + minage );
-    }
-});
+// $('#max_age').change(function(){
+//     var minage = Number ($('#min_age').val());
+//     var maxage = Number ($('#max_age').val());
+//     if (minage > maxage){        
+//         $('#max_age').css("border", "2px solid orange");
+//         alert ('Choose a number greater than ' + minage );
+//     }
+// });
 
-$('#min_age').change(function(){
-    var minage = Number ($('#min_age').val());
-    if (minage != ''){
-        $('#btn-saveProductServices').attr('disabled', false); 
-    } else { 
-        $('#btn-saveProductServices').attr('disabled', true); 
-    }
-});
+// $('#min_age').change(function(){
+//     var minage = Number ($('#min_age').val());
+//     if (minage != ''){
+//         $('#btn-saveProductServices').attr('disabled', false); 
+//     } else { 
+//         $('#btn-saveProductServices').attr('disabled', true); 
+//     }
+// });

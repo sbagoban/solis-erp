@@ -1,3 +1,7 @@
+$(document).ready(function(){
+    serviceCost();      
+});
+
 $('#is_pakage').on('change', function() {
     if ( this.value == 'Y' ) { 
         serviceCost();      

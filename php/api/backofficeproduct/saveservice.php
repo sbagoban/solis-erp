@@ -32,7 +32,7 @@ try {
     $id_dept = trim($_POST["id_dept"]);
     $id_country = trim($_POST["id_country"]);
     $id_coast = trim($_POST["id_coast"]);
-    $service_name = trim($_POST["service_name"]);
+    $service_name = strtoupper(trim($_POST["service_name"]));
     $id_tax = trim($_POST["id_tax"]);
     $charge = trim($_POST["charge"]);
     $duration = trim($_POST["duration"]);

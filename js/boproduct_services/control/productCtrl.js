@@ -1,7 +1,7 @@
 $(document).ready(function () {
     document.getElementById("aTitle").innerHTML = "";
     productCtrl();
-   // $('#btn-saveProductServices').attr('disabled', 'disabled');
+    // $('#btn-saveProductServices').attr('disabled', 'disabled');
     $("#age_inf_from").prop("readonly", true);
     $("#age_inf_to").prop("readonly", true);
     $("#age_child_from").prop("readonly", true);
@@ -163,6 +163,8 @@ $('#btn-saveProductServices').click(function () {
             alert("Please choose an operation day");
         }  else if ($('.requiredChkApplyFor:checked').length == 0) {
             alert("Please Apply atleast one type of Pax");
+        } else if ($('.requiredChkApplyFor:checked').length > 0) {
+            validateAgePolicy();
         } else {
             saveService();
         }
@@ -195,3 +197,32 @@ $('#btn-saveProductServices').click(function () {
         }
     } 
 }); 
+
+function validateAgePolicy() {
+    // var chkinfant = document.getElementById("for_infant");
+    // var chkchild = document.getElementById("for_child");
+    // var chkteen = document.getElementById("for_teen");
+    // var chkadult = document.getElementById("for_adult");
+
+    // var age_inf_from = document.getElementById("age_inf_from");
+    // var age_inf_to = document.getElementById("age_inf_to");
+
+    // if (chkinfant.checked) {
+    //     if (age_inf_from == " " || age_inf_from == null) {
+    //         $('#age_inf_from').style.border ="1px solid red";
+    //         alert("Please insert Min Number of infant");
+    //     } else if (age_inf_to == "" || age_inf_to == null) {
+    //         $('#age_inf_from').style.border ="1px solid #aaa";
+    //         $('#age_inf_to').style.border ="1px solid red";
+    //         alert("Please insert Max Number of infant");
+    //     }
+    // } if (chkchild.checked) {
+    //     alert('2');
+    // } if (chkteen.checked) {
+    //     alert('3');
+    // } if (chkadult.checked) {
+    //     alert('4');
+    // }
+        
+    saveService();
+}

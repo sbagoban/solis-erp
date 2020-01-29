@@ -25,6 +25,8 @@ $(document).ready(function () {
         $("#ps_teen_claim_addon").css("display", "none");        
         $("#ps_child_claim_addon").css("display", "none");
         $("#ps_infant_claim_addon").css("display", "none");
+        $('#ps_adult_claim_addon').text('Unit');
+        $('#ps_adult_claim').attr("placeholder", "Unit");
     }
 
     var monday = urlParams.get("on_monday"); 
@@ -179,6 +181,8 @@ function dateRangePickerValid() {
     console.log( 'From -',  valid_from, 'To -',  valid_to);
 
     $('#daterangeServiceFromTo').daterangepicker({
+        "showDropdowns": true,
+		"opens": "center",
         locale: {
             format: 'DD/MM/YYYY'
         },
@@ -501,7 +505,7 @@ function addClaimProductService(){
             method : "POST",
             data : objProductServiceClaimUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                
             success : function(data){
-                resetProductServicesClaim();
+               // resetProductServicesClaim();
                 $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
             error: function(error) {

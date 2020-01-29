@@ -13,8 +13,8 @@ $("#btnSaveProduct").click(function () {
             $.ajax({
                 url : url_edit_product,
                 method : "POST",
-                data : objProductUpdate,    
-                dataType: "json",                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+                data : objProductUpdate,
+                dataType: "json",
                 success : function(data){
                     if (data.OUTCOME == "ERROR_NAME") { 
                         swal("Duplicate", "Product Name Duplicate...", "error");

@@ -109,7 +109,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
 								<div class="col-sm-6" id="id_service_1">
-									<input type="text" class="form-control" id="service_name" placeholder="Name of the product">
+									<input type="text" class="form-control text-uppercase" id="service_name" placeholder="Name of the Service">
 								</div>
 
 								<div class="col-sm-6" id="id_service_2" style="display: none;">
