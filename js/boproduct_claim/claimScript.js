@@ -126,7 +126,6 @@ $(document).ready(function(){
     // here sandeep check
     console.log(id_product_service_cost > 0,  '&&', is_pakage != 'Y');
     if (id_product_service_cost > 0 && is_pakage != 'Y') {
-        alert('1');
         if (ps_adult_cost > 0) {
             $("#ps_adult_claim").css("display", "block");
             $("#ps_adult_claim").attr("placeholder", "Adult");

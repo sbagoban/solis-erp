@@ -4,9 +4,8 @@ $(document).ready(function(){
     var product_name = urlParams.get("product_name");
     var servicetype = urlParams.get("servicetype");
     $('#product_name').val(product_name);
-	$('#daterangeServiceFromTo').daterangepicker({
+	$('#daterangeServiceFromTo1').daterangepicker({
 		"showDropdowns": true,
-		"autoApply": true,
 		"opens": "center",
 		locale: {
 					format: 'DD/MM/YYYY'
@@ -47,8 +46,8 @@ function saveService() {
     var id_product_type = urlParams.get("id_product_type");
 
     var product_name = urlParams.get("product_name");
-	var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
-	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
+	var valid_from = $("#daterangeServiceFromTo1").data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var valid_to = $("#daterangeServiceFromTo1").data('daterangepicker').endDate.format('YYYY-MM-DD');
     var product_name = product_name;
     var id_dept = $('#id_dept').val();
     var id_country = $('#id_country').val();
@@ -167,7 +166,7 @@ function saveService() {
             } else {
                 var special_name = specialNameTransfer();
             }
-        console.log('-->', special_name);
+
         var id_creditor = 0;
         var id_tax = '3';
         for_adult = 1;
@@ -448,7 +447,7 @@ function loadSelectedService(value) {
                 $("#services_cost").attr('multiple', 'multiple');
                 $("#services_cost").empty();
                 $.each(data, function (key, val) {
-                    $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' + val.service_name + '</option>');
+                    $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' +  val.product_name + ' / ' + val.service_name  + '</option>');
                 }); 
                 arrToSelected = [];
                 for (var i = 0, l = value.length; i < l; i++) {

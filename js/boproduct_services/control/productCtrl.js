@@ -160,7 +160,7 @@ $('#btn-saveProductServices').click(function () {
             document.getElementById('id_country').style.border ="1px solid #aaa";
             document.getElementById('id_tax').style.border ="1px solid red";
         } else if ($('.requiredChkDate:checked').length == 0) {
-            alert("Please choose an operation date");
+            alert("Please choose an operation day");
         }  else if ($('.requiredChkApplyFor:checked').length == 0) {
             alert("Please Apply atleast one type of Pax");
         } else {

@@ -1,14 +1,13 @@
 $('#is_pakage').on('change', function() {
-    if ( this.value == 'Y' ) {        
+    if ( this.value == 'Y' ) { 
+        serviceCost();      
         $('#services_block').css("display", "block");
-        serviceCost();
     } else { 
         $('#services_block').css("display", "none");
     }
 });
 
 function serviceCost() {
-    // $('#services_cost').selectpicker();
     const url_service_cost = "php/api/backofficeproduct/selectservicecostpackage.php?t=" + encodeURIComponent(global_token);
     $.ajax({
         url: url_service_cost,
@@ -16,8 +15,10 @@ function serviceCost() {
         dataType: "json",
         success: function (data)       
         {
+            $("#services_cost").attr('multiple', 'multiple');
             $("#services_cost").empty();
             $.each(data, function (key, val) {
+                console.log(val);
                 $("#services_cost").append('<option value="' + val.id_product_service_cost + '">'+ val.product_name + ' / ' + val.service_name +'</option>');
             });
             $("#services_cost").attr('multiple', 'multiple'); 

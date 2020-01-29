@@ -198,8 +198,7 @@ function serviceEdit(data) {
         $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
         $('#on_approved').prop('checked', false);
     }
-    specificServiceSelected(data);
-    loadSelectedService(data);
+  
     document.getElementById("idService").innerHTML = data.id_product_service;
     document.getElementById("chargeDetail").innerHTML = data.charge;
 
@@ -207,7 +206,7 @@ function serviceEdit(data) {
 	var time_all = time_duration.split(":");
 	var time_hours = time_all[0];
     var time_min = time_all[1];
-    $('#duration1').val(time_hours);    
+    $('#duration1').val(time_hours);
     $('#duration2').val(time_min);
 
 	var start_date = data.valid_from;
@@ -245,7 +244,17 @@ function serviceEdit(data) {
         $("#special_name_transfer option[value='HALF DAY']").show();
         $("#special_name_transfer option[value='NIGHT TOUR']").show();
     }
-    $('#daterangeServiceFromTo').val(date_range);
+    $('#daterangeServiceFromTo1').val(date_range);
+    $('#daterangeServiceFromTo1').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+        "autoApply": true,
+        "opens": "center",
+        startDate: start_date,
+        endDate: end_date
+    });
+
     $('#id_dept').val(data.id_dept);    
     $('#product_name').val(data.product_name);
     $('#id_country').val(data.id_country);
@@ -287,13 +296,14 @@ function serviceEdit(data) {
     var chkChild = document.getElementById("for_child");
     var chkTeen= document.getElementById("for_teen");
     var chkAdult= document.getElementById("for_adult");
-    
+
     if (data.is_pakage == 'N') { 
-        $('#services_cost').val([]).multiselect('refresh');
         $('#services_block').css("display", "none");
         // $('#services_cost').val('');
+        serviceCost();
     }
-    if (data.is_pakage == 'Y') {      
+    if (data.is_pakage == 'Y') {
+        specificServiceSelected(data);
         $('#services_block').css("display", "block");
         serviceCost();
     } 

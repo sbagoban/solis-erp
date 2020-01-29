@@ -55,10 +55,10 @@
 								</div>
 							</div>
 							<div class="form-group"> 
-									<label class="col-sm-2 control-label"z>Date</label>
+									<label class="col-sm-2 control-label">Date</label>
 									<div class="col-sm-10">
 										<div class="input-group date datepicker-in">
-											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
+											<input type="text" name="daterange" id="daterangeServiceFromTo1" class="form-control" placeholder="dd-mm-yyyy"/>
 											<div class="input-group-addon">
 												<span class="glyphicon glyphicon-calendar"></span>
 											</div>

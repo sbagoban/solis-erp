@@ -41,7 +41,7 @@ function dateRangePickerValid() {
         "opens": "center",
         startDate: valid_from1,
         endDate: valid_to1,
-        "minDate" : valid_from1,
+        "minDate" : valid_from1, 
         "maxDate" : valid_to1
     }, function(start, end, label) {
         valid_from1 = start.format('YYYY/DD/MM');
@@ -122,6 +122,7 @@ function addCostProductService() {
                 success : function(data){
                     console.log('value', data);
                     resetFormAddServiceCost();
+                    allServicesGridCost();
                 },
                 error: function(error) {
                     console.log('Error ${error}');
