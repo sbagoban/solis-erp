@@ -220,9 +220,11 @@ $("#btn-saveServicesClaim").click(function () {
                     x = arrayItem;
                 });
                 // Check Date from datatable then compare - with value input
+                console.log((valid_from,'>', x.valid_from) ,'&&', (valid_to, '>', x.valid_to), '&&', (valid_from, '>', x.valid_to));
                 if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
                     overlap = false;
-                    addClaimProductService();
+                    alert('yes');
+                    //addClaimProductService();
                 } else {
                     overlap = true;
                     if (specific_to == 'A') { // To
@@ -232,15 +234,21 @@ $("#btn-saveServicesClaim").click(function () {
                         checkMarket(x);  
                         //alert('Date Overlap - Market');   
                     } 
-                    else if (specific_to == 'B') {
-                        if (id_currency != x.id_currency) {
+                    else if (specific_to == 'B') { //Worldwide
+                        if (id_currency == x.id_currency) {
                             alert('Only One currency');
                         } else {
                             addClaimProductService();
                         }
-                    }               
-                    // resetProductServicesClaim();           
-                }            
+                    }
+                    else if (specific_to == 'D') { //Worldwide
+                        console.log('-->', x);
+                        if ((valid_to == x.valid_to || valid_from == x.valid_from) && (specific == 'B')) {
+                            alert('Can be Added');
+                        }
+                    }
+                    // resetProductServicesClaim();
+                }
         },
         error: function(error) {
             console.log('Error ${error}');
