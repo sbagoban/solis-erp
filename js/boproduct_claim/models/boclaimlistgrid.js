@@ -13,7 +13,6 @@ $(document).ready(function(){
     $("#product_name_dtl").val(concat_name);
 
     allServicesGridClaim(id_product_service_cost, id_product_service_claim);
-    $('#block_extra').css('display', 'none');
 });
 
 function allServicesGridClaim(id_product_service_cost,id_product_service_claim, addedClaim) {    
@@ -22,6 +21,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim, 
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             if (is_pakage_chk == "Y") {
                 $('#btnAddExtraServicesClaim', nRow).css('display', 'none');
+                $('#block_extra').css('display', 'none');
             }
         }, 
         "processing" : true,

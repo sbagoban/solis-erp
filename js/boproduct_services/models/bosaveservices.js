@@ -408,9 +408,9 @@ function resetServicesForm() {
     $('#special_name_transfer').val('');
     $('#special_name').val('');
     $('#max_adult').val('');
-    $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
-    $('#on_api').prop('checked', false);
     $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+    $('#on_api').prop('checked', false);
+    $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
     $('#on_approved').prop('checked', false);    
     document.getElementById("idService").innerHTML = 0;
     document.getElementById("chargeDetail").innerHTML = '';

@@ -57,7 +57,16 @@ function allServicesGrid(added) {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_service"
+            data : null,
+                    render: function( data, type, row ) {
+                        var id_product_service = data.id_product_service;
+                        if (data.on_approved == "1") {
+                            var icon =  '<i class = "fa fa-check fa-check-circle" style="font-size:18px;color:#00a65a" title="Service line Live"></i> &nbsp; &nbsp;';
+                        } else {
+                            var icon =  '<i class = "fa fa-check fa-check-circle" style="font-size:18px;color:#e6e6e6" title="Service line Not Live"></i> &nbsp; &nbsp;';                            
+                        }
+                        return icon+ ' ' +id_product_service;
+                    }
         }, {
             "data" : "allName"
         }, {
@@ -185,20 +194,21 @@ function serviceDelete(data) {
 // // Edit Product
 function serviceEdit(data) {
     if (data.on_api == 1) { 
-        $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
+        $('.toggle:eq(1)').addClass('btn-success').removeClass('btn-default off');
         $('#on_api').prop('checked', true);
     } else { 
-        $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
+        $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
         $('#on_api').prop('checked', false);
+        $(".toggle:eq(1)").removeClass("add_disabled");
     }
     if (data.on_approved == 1) { 
-        $('.toggle:eq(1)').addClass('btn-success').removeClass('btn-default off');
+        $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
         $('#on_approved').prop('checked', true);
     } else { 
-        $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+        $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
         $('#on_approved').prop('checked', false);
     }
-  
+
     document.getElementById("idService").innerHTML = data.id_product_service;
     document.getElementById("chargeDetail").innerHTML = data.charge;
 
@@ -400,7 +410,6 @@ function addServiceExtra(data) {
 }
 
 function duplicateProductServices(data) {
-    console.log('--.', data) 
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams); 
 
@@ -466,17 +475,18 @@ function duplicateProductServices(data) {
         cache: false,                                                                                     
         success : function(val){
             document.getElementById('id_prod_serv').innerHTML = val.id_product_service;
-            $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
             duplicateCost(data, val.id_product_service); 
             duplicateExtra(data, val.id_product_service);   
             duplicateExtraCost(data, val.id_product_service, val.id_product_service_cost); 
-            duplicateIncludedServices(data, val.id_product_service);          
-            allServicesGrid(); 
+            duplicateIncludedServices(data, val.id_product_service);
         },
         error: function(error) {
-            console.log('Error ${error}');
+            console.log('Error ${error}', error);
         }
     });
+    $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
+    var added = true;       
+    allServicesGrid(added);
 }
 
 function duplicateCost(data, id_prod_serv) {
