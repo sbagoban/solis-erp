@@ -220,11 +220,9 @@ $("#btn-saveServicesClaim").click(function () {
                     x = arrayItem;
                 });
                 // Check Date from datatable then compare - with value input
-                console.log((valid_from,'>', x.valid_from) ,'&&', (valid_to, '>', x.valid_to), '&&', (valid_from, '>', x.valid_to));
                 if ((valid_from > x.valid_from) && (valid_to > x.valid_to) && (valid_from > x.valid_to)) {
                     overlap = false;
-                    alert('yes');
-                    //addClaimProductService();
+                    addClaimProductService();
                 } else {
                     overlap = true;
                     if (specific_to == 'A') { // To
@@ -235,19 +233,29 @@ $("#btn-saveServicesClaim").click(function () {
                         //alert('Date Overlap - Market');   
                     } 
                     else if (specific_to == 'B') { //Worldwide
-                        if (id_currency == x.id_currency) {
-                            alert('Only One currency');
-                        } else {
-                            addClaimProductService();
+                        if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
+                            if (id_currency == x.id_currency) {
+                                alert('Only One Currency for One Category');
+                            } else {
+                                addClaimProductService();
+                            }
                         }
                     }
-                    else if (specific_to == 'D') { //Worldwide
-                        console.log('-->', x);
-                        if ((valid_to == x.valid_to || valid_from == x.valid_from) && (specific == 'B')) {
-                            alert('Can be Added');
+                    else if (specific_to == 'D') { // Directsales
+                        if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
+                            alert('Please choose another currency for Direct Sales 1 ');
+                            console.log(specific_to, '==', x.specific_to);
+                            if (specific_to != x.specific_to) {
+                                alert('Please choose another currency for Direct Sales 2');
+                                if (id_currency == x.id_currency) {
+                                    alert('Please choose another currency for Direct Sales 3');
+                                } else {
+                                    addClaimProductService();
+                                }
+                            }
                         }
                     }
-                    // resetProductServicesClaim();
+                   // resetProductServicesClaim();
                 }
         },
         error: function(error) {
@@ -257,7 +265,7 @@ $("#btn-saveServicesClaim").click(function () {
 });
 
 function checkTo(data) {
-    var id_product_service_claim = data.id_product_service_claim;    
+    var id_product_service_claim = data.id_product_service_claim;
     var id_tour_operator = $('#ddlMultiSpecificTo').val();
 
     const url_claim_to = "php/api/backofficeserviceclaim/populateselectedto.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
@@ -304,7 +312,6 @@ function arrayCompareTo(z, id_tour_operator) {
 function checkMarket(data) { 
     var id_product_service_claim = data.id_product_service_claim;    
     var id_country = $('#ddlmultiSpecificMarket').val();
-    console.log('market', id_country);
     const url_claim_countries = "php/api/backofficeserviceclaim/populateselectedcountries.php?t=" + encodeURIComponent(global_token)+ "&id_product_service_claim=" + id_product_service_claim; 
     $.ajax({
         type: "POST",
@@ -321,7 +328,6 @@ function checkMarket(data) {
                 arrayCompareCountries(arrC, id_country);
         },    
         error: function(error) {
-            alert('ERROR');
             addClaimProductService();
         }
     });
@@ -599,14 +605,13 @@ function addClaimProductService(){
 function resetProductServicesClaim() {
     $('#ddlmultiSpecificMarket').val([]).multiselect('refresh');
     $('#ddlMultiSpecificTo').val([]).multiselect('refresh');
-    $('#valid_from').val('');
     $('#valid_to').val('');
     $('#ps_adult_claim').val('');
     $('#ps_teen_claim').val('');
     $('#ps_child_claim').val('');
     $('#ps_infant_claim').val('');
     $('#id_currency').val('');
-    $('#specific_to').val('');
+    $('#specific_to').val('A');
     $("#ex_monday").prop("checked", false);
     $("#ex_tuesday").prop("checked", false);
     $("#ex_wednesday").prop("checked", false);
