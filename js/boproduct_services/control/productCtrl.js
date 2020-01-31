@@ -21,25 +21,21 @@ $(document).ready(function () {
     // Validation For On approved an on_api
     var on_approved_chk = $('#on_approved').prop('checked');
     var on_api_chk = $('#on_api').prop('checked');
-    console.log(on_api_chk, on_approved_chk);
 
-    // $('#on_api').change(function() {
-    //     alert()
-    //   })
-    // if (data.on_api == 1) { 
-    //     $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
-    //     $('#on_api').prop('checked', true);
-    // } else { 
-    //     $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
-    //     $('#on_api').prop('checked', false);
-    // }
-    // if (data.on_approved == 1) { 
-    //     $('.toggle:eq(1)').addClass('btn-success').removeClass('btn-default off');
-    //     $('#on_approved').prop('checked', true);
-    // } else { 
-    //     $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
-    //     $('#on_approved').prop('checked', false);
-    // }
+    $('#on_approved').on('change', function() {
+        var liveOnChange = $(this).prop('checked');
+        if(liveOnChange == true) {
+            $('#on_api').removeAttr("disabled");
+            $('.toggle').removeAttr("disabled");
+            $(".toggle:eq(1)").removeClass("add_disabled");
+        } else {
+            $('.toggle').prop('disabled', "disabled");
+            $('#on_api').prop("disabled", true);
+            $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+            $('#on_api').prop('checked', false);
+            $(".toggle:eq(1)").addClass("add_disabled");
+        }
+    });
 });
 
 function productCtrl() {
@@ -126,12 +122,15 @@ $('#btn-saveProductServices').click(function () {
     var id_country = $('#id_country').val();
     var id_tax = $('#id_tax').val();
     var charge = $('#charge').val();
-    
+    var is_pakage = $('#is_pakage').val();
+    var countPackage = $("#services_cost :selected").length;
     var service_name_transfer = $('#service_name_transfer').val();
     var special_name_transfer = $('#special_name_transfer').val();
 
     if (servicetype == "ACTIVITY" || servicetype =="OTHER") { 
-        if (charge == null || charge == "") {
+        if (is_pakage == "Y" && countPackage <= 1) {
+            alert("Number of Service choose should be greater than one");
+        } else if (charge == null || charge == "") {
             alert("Please choose a Charge Pax / Unit");
             document.getElementById('id_tax').style.border ="1px solid #aaa";
             document.getElementById('charge').style.border ="1px solid red";
