@@ -199,6 +199,7 @@ function serviceEdit(data) {
     } else { 
         $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
         $('#on_api').prop('checked', false);
+        $(".toggle:eq(1)").removeClass("add_disabled");
     }
     if (data.on_approved == 1) { 
         $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
@@ -207,7 +208,7 @@ function serviceEdit(data) {
         $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
         $('#on_approved').prop('checked', false);
     }
-  
+
     document.getElementById("idService").innerHTML = data.id_product_service;
     document.getElementById("chargeDetail").innerHTML = data.charge;
 
