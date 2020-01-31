@@ -310,12 +310,13 @@ function serviceEdit(data) {
     if (data.is_pakage == 'N') { 
         $('#services_block').css("display", "none");
         // $('#services_cost').val('');
-        serviceCost();
+        $('#services_cost').multiselect('rebuild');
+        serviceCost(data.id_product_service);
     }
     if (data.is_pakage == 'Y') {
         specificServiceSelected(data);
         $('#services_block').css("display", "block");
-        serviceCost();
+        serviceCost(data.id_product_service);
     } 
 
     if (data.for_adult == 1){
@@ -583,7 +584,6 @@ function addCostTransfer(value) {
 
 
 function addCostPackage(value) {
-    console.log('2', value);
     var objpackagecostdetails = {id_product_service: value.id_product_service};
     const url_package_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
     $.ajax({

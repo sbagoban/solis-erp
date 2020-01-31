@@ -12,11 +12,11 @@ if (!isset($_GET["t"])) {
 if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
-// if (!isset($_GET["id_product_service"])) {
-//     throw new Exception("INVALID ID". $_GET["id_product_service"]);
-// }
+if (!isset($_GET["id_product_service"])) {
+    throw new Exception("INVALID ID". $_GET["id_product_service"]);
+}
 
-// $id_product_service = $_GET["id_product_service"];
+$id_product_service = $_GET["id_product_service"];
 
 require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
@@ -37,9 +37,11 @@ JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN product PR on PS.id_product = PR.id_product
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN tblservicetype TSC on PR.id_service_type = TSC.id
-WHERE PRS.active = 1");
+WHERE PRS.active = 1
+AND PS.is_pakage = 'N'
+AND PS.id_product_service <> $id_product_service");
 // AND TSC.servicetype = 'ACTIVITY'");
-$query_c->execute();
+$query_c->execute(array(":id_product_service"=>$id_product_service));
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
