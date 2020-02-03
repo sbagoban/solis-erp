@@ -252,7 +252,6 @@ function saveService() {
 
     } else {
         // Edit Drop Down Services - Delete first and the Saved
-        console.log('is_pakage', is_pakage);
         if (servicetype != 'TRANSFER' && is_pakage == 'Y') {
             editServicesInclude(id_product_service_induded);
         }
@@ -429,7 +428,7 @@ function specificServiceSelected(val) {
                 var valArr = [data];
                 valArr.forEach(myFunction);
                 function myFunction(value) {
-                    loadSelectedService(value);             
+                    loadSelectedService(value);
                 }
         }    
     });
@@ -447,11 +446,12 @@ function loadSelectedService(value) {
                 $("#services_cost").attr('multiple', 'multiple');
                 $("#services_cost").empty();
                 $.each(data, function (key, val) {
-                    $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' +  val.product_name + ' / ' + val.service_name  + '</option>');
+                    $("#services_cost").append('<option value="' + val.id_product_service + '">' +  val.product_name + ' / ' + val.service_name  + '</option>');
                 }); 
                 arrToSelected = [];
                 for (var i = 0, l = value.length; i < l; i++) {
                     var objSelected = value[i].id_product_service_induded;
+                    console.log('-->', objSelected);
                     arrToSelected.push(objSelected);
                     $("#services_cost").find("option[value=" + objSelected + "]").prop("selected", true)
                     $("#services_cost").multiselect("refresh")    
