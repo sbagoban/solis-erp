@@ -39,7 +39,8 @@ JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN tblservicetype TSC on PR.id_service_type = TSC.id
 WHERE PRS.active = 1
 AND PS.is_pakage = 'N'
-AND PS.id_product_service <> $id_product_service");
+AND PR.active = 1");
+// AND PS.id_product_service <> $id_product_service");
 // AND TSC.servicetype = 'ACTIVITY'");
 $query_c->execute(array(":id_product_service"=>$id_product_service));
 $row_count_c = $query_c->rowCount();

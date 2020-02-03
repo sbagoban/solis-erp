@@ -229,6 +229,7 @@ function saveService() {
             on_api : on_api_1, 
             on_approved : on_approved_1
         };
+    
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
         if (is_pakage == 'N' || (is_pakage == 'Y' &&  id_product_service_induded.length > 0)) { 
             $.ajax({

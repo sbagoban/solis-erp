@@ -4,7 +4,6 @@ $(document).ready(function(){
 });
 
 $('#is_pakage').on('change', function() {
-    
     var idService = document.getElementById("idService").innerHTML;
     if ( this.value == 'Y' ) { 
         serviceCost(idService);      
@@ -20,14 +19,26 @@ function serviceCost(idService) {
         url: url_service_cost,
         method: "POST",
         dataType: "json",
-        success: function (data)       
+        success: function (data)
         {
             $("#services_cost").attr('multiple', 'multiple');
             $("#services_cost").empty();
+
+
             $.each(data, function (key, val) {
-                console.log(key, val.id_product_service);
-                $("#services_cost").append('<option value="' + val.id_product_service + '">'+ val.product_name + ' / ' + val.service_name +'</option>');
+                console.log('check', idService);
+                if (idService == val.id_product_service) {
+                    $('#services_cost').multiselect('refresh');
+                    $('#services_cost').multiselect('rebuild');
+                    $('#services_cost option[value="idService"]').remove();
+                    $('#services_cost').multiselect('rebuild');
+                    $('#services_cost').multiselect('refresh');
+                    
+                } else {
+                    $("#services_cost").append('<option value="' + val.id_product_service + '">'+ val.product_name + ' / ' + val.service_name +'</option>');
+                }
             });
+
             $("#services_cost").attr('multiple', 'multiple'); 
             $("#services_cost").multiselect({
                 buttonWidth: '295px',

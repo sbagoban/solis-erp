@@ -71,15 +71,22 @@ try {
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
     $log_status = "CREATE";
+    //$log_date = date('m/d/Y H:i:s', time());
     $on_api = trim($_POST["on_api"]);
     $on_approved = trim($_POST["on_approved"]);
 
     if ($servicetype == 'TRANSFER') {
-        $id_coast = 0;
         $duration = '00:00:00.00000';
         $id_creditor = 0001; //id_creditor name should be Solis planning - to set in db 
         $min_age = 0;
         $max_age = 0;
+        echo $service_name;
+        if ($service_name == 'SOUTH EAST') {
+            $id_coast = 8;
+        } 
+        else {
+            $id_coast = 0;
+        }
     }
     
     if ($servicetype != 'TRANSFER') {
@@ -298,7 +305,7 @@ try {
                 currency
                 ) 
             VALUES 
-            ($id_product_service, '$valid_from', '$valid_to', $id_dept, 'UNIT', 0, 0, 0, 0, 5, 'MRU')";
+            ($id_product_service, '$valid_from', '$valid_to', $id_dept, '$charge', 0, 0, 0, 0, 5, 'MRU')";
             $stmt2 = $con->prepare($sqlCostTransferPackage);
             $stmt2->execute(array());
             // last id id_product_service_cost
@@ -340,6 +347,7 @@ try {
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 
     id_product,
+    id_product_service,
     valid_from,
     valid_to,
     id_dept,
@@ -382,6 +390,7 @@ $sqlLog = "INSERT INTO product_service_log (
     ) 
         VALUES (
             :id_product,
+            :id_product_service,
             :valid_from,
             :valid_to,
             :id_dept,
@@ -426,6 +435,7 @@ $sqlLog = "INSERT INTO product_service_log (
 $stmt = $con->prepare($sqlLog);
             $stmt->execute(array(
                 ":id_product" => $id_product,
+                ":id_product_service" => $id_product_service,
                 ":valid_from" => $valid_from,
                 ":valid_to" => $valid_to,
                 ":id_dept" => $id_dept,
