@@ -47,16 +47,15 @@ JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN product PR on PS.id_product = PR.id_product
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN tblservicetype TSC on PR.id_service_type = TSC.id
-WHERE PRS.active = 1
-AND PS.is_pakage = 'N'
-AND PR.active = 1
-AND PS.id_product_service <> $id_product_service
+WHERE PS.id_product_service <> $id_product_service
 AND PRS.valid_from >= '$valid_from'
 AND PRS.valid_to <= '$valid_to'
 AND PS.service_name != 'OTHER COAST'
 AND PS.service_name != 'INTER HOTEL'
-AND PS.service_name != 'SOUTH EAST'");
-// AND TSC.servicetype = 'ACTIVITY'");
+AND PS.service_name != 'SOUTH EAST'
+AND PRS.active = 1
+AND PS.is_pakage = 'N'
+AND PR.active = 1");
 $query_c->execute(array(
     ":id_product_service"=>$id_product_service,
     ":valid_from"=>$valid_from,

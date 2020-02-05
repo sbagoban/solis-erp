@@ -130,98 +130,176 @@ $('#btn-saveProductServices').click(function () {
     if (servicetype == "ACTIVITY" || servicetype =="OTHER") { 
         if (is_pakage == "Y" && countPackage <= 1) {
             alert("Please Choose atleast two services");
-        } else if (charge == null || charge == "") {
+        } 
+        
+        else if (charge == null || charge == "") {
             alert("Please choose a Charge Pax / Unit");
             document.getElementById('id_tax').style.border ="1px solid #aaa";
             document.getElementById('charge').style.border ="1px solid red";
-        } else if (id_dept == null || id_dept == "") {
+        } 
+        
+        else if (id_dept == null || id_dept == "") {
             alert("Please choose a Department");
             document.getElementById('id_creditor').style.border ="1px solid #aaa";
             document.getElementById('id_dept').style.border ="1px solid red";
-        } else if (id_country == null || id_country == "") {
+        } 
+        
+        else if (id_country == null || id_country == "") {
             alert("Please choose a Location");
             document.getElementById('id_dept').style.border ="1px solid #aaa";
             document.getElementById('id_country').style.border ="1px solid red";
         }
+        
         else if (service_name == "") {
             document.getElementById('service_name').style.border ="1px solid red";
             alert("Please add a service name");
-        } else if (id_creditor == "") {
+        } 
+        
+        else if (id_creditor == "") {
             alert("Please choose a supplier");
             document.getElementById('service_name').style.border ="1px solid #aaa";
             document.getElementById('id_creditor').style.border ="1px solid red";
-        } else if (id_coast == null || id_coast == "") {
+        } 
+        
+        else if (id_coast == null || id_coast == "") {
             document.getElementById('id_creditor').style.border ="1px solid #aaa";
             document.getElementById('id_coast').style.border ="1px solid red";
             alert("Please choose a coast");
-        } else if (id_tax == null || id_tax == "") {
+        } 
+        
+        else if (id_tax == null || id_tax == "") {
             alert("Please choose Tax Option");
             document.getElementById('id_country').style.border ="1px solid #aaa";
             document.getElementById('id_tax').style.border ="1px solid red";
-        } else if ($('.requiredChkDate:checked').length == 0) {
+        } 
+        
+        else if ($('.requiredChkDate:checked').length == 0) {
             alert("Please choose an operation day");
-        }  else if ($('.requiredChkApplyFor:checked').length == 0) {
+        }  
+        
+        else if ($('.requiredChkApplyFor:checked').length == 0) {
             alert("Please Apply atleast one type of Pax");
-        } else if ($('.requiredChkApplyFor:checked').length > 0) {
+        } 
+        
+        else if ($('.requiredChkApplyFor:checked').length > 0) {
             validateAgePolicy();
-        } else {
+        } 
+        
+        else {
             saveService();
         }
     } 
     
     if (servicetype == "TRANSFER") {
         var isVisible = document.getElementById("special_name_transfer").style.display == "block";
+        
         if (charge == null || charge == "") {
             alert("Please choose a Charge Pax / Unit");
             document.getElementById('id_tax').style.border ="1px solid #aaa";
             document.getElementById('charge').style.border ="1px solid red";
-        } else if (id_dept == null || id_dept == "") {
+        } 
+        
+        else if (id_dept == null || id_dept == "") {
             alert("Please choose a Department");
             document.getElementById('id_creditor').style.border ="1px solid #aaa";
             document.getElementById('id_dept').style.border ="1px solid red";
-        } else if (id_country == null || id_country == "") {
+        } 
+        
+        else if (id_country == null || id_country == "") {
             alert("Please choose a Location");
             document.getElementById('id_dept').style.border ="1px solid #aaa";
             document.getElementById('id_country').style.border ="1px solid red";
         }
+        
         else if (service_name_transfer == null || service_name_transfer == "") {
             alert("Please select a service name");
             document.getElementById('service_name_transfer').style.border ="1px solid red";
-        } else if (((special_name_transfer == null) || (special_name_transfer == "")) && (isVisible == true)) {
+        } 
+        
+        else if (((special_name_transfer == null) || (special_name_transfer == "")) && (isVisible == true)) {
             alert("Please select a special name");
             document.getElementById('service_name_transfer').style.border ="1px solid #aaa";
             document.getElementById('service_name_transfer').style.border ="1px solid red";
-        } else {
+        } 
+        
+        else {
             saveService();
         }
     } 
 }); 
 
 function validateAgePolicy() {
-    // var chkinfant = document.getElementById("for_infant");
-    // var chkchild = document.getElementById("for_child");
-    // var chkteen = document.getElementById("for_teen");
-    // var chkadult = document.getElementById("for_adult");
+    var chkinfant = document.getElementById("for_infant");
+    var chkchild = document.getElementById("for_child");
+    var chkteen = document.getElementById("for_teen");
+    var chkadult = document.getElementById("for_adult");
 
-    // var age_inf_from = document.getElementById("age_inf_from");
-    // var age_inf_to = document.getElementById("age_inf_to");
+    var age_inf_to = document.getElementById("age_inf_to").value;
+    var age_child_to = document.getElementById("age_child_to").value;
 
-    // if (chkinfant.checked) {
-    //     if (age_inf_from == " " || age_inf_from == null) {
-    //         $('#age_inf_from').style.border ="1px solid red";
-    //         alert("Please insert Min Number of infant");
-    //     } else if (age_inf_to == "" || age_inf_to == null) {
-    //         $('#age_inf_from').style.border ="1px solid #aaa";
-    //         $('#age_inf_to').style.border ="1px solid red";
-    //         alert("Please insert Max Number of infant");
-    //     }
-    // } if (chkchild.checked) {
-    //     alert('2');
-    // } if (chkteen.checked) {
-    //     alert('3');
-    // } if (chkadult.checked) {
-    //     alert('4');
-    // }
-        
-    saveService();
+    var age_teen_from = document.getElementById("age_teen_from").value;
+    var age_teen_to = document.getElementById("age_teen_to").value;
+
+    var min_age = document.getElementById("min_age").value;
+    var max_age_product = document.getElementById("max_age").value;
+
+    var max_age_product_t = document.getElementById("max_age").value;
+   
+    var inf_age = $('#age_inf_to').val();
+    var child_age_chk = ++inf_age;
+
+    var child_age = $('#age_child_to').val();
+    var teen_age_chk = ++child_age;
+
+    if (chkinfant.checked && (age_inf_to == 0 || age_inf_to == null)) {
+            alert('Please Fill in the age "to" for infant.');
+    }   
+    
+    else if (chkchild.checked && (age_child_to == 0 || age_child_to == null)) {
+            alert('Please Fill in the age "to" for child.');
+    }   
+    
+    else if (chkteen.checked && (age_teen_to == 0 || age_teen_to == null)) {
+            alert('Please Fill in the age "to" for teen.');
+    }   
+    
+    else if (chkteen.checked && (age_teen_from == 0 || age_teen_from == null)) {
+            alert('Please Fill in the age "from" for teen.');
+    }   
+    
+    else if (chkadult.checked && (min_age == 0 || min_age == null)) {
+            alert('Please Fill in the age "Min Age" for Adult.');
+    }   
+    
+    else if (chkadult.checked && (max_age_product_t == 0 || max_age_product_t == null|| max_age_product_t === '0')) {
+            alert('Please Fill in the age "Max Age" for Adult.');
+    }
+    
+    else if (($('#age_child_from').val()) != child_age_chk && (chkchild.checked)) {
+            alert('Child age "From" should be : ' + child_age_chk);
+    }   
+    
+    else if (($('#age_teen_from').val()) != teen_age_chk && (chkteen.checked)) {
+            alert('Teen age "From" should be : ' + teen_age_chk);
+    }   
+    
+    else if (($('#min_age').val()) >= ($('#max_age').val())) { 
+        alert('Max Adult age should be greater than Min Age');
+    }
+
+    else if (($('#age_inf_from').val()) >= ($('#age_inf_to').val())) { 
+        alert('Infant "To" age should be greater than Infant "From" Age');
+    }
+
+    else if (($('#age_child_from').val()) > ($('#age_child_to').val())) { 
+        alert('Child "To" age should be greater than Child "From" Age');
+    }
+
+    else if (($('#age_teen_from').val()) > ($('#age_teen_to').val())) { 
+        alert('Teen "To" age should be greater than Teen "From" Age');
+    }    
+    
+    else {
+        saveService();
+    }
 }
