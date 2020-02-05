@@ -9,8 +9,15 @@ $(document).ready(function(){
 		"opens": "center",
 		locale: {
 					format: 'DD/MM/YYYY'
-				}
+                },
+                function() {
+                    var date = $("#daterangeServiceFromTo1").val();
+                    var replaced = date.split(' ').join('')
+                    console.log(date);
+                }
+                
     });
+    
     if (servicetype == 'TRANSFER') {
         $('.adult_blk').css("display", "block");
     }
@@ -417,7 +424,7 @@ function resetServicesForm() {
     
 }
 
-function specificServiceSelected(val) { 
+function specificServiceSelected(val, idserv, date_valid_from, date_valid_to) { 
     const url_selected_service = "php/api/backofficeproduct/populateselectedservice.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + val.id_product_service; 
     $.ajax({
         type: "POST",
@@ -429,14 +436,14 @@ function specificServiceSelected(val) {
                 var valArr = [data];
                 valArr.forEach(myFunction);
                 function myFunction(value) {
-                    loadSelectedService(value);
+                    loadSelectedService(value, idserv, date_valid_from, date_valid_to);
                 }
         }    
     });
 }
 
-function loadSelectedService(value) {
-    const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
+function loadSelectedService(value, idserv, date_valid_from, date_valid_to) {
+    const url_service_selected = "php/api/backofficeproduct/selectservicecostpackage.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + idserv + "&valid_from=" + date_valid_from+ "&valid_to=" + date_valid_to;
     $.ajax({
         type: "POST",
         url: url_service_selected,
@@ -452,10 +459,9 @@ function loadSelectedService(value) {
                 arrToSelected = [];
                 for (var i = 0, l = value.length; i < l; i++) {
                     var objSelected = value[i].id_product_service_induded;
-                    console.log('-->', objSelected);
                     arrToSelected.push(objSelected);
                     $("#services_cost").find("option[value=" + objSelected + "]").prop("selected", true)
-                    $("#services_cost").multiselect("refresh")    
+                    $("#services_cost").multiselect("refresh");
                 }
                 $("#services_cost").multiselect({
                     buttonWidth: '295px',

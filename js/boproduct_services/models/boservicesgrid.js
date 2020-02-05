@@ -225,12 +225,14 @@ function serviceEdit(data) {
 	var date_from_m = date_from[1];
 	var date_from_d = date_from[2];
     var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+    var date_valid_from = date_from_y+"-"+date_from_m+"-"+date_from_d
 	var end_date = data.valid_to;
 	var date_to = end_date.split("-");
 	var date_to_y = date_to[0];
 	var date_to_m = date_to[1];
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+    var date_valid_to = date_to_y+"-"+date_to_m+"-"+date_to_d;
     var date_range = start_date+ " - " + end_date;
 
     if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
@@ -309,14 +311,19 @@ function serviceEdit(data) {
 
     if (data.is_pakage == 'N') { 
         $('#services_block').css("display", "none");
-        // $('#services_cost').val('');
+        $("#services_cost option:selected").prop("selected", false);
+        $("#services_cost option").remove();
         $('#services_cost').multiselect('rebuild');
-        serviceCost(data.id_product_service);
+        // $('#services_cost').val('');
+        //$("#services_cost").reset();
+        //serviceCost(data.id_product_service, date_valid_from, date_valid_to);
     }
     if (data.is_pakage == 'Y') {
-        specificServiceSelected(data);
+        $("#services_cost").multiselect('destroy');
+        $("#services_cost").attr('multiple', 'multiple');
+        specificServiceSelected(data, data.id_product_service, date_valid_from, date_valid_to);
         $('#services_block').css("display", "block");
-        serviceCost(data.id_product_service);
+       // serviceCost(data.id_product_service, date_valid_from, date_valid_to);
     } 
 
     if (data.for_adult == 1){

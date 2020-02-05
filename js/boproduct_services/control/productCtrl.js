@@ -129,7 +129,7 @@ $('#btn-saveProductServices').click(function () {
 
     if (servicetype == "ACTIVITY" || servicetype =="OTHER") { 
         if (is_pakage == "Y" && countPackage <= 1) {
-            alert("Number of Service choose should be greater than one");
+            alert("Please Choose atleast two services");
         } else if (charge == null || charge == "") {
             alert("Please choose a Charge Pax / Unit");
             document.getElementById('id_tax').style.border ="1px solid #aaa";

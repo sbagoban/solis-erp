@@ -25,6 +25,17 @@
 					<!-- form start -->
 					<form class="form-horizontal">
 						<div class="box-body">
+							<div class="form-group"> 
+								<label class="col-sm-2 control-label">Date</label>
+								<div class="col-sm-10">
+									<div class="input-group date datepicker-in">
+										<input type="text" name="daterange" id="daterangeServiceFromTo1" class="form-control" placeholder="dd-mm-yyyy"/>
+										<div class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</div>
+									</div>
+								</div>
+							</div>
 							<!-- Package Start -->
 							<div class="form-group">
 								<div id="is_package_blk">
@@ -54,18 +65,7 @@
 									<input type="text" class="form-control" id="id_product_type" style="display: none" value="0">
 								</div>
 							</div>
-							<div class="form-group"> 
-									<label class="col-sm-2 control-label">Date</label>
-									<div class="col-sm-10">
-										<div class="input-group date datepicker-in">
-											<input type="text" name="daterange" id="daterangeServiceFromTo1" class="form-control" placeholder="dd-mm-yyyy"/>
-											<div class="input-group-addon">
-												<span class="glyphicon glyphicon-calendar"></span>
-											</div>
-										</div>
-									</div>
-									
-							</div>
+							
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Product</label>
 								<div class="col-sm-4">
