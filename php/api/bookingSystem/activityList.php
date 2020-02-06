@@ -98,7 +98,7 @@ try {
 					PS.charge,
 					PS.duration,
 					PS.transfer_included,
-					PS.on_web,
+					PS.on_approved,
 					PS.on_api,
 					PS.description,
 					PS.comments,
@@ -148,6 +148,7 @@ try {
 				AND P.active = 1
 				AND PS.active = 1
 				AND PSC.active = 1
+				AND PS.on_approved = 1
 			)
 			UNION
 			(
@@ -173,7 +174,7 @@ try {
 					PS.charge,
 					PS.duration,
 					PS.transfer_included,
-					PS.on_web,
+					PS.on_approved,
 					PS.on_api,
 					PS.description,
 					PS.comments,
@@ -223,6 +224,7 @@ try {
 				AND P.active = 1
 				AND PS.active = 1
 				AND PSC.active = 1
+				AND PS.on_approved = 1
 			)
 			UNION
 			(
@@ -248,7 +250,7 @@ try {
 					PS.charge,
 					PS.duration,
 					PS.transfer_included,
-					PS.on_web,
+					PS.on_approved,
 					PS.on_api,
 					PS.description,
 					PS.comments,
@@ -295,6 +297,7 @@ try {
 				AND P.active = 1
 				AND PS.active = 1
 				AND PSC.active = 1
+				AND PS.on_approved = 1
 			)
 		) AS product_list
 		";
@@ -328,7 +331,7 @@ try {
 					PS.charge,
 					PS.duration,
 					PS.transfer_included,
-					PS.on_web,
+					PS.on_approved,
 					PS.on_api,
 					PS.description,
 					PS.comments,
@@ -375,6 +378,7 @@ try {
 				AND P.active = 1
 				AND PS.active = 1
 				AND PSC.active = 1
+				AND PS.on_approved = 1
 			)
 		) AS product_list";
 	}

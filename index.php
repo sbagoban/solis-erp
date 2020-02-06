@@ -67,8 +67,6 @@ if (isset($_GET["m"])) {
         <!-- To downalod -->
         <link rel='stylesheet' href='https://cdn.rawgit.com/t4t5/sweetalert/v0.2.0/lib/sweet-alert.css'>
         <!-- To downalod -->
-        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
         <?php
         $menu = "";
@@ -87,7 +85,8 @@ if (isset($_GET["m"])) {
             <link rel="stylesheet" href="css/bookingEngine.css">';
         } else if ($menu == "productservices") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">
-            <link rel="stylesheet" href="css/bookingEngine.css">';
+            <link rel="stylesheet" href="css/bookingEngine.css">
+            <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">';
         } else if ($menu == "backoff_product") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
         }
@@ -746,6 +745,8 @@ if (isset($_GET["m"])) {
         <script src="https://cdn.datatables.net/plug-ins/1.10.15/sorting/stringMonthYear.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+        
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/buttons/1.4.2/js/buttons.flash.min.js"></script>
         <script type="text/javascript" charset="utf8" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
@@ -950,6 +951,7 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
             <script src="js/boproduct_services/control/productCtrl.js"></script>
             <script src="js/boproduct_services/models/boupdateextraservicecost.js"></script>';
+            
         }
 ?>
         <div id = "alert_placeholder"></div>

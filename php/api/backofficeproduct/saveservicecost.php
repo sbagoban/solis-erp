@@ -37,6 +37,7 @@ try {
     $id_currency = trim($_POST["id_currency"]);    
     $currency = trim($_POST["currency"]);
     $id_dept = trim($_POST["id_dept"]);
+    $charge = trim($_POST["charge"]);
 
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
@@ -78,8 +79,9 @@ try {
             ps_infant_cost, 
             id_currency, 
             currency, 
-            id_dept) 
-                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :currency, :id_dept)";
+            id_dept,
+            charge) 
+                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :currency, :id_dept, :charge)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -92,7 +94,8 @@ try {
             ":ps_infant_cost" => $ps_infant_cost,
             ":id_currency" => $id_currency,            
             ":currency" => $currency,
-            ":id_dept" => $id_dept));
+            ":id_dept" => $id_dept,
+            ":charge" => $charge));
         
         $id_product_service_cost = $con->lastInsertId();
 
@@ -160,6 +163,7 @@ try {
                 id_currency=:id_currency,
                 currency=:currency,
                 id_dept=:id_dept,
+                charge=:charge
                 WHERE id_product_service_cost=:id_product_service_cost";
 
         $stmt = $con->prepare($sql);
@@ -174,7 +178,8 @@ try {
             ":ps_infant_cost" => $ps_infant_cost, 
             ":id_currency" => $id_currency,
             ":currency" => $currency,
-            ":id_dept" => $id_dept));
+            ":id_dept" => $id_dept,
+            ":charge" => $charge));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_cost"=>$id_product_service_cost));
 } catch (Exception $ex) {

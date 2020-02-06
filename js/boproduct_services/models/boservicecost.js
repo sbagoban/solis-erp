@@ -12,6 +12,8 @@ $(document).ready(function(){
         $("#ps_teen_cost_addon").css("display", "none");        
         $("#ps_child_cost_addon").css("display", "none");
         $("#ps_infant_cost_addon").css("display", "none");
+        $('#ps_adult_cost_addon').text('Unit');
+        $('#ps_adult_cost').attr("placeholder", "Unit");
     }
 });
 
@@ -32,6 +34,8 @@ function dateRangePickerValid() {
 	var valid_to1 = valid_to[2]+"/"+valid_to[1]+"/"+valid_to[0];
     //var valid_to1 = new Date(valid_to);
     $('#daterangeServiceFromTo').daterangepicker({
+        "showDropdowns": true,
+		"opens": "center",
         locale: {
             format: 'DD/MM/YYYY'
         },
@@ -39,7 +43,7 @@ function dateRangePickerValid() {
         "opens": "center",
         startDate: valid_from1,
         endDate: valid_to1,
-        "minDate" : valid_from1,
+        "minDate" : valid_from1, 
         "maxDate" : valid_to1
     }, function(start, end, label) {
         valid_from1 = start.format('YYYY/DD/MM');
@@ -87,6 +91,7 @@ function addCostProductService() {
         var allParams = window.location.href.split('productservicecost').pop();
         const urlParams = new URLSearchParams(allParams);
         var id_dept = urlParams.get("iddept"); 
+        var charge = urlParams.get("charge"); 
         var id_product_service = urlParams.get("psid"); 
         var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
 		var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -98,7 +103,6 @@ function addCostProductService() {
         var currency = $('#id_currency').find(":selected").text();
         var id_product_service_cost = document.getElementById("id_product_service_cost_1").innerHTML;
 
-        
         if (id_product_service_cost != 0) {
             var objServiceCostEdit = {
                 id_product_service: id_product_service,
@@ -119,7 +123,8 @@ function addCostProductService() {
                 data : objServiceCostEdit,                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 success : function(data){
                     console.log('value', data);
-                    resetFormAddServiceCost();
+                   // resetFormAddServiceCost();
+                    allServicesGridCost();
                 },
                 error: function(error) {
                     console.log('Error ${error}');
@@ -136,7 +141,8 @@ function addCostProductService() {
                 ps_child_cost: ps_child_cost,
                 ps_infant_cost: ps_infant_cost,
                 id_currency: id_currency,                
-                currency: currency,
+                currency: currency,                
+                charge: charge,
                 id_dept: id_dept
             };
             const url_save_service_cost = "php/api/backofficeproduct/saveservicecost.php?t=" + encodeURIComponent(global_token);

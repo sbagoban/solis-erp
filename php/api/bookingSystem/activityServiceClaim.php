@@ -128,7 +128,7 @@ try {
 				PS_COST.currency AS cost_curr,
 				PS.duration,
 				PS.transfer_included,
-				PS.on_web,
+				PS.on_approved,
 				PS.on_api,
 				PS.description,
 				PS.comments,
@@ -187,6 +187,7 @@ try {
 			AND PS_CLAIM_TO.id_tour_operator = :payer
 			AND PS.active = 1
 			AND PS_CLAIM.active = 1
+            AND PS.on_approved = 1
 		) AS product_service_claim";
 		
 		$qry_serviceClaimAgency .= $qry_servicedDay;	
@@ -288,7 +289,7 @@ try {
 						PS_COST.currency AS cost_curr,
 						PS.duration,
 						PS.transfer_included,
-						PS.on_web,
+						PS.on_approved,
 						PS.on_api,
 						PS.description,
 						PS.comments,
@@ -347,6 +348,7 @@ try {
 					AND PS_CLAIM_C.id_country = :id_country
 					AND PS.active = 1
 					AND PS_CLAIM.active = 1
+                    AND PS.on_approved = 1
 				) AS product_service_claim";
 
 			$qry_serviceClaimCountry .= $qry_servicedDay;	
@@ -448,7 +450,7 @@ try {
 							PS_COST.currency AS cost_curr,
 							PS.duration,
 							PS.transfer_included,
-							PS.on_web,
+							PS.on_approved,
 							PS.on_api,
 							PS.description,
 							PS.comments,
@@ -504,6 +506,7 @@ try {
 						AND PS_CLAIM.specific_to = 'B'
 						AND PS.active = 1
 						AND PS_CLAIM.active = 1
+                        AND PS.on_approved = 1
 					) AS product_service_claim";
 
 					$qry_serviceClaimPublic .= $qry_servicedDay;	
@@ -616,7 +619,7 @@ try {
 					PS_COST.currency AS cost_curr,
 					PS.duration,
 					PS.transfer_included,
-					PS.on_web,
+					PS.on_approved,
 					PS.on_api,
 					PS.description,
 					PS.comments,
@@ -672,6 +675,7 @@ try {
 				AND PS_CLAIM.specific_to = 'B'
 				AND PS.active = 1
 				AND PS_CLAIM.active = 1
+                AND PS.on_approved = 1
 			) AS product_service_claim";
 
 		$qry_serviceClaimPublic .= $qry_servicedDay;	

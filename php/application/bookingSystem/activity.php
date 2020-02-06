@@ -1,3 +1,4 @@
+<script src="js/utils/numberValidation.js"></script>
 <script src="php/application/bookingSystem/js/bookingActivity.js"></script>
 <script src="php/application/bookingSystem/js/newActivity.js"></script>
 <script src="php/application/bookingSystem/js/tableBookingActivity.js"></script>
@@ -95,20 +96,64 @@
 						</div>
 					</div>
 				</div>
-				
+				<!--<div class="form-group">
+					<label class="col-sm-2 control-label">Service Extra</label>
+					<div class="col-sm-10">
+                        <button type="button" class="btn btn-primary btn-block" id="btn-serviceExtra">Add Extra Services</button>
+                    </div>
+                </div>-->
 				<div class="form-group">
-					<label class="col-sm-2 control-label">Rebate</label>
+					<label class="col-sm-2 control-label">Claim Rebate</label>
 					<div class="col-sm-4">
-						<select class="form-control bookingActivity select2" id="activity_rebate">
+						<select class="form-control bookingActivity select2" id="activity_claim_rebate">
 							<option value="None">None</option>
 							<option value="Percentage">Percentage</option>
 							<option value="Fixed Tariff">Fixed Tariff</option>
 							<option value="FOC">FOC</option>
 						</select>
 					</div>
-					<label class="col-sm-2 control-label">Approved by</label>
+					<label class="col-sm-2 control-label">Claim Approved by</label>
 					<div class="col-sm-4">
-						<select class="form-control bookingActivity select2" id="activity_approvedBy">
+						<select class="form-control bookingActivity select2" id="activity_claimApprovedBy">
+							<option value="None">None</option>
+						</select>
+					</div>
+				</div>
+				
+				<div id="claimRebateSection">
+					<div class="form-group">
+						<label class="col-sm-2 control-label" id="claimRebateAmount">Claim Rebate %</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_percentageClaimRebate" placeholder="00000" style="display: none">
+						</div>
+						<div class="col-sm-10" id="claimRebate_fix">
+							<div class="input-group">
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_adultClaimRebate">
+								<span class="input-group-addon rebateAdult">Adult</span>
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_teenClaimRebate">
+								<span class="input-group-addon rebateTeen">Teen</span>
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_childClaimRebate">
+								<span class="input-group-addon rebateChild">Child</span>
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_InfantClaimRebate">
+								<span class="input-group-addon rebateInfant">Infant</span>
+							</div>
+						</div>
+					</div>
+				</div>
+                
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Cost Rebate</label>
+					<div class="col-sm-4">
+						<select class="form-control bookingActivity select2" id="activity_cost_rebate">
+							<option value="None">None</option>
+							<option value="Percentage">Percentage</option>
+							<option value="Fixed Tariff">Fixed Tariff</option>
+							<option value="FOC">FOC</option>
+						</select>
+					</div>
+					<label class="col-sm-2 control-label">Cost Approved by</label>
+					<div class="col-sm-4">
+						<select class="form-control bookingActivity select2" id="activity_costApprovedBy">
 							<option value="None">None</option>
 							<option value="Percentage">Percentage</option>
 							<option value="Fixed Tariff">Fixed Tariff</option>
@@ -117,21 +162,21 @@
 					</div>
 				</div>
 				
-				<div id="rebateSection">
+				<div id="costRebateSection">
 					<div class="form-group">
-						<label class="col-sm-2 control-label">Rebate</label>
+						<label class="col-sm-2 control-label" id="costRebateAmount">Cost Rebate %</label>
 						<div class="col-sm-4">
-							<input type="text" class="form-control bookingActivity" id="activity_percentageRebate" placeholder="00000" style="display: none">
+							<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_percentageCostRebate" placeholder="00000" style="display: none">
 						</div>
-						<div class="col-sm-10" id="rebate_fix">
+						<div class="col-sm-10" id="costRebate_fix">
 							<div class="input-group">
-								<input type="number" class="form-control bookingActivity" id="activity_adultRebate">
+								<input type="text" class="form-control numberWithDecimalbookingActivity" id="activity_adultCostRebate">
 								<span class="input-group-addon rebateAdult">Adult</span>
-								<input type="number" class="form-control bookingActivity" id="activity_teenRebate">
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_teenCostRebate">
 								<span class="input-group-addon rebateTeen">Teen</span>
-								<input type="number" class="form-control bookingActivity" id="activity_childRebate">
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_childCostRebate">
 								<span class="input-group-addon rebateChild">Child</span>
-								<input type="number" class="form-control bookingActivity" id="activity_InfantRebate">
+								<input type="text" class="form-control numberWithDecimal bookingActivity" id="activity_InfantCostRebate">
 								<span class="input-group-addon rebateInfant">Infant</span>
 							</div>
 						</div>
@@ -211,9 +256,7 @@
         <div class="panel-group box-body" id="servicePanel">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#servicePanel" href="#serviceDetails"> Activity Details</a>
-                    </h4>
+                        <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="serviceDetails"> Activity Details</a>
                 </div>
                 <div id="serviceDetails" class="panel-collapse collapse">
                     <div class="panel-body">  
@@ -267,7 +310,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <table id="tbl-activityExtra" class="table table-bordered table-hover" style="display: none">
+                        <!--<table id="tbl-activityExtra" class="table table-bordered table-hover" style="display: none">
                             <thead>
                                 <tr>
                                     <th class="col-sm-3">EXTRA</th>
@@ -278,15 +321,13 @@
                             <tbody>
 
                             </tbody>
-                        </table>
+                        </table>-->
                     </div>
                 </div>
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#servicePanel" href="#dossierService"> Dossier Activity</a>
-                    </h4>
+                        <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Activity</a>
                 </div>
                 <div id="dossierService" class="panel-collapse collapse">
                     <div class="panel-body">

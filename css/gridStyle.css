@@ -272,3 +272,11 @@ td.deleteBtnCol {
 .checkbox_tgl { 
   display: inline-block;
 }
+
+.add_disabled {
+  cursor: not-allowed;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  opacity: .65;
+}

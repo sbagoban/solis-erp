@@ -32,7 +32,7 @@ try {
     $id_dept = trim($_POST["id_dept"]);
     $id_country = trim($_POST["id_country"]);
     $id_coast = trim($_POST["id_coast"]);
-    $service_name = trim($_POST["service_name"]);
+    $service_name = strtoupper(trim($_POST["service_name"]));
     $id_tax = trim($_POST["id_tax"]);
     $charge = trim($_POST["charge"]);
     $duration = trim($_POST["duration"]);
@@ -71,15 +71,22 @@ try {
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
     $log_status = "CREATE";
+    //$log_date = date('m/d/Y H:i:s', time());
     $on_api = trim($_POST["on_api"]);
     $on_approved = trim($_POST["on_approved"]);
 
     if ($servicetype == 'TRANSFER') {
-        $id_coast = 0;
         $duration = '00:00:00.00000';
         $id_creditor = 0001; //id_creditor name should be Solis planning - to set in db 
         $min_age = 0;
         $max_age = 0;
+        echo $service_name;
+        if ($service_name == 'SOUTH EAST') {
+            $id_coast = 8;
+        } 
+        else {
+            $id_coast = 0;
+        }
     }
     
     if ($servicetype != 'TRANSFER') {
@@ -250,21 +257,8 @@ try {
                         ':id_product_service_induded' => $servcost));
                 }
             }
-        }
 
-        // Add Extra - By Default -> For Transfer
-        if ($servicetype == 'TRANSFER') {
-            echo $valid_from;
-            $sqlExtra1 = "INSERT INTO product_service_extra (id_service_extra, extra_name, 	id_product_service, extra_description, charge) 
-            VALUES 
-            (5, 'Booster Seat', $id_product_service, 'Booster Seat (On Request)', 'UNIT'),
-            (3, 'Baby Seat', $id_product_service, 'Baby Seat (On Request)', 'UNIT'),
-            (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT'),
-            (6, 'Surcharge - Specific Vehicle', $id_product_service, 'Surcharge - Specific Vehicle', 'UNIT')";
-            $stmt1 = $con->prepare($sqlExtra1);
-            $stmt1->execute(array());
-
-            $sqlCostTrasnfer = "INSERT INTO product_service_cost (
+            $sqlCostPackage = "INSERT INTO product_service_cost (
                 id_product_service,
                 valid_from,
                 valid_to,
@@ -279,7 +273,40 @@ try {
                 ) 
             VALUES 
             ($id_product_service, '$valid_from', '$valid_to', $id_dept, 'UNIT', 0, 0, 0, 0, 5, 'MRU')";
-            $stmt2 = $con->prepare($sqlCostTrasnfer);
+            $stmt2 = $con->prepare($sqlCostPackage);
+            $stmt2->execute(array());
+            // last id id_product_service_cost
+            $id_product_service_cost = $con->lastInsertId();
+        }
+
+        // Add Extra - By Default -> For Transfer
+        if ($servicetype == 'TRANSFER') {
+            $sqlExtra1 = "INSERT INTO product_service_extra (id_service_extra, extra_name, 	id_product_service, extra_description, charge) 
+            VALUES 
+            (5, 'Booster Seat', $id_product_service, 'Booster Seat (On Request)', 'UNIT'),
+            (3, 'Baby Seat', $id_product_service, 'Baby Seat (On Request)', 'UNIT'),
+            (4, 'Child Seat', $id_product_service, 'Child Seat', 'UNIT'),
+            (6, 'Surcharge - Specific Vehicle', $id_product_service, 'Surcharge - Specific Vehicle', 'UNIT'),
+            (7, 'Extra Hour', $id_product_service, 'Extra Hour', 'UNIT')";
+            $stmt1 = $con->prepare($sqlExtra1);
+            $stmt1->execute(array());
+
+            $sqlCostTransferPackage = "INSERT INTO product_service_cost (
+                id_product_service,
+                valid_from,
+                valid_to,
+                id_dept,
+                charge,
+                ps_adult_cost,
+                ps_teen_cost,
+                ps_child_cost,
+                ps_infant_cost,
+                id_currency,
+                currency
+                ) 
+            VALUES 
+            ($id_product_service, '$valid_from', '$valid_to', $id_dept, '$charge', 0, 0, 0, 0, 5, 'MRU')";
+            $stmt2 = $con->prepare($sqlCostTransferPackage);
             $stmt2->execute(array());
             // last id id_product_service_cost
             $id_product_service_cost = $con->lastInsertId();
@@ -310,6 +337,9 @@ try {
                     0, 0, 0, 'UNIT', 5, 'MRU'),
 
                     ($id_product_service_cost, $id_product_service, 6, 'Surcharge - Specific Vehicle', '$valid_from', '$valid_to', 0, 
+                    0, 0, 0, 'UNIT', 5, 'MRU'),
+                    
+                    ($id_product_service_cost, $id_product_service, 7, 'Extra Hour', '$valid_from', '$valid_to', 0, 
                     0, 0, 0, 'UNIT', 5, 'MRU')";
 
             $stmt3 = $con->prepare($sqlExtraCostTransfer);
@@ -320,6 +350,7 @@ try {
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 
     id_product,
+    id_product_service,
     valid_from,
     valid_to,
     id_dept,
@@ -362,6 +393,7 @@ $sqlLog = "INSERT INTO product_service_log (
     ) 
         VALUES (
             :id_product,
+            :id_product_service,
             :valid_from,
             :valid_to,
             :id_dept,
@@ -406,6 +438,7 @@ $sqlLog = "INSERT INTO product_service_log (
 $stmt = $con->prepare($sqlLog);
             $stmt->execute(array(
                 ":id_product" => $id_product,
+                ":id_product_service" => $id_product_service,
                 ":valid_from" => $valid_from,
                 ":valid_to" => $valid_to,
                 ":id_dept" => $id_dept,

@@ -10,12 +10,14 @@
 						<div id="chargeDetail" style="display:none;">0</div>
 						<!-- Add Toggle here -->
 						<div class="checkbox_tgl pull-right">
+							
+							<button type="button" class="btn btn-default" id="modalClosureDate" data-toggle="modal" data-target="#modal-closureDate">Special Closure Date</button>
+
 							<label>
-								<input id="on_api" type="checkbox" data-toggle="toggle" data-on="On Api" data-off="Off by Api" data-onstyle="success">
+								<input id="on_approved" class="testClass" type="checkbox" data-toggle="toggle" data-on="Live" data-off="Not Live" data-onstyle="success">
 							</label>
-						
 							<label>
-								<input id="on_approved" type="checkbox" data-toggle="toggle" data-on="Approved" data-off="Disapproved" data-onstyle="success">
+								<input id="on_api" class="testClass"  type="checkbox" data-toggle="toggle" data-on="On Api" data-off="Off by Api" data-onstyle="success" disabled>
 							</label>
 						</div>
 					</div>
@@ -23,6 +25,17 @@
 					<!-- form start -->
 					<form class="form-horizontal">
 						<div class="box-body">
+							<div class="form-group"> 
+								<label class="col-sm-2 control-label">Date</label>
+								<div class="col-sm-10">
+									<div class="input-group date datepicker-in">
+										<input type="text" name="daterange" id="daterangeServiceFromTo1" class="form-control" placeholder="dd-mm-yyyy"/>
+										<div class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</div>
+									</div>
+								</div>
+							</div>
 							<!-- Package Start -->
 							<div class="form-group">
 								<div id="is_package_blk">
@@ -52,18 +65,7 @@
 									<input type="text" class="form-control" id="id_product_type" style="display: none" value="0">
 								</div>
 							</div>
-							<div class="form-group"> 
-									<label class="col-sm-2 control-label"z>Date</label>
-									<div class="col-sm-10">
-										<div class="input-group date datepicker-in">
-											<input type="text" name="daterange" id="daterangeServiceFromTo" class="form-control" placeholder="dd-mm-yyyy"/>
-											<div class="input-group-addon">
-												<span class="glyphicon glyphicon-calendar"></span>
-											</div>
-										</div>
-									</div>
-									
-							</div>
+							
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Product</label>
 								<div class="col-sm-4">
@@ -107,7 +109,7 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Service</label>
 								<div class="col-sm-6" id="id_service_1">
-									<input type="text" class="form-control" id="service_name" placeholder="Name of the product">
+									<input type="text" class="form-control text-uppercase" id="service_name" placeholder="Name of the Service">
 								</div>
 
 								<div class="col-sm-6" id="id_service_2" style="display: none;">
@@ -241,6 +243,7 @@
 									</form>
 								</div>
 							</div>
+							
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Cancellation</label>
 								<div class="col-sm-10">
@@ -464,6 +467,73 @@
 		</div>
 	</div>
 </div>
+<!-- Modal 2 -->
+
+<!-- Modal -->
+<div class="modal fade" id="modal-closureDate" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Special Closure Date</h4>
+			</div>
+			<div class="modal-body">
+				<div class="col-md-12">
+					<!-- col 6 -->
+						<!-- date picker -->
+						<!-- description -->
+						<!-- Add Button -->
+					<!-- col 6 -->
+						<!-- table -->
+					<table class="table">
+						<thead>
+						</thead>
+						<tbody>
+							<tr id="addRow">
+								<td class="col-xs-3">
+									<div class="input-group date datepicker-in">
+										<input type="text" name="daterange" id="closure_date" class="form-control" placeholder="dd-mm-yyyy"/>
+										<div class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</div>
+									</div>
+								</td>
+
+								<td class="col-xs-3">
+									<input class="form-control" type="text" name="addDesc" placeholder="Enter Descrition" />
+								</td>
+								
+								<td class="col-xs-1 text-center">
+									<span class="addBtn" id="btnAddSpecialClosureDate">
+										<i class="fa fa-plus fa-lg" data-toggle="tooltip" title="Add Extra Field"></i>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="row" id="extraService">
+					<div class="col-md-12">
+						<div class="col-md-12">
+							<table class="table responsive" id="tbl-extraService">
+								<thead>
+									<tr>
+										<th scope="col">Name</th>
+										<th scope="col">Description</th>
+										<th scope="col">Charge Per Unit / Pax</th>
+										<th scope="col"></th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="pager"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal 2 end -->
 
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.

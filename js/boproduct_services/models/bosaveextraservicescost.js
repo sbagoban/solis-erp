@@ -2,15 +2,15 @@ function addExtraServiceCost(data) {
     $('#modal-extraServices').modal('show');
     $("#btn-saveProductServicesExtraCost").css("display", "block");
     $("#btn-updateProductServicesExtraCost").css("display", "none");
-    $("#charge_1").on('change', function() {
-        if ($(this).val() == 'UNIT'){
-            $(".blockPax").hide();
-			$(".blockUnit").show();
-        } else {
-            $(".blockPax").show();
-            $(".blockUnit").hide();
-        }
-    });
+    // $("#charge_1").on('change', function() {
+    //     if ($(this).val() == 'UNIT'){
+    //         $(".blockPax").hide();
+	// 		$(".blockUnit").show();
+    //     } else {
+    //         $(".blockPax").show();
+    //         $(".blockUnit").hide();
+    //     }
+    // });
 
     $('#btn-saveProductServicesExtraCost').click(function () {
         var ps_adult_cost = $('#ps_adult_cost_ex').val();

@@ -12,17 +12,19 @@ function allServicesGrid(added) {
             if ( aData.is_pakage == "Y" ){
                 $('td', nRow).css('background-color', '#bde8ff');
             }
-            $('#btnAddClaimTransfer', nRow).css('display', 'none');  
+            $('#btnAddClaimTransfer', nRow).css('display', 'none');
+            $('#btnAddClaimPackage', nRow).css('display', 'none');       
             if (servicetype == "TRANSFER") {
                 $('#btnAddProductServices', nRow).css('display', 'none');   
-                $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
+                $('#btnAddProductServicesExtra', nRow).css('display', 'none');
+                $('#btnAddClaimPackage', nRow).css('display', 'none');                
                 $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
             }
 
             if (servicetype == "ACTIVITY" && aData.is_pakage == "Y") {
                 $('#btnAddProductServices', nRow).css('display', 'none');   
                 $('#btnAddProductServicesExtra', nRow).css('display', 'none');                
-                $('#btnAddClaimTransfer', nRow).css('display', 'inline-flex');
+                $('#btnAddClaimPackage', nRow).css('display', 'inline-flex');
             }
         },  
         "processing" : true,
@@ -55,7 +57,16 @@ function allServicesGrid(added) {
         "columnDefs": [
         ],
         "columns" : [ {
-            "data" : "id_product_service"
+            data : null,
+                    render: function( data, type, row ) {
+                        var id_product_service = data.id_product_service;
+                        if (data.on_approved == "1") {
+                            var icon =  '<i class = "fa fa-check fa-check-circle" style="font-size:18px;color:#00a65a" title="Service line Live"></i> &nbsp; &nbsp;';
+                        } else {
+                            var icon =  '<i class = "fa fa-check fa-check-circle" style="font-size:18px;color:#e6e6e6" title="Service line Not Live"></i> &nbsp; &nbsp;';                            
+                        }
+                        return icon+ ' ' +id_product_service;
+                    }
         }, {
             "data" : "allName"
         }, {
@@ -88,7 +99,8 @@ function allServicesGrid(added) {
                 "defaultContent": 
                 '<div class="btn-group">' +
                 '<i id="btnAddProductServices" class="fa fa-fw fa-plus-circle" title="Product Service Cost"></i>' +
-                '<i id="btnAddClaimTransfer" class="fa fa-fw fa-money" title="Add Claim"></i>' +
+                '<i id="btnAddClaimTransfer" class="fa fa-fw fa-money" title="Add Claim Transfer"></i>' +
+                '<i id="btnAddClaimPackage" class="fa fa-fw fa-money" title="Add Claim Package"></i>' +
                 '<i id="btnAddProductServicesExtra"  class="fa fa-gg-circle" title="Extra Service"></i>' + 
                 '<i id="btnEditProduct" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
                 '<i id="btnDuplicateProductService" class="fa fa-fw fa-clone" title="Duplicate line"></i>' +
@@ -102,6 +114,11 @@ function allServicesGrid(added) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
                     addCostTransfer(data);
+                })
+                .on( 'click', '#btnAddClaimPackage', function (e) {
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    addCostPackage(data);
                 })
                 .on( 'click', '#btnDuplicateProductService', function (e) {
                     var table = $('#tbl-productServices').DataTable();
@@ -177,21 +194,21 @@ function serviceDelete(data) {
 // // Edit Product
 function serviceEdit(data) {
     if (data.on_api == 1) { 
-        $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
+        $('.toggle:eq(1)').addClass('btn-success').removeClass('btn-default off');
         $('#on_api').prop('checked', true);
     } else { 
-        $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
+        $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
         $('#on_api').prop('checked', false);
+        $(".toggle:eq(1)").removeClass("add_disabled");
     }
     if (data.on_approved == 1) { 
-        $('.toggle:eq(1)').addClass('btn-success').removeClass('btn-default off');
+        $('.toggle:eq(0)').addClass('btn-success').removeClass('btn-default off');
         $('#on_approved').prop('checked', true);
     } else { 
-        $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+        $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
         $('#on_approved').prop('checked', false);
     }
-    specificServiceSelected(data);
-    loadSelectedService(data);
+
     document.getElementById("idService").innerHTML = data.id_product_service;
     document.getElementById("chargeDetail").innerHTML = data.charge;
 
@@ -199,7 +216,7 @@ function serviceEdit(data) {
 	var time_all = time_duration.split(":");
 	var time_hours = time_all[0];
     var time_min = time_all[1];
-    $('#duration1').val(time_hours);    
+    $('#duration1').val(time_hours);
     $('#duration2').val(time_min);
 
 	var start_date = data.valid_from;
@@ -208,12 +225,14 @@ function serviceEdit(data) {
 	var date_from_m = date_from[1];
 	var date_from_d = date_from[2];
     var start_date = date_from_d+"/"+date_from_m+"/"+date_from_y;
+    var date_valid_from = date_from_y+"-"+date_from_m+"-"+date_from_d
 	var end_date = data.valid_to;
 	var date_to = end_date.split("-");
 	var date_to_y = date_to[0];
 	var date_to_m = date_to[1];
 	var date_to_d = date_to[2];
     var end_date = date_to_d+"/"+date_to_m+"/"+date_to_y;
+    var date_valid_to = date_to_y+"-"+date_to_m+"-"+date_to_d;
     var date_range = start_date+ " - " + end_date;
 
     if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
@@ -237,7 +256,17 @@ function serviceEdit(data) {
         $("#special_name_transfer option[value='HALF DAY']").show();
         $("#special_name_transfer option[value='NIGHT TOUR']").show();
     }
-    $('#daterangeServiceFromTo').val(date_range);
+    $('#daterangeServiceFromTo1').val(date_range);
+    $('#daterangeServiceFromTo1').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+        "autoApply": true,
+        "opens": "center",
+        startDate: start_date,
+        endDate: end_date
+    });
+
     $('#id_dept').val(data.id_dept);    
     $('#product_name').val(data.product_name);
     $('#id_country').val(data.id_country);
@@ -279,15 +308,22 @@ function serviceEdit(data) {
     var chkChild = document.getElementById("for_child");
     var chkTeen= document.getElementById("for_teen");
     var chkAdult= document.getElementById("for_adult");
-    
+
     if (data.is_pakage == 'N') { 
-        $('#services_cost').val([]).multiselect('refresh');
         $('#services_block').css("display", "none");
+        $("#services_cost option:selected").prop("selected", false);
+        $("#services_cost option").remove();
+        $('#services_cost').multiselect('rebuild');
         // $('#services_cost').val('');
+        //$("#services_cost").reset();
+        //serviceCost(data.id_product_service, date_valid_from, date_valid_to);
     }
-    if (data.is_pakage == 'Y') {      
+    if (data.is_pakage == 'Y') {
+        $("#services_cost").multiselect('destroy');
+        $("#services_cost").attr('multiple', 'multiple');
+        specificServiceSelected(data, data.id_product_service, date_valid_from, date_valid_to);
         $('#services_block').css("display", "block");
-        serviceCost();
+       // serviceCost(data.id_product_service, date_valid_from, date_valid_to);
     } 
 
     if (data.for_adult == 1){
@@ -388,7 +424,6 @@ function duplicateProductServices(data) {
     var id_service_type = urlParams.get("id_service_type"); 
     var id_product_type = urlParams.get("id_product_type");
     var servicetype = urlParams.get("servicetype");
-console.log(data);
     var objServiceDuplicate = {
         id_product_service :-1, //for new items, id is always -1
         id_product : data.id_product,
@@ -434,7 +469,9 @@ console.log(data);
         id_product_service_induded : 0,
         servicetype : servicetype,
         special_name : data.special_name,
-        max_adult : data.max_adult
+        max_adult : data.max_adult,
+        on_api : 0, 
+        on_approved : 0
     };
 
     const url_duplicate_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
@@ -446,17 +483,18 @@ console.log(data);
         cache: false,                                                                                     
         success : function(val){
             document.getElementById('id_prod_serv').innerHTML = val.id_product_service;
-            $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
             duplicateCost(data, val.id_product_service); 
             duplicateExtra(data, val.id_product_service);   
             duplicateExtraCost(data, val.id_product_service, val.id_product_service_cost); 
-            duplicateIncludedServices(data, val.id_product_service);          
-            allServicesGrid(); 
+            duplicateIncludedServices(data, val.id_product_service);
         },
         error: function(error) {
-            console.log('Error ${error}');
+            console.log('Error ${error}', error);
         }
     });
+    $('.toast_duplicate').stop().fadeIn(400).delay(2000).fadeOut(500);
+    var added = true;       
+    allServicesGrid(added);
 }
 
 function duplicateCost(data, id_prod_serv) {
@@ -531,7 +569,7 @@ function duplicateIncludedServices(data, id_prod_serv) {
 }
 
 function addCostTransfer(value) { 
-    console.log('check -->', value.id_product_service);
+    console.log('1', value);
     var objtransfercostdetails = {id_product_service: value.id_product_service};
     const url_transfer_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
     $.ajax({
@@ -539,7 +577,8 @@ function addCostTransfer(value) {
         method : "POST",
         data : objtransfercostdetails, 
         dataType: "json",                                                                                 
-        success : function(data){
+        success : function(data){            
+            console.log('test 1', data);
             id_product_service_cost = data[0].id_product_service_cost;
             var params = jQuery.param(value);
             window.location.href = "index.php?m=servicerate_claim&data=" +params + "&servicetype=" +"TRANSFER"+ "&id_product_service_cost="+id_product_service_cost;
@@ -550,3 +589,23 @@ function addCostTransfer(value) {
     });    
 }
 
+
+function addCostPackage(value) {
+    var objpackagecostdetails = {id_product_service: value.id_product_service};
+    const url_package_cost_details = "php/api/backofficeproduct/selecttransfercostdetails.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + value.id_product_service;
+    $.ajax({
+        url : url_package_cost_details,
+        method : "POST",
+        data : objpackagecostdetails,
+        dataType: "json",
+        success : function(data){
+            console.log('test', data);
+            id_product_service_cost = data[0].id_product_service_cost;
+            var params = jQuery.param(value);
+            window.location.href = "index.php?m=servicerate_claim&data=" +params + "&servicetype=" +"ACTIVITY"+ "&id_product_service_cost="+id_product_service_cost;
+        },
+        error: function(error) {
+            console.log('Error ${error}');
+        }
+    });    
+}

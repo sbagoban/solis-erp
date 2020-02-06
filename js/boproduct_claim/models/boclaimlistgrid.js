@@ -8,15 +8,22 @@ $(document).ready(function(){
     
     var product_name_1 = urlParams.get("product_name");
     var service_name_1 = urlParams.get("service_name");  
+    is_pakage_chk = urlParams.get("is_pakage");  
     var concat_name = product_name_1 + ' / ' + service_name_1;
     $("#product_name_dtl").val(concat_name);
 
-    allServicesGridClaim(id_product_service_cost, id_product_service_claim); 
+    allServicesGridClaim(id_product_service_cost, id_product_service_claim);
 });
 
 function allServicesGridClaim(id_product_service_cost,id_product_service_claim, addedClaim) {    
    // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
-    $('#tbl-productServicesClaim').DataTable({     
+    $('#tbl-productServicesClaim').DataTable({
+        "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+            if (is_pakage_chk == "Y") {
+                $('#btnAddExtraServicesClaim', nRow).css('display', 'none');
+                $('#block_extra').css('display', 'none');
+            }
+        }, 
         "processing" : true,
 
         "ajax" : {

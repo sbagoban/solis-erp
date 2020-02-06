@@ -198,7 +198,6 @@ function serviceCostEdit(data) {
         locale: {
             format: 'DD/MM/YYYY'
         },
-        "autoApply": true,
         "opens": "center",
         startDate : start_date,
         endDate : end_date,        

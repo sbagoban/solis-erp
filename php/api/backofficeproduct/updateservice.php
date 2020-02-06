@@ -205,7 +205,22 @@
                 ":max_adult" => $max_adult, 
                 ":on_api" => $on_api, 
                 ":on_approved" => $on_approved));
-
+                
+        if ($servicetype == 'TRANSFER') {            
+            $sqlUpdateCostTransfer = "UPDATE product_service_cost SET 
+                valid_from =:valid_from,
+                valid_to =:valid_to,
+                charge =:charge
+                WHERE id_product_service=:id_product_service";
+            $stmt2 = $con->prepare($sqlUpdateCostTransfer); 
+            $stmt2->execute(array(
+                ":id_product_service" => $id_product_service,
+                ":valid_from" => $valid_from,
+                ":valid_to" => $valid_to,
+                ":charge" => $charge
+            ));
+        }
+        
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 
     id_product,

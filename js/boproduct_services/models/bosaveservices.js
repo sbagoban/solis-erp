@@ -4,18 +4,24 @@ $(document).ready(function(){
     var product_name = urlParams.get("product_name");
     var servicetype = urlParams.get("servicetype");
     $('#product_name').val(product_name);
-	$('#daterangeServiceFromTo').daterangepicker({
+	$('#daterangeServiceFromTo1').daterangepicker({
 		"showDropdowns": true,
-		"autoApply": true,
 		"opens": "center",
 		locale: {
 					format: 'DD/MM/YYYY'
-				}
+                },
+                function() {
+                    var date = $("#daterangeServiceFromTo1").val();
+                    var replaced = date.split(' ').join('')
+                    console.log(date);
+                }
+                
     });
+    
     if (servicetype == 'TRANSFER') {
         $('.adult_blk').css("display", "block");
     }
-    
+   // loadSelectedService();
 });
 
 function changeTransfer() {
@@ -47,8 +53,8 @@ function saveService() {
     var id_product_type = urlParams.get("id_product_type");
 
     var product_name = urlParams.get("product_name");
-	var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
-	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
+	var valid_from = $("#daterangeServiceFromTo1").data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var valid_to = $("#daterangeServiceFromTo1").data('daterangepicker').endDate.format('YYYY-MM-DD');
     var product_name = product_name;
     var id_dept = $('#id_dept').val();
     var id_country = $('#id_country').val();
@@ -96,6 +102,7 @@ function saveService() {
     } else  { 
         var on_approved_1 = 0;
     }
+
     if (is_pakage == 'N') { 
         id_product_service_induded = 0;
     } 
@@ -166,7 +173,7 @@ function saveService() {
             } else {
                 var special_name = specialNameTransfer();
             }
-        console.log('-->', special_name);
+
         var id_creditor = 0;
         var id_tax = '3';
         for_adult = 1;
@@ -229,6 +236,7 @@ function saveService() {
             on_api : on_api_1, 
             on_approved : on_approved_1
         };
+    
         const url_save_service = "php/api/backofficeproduct/saveservice.php?t=" + encodeURIComponent(global_token);
         if (is_pakage == 'N' || (is_pakage == 'Y' &&  id_product_service_induded.length > 0)) { 
             $.ajax({
@@ -252,7 +260,6 @@ function saveService() {
 
     } else {
         // Edit Drop Down Services - Delete first and the Saved
-        console.log('is_pakage', is_pakage);
         if (servicetype != 'TRANSFER' && is_pakage == 'Y') {
             editServicesInclude(id_product_service_induded);
         }
@@ -313,7 +320,7 @@ function saveService() {
                 data : objServiceUpdate,                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 success : function(data){
                     console.log('value', data);
-                    resetServicesForm();
+                    //resetServicesForm();
                     //allServicesGrid();
                     $('.toast_update').stop().fadeIn(400).delay(3000).fadeOut(500);
                 },
@@ -340,13 +347,14 @@ function saveService() {
 		allServicesGrid();
     }
     document.getElementById("idService").innerHTML = 0;
-    document.getElementById("chargeDetail").innerHTML = 0;
+    document.getElementById("chargeDetail").innerHTML = '';
 }
 
 function dateManipulationDuration() {
-    var hrs = document.getElementById('duration1').value;    
+    var hrs = document.getElementById('duration1').value;
     var min = document.getElementById('duration2').value;
-    if (hrs == ' ' || min ==' ') {
+    console.log(hrs);
+    if (hrs == '' || min =='') {
         ret = '00:00';
     } else {
         var ret = "";
@@ -359,12 +367,12 @@ function dateManipulationDuration() {
 function resetServicesForm() {
     $('#valid_from').val('');
     $('#valid_to').val('');
-    $('#id_dept').val('');
-    $('#id_country').val('');
-    $('#id_coast').val('');
+    $('#id_dept').val(19);
+    $('#id_country').val(913);
+    $('#id_coast').val('Select an option');
     $('#service_name').val('');
-    $('#id_tax').val('');
-    $('#charge').val('');
+    $('#id_tax').val(3);
+    $('#charge').val('PAX');
     $('#duration1').val('');    
     $('#duration2').val('');
     //$('#transfer_included').val('');
@@ -407,14 +415,16 @@ function resetServicesForm() {
     $('#special_name_transfer').val('');
     $('#special_name').val('');
     $('#max_adult').val('');
-    $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
-    $('#on_api').prop('checked', false);
     $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
-    $('#on_approved').prop('checked', false);
+    $('#on_api').prop('checked', false);
+    $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
+    $('#on_approved').prop('checked', false);    
+    document.getElementById("idService").innerHTML = 0;
+    document.getElementById("chargeDetail").innerHTML = '';
     
 }
 
-function specificServiceSelected(val) { 
+function specificServiceSelected(val, idserv, date_valid_from, date_valid_to) { 
     const url_selected_service = "php/api/backofficeproduct/populateselectedservice.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + val.id_product_service; 
     $.ajax({
         type: "POST",
@@ -426,16 +436,14 @@ function specificServiceSelected(val) {
                 var valArr = [data];
                 valArr.forEach(myFunction);
                 function myFunction(value) {
-                    loadSelectedService(value);             
+                    loadSelectedService(value, idserv, date_valid_from, date_valid_to);
                 }
         }    
     });
 }
 
-function loadSelectedService(value) {
-    $("#services_block").css("display", "block");
-    console.log('-->', value);
-    const url_service_selected = "php/api/backofficeproduct/selectservicecost.php?t=" + encodeURIComponent(global_token); 
+function loadSelectedService(value, idserv, date_valid_from, date_valid_to) {
+    const url_service_selected = "php/api/backofficeproduct/selectservicecostpackage.php?t=" + encodeURIComponent(global_token)+ "&id_product_service=" + idserv + "&valid_from=" + date_valid_from+ "&valid_to=" + date_valid_to;
     $.ajax({
         type: "POST",
         url: url_service_selected,
@@ -446,14 +454,14 @@ function loadSelectedService(value) {
                 $("#services_cost").attr('multiple', 'multiple');
                 $("#services_cost").empty();
                 $.each(data, function (key, val) {
-                    $("#services_cost").append('<option value="' + val.id_product_service_cost + '">' + val.service_name + '</option>');
+                    $("#services_cost").append('<option value="' + val.id_product_service + '">' +  val.product_name + ' / ' + val.service_name  + '</option>');
                 }); 
                 arrToSelected = [];
                 for (var i = 0, l = value.length; i < l; i++) {
                     var objSelected = value[i].id_product_service_induded;
                     arrToSelected.push(objSelected);
                     $("#services_cost").find("option[value=" + objSelected + "]").prop("selected", true)
-                    $("#services_cost").multiselect("refresh")    
+                    $("#services_cost").multiselect("refresh");
                 }
                 $("#services_cost").multiselect({
                     buttonWidth: '295px',

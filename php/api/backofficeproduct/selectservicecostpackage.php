@@ -12,11 +12,21 @@ if (!isset($_GET["t"])) {
 if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
-// if (!isset($_GET["id_product_service"])) {
-//     throw new Exception("INVALID ID". $_GET["id_product_service"]);
-// }
+if (!isset($_GET["id_product_service"])) {
+    throw new Exception("INVALID ID". $_GET["id_product_service"]);
+}
 
-// $id_product_service = $_GET["id_product_service"];
+if (!isset($_GET["valid_from"])) {
+    throw new Exception("INVALID Date from". $_GET["valid_from"]);
+}
+
+if (!isset($_GET["valid_to"])) {
+    throw new Exception("INVALID Date to". $_GET["valid_to"]);
+}
+
+$id_product_service = $_GET["id_product_service"];
+$valid_from = $_GET["valid_from"];
+$valid_to = $_GET["valid_to"];
 
 require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
@@ -37,9 +47,23 @@ JOIN tbldepartments TD on PRS.id_dept = TD.id
 JOIN product PR on PS.id_product = PR.id_product
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN tblservicetype TSC on PR.id_service_type = TSC.id
-WHERE PRS.active = 1");
-// AND TSC.servicetype = 'ACTIVITY'");
-$query_c->execute();
+WHERE PS.id_product_service <> $id_product_service
+AND PRS.valid_from >= '$valid_from'
+AND PRS.valid_to <= '$valid_to'
+AND PS.service_name != 'OTHER COAST'
+AND PS.service_name != 'INTER HOTEL'
+AND PS.service_name != 'SOUTH EAST'
+AND PRS.active = 1
+AND PS.is_pakage = 'N'
+AND PR.active = 1");
+$query_c->execute(array(
+    ":id_product_service"=>$id_product_service,
+    ":valid_from"=>$valid_from,
+    ":valid_to"=>$valid_to,
+    ":service_name"=>'OTHER COAST',
+    ":service_name"=>'INTER HOTEL',
+    ":service_name"=>'SOUTH EAST'
+));
 $row_count_c = $query_c->rowCount();
 
 if ($row_count_c > 0) {
