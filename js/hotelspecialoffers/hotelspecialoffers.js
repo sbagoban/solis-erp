@@ -14065,7 +14065,48 @@ function hotelspecialoffers()
 
         layout_flatrate_capacitycombii.cells("a").attachHTMLString(combii);
     }
+    
+    function validate_room_capacity_overlapping(category, rule_capacity, min, max, age_from, age_to)
+    {
+        if(max == 0 || category != "CHILD")
+        {
+            return true; //no need to worry
+        }
+        
+        for (var l = 0; l < rule_capacity.length; l++)
+        {
+            if (rule_capacity[l].capacity_action != "DELETE" && rule_capacity[l].capacity_category == "CHILD")
+            {
+                var _min = rule_capacity[l].capacity_minpax;
+                var _max = rule_capacity[l].capacity_maxpax;
 
+                var _age_from = rule_capacity[l].capacity_child_agefrom;
+                var _age_to = rule_capacity[l].capacity_child_ageto;
+
+                if (_min == "") {
+                    _min = 0;
+                }
+                if (_max == "") {
+                    _max = 0;
+                }
+                
+                _max = parseInt(_max, 10);
+                
+                if(_max > 0)
+                {
+                    if(_age_from != age_from || _age_to != age_to)
+                    {
+                        if (_age_from <= age_to && age_from <= _age_to)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
 
     function validate_room_capacity(roomid)
     {
@@ -14101,8 +14142,13 @@ function hotelspecialoffers()
                                 {
                                     if (rule_capacity[l].capacity_action != "DELETE")
                                     {
+                                        var category = rule_capacity[l].capacity_category;
+                                        
                                         var min = rule_capacity[l].capacity_minpax;
                                         var max = rule_capacity[l].capacity_maxpax;
+                                        
+                                        var age_from = rule_capacity[l].capacity_child_agefrom;
+                                        var age_to = rule_capacity[l].capacity_child_ageto;
 
                                         if (min == "") {
                                             min = 0;
@@ -14111,12 +14157,28 @@ function hotelspecialoffers()
                                             max = 0;
                                         }
 
-                                        if (min > max)
+                                        //check for overlapping with other age ranges
+                                        if (!validate_room_capacity_overlapping(category, rule_capacity, min, max, age_from, age_to))
+                                        {
+                                            dhtmlx.alert({
+                                                text: "<b>Overlapping</b> with other date ranges. Please recheck selected entries..",
+                                                type: "alert-warning",
+                                                title: "Validate Capacity",
+                                                callback: function () {
+                                                    var nodeid = "DATE_" + err_room_date_rwid;
+                                                    tree_roomdates.selectItem(nodeid, true, false);
+                                                    grid_capacity_age.selectRowById(err_room_date_rule_rwid, false, true, false);
+                                                }
+                                            });
+
+                                            return false;
+                                            
+                                        } else if (min > max)
                                         {
                                             dhtmlx.alert({
                                                 text: "<b>Minimum</b> Values cannot be greater than <b>Maximum</b> Values. Please recheck selected entries..",
                                                 type: "alert-warning",
-                                                title: "GENERATE COMBINATION",
+                                                title: "Validate Capacity",
                                                 callback: function () {
                                                     var nodeid = "DATE_" + err_room_date_rwid;
                                                     tree_roomdates.selectItem(nodeid, true, false);

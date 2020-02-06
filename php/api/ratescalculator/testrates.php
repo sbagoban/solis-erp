@@ -54,17 +54,29 @@ try {
     $outcome = _rates_calculator($con, $arr_params);
     
     
-    $arr_params["max_pax"] = $arr_params["spo_party_pax"];
-    $arr_params["booking_date"] = $arr_params["spo_booking_date"];
-    $arr_params["travel_date"] = $arr_params["spo_travel_date"];
-    $arr_params["wedding_interested"] = $arr_params["spo_chk_is_wedding"];
-    $arr_params["suppmealplan"] = $arr_params["supp_mealplan"];
-    $arr_params["arr_adults"] = $arr_params["adults"];
-    $arr_params["arr_children"] = $arr_params["children"];
+    $arr_params_test["checkin_date"] = "2019-04-01";
+    $arr_params_test["checkin_time"] = "";
+    $arr_params_test["checkout_date"] = "2019-04-05";
+    $arr_params_test["checkout_time"] = "";
+    $arr_params_test["mealplan"] = 6;
+    $arr_params_test["suppmealplan"] = 4;
+    $arr_params_test["country"] = 845;
+    $arr_params_test["touroperator"] = 10;
+    $arr_params_test["hotel"] = 19;
+    $arr_params_test["hotelroom"] = 6;
+    $arr_params_test["max_pax"] = 4;
+    $arr_params_test["booking_date"] = "2019-04-01";
+    $arr_params_test["travel_date"] = "2019-04-01";
+    $arr_params_test["wedding_interested"] = 1;
+    
+    $arr_params_test["arr_pax"] = array();
+    $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
+    $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
+    $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
+    
     
     $test = array();
-    //$test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params);
-    //$test = _rates_calculator_reservation_get_ad_ch_categories($con, 5, $arr_params);
+    $test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params_test);
 
     echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome, "TEST"=>$test));
 } catch (Exception $ex) {

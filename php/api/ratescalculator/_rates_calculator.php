@@ -20,6 +20,17 @@ function _rates_calculator($con, $arr_params) {
         $checkout_dMY = new DateTime($arr_params["checkout_date"]);
         $checkout_dMY = $checkout_dMY->format("d M Y");
         $num_nights = _rates_calculator_get_numnights($checkin_date, $checkout_date);
+        
+        if($num_nights <= 0)
+        {
+            $time_post = microtime(true);
+            $exec_time = round(($time_post - $time_pre), 2);
+                
+            return array("OUTCOME" => "NUMBER OF NIGHTS MUST BE >= 1",
+                    "DAILY" => array(),
+                    "NUM NIGHTS" => $num_nights,
+                    "EXEC_TIME" => $exec_time);
+        }
 
         $arr_params["checkin_dmy"] = $checkin_dMY;
         $arr_params["checkout_dmy"] = $checkout_dMY;
@@ -6429,17 +6440,12 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
      *     @type Date       $travel_date        travel date in yyyy-mm-dd
      *     @type Integer    $max_pax            maximum passengers in reservation
      *     @type Boolean    $wedding_interested if interested in wedding SPOS (1/0)
-     *     @type array      $arr_adults {
-     *          Array of adults details
-     *          @type Integer $count        index of adult
-     *          @type Integer $age          age of the adult
+     *     @type array      $arr_pax {
+     *          Array of adults/children details mixed together
+     *          @type Integer $count        index of child/adult
+     *          @type Integer $age          age of the child/adult. If no age, then is adult
      *          @type String  $bride_groom  if adult if bride or groom or none. values = {"BRIDE","GROOM",""}
      *     }      
-     *     @type array      $arr_children {
-     *          Array of children details
-     *          @type Integer $count        index of child
-     *          @type Integer $age          age of the child
-     *     } 
      * }
      * @return array An array of cost/claim amounts per pax for above parameters
      * 
@@ -6457,18 +6463,11 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     $checkout_time = $arr_params_resa["checkout_time"]; //HH:mm
     $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
     $max_pax = $arr_params_resa["max_pax"];
-    $arr_adults = $arr_params_resa["arr_adults"];
-    $arr_children = $arr_params_resa["arr_children"];
-
-    //preformat the $arr_children to know if SHARING or OWN
-    $flg_sharing_own = "SHARING";
-    if (count($arr_adults) == 0) {
-        $flg_sharing_own = "OWN";
-    }
-    for ($i = 0; $i < count($arr_children); $i++) {
-        $arr_children[$i]["sharing_own"] = $flg_sharing_own;
-    }
-
+    $arr_pax = $arr_params_resa["arr_pax"];
+    
+    
+    //$arr_children_ages = $arr_params_resa["arr_children_ages"];
+    $arr_limits = array();
 
     $resa_rates = -1; //to be decided below:
     //=========================================
@@ -6535,18 +6534,8 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     $arr_params["spo_travel_date"] = $travel_date;
     $arr_params["spo_party_pax"] = $max_pax;
     $arr_params["spo_chk_is_wedding"] = $wedding_interested;
-    $arr_params["adults"] = $arr_adults;
-    $arr_params["children"] = $arr_children;
-
-
-    //==========================================
-    //get the SPO 
-    $arr_params["spo_chosen"] = "CHOICE";
-    $arr_spos = _rates_calculator_reservation_get_applicable_spos($con, $arr_params);
-    if ($arr_spos["OUTCOME"] != "OK") {
-        return $arr_spos["OUTCOME"];
-    }
-
+    
+    //$arr_params["children_ages"] = $arr_children_ages;
 
     //================================================================
     //get age policies
@@ -6554,6 +6543,23 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     $_arr_params["current_contract_id"] = $contractid;
     $arr_age_policies = _rates_calculator_get_children_agegroups($_arr_params, $con, "CONTRACT");
     //===========================================================
+    //
+    //split the pax array into adults and children
+    $arr_ad_ch = _rates_calculator_reservation_split_pax_arrays($arr_pax, $arr_age_policies);
+    $arr_params["adults"] = $arr_ad_ch["ADULTS"];
+    $arr_params["children"] = $arr_ad_ch["CHILDREN"];
+    //===========================================================
+    
+    //==========================================
+    //get the SPO 
+    $arr_params["spo_chosen"] = "CHOICE";
+    $arr_spos = _rates_calculator_reservation_get_applicable_spos($con, $arr_params);
+    if ($arr_spos["OUTCOME"] != "OK") {
+        return $arr_spos["OUTCOME"];
+    }
+    
+    //===============================================================
+    
     //get the room type: UNITS or PAX
     $room_variant = "PERSONS";
     $sql = "select * from tblservice_contract_roomcapacity 
@@ -6574,6 +6580,9 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
 
         $currency_cost_id = $row["mycostprice_currencyfk"];
     }
+    //===========================================================
+    //get the limits possibilities for the adults and children provided
+    //$arr_limits = _rates_calculator_get_pax_limits($arr_params, $con, $contractid, $room_variant);
     //===========================================================
     //now launch the rates calculator with/without SPO:
     //run rates calculator with LOWEST SPO applied
@@ -6599,14 +6608,18 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     //success in lookup
     //proceed with extracting the amounts
 
-
     $currency_sell_id = $arr_outcome_without_spo["DAILY"][0]["CURRENCY_SELL_ID"];
 
     $arr_colidx = _rates_calculator_reservation_get_columns_cost_sp_colindex($arr_outcome_without_spo["COLUMNS"]);
     $cost_colidx = $arr_colidx["COST_IDX"];
     $sp_colidx = $arr_colidx["SP_IDX"];
-
-
+    
+    //=====================================================
+    
+    $arr_daily_status = _rates_calculator_reservation_get_daily_status($arr_outcome_without_spo["DAILY"]);
+    
+    //=====================================================
+    
     //for each adult in arr_adults, lookup the amounts
     $arr_adult_rates = _rates_calculator_reservation_get_cost_claim_per_pax(
             $arr_outcome_without_spo["DAILY"][0]["COSTINGS_WORKINGS"],
@@ -6631,6 +6644,8 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         "CONTRACT_ID" => $contractid,
         "ROOM_TYPE" => $room_variant,
         "ROOM_ID" => $hotelroom,
+        "PAX_LIMITS" => $arr_limits,
+        "DAILY_STATUS"=>$arr_daily_status,
         "COST_CURRENCY_ID" => $currency_cost_id,
         "CLAIM_CURRENCY_ID" => $currency_sell_id,
         "COST_CLAIM_AMOUNTS" => $arr_amounts,
@@ -6640,6 +6655,79 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
 
 
     return $arr_return;
+}
+
+
+function _rates_calculator_reservation_get_daily_status($arr_daily)
+{
+    $arr_status = array();
+    
+    for($i = 0; $i < count($arr_daily); $i++)
+    {
+        $arr_status[] = array("DATE"=>$arr_daily[$i]["DATE"], "STATUS"=>$arr_daily[$i]["STATUS"]);
+                
+    }
+    
+    return $arr_status;
+}
+
+function _rates_calculator_reservation_split_pax_arrays($arr_pax, $arr_age_policies)
+{
+    $arr_adults = array();
+    $arr_children = array();
+    
+    
+    //==================================================
+    //get the max age for a child
+    $max_age = -1;
+    for($i = 0; $i < count($arr_age_policies); $i++)
+    {
+        $age_to = $arr_age_policies[$i]["AGETO"];
+        if($max_age == -1)
+        {
+            $max_age = $age_to;
+        }
+        else if($max_age < $age_to)
+        {
+            $max_age = $age_to;
+        }
+    }
+    //==================================================     
+    $age_adult  = $max_age+1;
+    
+    //now split the array into adults and children categories
+    $adult_count = 0;
+    $child_count = 0;
+    
+    for($i = 0; $i < count($arr_pax); $i++)
+    {
+        $age = trim($arr_pax[$i]["age"]);
+        $bride_groom = $arr_pax[$i]["bride_groom"];
+        
+        if($age == "" || $age >= $age_adult)
+        {
+            $adult_count ++;
+            $arr_adults[] = array("count"=>$adult_count, "age"=>$age,"bride_groom"=>$bride_groom);
+        }
+        else
+        {
+            $child_count ++;
+            $arr_children[] = array("count"=>$child_count, "age"=>$age,"sharing_own"=>"");
+        }
+    }
+    
+    //==================================================
+    //preformat the $arr_children to know if SHARING or OWN
+    $flg_sharing_own = "SHARING";
+    if (count($arr_adults) == 0) {
+        $flg_sharing_own = "OWN";
+    }
+    for ($i = 0; $i < count($arr_children); $i++) {
+        $arr_children[$i]["sharing_own"] = $flg_sharing_own;
+    }
+    //==================================================
+    
+    return array("ADULTS"=>$arr_adults,"CHILDREN"=>$arr_children);
 }
 
 function _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant) {
@@ -6808,21 +6896,20 @@ function _rates_calculator_reservation_get_ad_ch_categories($con, $contractid, $
      * @return array of adult/children single/double/triple....
      * 
      */
-    
     $hotelroom = $arr_params_resa["hotelroom"];
     $checkin_date = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
     $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
-    
-    
-    
-    $arr_capacity = _contract_capacityarr($con, $contractid);    
-    
+
+
+
+    $arr_capacity = _contract_capacityarr($con, $contractid);
+
     //reformat my parameters
     $arr_params["arr_capacity"] = $arr_capacity;
     $arr_params["hotelroom"] = $hotelroom;
-    
+
     $room_details = _rates_calculator_get_room_details($arr_params);
-    
+
     //get the room type
     $room_variant = $room_details["room_variants"];
 
@@ -6840,18 +6927,16 @@ function _rates_calculator_reservation_get_ad_ch_categories($con, $contractid, $
     //=================================================
     //GENERATE THE ADULT GRID
     $arr_adults = array();
-    
+
     $arr_adultpolicies_rules = $rules["date_adultpolicies_rules"];
-            
+
     //get the adult max and min
-    if($room_variant == "PERSONS")
-    {
+    if ($room_variant == "PERSONS") {
         $adult_max = _rates_calculator_reservation_get_ad_max($rules["date_capacity_rules"], "ADULT");
-        
-        for($i = 1; $i <= $adult_max; $i++)
-        {   
+
+        for ($i = 1; $i <= $adult_max; $i++) {
             //===========================
-            
+
             $basis = "";
             for ($b = 0; $b < count($arr_adultpolicies_rules); $b++) {
                 if ($i == $arr_adultpolicies_rules[$b]["rule_category"]) {
@@ -6862,48 +6947,45 @@ function _rates_calculator_reservation_get_ad_ch_categories($con, $contractid, $
                         $basis = "1/$i";
                     } else if ($basis == "n") {
                         $basis = "$i";
-                    } 
+                    }
                 }
             }
-            
+
             //===========================
-            
+
             if ($i == 1) {
-                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"SINGLE", "BASIS"=>$basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "SINGLE", "BASIS" => $basis);
             } else if ($i == 2) {
-                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"DOUBLE", "BASIS"=>$basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "DOUBLE", "BASIS" => $basis);
             } else if ($i == 3) {
-                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"TRIPLE", "BASIS"=>$basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "TRIPLE", "BASIS" => $basis);
             } else if ($i == 4) {
-                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"QUADRUPLE", "BASIS"=>$basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "QUADRUPLE", "BASIS" => $basis);
             } else if ($i >= 5) {
-                $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"$i-PAX", "BASIS"=>$basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "$i-PAX", "BASIS" => $basis);
             }
-            
+
             //===========================
-        }    
-    }
-    else
-    {
+        }
+    } else {
         $adult_max = _rates_calculator_reservation_get_ad_max($rules["date_capacity_rules"], "ADDITIONALPERSONS");
-        
-        for($i = 1; $i <= $adult_max; $i++)
-        {
-            $arr_adults[] = array("INDEX"=>$i, "CAPTION"=>"EXTRA ADULT $i");
+
+        for ($i = 1; $i <= $adult_max; $i++) {
+            $arr_adults[] = array("INDEX" => $i, "CAPTION" => "EXTRA ADULT $i");
         }
     }
-    
-   
+
+
     $arr_return = array("OUTCOME" => "OK",
-            "ROOM_TYPE" => $room_variant, "ADULT" => $arr_adults);
-    
-    
+        "ROOM_TYPE" => $room_variant, "ADULT" => $arr_adults);
+
+
     return $arr_return;
 }
 
 function _rates_calculator_reservation_get_ad_max($rules, $category) {
     $max_adult_count = 0;
-		
+
     for ($j = 0; $j < count($rules); $j++) {
 
         $arrrule_capacity = $rules[$j]["rule_capacity"];
@@ -6925,7 +7007,185 @@ function _rates_calculator_reservation_get_ad_max($rules, $category) {
     }
 
     return $max_adult_count;
+}
+
+function _rates_calculator_get_pax_limits($arr_params, $con, $contractid, $room_variant) {
+    //for the number of adults and children in the parameters
+    //determine the max for adults and each age group provided
+
+    $arr_limits = array("ADULT" => 0, "CHILDREN" => ARRAY());
+
+    $arr_adults = $arr_params["adults"];
+    $arr_children = $arr_params["children"];
+
+    $adult_count = count($arr_adults);
+
+    //get the contract age groups
+    $arr_params["current_contract_id"] = $contractid;
     
+    $arr_resa_children_ages = $arr_params["children_ages"];
+    
+    //regroup the children in the reservation by the age groups above
+    $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $arr_children, $con, "CONTRACT");
+
+    //load the capacity
+    $arr_capacity = _contract_capacityarr($con, $contractid);
+
+    $hotelroom = $arr_params["hotelroom"];
+    $checkin_date = $arr_params["checkin_date"]; //yyyy-mm-dd
+
+    $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $checkin_date);
+
+    if (is_null($rules)) {
+        return $arr_limits;
+    }
+
+    $arr_capacity_rules = $rules["date_capacity_rules"];
+
+    if ($room_variant == "PERSONS") {
+        $arr_rules = _rates_calculator_get_pax_limits_persons($arr_capacity_rules, $adult_count, $arr_group_children, $arr_resa_children_ages);
+
+        $arr_limits = $arr_rules;
+    } else {
+
+
+       //PENDING
+    }
+
+    return $arr_limits;
+}
+
+function _rates_calculator_get_pax_limits_persons($arr_capacity_rules, $adult_count, $arr_group_children, $arr_resa_children_ages) {
+
+    $arr_limits = array();
+
+    for ($i = 0; $i < count($arr_capacity_rules); $i++) {
+        
+        $therule = $arr_capacity_rules[$i];
+
+        //test the rule respects children ages limits
+        //also test the rule that its adult ranges is within the adult count
+        $flg = _rates_calculator_get_pax_limits_persons_test_rule($therule["rule_capacity"], $adult_count, $arr_group_children, $arr_resa_children_ages);
+
+        if ($flg) {
+            $arr_limits[] = $therule["rule_capacity"];
+        }
+    }
+
+    return $arr_limits;
+}
+
+function _rates_calculator_get_pax_limits_persons_test_rule_age_resa($age, $therule_capacity)
+{
+    for ($j = 0; $j < count($therule_capacity); $j++) {
+        $capacity_category = $therule_capacity[$i]["capacity_category"];
+        if ($capacity_category == "CHILD") {
+            $capacity_child_agefrom = $therule_capacity[$i]["capacity_child_agefrom"];
+            $capacity_child_ageto = $therule_capacity[$i]["capacity_child_ageto"];
+            
+            if($capacity_child_agefrom <= $age && $age <= $capacity_child_ageto)
+            {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+function _rates_calculator_get_pax_limits_persons_test_rule($therule_capacity, $adult_count, $arr_group_children, $arr_resa_children_ages) {
+    
+    //first test if all ages in $arr_resa_children_ages are within the children ages in $therule_capacity
+    for($i = 0; $i < count($arr_resa_children_ages); $i++)
+    {
+        $age = $arr_resa_children_ages[$i];
+        
+        if(!_rates_calculator_get_pax_limits_persons_test_rule_age_resa($age, $therule_capacity))
+        {
+            return false;
+        }
+    }
+    
+    //===========================================================================
+    //now more specific check: see if the pax ranges for adults and children are respected in the rule
+    $flg_seen_adult = false;
+    $flg_seen_children = false;
+
+
+    for ($i = 0; $i < count($therule_capacity); $i++) {
+        $capacity_category = $therule_capacity[$i]["capacity_category"];
+        $min_pax = $therule_capacity[$i]["capacity_minpax"];
+        $max_pax = $therule_capacity[$i]["capacity_maxpax"];
+
+        if ($min_pax == "") {
+            $min_pax = 0;
+        }
+        if ($max_pax == "") {
+            $max_pax = 0;
+        }
+
+        //====================================================
+
+        if ($capacity_category == "ADULT") {
+            $flg_seen_adult = true;
+            if ($adult_count < $min_pax || $adult_count > $max_pax) {
+                return false;
+            }
+        }
+
+        //====================================================
+        else if ($capacity_category == "CHILD") {
+            $capacity_child_agefrom = $therule_capacity[$i]["capacity_child_agefrom"];
+            $capacity_child_ageto = $therule_capacity[$i]["capacity_child_ageto"];
+
+            //rule: 0-11
+            //resa: 0-1; 2-11<-- 12-17
+            //return the total children $arr_group_children where age_from and age_to match
+            $ch_count = _rates_calculator_get_pax_limits_persons_test_rule_ages_get_index($capacity_child_agefrom, $capacity_child_ageto, $arr_group_children);
+
+            if ($ch_count < $min_pax || $ch_count > $max_pax) {
+                return false;
+            }
+        }
+
+        //====================================================
+    }
+
+    //====================================================
+    //was expecting to see an adult but current rule tested as an own room one
+    if (!$flg_seen_adult && $adult_count > 0) {
+        return false;
+    }
+
+    //====================================================
+    //now test that all age ranges in $arr_group_children have been processed from $therule_capacity
+    for ($j = 0; $j < count($arr_group_children); $j++) {
+
+        $age_from = $arr_group_children[$j]["AGFROM"];
+        $age_to = $arr_group_children[$j]["AGTO"];
+
+        if (count($arr_group_children[$j]["CHILDREN"]) > 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function _rates_calculator_get_pax_limits_persons_test_rule_ages_get_index($capacity_child_agefrom, $capacity_child_ageto, $arr_group_children) {
+    
+    $total = 0;
+    for ($j = 0; $j < count($arr_group_children); $j++) {
+
+        $age_from = $arr_group_children[$j]["AGFROM"];
+        $age_to = $arr_group_children[$j]["AGTO"];
+
+        if ($capacity_child_agefrom <= $age_from && $age_to <= $capacity_child_ageto) {
+            $total += count($arr_group_children[$j]["CHILDREN"]);
+        }
+    }
+
+    return $total;
 }
 ?>
 
