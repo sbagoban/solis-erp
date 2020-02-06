@@ -235,26 +235,28 @@ function validateAgePolicy() {
     var chkadult = document.getElementById("for_adult");
 
     var age_inf_to = document.getElementById("age_inf_to").value;
+    var age_inf_from = document.getElementById("age_inf_from").value;
     var age_child_to = document.getElementById("age_child_to").value;
 
     var age_teen_from = document.getElementById("age_teen_from").value;
     var age_teen_to = document.getElementById("age_teen_to").value;
 
-    var min_age = document.getElementById("min_age").value;
-    var max_age_product = document.getElementById("max_age").value;
+    var min_age = document.getElementById("min_age").valueAsNumber;
+    var max_age_product = document.getElementById("max_age").valueAsNumber;
 
-    var max_age_product_t = document.getElementById("max_age").value;
-   
     var inf_age = $('#age_inf_to').val();
     var child_age_chk = ++inf_age;
 
     var child_age = $('#age_child_to').val();
     var teen_age_chk = ++child_age;
 
+    console.log(chkteen.checked && (age_teen_from == 0 || age_teen_from == null));
+    console.log(age_teen_from);
+
     if (chkinfant.checked && (age_inf_to == 0 || age_inf_to == null)) {
             alert('Please Fill in the age "to" for infant.');
     }   
-    
+
     else if (chkchild.checked && (age_child_to == 0 || age_child_to == null)) {
             alert('Please Fill in the age "to" for child.');
     }   
@@ -267,27 +269,48 @@ function validateAgePolicy() {
             alert('Please Fill in the age "from" for teen.');
     }   
     
-    else if (chkadult.checked && (min_age == 0 || min_age == null)) {
-            alert('Please Fill in the age "Min Age" for Adult.');
-    }   
+    // else if (chkadult.checked && (min_age == 0 || min_age == null)) {
+    //         alert('Please Fill in the age "Min Age" for Adult.');
+    // }   
     
-    else if (chkadult.checked && (max_age_product_t == 0 || max_age_product_t == null|| max_age_product_t === '0')) {
+    else if (chkadult.checked && (max_age_product == 0 || max_age_product == null|| max_age_product === '0')) {
             alert('Please Fill in the age "Max Age" for Adult.');
     }
     
-    else if (($('#age_child_from').val()) != child_age_chk && (chkchild.checked)) {
+    else if (($('#age_child_from').val()) != child_age_chk && (chkchild.checked) && (chkinfant.checked)) {
             alert('Child age "From" should be : ' + child_age_chk);
     }   
     
-    else if (($('#age_teen_from').val()) != teen_age_chk && (chkteen.checked)) {
+    else if (($('#age_teen_from').val()) != teen_age_chk && (chkteen.checked) && (chkchild.checked)) {
             alert('Teen age "From" should be : ' + teen_age_chk);
     }   
     
-    else if (($('#min_age').val()) >= ($('#max_age').val())) { 
+    else if (($('#min_age').val()) > ($('#max_age').val())) { 
         alert('Max Adult age should be greater than Min Age');
     }
 
-    else if (($('#age_inf_from').val()) >= ($('#age_inf_to').val())) { 
+    else if (chkinfant.checked &&  chkadult.checked &&  (age_inf_from > max_age_product)) { 
+        alert('Please note that Infant age "From" should be less than Max Age');
+    }
+
+    else if (chkinfant.checked && chkadult.checked && (age_inf_to > max_age_product)) { 
+        alert('Please note that Infant age "To" should be less than Max Age');
+    }
+
+    else if (chkchild.checked &&  chkadult.checked &&  (age_child_from > max_age_product)) { 
+        alert('Please note that Child age "From" should be less than Max Age');
+    }
+
+    
+    else if (chkteen.checked &&  chkadult.checked &&  (age_teen_to > max_age_product)) { 
+        alert('Please note that Teen age "To" should be less than Max Age');
+    }
+
+    else if (chkteen.checked &&  chkadult.checked &&  (age_teen_from > max_age_product)) { 
+        alert('Please note that Teen age "From" should be less than Max Age');
+    }
+
+    else if (($('#age_inf_from').val()) > ($('#age_inf_to').val())) { 
         alert('Infant "To" age should be greater than Infant "From" Age');
     }
 
@@ -297,7 +320,24 @@ function validateAgePolicy() {
 
     else if (($('#age_teen_from').val()) > ($('#age_teen_to').val())) { 
         alert('Teen "To" age should be greater than Teen "From" Age');
-    }    
+    }
+
+    else if (!chkadult.checked) {
+        if(chkinfant.checked) {
+            $('#max_age').val(age_inf_to);
+            $('#min_age').val(0);
+        } 
+        if (chkchild.checked) {
+            $('#max_age').val(age_child_to);
+            $('#min_age').val(0);
+        }
+        if (chkteen.checked) {
+            $('#max_age').val(age_teen_to);
+            $('#min_age').val(0);
+        } else {
+            saveService();
+        }
+    }
     
     else {
         saveService();

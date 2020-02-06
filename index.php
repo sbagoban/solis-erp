@@ -951,6 +951,7 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
             <script src="js/boproduct_services/control/productCtrl.js"></script>
             <script src="js/boproduct_services/models/boupdateextraservicecost.js"></script>';
+            
         }
 ?>
         <div id = "alert_placeholder"></div>

@@ -214,6 +214,8 @@ function applyFor() {
         } if (chkinfant.checked == false) {
             $("#age_inf_from").prop("readonly", true);
             $("#age_inf_to").prop("readonly", true);
+            $("#age_inf_from").val(0);
+            $("#age_inf_to").val(0);
         }
 
         if (chkchild.checked) {
@@ -222,6 +224,8 @@ function applyFor() {
         } if (chkchild.checked == false) {
             $("#age_child_from").prop("readonly", true);
             $("#age_child_to").prop("readonly", true);
+            $("#age_child_from").val(0);
+            $("#age_child_to").val(0);
         }
 
         if (chkteen.checked) {
@@ -230,6 +234,15 @@ function applyFor() {
         } if (chkteen.checked == false) {
             $("#age_teen_from").prop("readonly", true);
             $("#age_teen_to").prop("readonly", true);
+            $("#age_teen_from").val(0);
+            $("#age_teen_to").val(0);
+        }
+
+        if (chkadult.checked == false) {
+            $("#min_age").prop("readonly", true);
+            $("#max_age").prop("readonly", true);
+            $("#min_age").val(0);
+            $("#max_age").val(0);
         }
 
         // if (chkadult.checked && chkteen.checked == false && chkchild.checked == false && chkinfant.checked == false) {
