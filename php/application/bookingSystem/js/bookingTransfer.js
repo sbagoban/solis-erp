@@ -10,8 +10,40 @@ $(function(){
     
     $("#dossierService").collapse('show');
     $("#serviceDetails").collapse('hide');
-    $(".panel-title").click(function(){
-        $(".panel-collapse").collapse('toggle');
+    $('.panel-title').click(function(){
+        var targetPanel = $(this).attr("panel");
+        if (targetPanel == "dossierService")
+            {
+                if($('#dossierService').hasClass('in') === false)
+                {
+                    $("#serviceDetails").collapse('toggle');  
+                    $("#dossierService").collapse('toggle');  
+                } 
+            }
+        else if (targetPanel == "serviceDetails")
+        {
+            if ($("#id_product_service_arr_claim").val() =="" && $("#id_product_service_dep_claim").val() == "")
+                {
+                     alert("No service selected 2");
+                }
+            else if ($("#id_product_service_arr_claim").val() != "" || $("#id_product_service_dep_claim").val() != "")
+                {
+                    if($('#dossierService').hasClass('in') === true && $('#serviceDetails').hasClass('in') === false )
+                    {
+                        $("#serviceDetails").collapse('toggle');  
+                        $("#dossierService").collapse('toggle');  
+                    }
+                    else if ($('#dossierService').hasClass('in') === false && $('#serviceDetails').hasClass('in') === false )
+                    {
+                        $("#serviceDetails").collapse('toggle');  
+                    }
+                    else if($('#dossierService').hasClass('in') === true && $('#serviceDetails').hasClass('in') === true )
+                    {
+                        $("#dossierService").collapse('toggle');  
+                    }
+                }
+        }
+        
     });
     
 	var id_booking = $('#id_booking').val();
@@ -21,29 +53,20 @@ $(function(){
     }   
     
     newTransfer(transferData);
+    allBookingTransfer(transferData.id_booking);
     
-    // Transfer Product
-    const url_product = "php/api/bookingSystem/transferList.php?t=" + encodeURIComponent(global_token) ;
-    $.ajax({
-        url: url_product,
-        dataType: "json",
-        success: function (data) 
-        {
-            $("#transfer_vehicle").empty();
-            $("#transfer_vehicle").append('<option value="0">Select</option>');
-            $.each(data, function (key, val) {
-            $("#transfer_vehicle").append('<option value="' + val.id_product + '">'+val.product_name+ '</option>');
-            $("#transfer_vehicle").val('0');
-            $('#transfer_vehicle').select2().trigger('change');	
-            }); 
-
-        },
-        error: function (error) 
-        {
-            console.log('Error ${error}');
-        }
-    });
-    // .Transfer Product
+      
+    $('#btn-newTransfer').click(function() {
+        var transferData = {
+                id_booking: id_booking,
+                action: 'RESET'
+        }   
+		newTransfer(transferData);
+        allBookingTransfer(transferData.id_booking);
+        $("#dossierService").collapse('show');
+        $("#serviceDetails").collapse('hide');
+        
+	});
     
     // Transfer Arrival Time and Departure Time
     $('#transfer_arrivalTime').timepicker({
@@ -60,6 +83,13 @@ $(function(){
 	// .Transfer Arrival Time and Departure Time
     
     //Destination From 
+    $(".destinationFrom").hide();
+    $(".destinationTo").hide();
+    $("#transfer_destination_from").val('0');
+    $('#transfer_destination_from').select2().trigger('change');	
+    $("#transfer_destination_to").val('0');
+    $('#transfer_destination_to').select2().trigger('change');	
+    
 	const url_search_hotelList = "php/api/hotel/allHotel.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_hotelList,
@@ -67,12 +97,17 @@ $(function(){
 		dataType: "json",
 		success: function (data) 
 		{
-			$("#transfer_destination").empty();
-			$("#transfer_destination").append('<option value="0">None</option>');
+			$("#transfer_destination_from").empty();
+			$("#transfer_destination_to").empty();
+			$("#transfer_destination_from").append('<option value="0">None</option>');
+			$("#transfer_destination_to").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#transfer_destination").append('<option value="' + val.id + '">'+val.hotelname+'</option>');
-			$("#transfer_destination").val('0');
-			$('#transfer_destination').select2().trigger('change');	
+			$("#transfer_destination_from").append('<option value="' + val.id + '">'+val.hotelname+'</option>');
+			$("#transfer_destination_to").append('<option value="' + val.id + '">'+val.hotelname+'</option>');
+			$("#transfer_destination_from").val('0');
+			$('#transfer_destination_from').select2().trigger('change');	
+			$("#transfer_destination_to").val('0');
+			$('#transfer_destination_to').select2().trigger('change');	
 			}); 
 
 		},
@@ -107,19 +142,24 @@ $(function(){
 	//.Client
     
     //Approved Discount List
-	const url_search_discountUserList = "php/api/users/approveDiscountUser.php?t=" + encodeURIComponent(global_token);
+	const url_search_discountUserList = "php/api/users/approverebateUser.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_discountUserList,
 		method: "POST",
 		dataType: "json",
 		success: function (data) 
 		{
-			$("#transfer_approvedBy").empty();
-			$("#transfer_approvedBy").append('<option value="0">None</option>');
+			$("#transfer_rebateClaimApproveBy").empty();
+			$("#transfer_costApprovedBy").empty();
+			$("#transfer_rebateClaimApproveBy").append('<option value="0">None</option>');
+			$("#transfer_costApprovedBy").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#transfer_approvedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
-			$("#transfer_approvedBy").val('0');
-			$('#transfer_approvedBy').select2().trigger('change');	
+			$("#transfer_rebateClaimApproveBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
+			$("#transfer_rebateClaimApproveBy").val('0');
+			$('#transfer_rebateClaimApproveBy').select2().trigger('change');	
+			$("#transfer_costApprovedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
+			$("#transfer_costApprovedBy").val('0');
+			$('#transfer_costApprovedBy').select2().trigger('change');	
 			}); 
 
 		},

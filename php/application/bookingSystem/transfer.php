@@ -1,5 +1,9 @@
+<script src="js/utils/numberValidation.js"></script>
 <script src="php/application/bookingSystem/js/bookingTransfer.js"></script>
 <script src="php/application/bookingSystem/js/newTransfer.js"></script>
+<script src="php/application/bookingSystem/js/tableBookingTransfer.js"></script>
+<script src="php/application/bookingSystem/js/saveTransfer.js"></script>
+<script src="php/application/bookingSystem/js/deleteTransfer.js"></script>
 <!-- Transfer Tab -->
 <div class="tab-pane active in fade" id="transfer">
 <!-- left column -->	
@@ -11,7 +15,7 @@
                 <div class="form-group" style="">
 					<label class="col-sm-2 control-label">ID BOOKING TRANSFER</label>
 					<div class="col-sm-2">
-						<input type="text" class="form-control bookingTransfer" id="id_booking_transfer" placeholder="000" readonly>
+						<input type="text" class="form-control bookingTransfer" id="id_booking_transfer_claim" placeholder="000" readonly>
 					</div>
 				</div>
                 
@@ -47,31 +51,41 @@
 
 				<div class="form-group">
 					<label class="col-sm-2 control-label">Type</label>
-					<div class="col-sm-3">
+					<div class="col-sm-2">
 						<select class="form-control" id="transfer_type">
+							<option value="NONE" selected disabled>NONE</option>
 							<option value="BOTH">BOTH</option>
 							<option value="ARR">ARRIVAL</option>
 							<option value="DEP">DEPARTURE</option>
-							<option value="INTER">INTER HOTEL</option>
+							<option value="INTER HOTEL">INTER HOTEL</option>
+							<option value="ACTIVITY">ACTIVITY</option>
 						</select>
 					</div>
-					<div class="col-sm-2">
-						<select class="form-control" id="transfer_transferPort">
-							<option value="AIRPORT">Airport</option>
-							<option value="PORT">Port</option>
+					<div class="col-sm-3">
+						<select class="form-control" id="transfer_port">
+							<option value="0" disabled selected>NONE</option>
 						</select>
 					</div>
 					<label class="col-sm-1 control-label">Vehicle</label>
 					<div class="col-sm-4">
 						<select class="form-control" id="transfer_vehicle">
+							<option value="0" disabled selected>NONE</option>
 						</select>
 					</div>
 				</div>
                 
-				<div class="form-group">
-					<label class="col-sm-2 control-label">Destination</label>
+				<div class="form-group destinationFrom">
+					<label class="col-sm-2 control-label">Destination From</label>
 					<div class="col-sm-10">
-						<select class="form-control" id="transfer_destination">
+						<select class="form-control" id="transfer_destination_from">
+						</select>
+					</div>
+				</div>
+                
+				<div class="form-group destinationTo">
+					<label class="col-sm-2 control-label">Destination To</label>
+					<div class="col-sm-10">
+						<select class="form-control" id="transfer_destination_to">
 						</select>
 					</div>
 				</div>
@@ -129,8 +143,6 @@
 						<div class="input-group">
 							<input readonly class="form-control bookingTransfer" id="transfer_adultAmt">
 							<span class="input-group-addon">Adult</span>
-							<input readonly class="form-control bookingTransfer" id="transfer_teenAmt">
-							<span class="input-group-addon">Teen</span>
 							<input readonly class="form-control bookingTransfer" id="transfer_childAmt">
 							<span class="input-group-addon">Child</span>
 							<input readonly class="form-control bookingTransfer" id="transfer_infantAmt">
@@ -140,9 +152,9 @@
 				</div>
 				
 				<div class="form-group">
-					<label class="col-sm-2 control-label">Rebate</label>
+					<label class="col-sm-2 control-label">Claim Rebate</label>
 					<div class="col-sm-4">
-						<select class="form-control bookingTransfer select2" id="transfer_rebate">
+						<select class="form-control bookingTransfer select2" id="transfer_rebateClaim">
 							<option value="None">None</option>
 							<option value="Percentage">Percentage</option>
 							<option value="Fixed Tariff">Fixed Tariff</option>
@@ -151,7 +163,7 @@
 					</div>
 					<label class="col-sm-2 control-label">Approved by</label>
 					<div class="col-sm-4">
-						<select class="form-control bookingTransfer select2" id="transfer_approvedBy">
+						<select class="form-control bookingTransfer select2" id="transfer_rebateClaimApproveBy">
 							<option value="None">None</option>
 							<option value="Percentage">Percentage</option>
 							<option value="Fixed Tariff">Fixed Tariff</option>
@@ -160,26 +172,64 @@
 					</div>
 				</div>
 				
-				<div id="rebateSection">
+				<div id="claimRebateSection">
 					<div class="form-group">
-						<label class="col-sm-2 control-label">Rebate</label>
+						<label class="col-sm-2 control-label">Claim Rebate</label>
 						<div class="col-sm-4">
-							<input type="text" class="form-control bookingTransfer" id="transfer_percentageRebate" placeholder="00000" style="display: none">
+							<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_claimPercentageRebate" placeholder="00000" style="display: none">
 						</div>
-						<div class="col-sm-10" id="rebate_fix">
+						<div class="col-sm-10" id="claimRebateFix">
 							<div class="input-group">
-								<input type="number" class="form-control bookingTransfer" id="transfer_adultRebate">
+								<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_adultClaimRebate">
 								<span class="input-group-addon rebateAdult">Adult</span>
-								<input type="number" class="form-control bookingTransfer" id="transfer_teenRebate">
-								<span class="input-group-addon rebateTeen">Teen</span>
-								<input type="number" class="form-control bookingTransfer" id="transfer_childRebate">
+								<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_childClaimRebate">
 								<span class="input-group-addon rebateChild">Child</span>
-								<input type="number" class="form-control bookingTransfer" id="transfer_InfantRebate">
+								<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_InfantClaimRebate">
 								<span class="input-group-addon rebateInfant">Infant</span>
 							</div>
 						</div>
 					</div>
 				</div>
+				
+				<!--<div class="form-group">
+					<label class="col-sm-2 control-label">Cost Rebate</label>
+					<div class="col-sm-4">
+						<select class="form-control bookingTransfer select2" id="transfer_rebateCost">
+							<option value="None">None</option>
+							<option value="Percentage">Percentage</option>
+							<option value="Fixed Tariff">Fixed Tariff</option>
+							<option value="FOC">FOC</option>
+						</select>
+					</div>
+					<label class="col-sm-2 control-label">Approved by</label>
+					<div class="col-sm-4">
+						<select class="form-control bookingTransfer select2" id="transfer_costApprovedBy">
+							<option value="None">None</option>
+							<option value="Percentage">Percentage</option>
+							<option value="Fixed Tariff">Fixed Tariff</option>
+							<option value="FOC">FOC</option>
+						</select>
+					</div>
+				</div>
+				
+				<div id="costRebateSection">
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Cost Rebate</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_costPercentageRebate" placeholder="00000" style="display: none">
+						</div>
+						<div class="col-sm-10" id="costRebateFix">
+							<div class="input-group">
+								<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_adultCostRebate">
+								<span class="input-group-addon rebateAdult">Adult</span>
+								<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_childCostRebate">
+								<span class="input-group-addon rebateChild">Child</span>
+								<input type="text" class="form-control numberWithDecimal bookingTransfer" id="transfer_InfantCostRebate">
+								<span class="input-group-addon rebateInfant">Infant</span>
+							</div>
+						</div>
+					</div>
+				</div>-->
 				
 				<div class="form-group">
 					<label class="col-sm-2 control-label">Service Remark</label>
@@ -200,7 +250,7 @@
 						<button type="button" class="btn btn-primary" id="btn-newTransfer">
 							<span class="glyphicon glyphicon-refresh"></span> New Transfer
 						</button>
-						<button type="button" class="btn btn-primary" id="btn-deleteTransfer" disabled>
+						<button type="button" class="btn btn-primary" id="btn-deleteTransfer">
 							<span class="glyphicon glyphicon-remove"></span> Delete
 						</button>
 				</div>
@@ -216,16 +266,14 @@
         <div class="panel-group box-body" id="servicePanel">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#servicePanel" href="#serviceDetails"> Transfer Details</a>
-                    </h4>
+                        <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="serviceDetails"> Transfer Details</a>
                 </div>
                 <div id="serviceDetails" class="panel-collapse collapse">
                     <div class="panel-body">  
-		                <table id="tbl-bookingTransfer" class="table table-bordered table-hover">
+		                <table id="tbl-transferDetails" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th class="col-sm-1">TYPE<input type="text" class="form-control bookingTransfer" id="id_product_service_claim" style=""></th>
+                                    <th class="col-sm-1">TYPE</th>
                                     <th class="col-sm-2 unit_charge">UNIT</th>
                                     <th class="col-sm-2 pax_charge">ADULT</th>
                                     <th class="col-sm-2 pax_charge">CHILD</th>
@@ -233,32 +281,47 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr>
+                                <!--<tr style="display: none">-->
+                                    <td colspan="2">
+						                <input type="text" id="id_product_service_arr_claim">
+                                    </td>
+                                    <td colspan="2">
+						                <input type="text" id="id_product_service_dep_claim">
+                                    </td>
+                                </tr>
                                 <tr id="transfer_in">
                                     <td>ARRIVAL</td>
-                                    <td class="unit_charge"><span id="ps_unit_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
-                                    <td><span id="ps_adult_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
-                                    <td><span id="ps_child_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
+                                    <td class="unit_charge" colspan="3"><span id="ps_unit_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_adult_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_child_arr_claim"></span><span class="ps_claim_arr_cur"></span></td>
                                 </tr>
                                 <tr id="transfer_out">
                                     <td>DEPARTURE</td>
-                                    <td class="unit_charge"><span id="ps_unit_dep_claim"></span><span class="ps_claim_dep_cur"></span></td>
-                                    <td><span id="ps_adult_dep_claim"></span> <span class="ps_claim_dep_cur"></span></td>
-                                    <td><span id="ps_child_dep_claim"></span> <span class="ps_claim_dep_cur"></span></td>
+                                    <td class="unit_charge" colspan="3"><span id="ps_unit_dep_claim"></span><span class="ps_claim_dep_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_adult_dep_claim"></span> <span class="ps_claim_dep_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_child_dep_claim"></span> <span class="ps_claim_dep_cur"></span></td>
                                 </tr>
                                 <tr id="transfer_interHotel">
                                     <td>INTER HOTEL</td>
-                                    <td class="unit_charge"><span id="ps_unit_int_claim"></span><span class="ps_claim_int_cur"></span></td>
-                                    <td><span id="ps_adult_int_claim"></span> <span class="ps_claim_int_cur"></span></td>
-                                    <td><span id="ps_child_int_claim"></span> <span class="ps_claim_int_cur"></span></td>
+                                    <td class="unit_charge" colspan="3"><span id="ps_unit_int_claim"></span><span class="ps_claim_int_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_adult_int_claim"></span> <span class="ps_claim_int_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_child_int_claim"></span> <span class="ps_claim_int_cur"></span></td>
+                                </tr>
+                                <tr id="transfer_activity">
+                                    <td>ACTIVITY</td>
+                                    <td class="unit_charge" colspan="3"><span id="ps_unit_act_claim"></span><span class="ps_claim_act_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_adult_act_claim"></span> <span class="ps_claim_act_cur"></span></td>
+                                    <td class="pax_charge"><span id="ps_child_act_claim"></span> <span class="ps_claim_act_cur"></span></td>
                                 </tr>
                                 <tr>
                                     <th>DESCRIPTION</th>
-                                    <td colspan="3" id="transfer_description">459 USD</td>
+                                    <td colspan="3" id="transfer_description"></td>
                                 </tr>
                             </tbody>
                         </table>
                         
-		                <table id="tbl-bookingTransfer" class="table table-bordered table-hover">
+		               <!-- <table id="tbl-transferExtra" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th class="col-sm-3">EXTRA</th>
@@ -283,88 +346,29 @@
                                     <td>40</td>
                                 </tr>
                             </tbody>
-                        </table>
+                        </table>-->
 	                </div>
                 </div>
             </div>
             
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#servicePanel" href="#dossierService"> Dossier Transfer</a>
-                    </h4>
+                        <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Transfer</a>
                 </div>
                 <div id="dossierService" class="panel-collapse collapse">
                     <div class="panel-body">
 		                <table id="tbl-bookingTransfer" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th class="col-sm-2">Vehicle</th>
-                                    <th class="col-sm-1">Date</th>
-                                    <th class="col-sm-2">Destination</th>
-                                    <th class="col-sm-1">Type</th>
-                                    <th class="col-sm-2">Extra</th>
+                                    <th class="col-sm-5">Transfer</th>
+                                    <th class="col-sm-2">Date</th>
+                                    <th class="col-sm-1">Rebate</th>
                                     <th class="col-sm-2">Claim</th>
                                     <th class="col-sm-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>SIT IN COACH SOUTH EAST</td>
-                                    <td>26.07.2020</td>
-                                    <td>LUX LE MORNE</td>
-                                    <td>ARRIVAL</td>
-                                    <td>BOSTER SEAT</td>
-                                    <td>3456 USD</td>
-                                    <td>
-                                        <div class="btn-group">
-                                          <i class="fa fa-fw fa-edit"></i>
-                                          <i class="fa fa-fw fa-trash"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>SIT IN COACH SOUTH EAST</td>
-                                    <td>26.07.2020</td>
-                                    <td>LUX LE MORNE</td>
-                                    <td>ARRIVAL</td>
-                                    <td>BOSTER SEAT</td>
-                                    <td>3456 USD</td>
-                                    <td>
-                                        <div class="btn-group">
-                                          <i class="fa fa-fw fa-edit"></i>
-                                          <i class="fa fa-fw fa-trash"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>SIT IN COACH SOUTH EAST</td>
-                                    <td>26.07.2020</td>
-                                    <td>LUX LE MORNE</td>
-                                    <td>ARRIVAL</td>
-                                    <td>BOSTER SEAT</td>
-                                    <td>3456 USD</td>
-                                    <td>
-                                        <div class="btn-group">
-                                          <i class="fa fa-fw fa-edit"></i>
-                                          <i class="fa fa-fw fa-trash"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>SIT IN COACH SOUTH EAST</td>
-                                    <td>26.07.2020</td>
-                                    <td>LUX LE MORNE</td>
-                                    <td>ARRIVAL</td>
-                                    <td>BOSTER SEAT</td>
-                                    <td>3456 USD</td>
-                                    <td>
-                                        <div class="btn-group">
-                                          <i class="fa fa-fw fa-edit"></i>
-                                          <i class="fa fa-fw fa-trash"></i>
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
 	                </div>
