@@ -931,7 +931,8 @@ if (isset($_GET["m"])) {
         } else if ($menu == "backoff_product") { 
             echo '<script src="js/boproduct_services/models/boproductModel.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>
-            <script src="js/boproduct_services/control/productCtrl.js"></script>';
+            <script src="js/boproduct_services/control/productCtrl.js"></script>
+            <script src="js/boproduct_services/models/latestProductService.js"></script>';
         } else if ($menu == "productservices") {
             echo '<script src="js/boproduct_services/models/bosaveservices.js"></script>
             <script src="js/boproduct_services/models/boproductgrid.js"></script>

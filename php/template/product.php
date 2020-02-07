@@ -74,7 +74,7 @@
             </div>
         </div>
         <!-- Column 2 -->
-        <!-- <div class="col-md-4">
+        <div class="col-md-4">
             
             <div class="col-md-12">
                 
@@ -83,37 +83,13 @@
                         <h3 class="panel-title">Latest Product Services</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="panel panel-theme">
-                            <div class="panel-heading">Product Name</div>
-                            <div class="panel-body">
-                                Product : <br>
-                                Product Type :  <br>
-                                Services :  <br>
-                                Package :  <br>
-                            </div>
-                        </div>
-                        <div class="panel panel-theme">
-                            <div class="panel-heading">Product Name</div>
-                            <div class="panel-body">
-                                Product : <br>
-                                Product Type :  <br>
-                                Services :  <br>
-                                Package :  <br>
-                            </div>
-                        </div>
-                        <div class="panel panel-theme">
-                            <div class="panel-heading">Product Name</div>
-                            <div class="panel-body">
-                                Product : <br>
-                                Product Type :  <br>
-                                Services :  <br>
-                                Package :  <br>
-                            </div>
+                        <div class="panel panel-theme" id="parent_latest">
+                            
                         </div>
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div> 
     </div>
 </div>
 

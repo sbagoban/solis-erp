@@ -8,6 +8,8 @@ $(document).ready(function () {
     $("#age_child_to").prop("readonly", true);
     $("#age_teen_from").prop("readonly", true);
     $("#age_teen_to").prop("readonly", true);
+    $("#min_age").prop("readonly", true);
+    $("#max_age").prop("readonly", true);
 
     $('#closure_date').daterangepicker({
 		"showDropdowns": true,
