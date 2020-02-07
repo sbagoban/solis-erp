@@ -28,7 +28,12 @@ $(function(){
 		var childCost = $("#ps_child_cost").html();
 		var infantCost = $("#ps_infant_cost").html();
         
-		if($('#activity_paidBy').val() == "" || $('#activity_paidBy').val() == 0)
+		if($('#id_product_service_claim').val() == "" || $('#id_product_service_claim').val() == 0)
+			{
+				alert("An error occured, please load back your service or contact the IT helpdesk");
+				saveError = true;
+			}
+		else if($('#activity_paidBy').val() == "" || $('#activity_paidBy').val() == 0)
 			{
 				alert("Select payer type");
 				saveError = true;
@@ -77,7 +82,7 @@ $(function(){
 			}
 		else if($('#activity_claim_rebate').val() != "None")
 			{
-				if ($('#activity_claimApprovedBy').val() == "" ||$('#activity_claimApprovedBy').val() == 0 ||$('#activity_claimApprovedBy').val() == "None" ||$('#activity_claimApprovedBy').val() == null  )
+				if ($('#activity_rebateClaimApproveBy').val() == "" ||$('#activity_rebateClaimApproveBy').val() == 0 ||$('#activity_rebateClaimApproveBy').val() == "None" ||$('#activity_rebateClaimApproveBy').val() == null  )
 					{
 						alert("Select rebate claim approver");
 						saveError = true;
@@ -291,7 +296,7 @@ function saveActivity(activityData) {
     var activity_rebate_claim_type = $('#activity_claim_rebate').val();
 	if (activity_rebate_claim_type == "Percentage")
 		{
-			var activity_rebate_claim_approve_by = $('#activity_claimApprovedBy').val();
+			var activity_rebate_claim_approve_by = $('#activity_rebateClaimApproveBy').val();
 			var activity_rebate_claim_percentage = $('#activity_percentageClaimRebate').val();
 			var activity_adult_claim_after_rebate = 0;
 			var activity_teen_claim_after_rebate = 0;
@@ -300,7 +305,7 @@ function saveActivity(activityData) {
 		}
 	else if (activity_rebate_claim_type == "Fixed Tariff")
 		{
-			var activity_rebate_claim_approve_by = $('#activity_claimApprovedBy').val();
+			var activity_rebate_claim_approve_by = $('#activity_rebateClaimApproveBy').val();
 			var activity_rebate_claim_percentage = 0;
 			if (activity_adult_amt == 0)
 			{
@@ -340,7 +345,7 @@ function saveActivity(activityData) {
 		}
 	else if (activity_rebate_claim_type == "FOC")
 		{
-			var activity_rebate_claim_approve_by = $('#activity_claimApprovedBy').val();
+			var activity_rebate_claim_approve_by = $('#activity_rebateClaimApproveBy').val();
 			var activity_rebate_claim_percentage = 100;
 			var activity_adult_claim_after_rebate = 0;
 			var activity_teen_claim_after_rebate = 0;

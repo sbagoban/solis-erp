@@ -253,9 +253,9 @@ function displayActivity(activityDetails) {
     if (activityDetails[0].activity_rebate_claim_type == 'None')
         {
 				$("#claimRebateSection").hide();
-				$("#activity_claimApprovedBy").val('');
-				$('#activity_claimApprovedBy').select2().trigger('change');
-				$("#activity_claimApprovedBy").prop("disabled", true);
+				$("#activity_rebateClaimApproveBy").val('');
+				$('#activity_rebateClaimApproveBy').select2().trigger('change');
+				$("#activity_rebateClaimApproveBy").prop("disabled", true);
 				$("#activity_percentageClaimRebate").val('');
 				$("#activity_adultClaimRebate").val('');
 				$("#activity_teenClaimRebate").val('');
@@ -265,9 +265,9 @@ function displayActivity(activityDetails) {
     else if (activityDetails[0].activity_rebate_claim_type == 'Percentage')
         {
             $("#claimRebateSection").show();
-            $("#activity_claimApprovedBy").prop("disabled", false);
-            $("#activity_claimApprovedBy").val(activityDetails[0].activity_rebate_claim_approve_by);
-            $('#activity_claimApprovedBy').select2().trigger('change');
+            $("#activity_rebateClaimApproveBy").prop("disabled", false);
+            $("#activity_rebateClaimApproveBy").val(activityDetails[0].activity_rebate_claim_approve_by);
+            $('#activity_rebateClaimApproveBy').select2().trigger('change');
             $("#activity_percentageClaimRebate").show();
             $("#activity_percentageClaimRebate").val(activityDetails[0].activity_rebate_claim_percentage);
             $("#rebate_fix").hide();
@@ -280,24 +280,24 @@ function displayActivity(activityDetails) {
         {
             $("#claimRebateSection").show();
             $("#rebate_fix").show();
-            $("#activity_claimApprovedBy").prop("disabled", false);
-            $("#activity_claimApprovedBy").val(activityDetails[0].activity_rebate_claim_approve_by);
-            $('#activity_claimApprovedBy').select2().trigger('change');
+            $("#activity_rebateClaimApproveBy").prop("disabled", false);
+            $("#activity_rebateClaimApproveBy").val(activityDetails[0].activity_rebate_claim_approve_by);
+            $('#activity_rebateClaimApproveBy').select2().trigger('change');
             $("#activity_adultClaimRebate").val(activityDetails[0].activity_adult_claim_rebate);
             $("#activity_teenClaimRebate").val(activityDetails[0].activity_teen_claim_rebate);
             $("#activity_childRebate").val(activityDetails[0].activity_child_claim_rebate);
             $("#activity_InfantClaimRebate").val(activityDetails[0].activity_infant_claim_rebate);
             $("#activity_percentageClaimRebate").hide();
-            $("#activity_claimApprovedBy").prop("disabled", false);
+            $("#activity_rebateClaimApproveBy").prop("disabled", false);
             $("#activity_percentageClaimRebate").val('');
         }
     else if (activityDetails[0].activity_rebate_claim_type == 'FOC')
         {
             $("#activity_percentageClaimRebate").hide();
             $("#claimRebateSection").hide();
-            $("#activity_claimApprovedBy").prop("disabled", false);
-            $("#activity_claimApprovedBy").val(activityDetails[0].activity_rebate_claim_approve_by);
-            $('#activity_claimApprovedBy').select2().trigger('change');
+            $("#activity_rebateClaimApproveBy").prop("disabled", false);
+            $("#activity_rebateClaimApproveBy").val(activityDetails[0].activity_rebate_claim_approve_by);
+            $('#activity_rebateClaimApproveBy').select2().trigger('change');
             $("#activity_percentageClaimRebate").val('');
             $("#activity_adultClaimRebate").val('');
             $("#activity_teenClaimRebate").val('');

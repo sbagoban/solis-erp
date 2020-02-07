@@ -40,9 +40,9 @@ $(function(){
         $("#activity_language").val("0");
         $('#activity_language').select2().trigger('change'); 
         $("#activity_language").prop("disabled", true);
-        $("#activity_claimApprovedBy").val('0');
-        $('#activity_claimApprovedBy').select2().trigger('change');	
-        $("#activity_claimApprovedBy").prop("disabled", true);
+        $("#activity_rebateClaimApproveBy").val('0');
+        $('#activity_rebateClaimApproveBy').select2().trigger('change');	
+        $("#activity_rebateClaimApproveBy").prop("disabled", true);
         $("#activity_costApprovedBy").val('0');
         $('#activity_costApprovedBy').select2().trigger('change');	
         $("#activity_costApprovedBy").prop("disabled", true); 
@@ -82,9 +82,9 @@ $(function(){
         $("#activity_language").val("0");
         $('#activity_language').select2().trigger('change'); 
         $("#activity_language").prop("disabled", true);
-        $("#activity_claimApprovedBy").val('0');
-        $('#activity_claimApprovedBy').select2().trigger('change');	
-        $("#activity_claimApprovedBy").prop("disabled", true);
+        $("#activity_rebateClaimApproveBy").val('0');
+        $('#activity_rebateClaimApproveBy').select2().trigger('change');	
+        $("#activity_rebateClaimApproveBy").prop("disabled", true);
         $("#activity_costApprovedBy").val('0');
         $('#activity_costApprovedBy').select2().trigger('change');	
         $("#activity_costApprovedBy").prop("disabled", true);
@@ -520,9 +520,9 @@ $(function(){
         if ($("#activity_claim_rebate").val() == 'None')
 			{
 				$("#claimRebateSection").hide();
-				$("#activity_claimApprovedBy").val('');
-				$('#activity_claimApprovedBy').select2().trigger('change');
-				$("#activity_claimApprovedBy").prop("disabled", true);
+				$("#activity_rebateClaimApproveBy").val('');
+				$('#activity_rebateClaimApproveBy').select2().trigger('change');
+				$("#activity_rebateClaimApproveBy").prop("disabled", true);
 				$("#activity_percentageClaimRebate").val('');
 				$("#activity_adultClaimRebate").val('');
 				$("#activity_teenClaimRebate").val('');
@@ -533,7 +533,7 @@ $(function(){
 			{
 				$("#claimRebate_fix").hide();
 				$("#claimRebateAmount").html('Claim Rebate %');
-				$("#activity_claimApprovedBy").prop("disabled", false);
+				$("#activity_rebateClaimApproveBy").prop("disabled", false);
 				$("#activity_adultClaimRebate").val('');
 				$("#activity_teenClaimRebate").val('');
 				$("#activity_childRebate").val('');
@@ -545,7 +545,7 @@ $(function(){
 			{
 				$("#activity_percentageClaimRebate").hide();
 				$("#claimRebateAmount").html('Claim Rebate Tariff');
-				$("#activity_claimApprovedBy").prop("disabled", false);
+				$("#activity_rebateClaimApproveBy").prop("disabled", false);
 				$("#activity_percentageClaimRebate").val('');
 				$("#claimRebateSection").show();
 				$("#claimRebate_fix").show();
@@ -554,9 +554,9 @@ $(function(){
 			{
 				$("#activity_percentageClaimRebate").hide();
 				$("#claimRebateSection").hide();
-				$("#activity_claimApprovedBy").val('');
-				$("#activity_claimApprovedBy").prop("disabled", false);
-				$('#activity_claimApprovedBy').select2().trigger('change');
+				$("#activity_rebateClaimApproveBy").val('');
+				$("#activity_rebateClaimApproveBy").prop("disabled", false);
+				$('#activity_rebateClaimApproveBy').select2().trigger('change');
 				$("#activity_percentageClaimRebate").val('');
 				$("#activity_adultClaimRebate").val('');
 				$("#activity_teenClaimRebate").val('');
@@ -644,7 +644,7 @@ function newActivity(dataDetails){
 	$("#activity_language").val("0");
 	$('#activity_language').select2().trigger('change'); 
 	$("#activity_language").prop("disabled", true);
-	$("#activity_claimApprovedBy").prop("disabled", true);
+	$("#activity_rebateClaimApproveBy").prop("disabled", true);
 	$("#activity_costApprovedBy").prop("disabled", true);
 	$('#activity_date').val('');
     // Booking Date
@@ -786,6 +786,7 @@ function loadActivityClaim(activityData){
                 {
                     $("#id_product_service_claim").val(data[0].id_product_service_claim);
                     var charge = data[0].charge;
+                    var package = data[0].is_pakage; 
                     if (charge == 'PAX')
                         {
                             
@@ -809,24 +810,27 @@ function loadActivityClaim(activityData){
                                 {
                                     $(".adult_details").hide();
                                     $("#adult_policy").html("");
-                                    $("#rebateAdult").hide();
+                                    $(".rebateAdult").hide();
                                     $("#activity_adultClaimRebate").hide();
                                     $("#activity_adultCostRebate").hide();
                                 }
                             else
                                 {
                                     $(".adult_details").show();
+                                    $(".rebateAdult").show();
                                 }
                             if(data[0].for_teen == 0)
                                 {
                                     $(".teen_details").hide();
-                                    $("#teen_policy").html("")
+                                    $("#teen_policy").html("");
+                                    $(".rebateTeen").hide();
                                     $("#activity_teenClaimRebate").hide();
                                     $("#activity_teenCostRebate").hide();
                                 }
                             else
                                 {
                                     $(".teen_details").show();
+                                    $(".rebateTeen").show();
                                     if(data[0].age_teen_from != null)
                                         {
                                             $("#teen_policy").html("Age from <b>"+data[0].age_teen_from+"</b> to <b>"+data[0].age_teen_to+"</b>");
@@ -838,10 +842,12 @@ function loadActivityClaim(activityData){
                                     $("#child_policy").html("");
                                     $("#activity_childClaimRebate").hide();
                                     $("#activity_childCostRebate").hide();
+                                    $(".rebateChild").hide();
                                 }
                             else
                                 {
                                     $(".child_details").show();
+                                    $(".rebateChild").show();
                                     if(data[0].age_child_from != null)
                                         {
                                             $("#child_policy").html("Age from <b>"+data[0].age_child_from+"</b> to <b>"+data[0].age_child_to+"</b>");
@@ -851,12 +857,14 @@ function loadActivityClaim(activityData){
                                 {
                                     $(".infant_details").hide();
                                     $("#infant_policy").html("");
+                                    $(".rebateInfant").hide();
                                     $("#activity_InfantClaimRebate").hide();
                                     $("#activity_InfantCostRebate").hide();
                                 }
                             else
                                 {
                                     $(".infant_details").show();
+                                    $(".rebateInfant").show();
                                     if(data[0].age_inf_from != null)
                                         {
                                             $("#infant_policy").html("Age from <b>"+data[0].age_inf_from+"</b> to <b>"+data[0].age_inf_to+"</b>");
@@ -1018,7 +1026,20 @@ function loadActivityClaim(activityData){
                             $("#activty_policy").html(pax_eligible);
                         }
                   //  $(".panel-collapse").collapse('toggle');
-                    
+                    if (package == 'Y')
+                    {
+                        $('.activityCost').hide();
+                        $('#costRebateDef').hide();
+                        $('#costRebateSection').hide();
+                        $('#service_claim_package').val("Y");
+                    }
+                    else
+                    {
+                        $('.activityCost').show();
+                        $('#costRebateDef').show();
+                        $('#costRebateSection').hide();
+                        $('#service_claim_package').val("N");
+                    }
                     loadActivityExtra(data[0].id_product_service_claim);
                     if($('#serviceDetails').hasClass('in') === false) {
                         $("#serviceDetails").collapse('toggle');  

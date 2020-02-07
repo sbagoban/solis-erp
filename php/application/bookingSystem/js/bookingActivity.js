@@ -41,23 +41,7 @@ var target_action = 'NULL';
                 }
             }
     });
-    /*
-    if (targetPanel == "#serviceDetails" && $("#id_product_service_claim").val() == "")
-        {
-            console.log("Service Details");
-            alert("No service selected");
-            if($('#serviceDetails').hasClass('in') === true) {
-                $("#serviceDetails").collapse('toggle');  
-                $("#dossierService").collapse('toggle');  
-            } 
-        }
-    else if (targetPanel == "#dossierService")
-        {
-          //  if ($(this).attr("aria-expanded"));
-        }
-    });*/
 
-    
 	var id_booking = $('#id_booking').val();
     var activityData = {
 			id_booking: id_booking,
@@ -150,14 +134,14 @@ var target_action = 'NULL';
 		dataType: "json",
 		success: function (data) 
 		{
-			$("#activity_claimApprovedBy").empty();
-			$("#activity_claimApprovedBy").append('<option value="0">None</option>');
+			$("#activity_rebateClaimApproveBy").empty();
+			$("#activity_rebateClaimApproveBy").append('<option value="0">None</option>');
 			$("#activity_costApprovedBy").empty();
 			$("#activity_costApprovedBy").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#activity_claimApprovedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
-			$("#activity_claimApprovedBy").val('0');
-			$('#activity_claimApprovedBy').select2().trigger('change');	
+			$("#activity_rebateClaimApproveBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
+			$("#activity_rebateClaimApproveBy").val('0');
+			$('#activity_rebateClaimApproveBy').select2().trigger('change');	
 			$("#activity_costApprovedBy").append('<option value="' + val.id_user + '">'+val.full_name+'</option>');
 			$("#activity_costApprovedBy").val('0');
 			$('#activity_costApprovedBy').select2().trigger('change');	

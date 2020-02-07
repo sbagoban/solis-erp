@@ -110,6 +110,7 @@ try {
 			PS_CLAIM.ps_teen_claim,
 			PS_CLAIM.ps_child_claim,
 			PS_CLAIM.ps_infant_claim,
+			PS.is_pakage,
 			PS_COST.id_product_service_cost,
 			PS_COST.id_currency AS id_product_service_cost_cur,
 			PS_COST.ps_adult_cost,
@@ -137,6 +138,7 @@ try {
 		{
             while ($rowActivity = $qry_activityDetails->fetch(PDO::FETCH_ASSOC))
 			{
+				$is_pakage = $rowActivity["is_pakage"];
 				$activity_name = $rowActivity["service_name"];
 				$activity_duration = $rowActivity["duration"];
                 if($activity_duration == ' ' || $activity_duration == '')
@@ -1446,133 +1448,7 @@ try {
                  ":created_name"                                       =>$created_name
 			));
         $id_booking_activity_claim = $con->lastInsertId();    
-  
-        // BOOKING ACTIVITY COST
-        $sqlSaveActivityCost ="
-            INSERT INTO booking_activity_cost
-                (
-                    id_booking_activity_claim,
-                    id_booking,
-                    id_product,
-                    id_product_service,
-                    id_product_service_claim,
-                    id_product_service_cost,
-                    id_product_service_cost_cur,
-                    activity_adult_amt,
-                    activity_teen_amt,
-                    activity_child_amt,
-                    activity_infant_amt,
-                    activity_total_pax,
-                    activity_adult_cost,
-                    activity_teen_cost,
-                    activity_child_cost,
-                    activity_infant_cost,
-                    activity_total_cost_exTAX,
-                    activity_total_cost,
-                    activity_rebate_cost_type,
-                    activity_rebate_cost_approve_by,
-                    activity_rebate_cost_percentage,
-                    activity_adult_cost_rebate,
-                    activity_adult_cost_after_rebate_exTAX,
-                    activity_adult_cost_after_rebate,
-                    activity_teen_cost_rebate,
-                    activity_teen_cost_after_rebate,
-                    activity_teen_cost_after_rebate_exTAX,
-                    activity_child_cost_rebate,
-                    activity_child_cost_after_rebate,
-                    activity_child_cost_after_rebate_exTAX,
-                    activity_infant_cost_rebate,
-                    activity_infant_cost_after_rebate,
-                    activity_infant_cost_after_rebate_exTAX,
-                    activity_total_cost_after_rebate_exTAX,
-                    activity_total_cost_after_rebate,
-                    created_by,
-                    created_name
-                )
-             VALUES
-                (
-                    :id_booking_activity_claim,
-                    :id_booking,
-                    :id_product,
-                    :id_product_service,
-                    :id_product_service_claim,
-                    :id_product_service_cost,
-                    :id_product_service_cost_cur,
-                    :activity_adult_amt,
-                    :activity_teen_amt,
-                    :activity_child_amt,
-                    :activity_infant_amt,
-                    :activity_total_pax,
-                    :activity_adult_cost,
-                    :activity_teen_cost,
-                    :activity_child_cost,
-                    :activity_infant_cost,
-                    :activity_total_cost_exTAX,
-                    :activity_total_cost,
-                    :activity_rebate_cost_type,
-                    :activity_rebate_cost_approve_by,
-                    :activity_rebate_cost_percentage,
-                    :activity_adult_cost_rebate,
-                    :activity_adult_cost_after_rebate_exTAX,
-                    :activity_adult_cost_after_rebate,
-                    :activity_teen_cost_rebate,
-                    :activity_teen_cost_after_rebate,
-                    :activity_teen_cost_after_rebate_exTAX,
-                    :activity_child_cost_rebate,
-                    :activity_child_cost_after_rebate,
-                    :activity_child_cost_after_rebate_exTAX,
-                    :activity_infant_cost_rebate,
-                    :activity_infant_cost_after_rebate,
-                    :activity_infant_cost_after_rebate_exTAX,
-                    :activity_total_cost_after_rebate_exTAX,
-                    :activity_total_cost_after_rebate,
-                    :created_by,
-                    :created_name
-                )";
-    
-            $stmt = $con->prepare($sqlSaveActivityCost);
-            $stmt->execute(array(
-            ":id_booking_activity_claim"            =>$id_booking_activity_claim,
-            ":id_booking"                                   =>$id_booking,
-            ":id_product"                                   =>$id_product,
-            ":id_product_service"                       =>$id_product_service,
-            ":id_product_service_claim"             =>$id_product_service_claim,
-            ":id_product_service_cost"              =>$id_product_service_cost,
-            ":id_product_service_cost_cur"       =>$id_product_service_cost_cur,
-            ":activity_adult_amt"                        =>$activity_adult_amt,
-            ":activity_teen_amt"                         =>$activity_teen_amt,
-            ":activity_child_amt"                        =>$activity_child_amt,
-            ":activity_infant_amt"                      =>$activity_infant_amt,
-            ":activity_total_pax"                         =>$activity_total_pax,
-            ":activity_adult_cost"                       => $activity_adult_cost,
-            ":activity_teen_cost"                        => $activity_teen_cost,
-            ":activity_child_cost"                        => $activity_child_cost,
-            ":activity_infant_cost"                      => $activity_infant_cost,
-            ":activity_total_cost_exTAX"            =>$activity_total_cost_exTAX,
-            ":activity_total_cost"                        => $activity_total_cost,
-            ":activity_rebate_cost_type"            => $activity_rebate_cost_type,
-            ":activity_rebate_cost_approve_by" => $activity_rebate_cost_approve_by,
-            ":activity_rebate_cost_percentage"  => $activity_rebate_cost_percentage,
-            ":activity_adult_cost_rebate"            => $activity_adult_cost_rebate,
-            ":activity_adult_cost_after_rebate_exTAX" => $activity_adult_cost_after_rebate_exTAX,
-            ":activity_adult_cost_after_rebate"   => $activity_adult_cost_after_rebate,
-            ":activity_teen_cost_rebate"             => $activity_teen_cost_rebate,
-            ":activity_teen_cost_after_rebate"    => $activity_teen_cost_after_rebate,
-            ":activity_teen_cost_after_rebate_exTAX" => $activity_teen_cost_after_rebate_exTAX,
-            ":activity_child_cost_rebate"             => $activity_child_cost_rebate,
-            ":activity_child_cost_after_rebate"    => $activity_child_cost_after_rebate,
-            ":activity_child_cost_after_rebate_exTAX"   =>$activity_child_cost_after_rebate_exTAX,
-            ":activity_infant_cost_rebate"                      =>$activity_infant_cost_rebate,
-            ":activity_infant_cost_after_rebate"             =>$activity_infant_cost_after_rebate,
-            ":activity_infant_cost_after_rebate_exTAX"  =>$activity_infant_cost_after_rebate_exTAX,
-            ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_after_rebate_exTAX,
-            ":activity_total_cost_after_rebate"                =>$activity_total_cost_after_rebate,   
-            ":created_by"                                   =>$created_by,
-            ":created_name"                              =>$created_name
-            ));
-
-        $id_booking_activity_cost = $con->lastInsertId();    
-            
+           
          // CLIENT ACTIVITY
         $sqlClientActivity = "INSERT INTO booking_activity_client (id_client, id_booking_activity_claim,id_booking) 
         VALUES (:booking_client, :id_booking_activity_claim,:id_booking)";
@@ -1586,170 +1462,170 @@ try {
             
         // BOOKING ACTIVITY CLAIM LOG
         $sqlSaveActivityClaimLog= "
-            INSERT INTO booking_activity_claim_log
-                (
-                    id_booking_activity_claim,
-                    id_booking,
-                    activity_service_paid_by,
-                    id_tour_operator,
-                    id_client,
-                    activity_date,
-                    activity_time,
-                    activity_booking_date,
-                    id_product,
-                    id_product_service,
-                    activity_name,
-                    activity_duration,
-                    activity_clients,
-                    activity_adult_amt,
-                    activity_teen_amt,
-                    activity_child_amt,
-                    activity_infant_amt,
-                    activity_total_pax,
-                    id_product_service_claim,
-                    id_product_service_claim_cur,
-                    id_dept,
-                    activity_claim_dept,
-                    activity_charge,
-                    id_service_tax,
-                    tax_value,
-                    activity_adult_claim_exTAX,
-                    activity_adult_claim,
-                    activity_teen_claim_exTAX,
-                    activity_teen_claim,
-                    activity_child_claim_exTAX,
-                    activity_child_claim,
-                    activity_infant_claim_exTAX,
-                    activity_infant_claim,
-                    activity_total_claim_exTAX,
-                    activity_total_claim,
-                    activity_rebate_claim_type,
-                    activity_rebate_claim_approve_by,
-                    activity_rebate_claim_percentage,
-                    activity_adult_claim_rebate,
-                    activity_adult_claim_after_rebate_exTAX,
-                    activity_adult_claim_after_rebate,
-                    activity_teen_claim_rebate,
-                    activity_teen_claim_after_rebate,
-                    activity_teen_claim_after_rebate_exTAX,
-                    activity_child_claim_rebate,
-                    activity_child_claim_after_rebate,
-                    activity_child_claim_after_rebate_exTAX,
-                    activity_infant_claim_rebate,
-                    activity_infant_claim_after_rebate,
-                    activity_infant_claim_after_rebate_exTAX,
-                    activity_total_claim_after_rebate_exTAX,
-                    activity_total_claim_after_rebate,
-                    activity_remarks,
-                    activity_internal_remarks,
-                    activity_status,
-                    id_user,
-                    uname,
-                    log_status
-                )
-                VALUES
-                (
-                    :id_booking_activity_claim,
-                    :id_booking,
-                    :activity_service_paid_by,
-                    :id_tour_operator,
-                    :id_client,
-                    :activity_date,
-                    :activity_time,
-                    :activity_booking_date,
-                    :id_product,
-                    :id_product_service,
-                    :activity_name,
-                    :activity_duration,
-                    :activity_clients,
-                    :activity_adult_amt,
-                    :activity_teen_amt,
-                    :activity_child_amt,
-                    :activity_infant_amt,
-                    :activity_total_pax,
-                    :id_product_service_claim,
-                    :id_product_service_claim_cur,
-                    :id_dept,
-                    :activity_claim_dept,
-                    :activity_charge,
-                    :id_service_tax,
-                    :tax_value,
-                    :activity_adult_claim_exTAX,
-                    :activity_adult_claim,
-                    :activity_teen_claim_exTAX,
-                    :activity_teen_claim,
-                    :activity_child_claim_exTAX,
-                    :activity_child_claim,
-                    :activity_infant_claim_exTAX,
-                    :activity_infant_claim,
-                    :activity_total_claim_exTAX,
-                    :activity_total_claim,
-                    :activity_rebate_claim_type,
-                    :activity_rebate_claim_approve_by,
-                    :activity_rebate_claim_percentage,
-                    :activity_adult_claim_rebate,
-                    :activity_adult_claim_after_rebate_exTAX,
-                    :activity_adult_claim_after_rebate,
-                    :activity_teen_claim_rebate,
-                    :activity_teen_claim_after_rebate,
-                    :activity_teen_claim_after_rebate_exTAX,
-                    :activity_child_claim_rebate,
-                    :activity_child_claim_after_rebate,
-                    :activity_child_claim_after_rebate_exTAX,
-                    :activity_infant_claim_rebate,
-                    :activity_infant_claim_after_rebate,
-                    :activity_infant_claim_after_rebate_exTAX,
-                    :activity_total_claim_after_rebate_exTAX,
-                    :activity_total_claim_after_rebate,
-                    :activity_remarks,
-                    :activity_internal_remarks,
-                    :activity_status,
-                    :id_user,
-                    :uname,
-                    :log_status
-                )";
+        INSERT INTO booking_activity_claim_log
+            (
+                id_booking_activity_claim,
+                id_booking,
+                activity_service_paid_by,
+                id_tour_operator,
+                id_client,
+                activity_date,
+                activity_time,
+                activity_booking_date,
+                id_product,
+                id_product_service,
+                activity_name,
+                activity_duration,
+                activity_clients,
+                activity_adult_amt,
+                activity_teen_amt,
+                activity_child_amt,
+                activity_infant_amt,
+                activity_total_pax,
+                id_product_service_claim,
+                id_product_service_claim_cur,
+                id_dept,
+                activity_claim_dept,
+                activity_charge,
+                id_service_tax,
+                tax_value,
+                activity_adult_claim_exTAX,
+                activity_adult_claim,
+                activity_teen_claim_exTAX,
+                activity_teen_claim,
+                activity_child_claim_exTAX,
+                activity_child_claim,
+                activity_infant_claim_exTAX,
+                activity_infant_claim,
+                activity_total_claim_exTAX,
+                activity_total_claim,
+                activity_rebate_claim_type,
+                activity_rebate_claim_approve_by,
+                activity_rebate_claim_percentage,
+                activity_adult_claim_rebate,
+                activity_adult_claim_after_rebate_exTAX,
+                activity_adult_claim_after_rebate,
+                activity_teen_claim_rebate,
+                activity_teen_claim_after_rebate,
+                activity_teen_claim_after_rebate_exTAX,
+                activity_child_claim_rebate,
+                activity_child_claim_after_rebate,
+                activity_child_claim_after_rebate_exTAX,
+                activity_infant_claim_rebate,
+                activity_infant_claim_after_rebate,
+                activity_infant_claim_after_rebate_exTAX,
+                activity_total_claim_after_rebate_exTAX,
+                activity_total_claim_after_rebate,
+                activity_remarks,
+                activity_internal_remarks,
+                activity_status,
+                id_user,
+                uname,
+                log_status
+            )
+            VALUES
+            (
+                :id_booking_activity_claim,
+                :id_booking,
+                :activity_service_paid_by,
+                :id_tour_operator,
+                :id_client,
+                :activity_date,
+                :activity_time,
+                :activity_booking_date,
+                :id_product,
+                :id_product_service,
+                :activity_name,
+                :activity_duration,
+                :activity_clients,
+                :activity_adult_amt,
+                :activity_teen_amt,
+                :activity_child_amt,
+                :activity_infant_amt,
+                :activity_total_pax,
+                :id_product_service_claim,
+                :id_product_service_claim_cur,
+                :id_dept,
+                :activity_claim_dept,
+                :activity_charge,
+                :id_service_tax,
+                :tax_value,
+                :activity_adult_claim_exTAX,
+                :activity_adult_claim,
+                :activity_teen_claim_exTAX,
+                :activity_teen_claim,
+                :activity_child_claim_exTAX,
+                :activity_child_claim,
+                :activity_infant_claim_exTAX,
+                :activity_infant_claim,
+                :activity_total_claim_exTAX,
+                :activity_total_claim,
+                :activity_rebate_claim_type,
+                :activity_rebate_claim_approve_by,
+                :activity_rebate_claim_percentage,
+                :activity_adult_claim_rebate,
+                :activity_adult_claim_after_rebate_exTAX,
+                :activity_adult_claim_after_rebate,
+                :activity_teen_claim_rebate,
+                :activity_teen_claim_after_rebate,
+                :activity_teen_claim_after_rebate_exTAX,
+                :activity_child_claim_rebate,
+                :activity_child_claim_after_rebate,
+                :activity_child_claim_after_rebate_exTAX,
+                :activity_infant_claim_rebate,
+                :activity_infant_claim_after_rebate,
+                :activity_infant_claim_after_rebate_exTAX,
+                :activity_total_claim_after_rebate_exTAX,
+                :activity_total_claim_after_rebate,
+                :activity_remarks,
+                :activity_internal_remarks,
+                :activity_status,
+                :id_user,
+                :uname,
+                :log_status
+            )";
 
         $stmt = $con->prepare($sqlSaveActivityClaimLog);
                 $stmt->execute(array(
-                ":id_booking_activity_claim"            =>$id_booking_activity_claim,
-                ":id_booking"                                   =>$id_booking,
-                ":activity_service_paid_by"              =>$activity_service_paid_by,
-                ":id_tour_operator"                          =>$id_tour_operator,
-                ":id_client"                                        =>$id_client,
-                 ":activity_date"                                =>$activity_date,
-                 ":activity_time"                                =>$activity_time,
-                 ":activity_booking_date"                  =>$activity_booking_date,
-                 ":id_product"                                   =>$id_product,
-                 ":id_product_service"                       =>$id_product_service,
-                 ":activity_name"                               =>$activity_name,
-                 ":activity_duration"                           =>$activity_duration,
-                 ":activity_clients"                               =>implode( ", ", $booking_client ),
-                 ":activity_adult_amt"                          =>$activity_adult_amt,
-                 ":activity_teen_amt"                            =>$activity_teen_amt,
-                 ":activity_child_amt"                            =>$activity_child_amt,
-                 ":activity_infant_amt"                          =>$activity_infant_amt,
-                 ":activity_total_pax"                            =>$activity_total_pax,
-                 ":id_product_service_claim"                =>$id_product_service_claim,
-                 ":id_product_service_claim_cur"          =>$id_product_service_claim_cur,
-                 ":id_dept"                                            =>$id_dept,
-                 ":activity_claim_dept"                          =>$activity_claim_dept,
-                 ":activity_charge"                                 =>$activity_charge,
-                 ":id_service_tax"                                   =>$id_service_tax,
-                 ":tax_value"                                          =>$tax_value,
-                 ":activity_adult_claim_exTAX"               =>$activity_adult_claim_exTAX,
-                 ":activity_adult_claim"                           =>$activity_adult_claim,
-                 ":activity_teen_claim_exTAX"                =>$activity_teen_claim_exTAX,
-                 ":activity_teen_claim"                            =>$activity_teen_claim,
-                 ":activity_child_claim_exTAX"                =>$activity_child_claim_exTAX,
-                 ":activity_child_claim"                            =>$activity_child_claim,
-                 ":activity_infant_claim_exTAX"                =>$activity_infant_claim_exTAX,
-                 ":activity_infant_claim"                           =>$activity_infant_claim,
-                 ":activity_total_claim_exTAX"                  =>$activity_total_claim_exTAX,
-                 ":activity_total_claim"                              =>$activity_total_claim,
-                 ":activity_rebate_claim_type"                  =>$activity_rebate_claim_type,
-                 ":activity_rebate_claim_approve_by"       =>$activity_rebate_claim_approve_by,
-                 ":activity_rebate_claim_percentage"        =>$activity_rebate_claim_percentage,
-                 ":activity_adult_claim_rebate"                  =>$activity_adult_claim_rebate,
+                ":id_booking_activity_claim"                      =>$id_booking_activity_claim,
+                ":id_booking"                                             =>$id_booking,
+                ":activity_service_paid_by"                        =>$activity_service_paid_by,
+                ":id_tour_operator"                                    =>$id_tour_operator,
+                ":id_client"                                                 =>$id_client,
+                 ":activity_date"                                         =>$activity_date,
+                 ":activity_time"                                         =>$activity_time,
+                 ":activity_booking_date"                           =>$activity_booking_date,
+                 ":id_product"                                            =>$id_product,
+                 ":id_product_service"                               =>$id_product_service,
+                 ":activity_name"                                       =>$activity_name,
+                 ":activity_duration"                                  =>$activity_duration,
+                 ":activity_clients"                                     =>implode( ", ", $booking_client ),
+                 ":activity_adult_amt"                                =>$activity_adult_amt,
+                 ":activity_teen_amt"                                 =>$activity_teen_amt,
+                 ":activity_child_amt"                                 =>$activity_child_amt,
+                 ":activity_infant_amt"                                =>$activity_infant_amt,
+                 ":activity_total_pax"                                   =>$activity_total_pax,
+                 ":id_product_service_claim"                       =>$id_product_service_claim,
+                 ":id_product_service_claim_cur"                =>$id_product_service_claim_cur,
+                 ":id_dept"                                                   =>$id_dept,
+                 ":activity_claim_dept"                                 =>$activity_claim_dept,
+                 ":activity_charge"                                        =>$activity_charge,
+                 ":id_service_tax"                                          =>$id_service_tax,
+                 ":tax_value"                                                 =>$tax_value,
+                 ":activity_adult_claim_exTAX"                     =>$activity_adult_claim_exTAX,
+                 ":activity_adult_claim"                                 =>$activity_adult_claim,
+                 ":activity_teen_claim_exTAX"                      =>$activity_teen_claim_exTAX,
+                 ":activity_teen_claim"                                  =>$activity_teen_claim,
+                 ":activity_child_claim_exTAX"                      =>$activity_child_claim_exTAX,
+                 ":activity_child_claim"                                  =>$activity_child_claim,
+                 ":activity_infant_claim_exTAX"                     =>$activity_infant_claim_exTAX,
+                 ":activity_infant_claim"                                 =>$activity_infant_claim,
+                 ":activity_total_claim_exTAX"                       =>$activity_total_claim_exTAX,
+                 ":activity_total_claim"                                   =>$activity_total_claim,
+                 ":activity_rebate_claim_type"                       =>$activity_rebate_claim_type,
+                 ":activity_rebate_claim_approve_by"            =>$activity_rebate_claim_approve_by,
+                 ":activity_rebate_claim_percentage"             =>$activity_rebate_claim_percentage,
+                 ":activity_adult_claim_rebate"                       =>$activity_adult_claim_rebate,
                  ":activity_adult_claim_after_rebate_exTAX"  =>$activity_adult_claim_after_rebate_exTAX,
                  ":activity_adult_claim_after_rebate"              =>$activity_adult_claim_after_rebate, 
                  ":activity_teen_claim_rebate"                        =>$activity_teen_claim_rebate,
@@ -1763,144 +1639,671 @@ try {
                  ":activity_infant_claim_after_rebate_exTAX" =>$activity_infant_claim_after_rebate_exTAX,
                  ":activity_total_claim_after_rebate_exTAX"   =>$activity_total_claim_after_rebate_exTAX,
                  ":activity_total_claim_after_rebate"              =>$activity_total_claim_after_rebate,
-                 ":activity_remarks"                                    =>$activity_remarks,
-                 ":activity_internal_remarks"                      =>$activity_internal_remarks,
-                 ":activity_status"                                       =>$activity_status,
-				 ":id_user"                                                  => $id_user,
-				 ":uname"                                                   => $uname,
-				 ":log_status"                                              => $log_status
+                 ":activity_remarks"                                        =>$activity_remarks,
+                 ":activity_internal_remarks"                           =>$activity_internal_remarks,
+                 ":activity_status"                                            =>$activity_status,
+				 ":id_user"                                                        => $id_user,
+				 ":uname"                                                         => $uname,
+				 ":log_status"                                                    => $log_status
             ));
     
-        // BOOKING ACTIVITY COST LOG
-        $sqlSaveActivityCostLog ="
-            INSERT INTO booking_activity_cost_log
-                (
-                    id_booking_activity_cost,
-                    id_booking_activity_claim,
-                    id_booking,
-                    id_product,
-                    id_product_service,
-                    id_product_service_claim,
-                    id_product_service_cost,
-                    id_product_service_cost_cur,
-                    activity_adult_amt,
-                    activity_teen_amt,
-                    activity_child_amt,
-                    activity_infant_amt,
-                    activity_total_pax,
-                    activity_adult_cost,
-                    activity_teen_cost,
-                    activity_child_cost,
-                    activity_infant_cost,
-                    activity_total_cost_exTAX,
-                    activity_total_cost,
-                    activity_rebate_cost_type,
-                    activity_rebate_cost_approve_by,
-                    activity_rebate_cost_percentage,
-                    activity_adult_cost_rebate,
-                    activity_adult_cost_after_rebate_exTAX,
-                    activity_adult_cost_after_rebate,
-                    activity_teen_cost_rebate,
-                    activity_teen_cost_after_rebate,
-                    activity_teen_cost_after_rebate_exTAX,
-                    activity_child_cost_rebate,
-                    activity_child_cost_after_rebate,
-                    activity_child_cost_after_rebate_exTAX,
-                    activity_infant_cost_rebate,
-                    activity_infant_cost_after_rebate,
-                    activity_infant_cost_after_rebate_exTAX,
-                    activity_total_cost_after_rebate_exTAX,
-                    activity_total_cost_after_rebate,
-                    id_user,
-                    uname,
-                    log_status
-                )
-             VALUES
-                (
-                    :id_booking_activity_cost,
-                    :id_booking_activity_claim,
-                    :id_booking,
-                    :id_product,
-                    :id_product_service,
-                    :id_product_service_claim,
-                    :id_product_service_cost,
-                    :id_product_service_cost_cur,
-                    :activity_adult_amt,
-                    :activity_teen_amt,
-                    :activity_child_amt,
-                    :activity_infant_amt,
-                    :activity_total_pax,
-                    :activity_adult_cost,
-                    :activity_teen_cost,
-                    :activity_child_cost,
-                    :activity_infant_cost,
-                    :activity_total_cost_exTAX,
-                    :activity_total_cost,
-                    :activity_rebate_cost_type,
-                    :activity_rebate_cost_approve_by,
-                    :activity_rebate_cost_percentage,
-                    :activity_adult_cost_rebate,
-                    :activity_adult_cost_after_rebate_exTAX,
-                    :activity_adult_cost_after_rebate,
-                    :activity_teen_cost_rebate,
-                    :activity_teen_cost_after_rebate,
-                    :activity_teen_cost_after_rebate_exTAX,
-                    :activity_child_cost_rebate,
-                    :activity_child_cost_after_rebate,
-                    :activity_child_cost_after_rebate_exTAX,
-                    :activity_infant_cost_rebate,
-                    :activity_infant_cost_after_rebate,
-                    :activity_infant_cost_after_rebate_exTAX,
-                    :activity_total_cost_after_rebate_exTAX,
-                    :activity_total_cost_after_rebate,
-                    :id_user,
-                    :uname,
-                    :log_status
-                )";
-    
-            $stmt = $con->prepare($sqlSaveActivityCostLog);
-            $stmt->execute(array(
-            ":id_booking_activity_cost"             =>$id_booking_activity_cost,
-            ":id_booking_activity_claim"            =>$id_booking_activity_claim,
-            ":id_booking"                                   =>$id_booking,
-            ":id_product"                                   =>$id_product,
-            ":id_product_service"                       =>$id_product_service,
-            ":id_product_service_claim"             =>$id_product_service_claim,
-            ":id_product_service_cost"              =>$id_product_service_cost,
-            ":id_product_service_cost_cur"       =>$id_product_service_cost_cur,
-            ":activity_adult_amt"                        =>$activity_adult_amt,
-            ":activity_teen_amt"                         =>$activity_teen_amt,
-            ":activity_child_amt"                        =>$activity_child_amt,
-            ":activity_infant_amt"                      =>$activity_infant_amt,
-            ":activity_total_pax"                         =>$activity_total_pax,
-            ":activity_adult_cost"                       => $activity_adult_cost,
-            ":activity_teen_cost"                        => $activity_teen_cost,
-            ":activity_child_cost"                        => $activity_child_cost,
-            ":activity_infant_cost"                      => $activity_infant_cost,
-            ":activity_total_cost_exTAX"            =>$activity_total_cost_exTAX,
-            ":activity_total_cost"                        => $activity_total_cost,
-            ":activity_rebate_cost_type"            => $activity_rebate_cost_type,
-            ":activity_rebate_cost_approve_by" => $activity_rebate_cost_approve_by,
-            ":activity_rebate_cost_percentage"  => $activity_rebate_cost_percentage,
-            ":activity_adult_cost_rebate"            => $activity_adult_cost_rebate,
-            ":activity_adult_cost_after_rebate_exTAX" => $activity_adult_cost_after_rebate_exTAX,
-            ":activity_adult_cost_after_rebate"   => $activity_adult_cost_after_rebate,
-            ":activity_teen_cost_rebate"             => $activity_teen_cost_rebate,
-            ":activity_teen_cost_after_rebate"    => $activity_teen_cost_after_rebate,
-            ":activity_teen_cost_after_rebate_exTAX" => $activity_teen_cost_after_rebate_exTAX,
-            ":activity_child_cost_rebate"             => $activity_child_cost_rebate,
-            ":activity_child_cost_after_rebate"    => $activity_child_cost_after_rebate,
-            ":activity_child_cost_after_rebate_exTAX"   =>$activity_child_cost_after_rebate_exTAX,
-            ":activity_infant_cost_rebate"                      =>$activity_infant_cost_rebate,
-            ":activity_infant_cost_after_rebate"             =>$activity_infant_cost_after_rebate,
-            ":activity_infant_cost_after_rebate_exTAX"  =>$activity_infant_cost_after_rebate_exTAX,
-            ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_after_rebate_exTAX,
-            ":activity_total_cost_after_rebate"                =>$activity_total_cost_after_rebate,   
-             ":id_user"                                        => $id_user,
-             ":uname"                                         => $uname,
-             ":log_status"                                    => $log_status
-            ));
-       
+        if($is_pakage == "N")
+        {
+             // BOOKING ACTIVITY COST
+            $sqlSaveActivityCost ="
+                INSERT INTO booking_activity_cost
+                    (
+                        id_booking_activity_claim,
+                        id_booking,
+                        id_product,
+                        id_product_service,
+                        id_product_service_claim,
+                        id_product_service_cost,
+                        id_product_service_cost_cur,
+                        activity_adult_amt,
+                        activity_teen_amt,
+                        activity_child_amt,
+                        activity_infant_amt,
+                        activity_total_pax,
+                        activity_adult_cost,
+                        activity_teen_cost,
+                        activity_child_cost,
+                        activity_infant_cost,
+                        activity_total_cost_exTAX,
+                        activity_total_cost,
+                        activity_rebate_cost_type,
+                        activity_rebate_cost_approve_by,
+                        activity_rebate_cost_percentage,
+                        activity_adult_cost_rebate,
+                        activity_adult_cost_after_rebate_exTAX,
+                        activity_adult_cost_after_rebate,
+                        activity_teen_cost_rebate,
+                        activity_teen_cost_after_rebate,
+                        activity_teen_cost_after_rebate_exTAX,
+                        activity_child_cost_rebate,
+                        activity_child_cost_after_rebate,
+                        activity_child_cost_after_rebate_exTAX,
+                        activity_infant_cost_rebate,
+                        activity_infant_cost_after_rebate,
+                        activity_infant_cost_after_rebate_exTAX,
+                        activity_total_cost_after_rebate_exTAX,
+                        activity_total_cost_after_rebate,
+                        created_by,
+                        created_name
+                    )
+                 VALUES
+                    (
+                        :id_booking_activity_claim,
+                        :id_booking,
+                        :id_product,
+                        :id_product_service,
+                        :id_product_service_claim,
+                        :id_product_service_cost,
+                        :id_product_service_cost_cur,
+                        :activity_adult_amt,
+                        :activity_teen_amt,
+                        :activity_child_amt,
+                        :activity_infant_amt,
+                        :activity_total_pax,
+                        :activity_adult_cost,
+                        :activity_teen_cost,
+                        :activity_child_cost,
+                        :activity_infant_cost,
+                        :activity_total_cost_exTAX,
+                        :activity_total_cost,
+                        :activity_rebate_cost_type,
+                        :activity_rebate_cost_approve_by,
+                        :activity_rebate_cost_percentage,
+                        :activity_adult_cost_rebate,
+                        :activity_adult_cost_after_rebate_exTAX,
+                        :activity_adult_cost_after_rebate,
+                        :activity_teen_cost_rebate,
+                        :activity_teen_cost_after_rebate,
+                        :activity_teen_cost_after_rebate_exTAX,
+                        :activity_child_cost_rebate,
+                        :activity_child_cost_after_rebate,
+                        :activity_child_cost_after_rebate_exTAX,
+                        :activity_infant_cost_rebate,
+                        :activity_infant_cost_after_rebate,
+                        :activity_infant_cost_after_rebate_exTAX,
+                        :activity_total_cost_after_rebate_exTAX,
+                        :activity_total_cost_after_rebate,
+                        :created_by,
+                        :created_name
+                    )";
+
+                $stmt = $con->prepare($sqlSaveActivityCost);
+                $stmt->execute(array(
+                ":id_booking_activity_claim"            =>$id_booking_activity_claim,
+                ":id_booking"                                   =>$id_booking,
+                ":id_product"                                   =>$id_product,
+                ":id_product_service"                       =>$id_product_service,
+                ":id_product_service_claim"             =>$id_product_service_claim,
+                ":id_product_service_cost"              =>$id_product_service_cost,
+                ":id_product_service_cost_cur"       =>$id_product_service_cost_cur,
+                ":activity_adult_amt"                        =>$activity_adult_amt,
+                ":activity_teen_amt"                         =>$activity_teen_amt,
+                ":activity_child_amt"                        =>$activity_child_amt,
+                ":activity_infant_amt"                      =>$activity_infant_amt,
+                ":activity_total_pax"                         =>$activity_total_pax,
+                ":activity_adult_cost"                       => $activity_adult_cost,
+                ":activity_teen_cost"                        => $activity_teen_cost,
+                ":activity_child_cost"                        => $activity_child_cost,
+                ":activity_infant_cost"                      => $activity_infant_cost,
+                ":activity_total_cost_exTAX"            =>$activity_total_cost_exTAX,
+                ":activity_total_cost"                        => $activity_total_cost,
+                ":activity_rebate_cost_type"            => $activity_rebate_cost_type,
+                ":activity_rebate_cost_approve_by" => $activity_rebate_cost_approve_by,
+                ":activity_rebate_cost_percentage"  => $activity_rebate_cost_percentage,
+                ":activity_adult_cost_rebate"            => $activity_adult_cost_rebate,
+                ":activity_adult_cost_after_rebate_exTAX" => $activity_adult_cost_after_rebate_exTAX,
+                ":activity_adult_cost_after_rebate"   => $activity_adult_cost_after_rebate,
+                ":activity_teen_cost_rebate"             => $activity_teen_cost_rebate,
+                ":activity_teen_cost_after_rebate"    => $activity_teen_cost_after_rebate,
+                ":activity_teen_cost_after_rebate_exTAX" => $activity_teen_cost_after_rebate_exTAX,
+                ":activity_child_cost_rebate"             => $activity_child_cost_rebate,
+                ":activity_child_cost_after_rebate"    => $activity_child_cost_after_rebate,
+                ":activity_child_cost_after_rebate_exTAX"   =>$activity_child_cost_after_rebate_exTAX,
+                ":activity_infant_cost_rebate"                      =>$activity_infant_cost_rebate,
+                ":activity_infant_cost_after_rebate"             =>$activity_infant_cost_after_rebate,
+                ":activity_infant_cost_after_rebate_exTAX"  =>$activity_infant_cost_after_rebate_exTAX,
+                ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_after_rebate_exTAX,
+                ":activity_total_cost_after_rebate"                =>$activity_total_cost_after_rebate,   
+                ":created_by"                                   =>$created_by,
+                ":created_name"                              =>$created_name
+                ));
+
+            $id_booking_activity_cost = $con->lastInsertId();    
+
+            // BOOKING ACTIVITY COST LOG
+            $sqlSaveActivityCostLog ="
+                INSERT INTO booking_activity_cost_log
+                    (
+                        id_booking_activity_cost,
+                        id_booking_activity_claim,
+                        id_booking,
+                        id_product,
+                        id_product_service,
+                        id_product_service_claim,
+                        id_product_service_cost,
+                        id_product_service_cost_cur,
+                        activity_adult_amt,
+                        activity_teen_amt,
+                        activity_child_amt,
+                        activity_infant_amt,
+                        activity_total_pax,
+                        activity_adult_cost,
+                        activity_teen_cost,
+                        activity_child_cost,
+                        activity_infant_cost,
+                        activity_total_cost_exTAX,
+                        activity_total_cost,
+                        activity_rebate_cost_type,
+                        activity_rebate_cost_approve_by,
+                        activity_rebate_cost_percentage,
+                        activity_adult_cost_rebate,
+                        activity_adult_cost_after_rebate_exTAX,
+                        activity_adult_cost_after_rebate,
+                        activity_teen_cost_rebate,
+                        activity_teen_cost_after_rebate,
+                        activity_teen_cost_after_rebate_exTAX,
+                        activity_child_cost_rebate,
+                        activity_child_cost_after_rebate,
+                        activity_child_cost_after_rebate_exTAX,
+                        activity_infant_cost_rebate,
+                        activity_infant_cost_after_rebate,
+                        activity_infant_cost_after_rebate_exTAX,
+                        activity_total_cost_after_rebate_exTAX,
+                        activity_total_cost_after_rebate,
+                        id_user,
+                        uname,
+                        log_status
+                    )
+                 VALUES
+                    (
+                        :id_booking_activity_cost,
+                        :id_booking_activity_claim,
+                        :id_booking,
+                        :id_product,
+                        :id_product_service,
+                        :id_product_service_claim,
+                        :id_product_service_cost,
+                        :id_product_service_cost_cur,
+                        :activity_adult_amt,
+                        :activity_teen_amt,
+                        :activity_child_amt,
+                        :activity_infant_amt,
+                        :activity_total_pax,
+                        :activity_adult_cost,
+                        :activity_teen_cost,
+                        :activity_child_cost,
+                        :activity_infant_cost,
+                        :activity_total_cost_exTAX,
+                        :activity_total_cost,
+                        :activity_rebate_cost_type,
+                        :activity_rebate_cost_approve_by,
+                        :activity_rebate_cost_percentage,
+                        :activity_adult_cost_rebate,
+                        :activity_adult_cost_after_rebate_exTAX,
+                        :activity_adult_cost_after_rebate,
+                        :activity_teen_cost_rebate,
+                        :activity_teen_cost_after_rebate,
+                        :activity_teen_cost_after_rebate_exTAX,
+                        :activity_child_cost_rebate,
+                        :activity_child_cost_after_rebate,
+                        :activity_child_cost_after_rebate_exTAX,
+                        :activity_infant_cost_rebate,
+                        :activity_infant_cost_after_rebate,
+                        :activity_infant_cost_after_rebate_exTAX,
+                        :activity_total_cost_after_rebate_exTAX,
+                        :activity_total_cost_after_rebate,
+                        :id_user,
+                        :uname,
+                        :log_status
+                    )";
+
+                $stmt = $con->prepare($sqlSaveActivityCostLog);
+                $stmt->execute(array(
+                ":id_booking_activity_cost"             =>$id_booking_activity_cost,
+                ":id_booking_activity_claim"            =>$id_booking_activity_claim,
+                ":id_booking"                                   =>$id_booking,
+                ":id_product"                                   =>$id_product,
+                ":id_product_service"                       =>$id_product_service,
+                ":id_product_service_claim"             =>$id_product_service_claim,
+                ":id_product_service_cost"              =>$id_product_service_cost,
+                ":id_product_service_cost_cur"       =>$id_product_service_cost_cur,
+                ":activity_adult_amt"                        =>$activity_adult_amt,
+                ":activity_teen_amt"                         =>$activity_teen_amt,
+                ":activity_child_amt"                        =>$activity_child_amt,
+                ":activity_infant_amt"                      =>$activity_infant_amt,
+                ":activity_total_pax"                         =>$activity_total_pax,
+                ":activity_adult_cost"                       => $activity_adult_cost,
+                ":activity_teen_cost"                        => $activity_teen_cost,
+                ":activity_child_cost"                        => $activity_child_cost,
+                ":activity_infant_cost"                      => $activity_infant_cost,
+                ":activity_total_cost_exTAX"            =>$activity_total_cost_exTAX,
+                ":activity_total_cost"                        => $activity_total_cost,
+                ":activity_rebate_cost_type"            => $activity_rebate_cost_type,
+                ":activity_rebate_cost_approve_by" => $activity_rebate_cost_approve_by,
+                ":activity_rebate_cost_percentage"  => $activity_rebate_cost_percentage,
+                ":activity_adult_cost_rebate"            => $activity_adult_cost_rebate,
+                ":activity_adult_cost_after_rebate_exTAX" => $activity_adult_cost_after_rebate_exTAX,
+                ":activity_adult_cost_after_rebate"   => $activity_adult_cost_after_rebate,
+                ":activity_teen_cost_rebate"             => $activity_teen_cost_rebate,
+                ":activity_teen_cost_after_rebate"    => $activity_teen_cost_after_rebate,
+                ":activity_teen_cost_after_rebate_exTAX" => $activity_teen_cost_after_rebate_exTAX,
+                ":activity_child_cost_rebate"             => $activity_child_cost_rebate,
+                ":activity_child_cost_after_rebate"    => $activity_child_cost_after_rebate,
+                ":activity_child_cost_after_rebate_exTAX"   =>$activity_child_cost_after_rebate_exTAX,
+                ":activity_infant_cost_rebate"                      =>$activity_infant_cost_rebate,
+                ":activity_infant_cost_after_rebate"             =>$activity_infant_cost_after_rebate,
+                ":activity_infant_cost_after_rebate_exTAX"  =>$activity_infant_cost_after_rebate_exTAX,
+                ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_after_rebate_exTAX,
+                ":activity_total_cost_after_rebate"                =>$activity_total_cost_after_rebate,   
+                 ":id_user"                                        => $id_user,
+                 ":uname"                                         => $uname,
+                 ":log_status"                                    => $log_status
+                ));
+        }
+        else
+        {
+            $qry_activityPackageCost = $con->prepare("
+                SELECT 
+                    PS_COST.*,
+                    PS.service_name, 
+                    PS.id_tax
+                FROM 
+                    product_service_package PSP,
+                    product_service PS,
+                    product_service_cost PS_COST
+                WHERE PSP.id_product_service_induded = PS.id_product_service
+                AND PS.id_product_service = PS_COST.id_product_service
+                AND PSP.id_product_service = :id_product_service
+                AND :activity_date BETWEEN PS_COST.valid_from AND PS_COST.valid_to
+                AND PSP.active = 1");
+            $qry_activityPackageCost->execute(array(":id_product_service"=>$id_product_service,":activity_date"=>$activity_date));
+
+            $row_count_activityPackageCost = $qry_activityPackageCost->rowCount();
+            if ($row_count_activityPackageCost > 0) 
+            {
+               while ($row = $qry_activityPackageCost->fetch(PDO::FETCH_ASSOC)) {
+                    $activity_charge = $row["charge"];
+                    $activity_adult_cost = $row["ps_adult_cost"];
+                    $activity_teen_cost = $row["ps_teen_cost"];
+                    $activity_child_cost = $row["ps_child_cost"];
+                    $activity_infant_cost = $row["ps_infant_cost"];
+                    $id_product_service = $row["id_product_service"];
+                    $id_product_service_cost = $row["id_product_service_cost"];
+                    $id_product_service_cost_cur = $row["id_currency"];
+                    $service_cost_name = $row["service_name"];
+
+                    $activity_cost_adult_amt = 0;
+                    $activity_cost_teen_amt = 0;
+                    $activity_cost_child_amt = 0; 
+                    $activity_cost_infant_amt = 0; 
+                    $activity_clients = $booking_client;
+                    foreach($activity_clients as $activity_bookingClient)
+                    {
+                        // CLIENT ACTIVITY
+                        $qry_ClientActivityDef = $con->prepare("
+                            SELECT 
+                                C.type,
+                                BC.*,
+                                PS.for_infant,
+                                PS.age_inf_from,
+                                PS.age_inf_to,
+                                PS.for_child,
+                                PS.age_child_from,
+                                PS.age_child_to,
+                                PS.for_teen,
+                                PS.age_teen_from,
+                                PS.age_teen_to,
+                                PS.for_adult,
+                                PS.min_age,
+                                PS.max_age
+                            FROM 
+                                booking_client BC,
+                                CLIENT C,
+                                product_service PS
+                            WHERE BC.id_client = C.id_client
+                            AND BC.id_booking_client = :booking_client
+                            AND PS.id_product_service = :id_product_service");
+                        $qry_ClientActivityDef->execute(array(":id_product_service"=>$id_product_service,":booking_client"=>$activity_bookingClient));
+                        $row_count_clientActivityDef = $qry_ClientActivityDef->rowCount();
+                        if ($row_count_clientActivityDef > 0) 
+                        {
+                            while ($rowClientDefinition = $qry_ClientActivityDef->fetch(PDO::FETCH_ASSOC)) {
+                                if($rowClientDefinition["yearMonth"] == "MONTH")
+                                {
+                                    $paxAge =  $rowClientDefinition["age"] /12;
+                                   
+                                    if($rowClientDefinition["for_infant"] == 1 && $paxAge != null && $paxAge <= $rowClientDefinition["age_inf_to"] )
+                                    {
+                                        $activity_cost_infant_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_child"] == 1 && $paxAge != null && $paxAge <= $rowClientDefinition["age_child_to"] )
+                                    {
+                                        $activity_cost_child_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_teen"] == 1 && $paxAge != null && $paxAge <= $rowClientDefinition["age_teen_to"] )
+                                    {
+                                        $activity_cost_teen_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_adult"] == 1 && $rowClientDefinition["type"] == "ADULT" )
+                                    {
+                                        $activity_cost_adult_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_adult"] == 1 && $rowClientDefinition["age"] != null )
+                                    {
+                                        $activity_cost_adult_amt ++;
+                                    }
+                                }
+                                else
+                                {
+                                    if($rowClientDefinition["for_infant"] == 1 && $rowClientDefinition["age"] != null && $rowClientDefinition["age"] <= $rowClientDefinition["age_inf_to"] )
+                                    {
+                                        $activity_cost_infant_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_child"] == 1 && $rowClientDefinition["age"] != null && $rowClientDefinition["age"] <= $rowClientDefinition["age_child_to"] )
+                                    {
+                                        $activity_cost_child_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_teen"] == 1 && $rowClientDefinition["age"] != null && $rowClientDefinition["age"] <= $rowClientDefinition["age_teen_to"] )
+                                    {
+                                        $activity_cost_teen_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_adult"] == 1 && $rowClientDefinition["type"] == "ADULT" )
+                                    {
+                                        $activity_cost_adult_amt ++;
+                                    }
+                                    else if($rowClientDefinition["for_adult"] == 1 && $rowClientDefinition["age"] != null )
+                                    {
+                                        $activity_cost_adult_amt ++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+           
+                    $activity_total_pax = trim($_POST["activity_total_pax"]);
+
+                    if ($activity_charge=="PAX")
+                    {
+                        $activity_total_cost_exTAX = (($activity_cost_adult_amt * $activity_adult_cost) + ($activity_cost_teen_amt * $activity_teen_cost) + ($activity_cost_child_amt * $activity_child_cost) + ($activity_cost_infant_amt * $activity_infant_cost))* ((100 - $tax_value)/100); 
+                        $activity_total_cost =(($activity_cost_adult_amt * $activity_adult_cost) + ($activity_cost_teen_amt * $activity_teen_cost) + ($activity_cost_child_amt * $activity_child_cost) + ($activity_cost_infant_amt * $activity_infant_cost));
+                    }
+                    else
+                    {
+                        $activity_total_cost_exTAX = $activity_adult_cost * ((100 - $tax_value)/100); 
+                        $activity_total_cost = $activity_adult_cost;
+                    }
+
+                     // BOOKING ACTIVITY COST
+                    $sqlSaveActivityCost ="
+                        INSERT INTO booking_activity_cost
+                            (
+                                id_booking_activity_claim,
+                                id_booking,
+                                id_product,
+                                id_product_service,
+                                id_product_service_claim,
+                                id_product_service_cost,
+                                id_product_service_cost_cur,
+                                activity_adult_amt,
+                                activity_teen_amt,
+                                activity_child_amt,
+                                activity_infant_amt,
+                                activity_total_pax,
+                                activity_charge,
+                                activity_adult_cost,
+                                activity_teen_cost,
+                                activity_child_cost,
+                                activity_infant_cost,
+                                activity_total_cost_exTAX,
+                                activity_total_cost,
+                                activity_rebate_cost_type,
+                                activity_rebate_cost_approve_by,
+                                activity_rebate_cost_percentage,
+                                activity_adult_cost_rebate,
+                                activity_adult_cost_after_rebate_exTAX,
+                                activity_adult_cost_after_rebate,
+                                activity_teen_cost_rebate,
+                                activity_teen_cost_after_rebate,
+                                activity_teen_cost_after_rebate_exTAX,
+                                activity_child_cost_rebate,
+                                activity_child_cost_after_rebate,
+                                activity_child_cost_after_rebate_exTAX,
+                                activity_infant_cost_rebate,
+                                activity_infant_cost_after_rebate,
+                                activity_infant_cost_after_rebate_exTAX,
+                                activity_total_cost_after_rebate_exTAX,
+                                activity_total_cost_after_rebate,
+                                created_by,
+                                created_name
+                            )
+                         VALUES
+                            (
+                                :id_booking_activity_claim,
+                                :id_booking,
+                                :id_product,
+                                :id_product_service,
+                                :id_product_service_claim,
+                                :id_product_service_cost,
+                                :id_product_service_cost_cur,
+                                :activity_adult_amt,
+                                :activity_teen_amt,
+                                :activity_child_amt,
+                                :activity_infant_amt,
+                                :activity_total_pax,
+                                :activity_charge,
+                                :activity_adult_cost,
+                                :activity_teen_cost,
+                                :activity_child_cost,
+                                :activity_infant_cost,
+                                :activity_total_cost_exTAX,
+                                :activity_total_cost,
+                                :activity_rebate_cost_type,
+                                :activity_rebate_cost_approve_by,
+                                :activity_rebate_cost_percentage,
+                                :activity_adult_cost_rebate,
+                                :activity_adult_cost_after_rebate_exTAX,
+                                :activity_adult_cost_after_rebate,
+                                :activity_teen_cost_rebate,
+                                :activity_teen_cost_after_rebate,
+                                :activity_teen_cost_after_rebate_exTAX,
+                                :activity_child_cost_rebate,
+                                :activity_child_cost_after_rebate,
+                                :activity_child_cost_after_rebate_exTAX,
+                                :activity_infant_cost_rebate,
+                                :activity_infant_cost_after_rebate,
+                                :activity_infant_cost_after_rebate_exTAX,
+                                :activity_total_cost_after_rebate_exTAX,
+                                :activity_total_cost_after_rebate,
+                                :created_by,
+                                :created_name
+                            )";
+
+                    $stmt = $con->prepare($sqlSaveActivityCost);
+                    $stmt->execute(array(
+                    ":id_booking_activity_claim"                    =>$id_booking_activity_claim,
+                    ":id_booking"                                           =>$id_booking,
+                    ":id_product"                                           =>$id_product,
+                    ":id_product_service"                               =>$id_product_service,
+                    ":id_product_service_claim"                     =>$id_product_service_claim,
+                    ":id_product_service_cost"                      =>$id_product_service_cost,
+                    ":id_product_service_cost_cur"                =>$id_product_service_cost_cur,
+                    ":activity_adult_amt"                                =>$activity_cost_adult_amt,
+                    ":activity_teen_amt"                                 =>$activity_cost_teen_amt,
+                    ":activity_child_amt"                                 =>$activity_cost_child_amt,
+                    ":activity_infant_amt"                               =>$activity_cost_infant_amt,
+                    ":activity_total_pax"                                  =>$activity_total_pax,
+                    ":activity_charge"                                      => $activity_charge,
+                    ":activity_adult_cost"                                => $activity_adult_cost,
+                    ":activity_teen_cost"                                 => $activity_teen_cost,
+                    ":activity_child_cost"                                 => $activity_child_cost,
+                    ":activity_infant_cost"                                => $activity_infant_cost,
+                    ":activity_total_cost_exTAX"                      => $activity_total_cost_exTAX,
+                    ":activity_total_cost"                                  => $activity_total_cost,
+                    ":activity_rebate_cost_type"                      => 'NONE',
+                    ":activity_rebate_cost_approve_by"           => 0,
+                    ":activity_rebate_cost_percentage"            => 0,
+                    ":activity_adult_cost_rebate"                      => 0,
+                    ":activity_adult_cost_after_rebate_exTAX" => 0,
+                    ":activity_adult_cost_after_rebate"             => 0,
+                    ":activity_teen_cost_rebate"                       => 0,
+                    ":activity_teen_cost_after_rebate"              => 0,
+                    ":activity_teen_cost_after_rebate_exTAX"   => 0,
+                    ":activity_child_cost_rebate"                       => 0,
+                    ":activity_child_cost_after_rebate"              => 0,
+                    ":activity_child_cost_after_rebate_exTAX"   => 0,
+                    ":activity_infant_cost_rebate"                      => 0,
+                    ":activity_infant_cost_after_rebate"             => 0,
+                    ":activity_infant_cost_after_rebate_exTAX"  => 0,
+                    ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_exTAX,
+                    ":activity_total_cost_after_rebate"                => $activity_total_cost, 
+                    ":created_by"                                   =>$created_by,
+                    ":created_name"                              =>$created_name
+                    ));
+
+                    $id_booking_activity_cost = $con->lastInsertId();    
+
+                    // BOOKING ACTIVITY COST LOG
+                    $sqlSaveActivityCostLog ="
+                        INSERT INTO booking_activity_cost_log
+                            (
+                                id_booking_activity_cost,
+                                id_booking_activity_claim,
+                                id_booking,
+                                id_product,
+                                id_product_service,
+                                id_product_service_claim,
+                                id_product_service_cost,
+                                id_product_service_cost_cur,
+                                activity_adult_amt,
+                                activity_teen_amt,
+                                activity_child_amt,
+                                activity_infant_amt,
+                                activity_total_pax,
+                                activity_charge,
+                                activity_adult_cost,
+                                activity_teen_cost,
+                                activity_child_cost,
+                                activity_infant_cost,
+                                activity_total_cost_exTAX,
+                                activity_total_cost,
+                                activity_rebate_cost_type,
+                                activity_rebate_cost_approve_by,
+                                activity_rebate_cost_percentage,
+                                activity_adult_cost_rebate,
+                                activity_adult_cost_after_rebate_exTAX,
+                                activity_adult_cost_after_rebate,
+                                activity_teen_cost_rebate,
+                                activity_teen_cost_after_rebate,
+                                activity_teen_cost_after_rebate_exTAX,
+                                activity_child_cost_rebate,
+                                activity_child_cost_after_rebate,
+                                activity_child_cost_after_rebate_exTAX,
+                                activity_infant_cost_rebate,
+                                activity_infant_cost_after_rebate,
+                                activity_infant_cost_after_rebate_exTAX,
+                                activity_total_cost_after_rebate_exTAX,
+                                activity_total_cost_after_rebate,
+                                id_user,
+                                uname,
+                                log_status
+                            )
+                         VALUES
+                            (
+                                :id_booking_activity_cost,
+                                :id_booking_activity_claim,
+                                :id_booking,
+                                :id_product,
+                                :id_product_service,
+                                :id_product_service_claim,
+                                :id_product_service_cost,
+                                :id_product_service_cost_cur,
+                                :activity_adult_amt,
+                                :activity_teen_amt,
+                                :activity_child_amt,
+                                :activity_infant_amt,
+                                :activity_total_pax,
+                                :activity_charge,
+                                :activity_adult_cost,
+                                :activity_teen_cost,
+                                :activity_child_cost,
+                                :activity_infant_cost,
+                                :activity_total_cost_exTAX,
+                                :activity_total_cost,
+                                :activity_rebate_cost_type,
+                                :activity_rebate_cost_approve_by,
+                                :activity_rebate_cost_percentage,
+                                :activity_adult_cost_rebate,
+                                :activity_adult_cost_after_rebate_exTAX,
+                                :activity_adult_cost_after_rebate,
+                                :activity_teen_cost_rebate,
+                                :activity_teen_cost_after_rebate,
+                                :activity_teen_cost_after_rebate_exTAX,
+                                :activity_child_cost_rebate,
+                                :activity_child_cost_after_rebate,
+                                :activity_child_cost_after_rebate_exTAX,
+                                :activity_infant_cost_rebate,
+                                :activity_infant_cost_after_rebate,
+                                :activity_infant_cost_after_rebate_exTAX,
+                                :activity_total_cost_after_rebate_exTAX,
+                                :activity_total_cost_after_rebate,
+                                :id_user,
+                                :uname,
+                                :log_status
+                            )";
+
+                    $stmt = $con->prepare($sqlSaveActivityCostLog);
+                    $stmt->execute(array(
+                    ":id_booking_activity_cost"                     =>$id_booking_activity_cost,
+                    ":id_booking_activity_claim"                    =>$id_booking_activity_claim,
+                    ":id_booking"                                           =>$id_booking,
+                    ":id_product"                                           =>$id_product,
+                    ":id_product_service"                               =>$id_product_service,
+                    ":id_product_service_claim"                     =>$id_product_service_claim,
+                    ":id_product_service_cost"                      =>$id_product_service_cost,
+                    ":id_product_service_cost_cur"                =>$id_product_service_cost_cur,
+                    ":activity_adult_amt"                                =>$activity_cost_adult_amt,
+                    ":activity_teen_amt"                                 =>$activity_cost_teen_amt,
+                    ":activity_child_amt"                                 =>$activity_cost_child_amt,
+                    ":activity_infant_amt"                               =>$activity_cost_infant_amt,
+                    ":activity_total_pax"                                  =>$activity_total_pax,
+                    ":activity_charge"                                      => $activity_charge,
+                    ":activity_adult_cost"                                => $activity_adult_cost,
+                    ":activity_teen_cost"                                 => $activity_teen_cost,
+                    ":activity_child_cost"                                 => $activity_child_cost,
+                    ":activity_infant_cost"                                => $activity_infant_cost,
+                    ":activity_total_cost_exTAX"                      => $activity_total_cost_exTAX,
+                    ":activity_total_cost"                                  => $activity_total_cost,
+                    ":activity_rebate_cost_type"                      => 'NONE',
+                    ":activity_rebate_cost_approve_by"           => 0,
+                    ":activity_rebate_cost_percentage"            => 0,
+                    ":activity_adult_cost_rebate"                      => 0,
+                    ":activity_adult_cost_after_rebate_exTAX" => 0,
+                    ":activity_adult_cost_after_rebate"             => 0,
+                    ":activity_teen_cost_rebate"                       => 0,
+                    ":activity_teen_cost_after_rebate"              => 0,
+                    ":activity_teen_cost_after_rebate_exTAX"   => 0,
+                    ":activity_child_cost_rebate"                       => 0,
+                    ":activity_child_cost_after_rebate"              => 0,
+                    ":activity_child_cost_after_rebate_exTAX"   => 0,
+                    ":activity_infant_cost_rebate"                      => 0,
+                    ":activity_infant_cost_after_rebate"             => 0,
+                    ":activity_infant_cost_after_rebate_exTAX"  => 0,
+                    ":activity_total_cost_after_rebate_exTAX"    => $activity_total_cost_exTAX,
+                    ":activity_total_cost_after_rebate"                => $activity_total_cost, 
+                     ":id_user"                                                     => $id_user,
+                     ":uname"                                                      => $uname,
+                     ":log_status"                                                 => $log_status
+                    ));
+                    
+                }
+            }
+        }
+                               
     $bookingActivity_result= array("OUTCOME" => "OK", "id_booking"=>$id_booking, "id_booking_activity_claim"=>$id_booking_activity_claim, "created_by" =>$created_name);
     echo json_encode($bookingActivity_result); 
 } catch (Exception $ex) {

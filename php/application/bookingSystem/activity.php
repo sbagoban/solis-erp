@@ -114,7 +114,7 @@
 					</div>
 					<label class="col-sm-2 control-label">Claim Approved by</label>
 					<div class="col-sm-4">
-						<select class="form-control bookingActivity select2" id="activity_claimApprovedBy">
+						<select class="form-control bookingActivity select2" id="activity_rebateClaimApproveBy">
 							<option value="None">None</option>
 						</select>
 					</div>
@@ -141,7 +141,7 @@
 					</div>
 				</div>
                 
-				<div class="form-group">
+				<div id="costRebateDef" class="form-group">
 					<label class="col-sm-2 control-label">Cost Rebate</label>
 					<div class="col-sm-4">
 						<select class="form-control bookingActivity select2" id="activity_cost_rebate">
@@ -263,9 +263,9 @@
                         <table id="tbl-activityDetails" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th class="col-sm-2"><input type="text" class="form-control bookingActivity" id="id_product_service_claim" style="display: none"></th>
+                                    <th class="col-sm-2"><input type="text" class="form-control bookingActivity" id="id_product_service_claim" style="display: none"><input type="text" class="form-control bookingActivity" id="service_claim_package" style="display: none"></th>
                                     <th>CLAIM</th>
-                                    <th>COST</th>
+                                    <th class="activityCost">COST</th>
                                     <th>POLICY</th>
                                 </tr>
                             </thead>
@@ -273,31 +273,31 @@
                                 <tr class="unit_charge" style="display: none">
                                     <th>UNIT</th>
                                     <td><span id="ps_unit_claim"></span><span class="ps_claim_cur"></span></td>
-                                    <td><span id="ps_unit_cost"></span><span class="ps_cost_cur"></span></td>
+                                    <td class="activityCost"><span id="ps_unit_cost"></span><span class="ps_cost_cur"></span></td>
                                     <td id="unit_policy"></td>
                                 </tr>
                                 <tr class="pax_charge adult_details">
                                     <th>ADULT</th>
                                     <td><span id="ps_adult_claim"></span><span class="ps_claim_cur"></span></td>
-                                    <td><span id="ps_adult_cost"></span><span class="ps_cost_cur"></span></td>
+                                    <td class="activityCost"><span id="ps_adult_cost"></span><span class="ps_cost_cur"></span></td>
                                     <td id="adult_policy"></td>
                                 </tr>
                                 <tr class="pax_charge teen_details">
                                     <th>TEEN</th>
                                     <td><span id="ps_teen_claim"></span><span class="ps_claim_cur"></span></td>
-                                    <td><span id="ps_teen_cost"></span><span class="ps_cost_cur"></span></td>
+                                    <td class="activityCost"><span id="ps_teen_cost"></span><span class="ps_cost_cur"></span></td>
                                     <td id="teen_policy"></td>
                                 </tr>
                                 <tr class="pax_charge child_details">
                                     <th>CHILD</th>
                                     <td><span id="ps_child_claim"></span><span class="ps_claim_cur"></span></td>
-                                    <td><span id="ps_child_cost"></span><span class="ps_cost_cur"></span></td>
+                                    <td class="activityCost"><span id="ps_child_cost"></span><span class="ps_cost_cur"></span></td>
                                     <td id="child_policy"></td>
                                 </tr>
                                 <tr class="pax_charge infant_details">
                                     <th>INFANT</th>
                                     <td><span id="ps_infant_claim"></span><span class="ps_claim_cur"></span></td>
-                                    <td><span id="ps_infant_cost"></span><span class="ps_cost_cur"></span></td>
+                                    <td class="activityCost"><span id="ps_infant_cost"></span><span class="ps_cost_cur"></span></td>
                                     <td id="infant_policy"></td>
                                 </tr>
                                 <tr class="activity_details">
