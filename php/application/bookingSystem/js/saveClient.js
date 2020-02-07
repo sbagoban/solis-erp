@@ -142,6 +142,11 @@ function formValidation(){
 		alert("Select Client Type");
 		formInputValid = true;
 	}
+	else if($('#client_type').val() != "ADULT" && $('#client_years').val() == '')
+	{
+		alert("Client age is required");
+		formInputValid = true;
+	}
 	else if ($('#bookingClient').val() == "" || $('#bookingClient').val() == 0)
 	{
 		alert("Select Client Title");
