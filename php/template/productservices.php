@@ -11,7 +11,7 @@
 						<!-- Add Toggle here -->
 						<div class="checkbox_tgl pull-right">
 							
-							<button type="button" class="btn btn-default" id="modalClosureDate" data-toggle="modal" data-target="#modal-closureDate">Special Closure Date</button>
+							<!-- <button type="button" class="btn btn-default" id="modalClosureDate" data-toggle="modal" data-target="#modal-closureDate">Special Closure Date</button> -->
 
 							<label>
 								<input id="on_approved" class="testClass" type="checkbox" data-toggle="toggle" data-on="Live" data-off="Not Live" data-onstyle="success">
@@ -127,7 +127,7 @@
 								</div>
 								<div class="col-sm-4" id="special_name_transfer_blk">
 									<select type="text" class="form-control" id="special_name_transfer">
-										<option value="DROP ON">Drop on</option>
+										<!-- <option value="DROP ON">Drop on</option> -->
 										<option value="DROP OFF">Drop Off</option>
 										<option value="FULL DAY">Full Day</option>
 										<option value="HALF DAY">Half Day</option>

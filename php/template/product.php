@@ -77,16 +77,8 @@
         <div class="col-md-4">
             
             <div class="col-md-12">
-                
-                <div class="panel panel-default">
-                    <div class="panel-heading clearfix">
-                        <h3 class="panel-title">Latest Product Services</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="panel panel-theme" id="parent_latest">
-                            
-                        </div>
-                    </div>
+                <div  id="parent_latest">
+                    <!-- Latest Product Dynamic from JS -->
                 </div>
             </div>
         </div> 

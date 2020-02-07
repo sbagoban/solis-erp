@@ -174,7 +174,7 @@ function saveService() {
                 var special_name = specialNameTransfer();
             }
 
-        var id_creditor = 0;
+        var id_creditor = 1;
         var id_tax = '3';
         for_adult = 1;
         for_child = 1;

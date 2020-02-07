@@ -22,7 +22,7 @@ require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT * FROM product_service_extra where id_product_service = :id_product_service");
+$query_c = $con->prepare("SELECT * FROM product_service_extra where id_product_service = :id_product_service AND active = 1");
 $query_c->execute(array(":id_product_service"=>$id_product_service));
 $row_count_c = $query_c->rowCount();
 

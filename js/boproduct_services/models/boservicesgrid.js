@@ -237,7 +237,7 @@ function serviceEdit(data) {
 
     if (data.service_name == "SOUTH EAST" || service_name == "OTHER COAST") {
         $('#special_name_transfer').css('display', 'block');  
-        $("#special_name_transfer option[value='DROP ON']").hide();
+        //$("#special_name_transfer option[value='DROP ON']").hide();
         $("#special_name_transfer option[value='DROP OFF']").hide();
         $("#special_name_transfer option[value='FULL DAY']").hide();
         $("#special_name_transfer option[value='HALF DAY']").hide();
@@ -250,7 +250,7 @@ function serviceEdit(data) {
         $('#special_name_transfer').css('display', 'block');              
         $("#special_name_transfer option[value='AIRPORT']").hide();
         $("#special_name_transfer option[value='PORT']").hide();                    
-        $("#special_name_transfer option[value='DROP ON']").show();
+       // $("#special_name_transfer option[value='DROP ON']").show();
         $("#special_name_transfer option[value='DROP OFF']").show();
         $("#special_name_transfer option[value='FULL DAY']").show();
         $("#special_name_transfer option[value='HALF DAY']").show();
@@ -258,6 +258,8 @@ function serviceEdit(data) {
     }
     $('#daterangeServiceFromTo1').val(date_range);
     $('#daterangeServiceFromTo1').daterangepicker({
+        "showDropdowns": true,
+		"opens": "center",
         locale: {
             format: 'DD/MM/YYYY'
         },
