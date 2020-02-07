@@ -242,18 +242,18 @@ $("#btn-saveServicesClaim").click(function () {
                         }
                     }
                     else if (specific_to == 'D') { // Directsales
+                        console.log((valid_to == x.valid_to) || (valid_from == x.valid_from));
                         if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
-                            alert('Please choose another currency for Direct Sales 1 ');
-                            console.log(specific_to, '==', x.specific_to);
-                            if (specific_to != x.specific_to) {
-                                alert('Please choose another currency for Direct Sales 2');
-                                if (id_currency == x.id_currency) {
-                                    alert('Please choose another currency for Direct Sales 3');
-                                } else {
-                                    addClaimProductService();
-                                }
+                            alert('Please choose another Date for Direct Sales');
+                            
+                        }if (specific_to != x.specific_to) {
+                            if (id_currency == x.id_currency) {
+                                alert('Please choose another currency for Direct Sales');
+                            } else {
+                                addClaimProductService();
                             }
                         }
+                        
                     }
                    // resetProductServicesClaim();
                 }

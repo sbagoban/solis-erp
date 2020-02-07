@@ -36,7 +36,7 @@ try {
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    $stmt = $con->prepare("DELETE FROM product_service_extra WHERE id_product_service_extra = :id_product_service_extra");
+    $stmt = $con->prepare("UPDATE product_service_extra SET active=0 WHERE id_product_service_extra = :id_product_service_extra");
     $stmt->execute(array(":id_product_service_extra"=>$id_product_service_extra));
     
 } catch (Exception $ex) {

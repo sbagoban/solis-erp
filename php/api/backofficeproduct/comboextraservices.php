@@ -19,10 +19,9 @@ $con = pdo_con();
 
 $query_c = $con->prepare(
     "SELECT SE.id_service_extra, SE.extra_name
-    -- PSE.charge
     FROM service_extra SE
-    -- JOIN product_service_extra PSE on SE.id_service_extra = PSE.id_service_extra
     WHERE for_activity=1 
+    
     ORDER BY extra_name ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();

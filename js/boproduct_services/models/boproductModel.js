@@ -20,7 +20,7 @@ $("#btnSaveProduct").click(function () {
                         swal("Duplicate", "Product Name Duplicate...", "error");
                         document.getElementById("productId").textContent = id_product;
                     } else { 
-                        resetFormAddProduct();
+                       // resetFormAddProduct();
                         allProductGridCost(data);
                     }
                 },

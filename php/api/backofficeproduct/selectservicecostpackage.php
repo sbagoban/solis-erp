@@ -48,8 +48,8 @@ JOIN product PR on PS.id_product = PR.id_product
 JOIN tblcurrency TC on PRS.id_currency = TC.id
 JOIN tblservicetype TSC on PR.id_service_type = TSC.id
 WHERE PS.id_product_service <> $id_product_service
-AND PRS.valid_from >= '$valid_from'
-AND PRS.valid_to <= '$valid_to'
+AND PRS.valid_from <= '$valid_from'
+AND PRS.valid_to >= '$valid_to'
 AND PS.service_name != 'OTHER COAST'
 AND PS.service_name != 'INTER HOTEL'
 AND PS.service_name != 'SOUTH EAST'
