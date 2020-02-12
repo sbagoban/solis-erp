@@ -7,12 +7,16 @@ function editAllExtraServiceClaim(data) {
         $("#id_product_service_extra").val(data.id_product_service_extra_cost);
 
         if (data.charge == 'UNIT'){
-            $("#ps_adult_claim_1").val(data.ps_adult_cost);
+            $("#ps_adult_claim_1").val(data.ps_adult_claim);
+            $(".blockPax").hide();
+            $(".blockUnit").show();
         } else {
             $("#ps_adult_claim_1").val(data.ps_adult_claim);
             $("#ps_teen_claim_1").val(data.ps_teen_claim);
             $("#ps_child_claim_1").val(data.ps_child_claim);
             $("#ps_infant_claim_1").val(data.ps_infant_claim);
+            $(".blockPax").show();
+            $(".blockUnit").hide();
         }
     }
     $('#modal-extraServicesClaim').on('hidden.bs.modal', function() {
@@ -35,7 +39,7 @@ function editAllExtraServiceClaim(data) {
                 ps_child_claim: ps_child_claim_1, 
                 ps_infant_claim: ps_infant_claim_1
             };
-            console.log('--->', objExtraServiceEditClaim);
+
             const url_update_extra_service_claim = "php/api/backofficeserviceclaim/updateextraclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_extra_claim=" + data.id_product_service_extra_claim;
             $.ajax({
                 url : url_update_extra_service_claim,

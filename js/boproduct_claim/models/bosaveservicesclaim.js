@@ -244,7 +244,7 @@ function saveClaim() {
                     else if (specific_to == 'D') { // Directsales
                         console.log((valid_to == x.valid_to) || (valid_from == x.valid_from));
                         if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
-                            alert('Please choose another Date for Direct Sales');
+                            //alert('Please choose another Date for Direct Sales');
                             
                         }if (specific_to != x.specific_to) {
                             if (id_currency == x.id_currency) {
