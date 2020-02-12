@@ -316,16 +316,12 @@ function serviceEdit(data) {
         $("#services_cost option:selected").prop("selected", false);
         $("#services_cost option").remove();
         $('#services_cost').multiselect('rebuild');
-        // $('#services_cost').val('');
-        //$("#services_cost").reset();
-        //serviceCost(data.id_product_service, date_valid_from, date_valid_to);
     }
     if (data.is_pakage == 'Y') {
         $("#services_cost").multiselect('destroy');
         $("#services_cost").attr('multiple', 'multiple');
         specificServiceSelected(data, data.id_product_service, date_valid_from, date_valid_to);
         $('#services_block').css("display", "block");
-       // serviceCost(data.id_product_service, date_valid_from, date_valid_to);
     } 
 
     if (data.for_adult == 1){

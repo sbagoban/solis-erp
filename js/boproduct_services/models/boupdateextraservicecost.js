@@ -60,14 +60,13 @@ function editAllExtraServiceCost(data) {
                 data : objExtraServiceEditCost,  
                 cache: false,                                                                                                                                                                                                                                                                                                                                                                                                                                            
                 success : function(data){
-                    resetExtraServicesCostForm();
+                  //  resetExtraServicesCostForm();
                     allExtraServicesCostGrid(id_product_service_cost);
                 },
                 error: function(error) {
                     console.log('Error ${error}');
                 }
             });
-            resetExtraServicesCostForm();
         }
     });
 }

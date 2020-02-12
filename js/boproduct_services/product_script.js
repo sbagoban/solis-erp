@@ -241,7 +241,6 @@ function applyFor() {
         if (chkadult.checked) {
             $("#min_age").prop("readonly", false);
             $("#max_age").prop("readonly", false);
-            $("#max_age").val(0);
         }
         if (chkadult.checked == false) {
             $("#min_age").prop("readonly", true);

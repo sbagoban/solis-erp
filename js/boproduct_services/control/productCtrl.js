@@ -90,8 +90,27 @@ $('#btn-saveProductServicesCost').click(function (e) {
 
 
     });
-    if (isValid == false)
+    if (isValid == false) {
         e.preventDefault();
+    }
+
+    // Control save cost - check if url send value for_infant, for_teen, for_adult, for_child
+    var allParams = window.location.href.split('data=').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var for_adult_url = urlParams.get("for_adult");
+    var for_child_url = urlParams.get("for_child");
+    var for_infant_url = urlParams.get("for_infant");
+    var for_teen_url = urlParams.get("for_teen");
+    if (for_adult_url == 0) { 
+        $('#ps_adult_cost').val(0);
+    } else if (for_child_url == 0) {
+        $('#ps_child_cost').val(0);
+    } else if (for_infant_url == 0) {
+        $('#ps_infant_cost').val(0);
+    } else if (for_teen_url == 0) {
+        $('#ps_teen_cost').val(0);
+    }
+    saveCost();
 });
 
 $( "#ddlType" ).change(function () {
@@ -251,9 +270,12 @@ function validateAgePolicy() {
 
     var child_age = $('#age_child_to').val();
     var teen_age_chk = ++child_age;
-
-    console.log(chkteen.checked && (age_teen_from == 0 || age_teen_from == null));
-    console.log(age_teen_from);
+    
+    var age_teen_to_chk = document.getElementById("age_teen_to").valueAsNumber;
+    var age_teen_from_chk = document.getElementById("age_teen_from").valueAsNumber;
+    
+    var age_child_to_chk = document.getElementById("age_child_to").valueAsNumber;
+    var age_child_from_chk = document.getElementById("age_child_from").valueAsNumber;
 
     if (chkinfant.checked && (age_inf_to == 0 || age_inf_to == null)) {
             alert('Please Fill in the age "to" for infant.');
@@ -316,29 +338,32 @@ function validateAgePolicy() {
         alert('Infant "To" age should be greater than Infant "From" Age');
     }
 
-    else if (($('#age_child_from').val()) > ($('#age_child_to').val())) { 
+    else if (age_child_from_chk > age_child_to_chk) { 
         alert('Child "To" age should be greater than Child "From" Age');
     }
 
-    else if (($('#age_teen_from').val()) > ($('#age_teen_to').val())) { 
+    else if (age_teen_from_chk > age_teen_to_chk) {
         alert('Teen "To" age should be greater than Teen "From" Age');
     }
 
     else if (!chkadult.checked) {
         if(chkinfant.checked) {
             $('#max_age').val(age_inf_to);
-            $('#min_age').val(0);
+            $('#min_age').val(age_inf_from);
+            saveService();
         } 
         if (chkchild.checked) {
             $('#max_age').val(age_child_to);
-            $('#min_age').val(0);
+            $('#min_age').val(age_child_from);
+            saveService();
         }
         if (chkteen.checked) {
             $('#max_age').val(age_teen_to);
-            $('#min_age').val(0);
-        } else {
+            $('#min_age').val(age_teen_from);
             saveService();
-        }
+        } 
+        // else {
+        // }
     }
     
     else {

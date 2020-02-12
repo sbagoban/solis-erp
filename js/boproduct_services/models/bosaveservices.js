@@ -452,18 +452,12 @@ function loadSelectedService(value, idserv, date_valid_from, date_valid_to) {
         success: function(data)
             {
                 $("#services_cost").attr('multiple', 'multiple');
+               
                 $("#services_cost").empty();
                 $.each(data, function (key, val) {
                     $("#services_cost").append('<option value="' + val.id_product_service + '">' +  val.product_name + ' / ' + val.service_name  + '</option>');
                 }); 
-                arrToSelected = [];
-                for (var i = 0, l = value.length; i < l; i++) {
-                    var objSelected = value[i].id_product_service_induded;
-                    arrToSelected.push(objSelected);
-                    $("#services_cost").find("option[value=" + objSelected + "]").prop("selected", true)
-                    $("#services_cost").multiselect("refresh");
-                }
-                $("#services_cost").multiselect({
+                arrToSelected = [];$("#services_cost").multiselect({
                     buttonWidth: '295px',
                     includeSelectAllOption: true,
                     nonSelectedText: 'Select an Option',
@@ -472,6 +466,13 @@ function loadSelectedService(value, idserv, date_valid_from, date_valid_to) {
                     buttonClass: 'btn large btn-default',
                     enableCaseInsensitiveFiltering: true
                 });
+                for (var i = 0, l = value.length; i < l; i++) {
+                    var objSelected = value[i].id_product_service_induded;
+                    arrToSelected.push(objSelected);
+                    $("#services_cost").find("option[value=" + objSelected + "]").prop("selected", true)
+                    $("#services_cost").multiselect("refresh");
+                }
+                
             }
         }
     );

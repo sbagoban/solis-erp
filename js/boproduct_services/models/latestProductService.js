@@ -9,9 +9,9 @@ $(document).ready(function(){
                 var html = '';
                 $.each(data, function(key, value){
                     if (data[key].is_pakage == 'N') {
-                        var package_1 = 'yes';
-                    } else {
                         var package_1 = 'No';
+                    } else {
+                        var package_1 = 'Yes';
                     }
                                         
                     html += '<div class="panel panel-primary">';

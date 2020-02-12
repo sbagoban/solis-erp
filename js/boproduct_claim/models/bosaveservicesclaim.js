@@ -198,7 +198,7 @@ function dateRangePickerValid() {
     });
 }
 
-$("#btn-saveServicesClaim").click(function () {
+function saveClaim() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
@@ -262,7 +262,7 @@ $("#btn-saveServicesClaim").click(function () {
             console.log('Error ${error}');
         }
     });
-});
+}
 
 function checkTo(data) {
     var id_product_service_claim = data.id_product_service_claim;

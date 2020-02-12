@@ -51,7 +51,7 @@ function dateRangePickerValid() {
     });
 }
 
-$('#btn-saveProductServicesCost').click(function () {
+function saveCost() {
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var id_product_service = urlParams.get("psid");
@@ -85,7 +85,7 @@ $('#btn-saveProductServicesCost').click(function () {
             console.log('Error ${error}');
         }
     })
-});
+}
 
 function addCostProductService() {
         var allParams = window.location.href.split('productservicecost').pop();
