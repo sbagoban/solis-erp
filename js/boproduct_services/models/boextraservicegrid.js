@@ -1,5 +1,4 @@
 function allExtraServicesGrid(id_product_service) {
-    console.log(id_product_service);
     // Request call everything from database
     $('#tbl-extraService').DataTable({       
         "processing" : true,
@@ -44,13 +43,22 @@ function allExtraServicesGrid(id_product_service) {
                 '<div class="btn-group">' +
                 '<i id="btnDeleteExtraService"  class="fa fa-fw fa-trash-o"></i></div>'
             }
-        ]
+        ],
+        "initComplete": function () {
+            $('#tbl-extraService tbody')
+                .off()
+                .on( 'click', '#btnDeleteExtraService', function (e) {
+                    var table = $('#tbl-extraService').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    deleteExtraService(data);
+                })
+        }
     });
-    $('#tbl-extraService tbody').on( 'click', '#btnDeleteExtraService', function () {
-        var table = $('#tbl-extraService').DataTable();
-        var data = table.row( $(this).parents('tr') ).data();
-        deleteExtraService(data);
-    });
+    // $('#tbl-extraService tbody').on( 'click', '#btnDeleteExtraService', function () {
+    //     var table = $('#tbl-extraService').DataTable();
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     deleteExtraService(data);
+    // });
 }
 
 // Delete Product

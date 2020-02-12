@@ -277,6 +277,8 @@ function validateAgePolicy() {
     var age_child_to_chk = document.getElementById("age_child_to").valueAsNumber;
     var age_child_from_chk = document.getElementById("age_child_from").valueAsNumber;
 
+    console.log(min_age > max_age_product);
+
     if (chkinfant.checked && (age_inf_to == 0 || age_inf_to == null)) {
             alert('Please Fill in the age "to" for infant.');
     }   
@@ -309,7 +311,7 @@ function validateAgePolicy() {
             alert('Teen age "From" should be : ' + teen_age_chk);
     }   
     
-    else if (($('#min_age').val()) > ($('#max_age').val())) { 
+    else if (min_age > max_age_product) { 
         alert('Max Adult age should be greater than Min Age');
     }
 
