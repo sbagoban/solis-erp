@@ -1,7 +1,8 @@
 $(document).ready(function(){
+    $('#loadingmessage').show();
     setInterval(function(){
         const url_edit_product = "php/api/backofficeproduct/latestProductService.php?t=" + encodeURIComponent(global_token);
-
+        
         $.ajax({
             url: url_edit_product,
             dataType: 'json',
@@ -13,7 +14,7 @@ $(document).ready(function(){
                     } else {
                         var package_1 = 'Yes';
                     }
-                                        
+                    $('#loadingmessage').hide();            
                     html += '<div class="panel panel-primary">';
                     html += '<div class="panel-heading">Product Name : <span id="product_name_latest">&nbsp;'+ value.product_name +'</span></div>';
                             html += '<div class="panel panel-theme">';

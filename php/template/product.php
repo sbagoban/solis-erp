@@ -77,8 +77,11 @@
         <div class="col-md-4">
             
             <div class="col-md-12">
-                <div  id="parent_latest">
+                <div  id="parent_latest" style="text-align: center;">
                     <!-- Latest Product Dynamic from JS -->
+                    <div id='loadingmessage' style='display:none; margin-top: 195px;'>
+                        <img src='https://www.makealltrip.com/template/img/loader.gif'/>
+                    </div>
                 </div>
             </div>
         </div> 
