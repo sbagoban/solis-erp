@@ -49,7 +49,7 @@ $(function(){
 
                 });
                 resetClient();
-                validationValueAccomContract(id_booking);
+               // validationValueAccomContract(id_booking);
             }
 	});
 	// .Hotel Change
@@ -243,42 +243,18 @@ function loadAccomContract(id_booking){
         url: url_search_booking,
         method: "POST",
         dataType: "json",
-        success: function (data) 
+        success: function (data)
         {
             var max_pax = parseInt(data[0].adult_amt) +  parseInt(data[0].teen_amt) +  parseInt(data[0].child_amt) +  parseInt(data[0].infant_amt);
             var travelDate = data[0].booking_from;
-            
-            var arr_params_resa = {
-                        mealplan : $('#accom_mealPlan').val(),
-                        touroperator : $('#accom_payer').val(),
-                        hotel :  $('#accom_hotel').val(),
-                        hotelroom : $('#accom_room').val(),
-                        checkin_date: $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD'),
-                        checkout_date: $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD'),
-                        booking_date : $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD'),
-                        travel_date : data[0].booking_from,
-                        max_pax  : max_pax
-                }
-        
-            const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
-            $.ajax({
-            url : getAccomContract,
-            method : "POST",
-            data : arr_params_resa, 
-            dataType: "json",                                                                           
-            success : function(data){
-                data = JSON.parse(data);
-                console.log(data);
-            }
-            });
-
+            loadAccomTarif(data, max_pax);
         },
         error: function (error) 
         {
             console.log('Error ${error}');
         }
     });
-   /* var max_pax = 4
+    /* var max_pax = 4
 
     var arr_params_resa = {
                 mealplan : $('#accom_mealPlan').val(),
@@ -294,3 +270,44 @@ function loadAccomContract(id_booking){
 }
 // .Load Accom Contract
 
+
+function loadAccomTarif(data, max_pax) {
+    console.log(data, max_pax);
+    var mealplan = $('#accom_mealPlan').val();
+    var accom_payer = $('#accom_payer').val();
+    var accom_hotel = $('#accom_hotel').val();
+    var accom_room = $('#accom_room').val();
+    var accom_stay_start = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var accom_stay_end = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
+    var accom_bookingDate = $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var travel_date = data[0].booking_from;
+
+    var arr_params_resa = {
+        mealplan : mealplan,
+        touroperator : accom_payer,
+        hotel :  accom_hotel,
+        hotelroom : accom_room,
+        checkin_date: accom_stay_start,
+        checkout_date: accom_stay_end,
+        booking_date : accom_bookingDate,
+        travel_date : travel_date,
+        max_pax : max_pax, 
+        checkin_time : '', 
+        checkout_time : '', 
+        suppmealplan : '', 
+        wedding_interested: 0
+    }
+    console.log(arr_params_resa);
+
+    const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
+    $.ajax({
+        url : getAccomContract,
+        method : "POST",
+        data : arr_params_resa, 
+        dataType: "json",                                                                           
+            success : function(data){
+                data = JSON.parse(data);
+                console.log(data);
+            }
+    });
+}
