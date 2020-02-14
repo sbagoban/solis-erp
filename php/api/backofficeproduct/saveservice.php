@@ -80,7 +80,6 @@ try {
         $id_creditor = 0001; //id_creditor name should be Solis planning - to set in db 
         $min_age = 0;
         $max_age = 0;
-        echo $service_name;
         if ($service_name == 'SOUTH EAST') {
             $id_coast = 8;
         } 
@@ -344,9 +343,19 @@ try {
 
             $stmt3 = $con->prepare($sqlExtraCostTransfer);
             $stmt3->execute(array());
+            
+            $duration = '00:00:00.00000';
+            $id_creditor = 0001; //id_creditor name should be Solis planning - to set in db 
+            $min_age = 0;
+            $max_age = 0;
+            if ($service_name == 'SOUTH EAST') {
+                $id_coast = 8;
+            } 
+            else {
+                $id_coast = 0;
+            }
         }
-
-
+        
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 
     id_product,
@@ -572,7 +581,51 @@ $stmt = $con->prepare($sqlLog);
             ":on_api" => $on_api,
             ":on_approved" => $on_approved));
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_service"=>$id_product_service));
+    echo json_encode(array("OUTCOME" => "OK", 
+        "id_product_service" => $id_product_service,
+        "id_product" => $id_product,
+        "valid_from" => $valid_from,
+        "valid_to" => $valid_to,
+        "id_dept" => $id_dept,
+        "id_country" => $id_country,
+        "id_coast" => $id_coast,
+        "service_name" => $service_name,
+        "id_tax" => $id_tax,
+        "charge" => $charge,
+        "duration" => $duration,
+        "transfer_included" => $transfer_included,
+        "description" => $description,
+        "comments" => $comments,
+        "on_monday" => $on_monday,
+        "on_tuesday" => $on_tuesday,
+        "on_wednesday" => $on_wednesday,
+        "on_thursday" => $on_thursday,
+        "on_friday" => $on_friday,
+        "on_saturday" => $on_saturday,
+        "on_sunday" => $on_sunday,
+        "cancellation" => $cancellation,
+        "age_inf_to" => $age_inf_to,
+        "age_child_to" => $age_child_to,
+        "age_teen_to" => $age_teen_to,
+        "age_inf_from" => $age_inf_from,
+        "age_child_from" => $age_child_from,
+        "age_teen_from" => $age_teen_from,
+        "min_pax" => $min_pax,
+        "max_pax" => $max_pax,
+        "id_creditor" => $id_creditor,
+        "for_infant" => $for_infant,
+        "for_child" => $for_child,
+        "for_teen" => $for_teen,
+        "min_age" => $min_age,
+        "max_age" => $max_age,
+        "is_pakage" => $is_pakage, 
+        "special_name" => $special_name,
+        "max_adult" => $max_adult, 
+        "id_service_type" => $id_service_type,
+        "id_product_type" => $id_product_type, 
+        "on_api" => $on_api,
+        "on_approved" => $on_approved
+    ));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

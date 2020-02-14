@@ -36,7 +36,8 @@ FROM product_service PRS
 JOIN product PR on PRS.id_product = PR.id_product
 JOIN tbldepartments DP on PRS.id_dept = DP.id
 WHERE PRS.active = 1
-AND  PRS.id_product = :id_product");
+AND  PRS.id_product = :id_product
+ORDER BY PRS.id_product_service DESC");
 
 $query_c->execute(array(":id_product"=>$id_product));
 $row_count_c = $query_c->rowCount();

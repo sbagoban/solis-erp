@@ -38,7 +38,7 @@ function allServicesGrid(added) {
         "bAutoWidth": false,
         "responsive": true,
         "pageLength": 4,
-        "aaSorting": [ [0,'desc'] ],
+        "aaSorting": [ [1,'desc'] ],
         
         "dom": "<'row'<'form-inline' <'col-sm-5'B>>>"
         +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
@@ -482,11 +482,13 @@ function duplicateProductServices(data) {
         dataType: "json",
         cache: false,                                                                                     
         success : function(val){
+            serviceEdit(val);
             document.getElementById('id_prod_serv').innerHTML = val.id_product_service;
             duplicateCost(data, val.id_product_service); 
             duplicateExtra(data, val.id_product_service);   
             duplicateExtraCost(data, val.id_product_service, val.id_product_service_cost); 
             duplicateIncludedServices(data, val.id_product_service);
+
         },
         error: function(error) {
             console.log('Error ${error}', error);
