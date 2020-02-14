@@ -258,7 +258,8 @@ function loadAccomContract(id_booking){
                         booking_date : $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD'),
                         travel_date : data[0].booking_from,
                         max_pax  : max_pax
-                }   
+                }
+        
             const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
             $.ajax({
             url : getAccomContract,
@@ -266,6 +267,7 @@ function loadAccomContract(id_booking){
             data : arr_params_resa, 
             dataType: "json",                                                                           
             success : function(data){
+                data = JSON.parse(data);
                 console.log(data);
             }
             });

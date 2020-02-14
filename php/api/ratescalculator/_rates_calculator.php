@@ -6465,6 +6465,7 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     $max_pax = $arr_params_resa["max_pax"];
     $arr_pax = $arr_params_resa["arr_pax"];
     
+    //echo json_encode(array($arr_params_resa));
     
     //$arr_children_ages = $arr_params_resa["arr_children_ages"];
     $arr_limits = array();

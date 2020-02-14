@@ -53,7 +53,7 @@ try {
         
     $outcome = _rates_calculator($con, $arr_params);
     
-    
+    /*
     $arr_params_test["checkin_date"] = "2019-04-01";
     $arr_params_test["checkin_time"] = "";
     $arr_params_test["checkout_date"] = "2019-04-05";
@@ -75,9 +75,11 @@ try {
     $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
     
     
-    $test = array();
+    
     $test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params_test);
+*/
 
+$test = array();
     echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome, "TEST"=>$test));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));

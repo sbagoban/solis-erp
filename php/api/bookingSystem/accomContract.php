@@ -23,6 +23,7 @@ try {
     if ($_GET["t"] != $_SESSION["token"]) {
         throw new Exception("INVALID TOKEN");
     }
+    
 
     require_once("../../connector/pdo_connect_main.php");
     
@@ -37,37 +38,52 @@ try {
     require_once("../hotelcontracts/_contract_combinations_rooms.php");
     require_once("../../globalvars/globalvars.php");
     require_once("../../utils/utilities.php");
-    
-     $arr_params_resa = array(
-           'mealplan' => $_POST["mealplan"],
-           'suppmealplan' => $_POST["mealplan"],
-            'touroperator' => $_POST["touroperator"],
-            'hotel' => $_POST["hotel"],
-            'hotelroom' => $_POST["hotelroom"],
-            'checkin_date' => $_POST["checkin_date"],
-            'checkout_date' => $_POST["checkout_date"],
-            'booking_date' => $_POST["booking_date"],
-            'travel_date' => $_POST["travel_date"],
-            'max_pax' => $_POST["max_pax"]
-         );
-$con = pdo_con();
-    
-$the_contract_id = _rates_reservation_get_contract_id($con, $arr_params_resa);
-$contractid = $the_contract_id;
-if(is_numeric($contractid))
-{
-    $combination = _rates_calculator_reservation_gen_room_combination($con, $contractid, $arr_params_resa);
-        echo implode( "".$combination);
+     
+    $con = pdo_con();
+
+    $arr_params_test["checkin_date"] = "2019-11-01";
+    $arr_params_test["checkin_time"] = "";
+    $arr_params_test["checkout_date"] = "2019-11-03";
+    $arr_params_test["checkout_time"] = "";
+    $arr_params_test["mealplan"] = 2;
+    $arr_params_test["suppmealplan"] = 6;
+    $arr_params_test["country"] = 1009;
+    $arr_params_test["touroperator"] = 3;
+    $arr_params_test["hotel"] = 26;
+    $arr_params_test["hotelroom"] = 25;
+    $arr_params_test["max_pax"] = 10;
+    $arr_params_test["booking_date"] = "2019-11-01";
+    $arr_params_test["travel_date"] = "2019-11-05";
+    $arr_params_test["wedding_interested"] = 1;
+
+    $arr_params_test["arr_pax"] = array();
+    $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
+    $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
+    $arr_params_test["arr_pax"][] = array("count"=>3,"age"=>5,"bride_groom"=>"");
+
+    $the_contract_id = _rates_reservation_get_contract_id($con, $arr_params_test);
+    $test = array();
+    $test = _rates_calculator_reservation_get_cost_claim($con, $the_contract_id, $arr_params_test);
+
+    echo json_encode($test);
+
+// $the_contract_id = _rates_reservation_get_contract_id($con, $arr_params_resa);
+// $contractid = $the_contract_id;
+// $ratesCalculator = _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_resa);
+//     echo $ratesCalculator;
     //if($combination[0]OUTCOME == "OK")
 //    {
 //    }
    // $spo = _rates_calculator_reservation_get_applicable_spos($con, $contractid, $arr_params_resa);
     //echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome));
 
-    echo json_encode(array($combination));
-}
+    //echo json_encode(array($ratesCalculator));
+// if(is_numeric($contractid))
+// {
+    
+// }
 
 } catch (Exception $ex) {
-    die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
+    //die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 ?>
