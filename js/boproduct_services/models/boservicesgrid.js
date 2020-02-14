@@ -182,6 +182,7 @@ function serviceDelete(data) {
         success: function (data) {
             if (data.OUTCOME == 'OK') { 
                 swal("Deleted!", "Deleted !", "success");
+                resetServicesForm();
             }
         },
         error: function (error) {
@@ -322,6 +323,7 @@ function serviceEdit(data) {
         $("#services_cost").attr('multiple', 'multiple');
         specificServiceSelected(data, data.id_product_service, date_valid_from, date_valid_to);
         $('#services_block').css("display", "block");
+        $('#id_creditor').attr("disabled", true);
     } 
 
     if (data.for_adult == 1){

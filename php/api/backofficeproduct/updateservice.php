@@ -224,6 +224,7 @@
 // Start Product Log
 $sqlLog = "INSERT INTO product_service_log ( 
     id_product,
+    id_product_service,
     valid_from,
     valid_to,
     id_dept,
@@ -266,6 +267,7 @@ $sqlLog = "INSERT INTO product_service_log (
     ) 
         VALUES (
             :id_product,
+            :id_product_service,
             :valid_from,
             :valid_to,
             :id_dept,
@@ -310,6 +312,7 @@ $sqlLog = "INSERT INTO product_service_log (
 $stmt = $con->prepare($sqlLog);
             $stmt->execute(array(
                 ":id_product" => $id_product,
+                ":id_product_service" => $id_product_service,
                 ":valid_from" => $valid_from,
                 ":valid_to" => $valid_to,
                 ":id_dept" => $id_dept,

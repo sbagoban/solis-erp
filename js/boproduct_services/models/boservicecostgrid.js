@@ -140,14 +140,14 @@ function serviceCostDelete(data) {
         data: objDelServiceCost,
         dataType: "json",
         success: function (data) { 
-            if (data.OUTCOME == 'OK') { 
-                // swal("Deleted!", "Deleted !", "success");
+            if (data.OUTCOME == 'OK') {
                 swal({
                     title: "Deleted!",
                     text: "Your row has been deleted.",
                     type: "success",
-                    timer: 2000,
+                    timer: 2000
                 });
+                resetFormAddServiceCost();
             }
         },
         error: function (error) {

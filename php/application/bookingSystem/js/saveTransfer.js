@@ -510,6 +510,7 @@ function saveTransfer(transferData) {
                         $("#serviceDetails").collapse('hide');
                         objReservationTransfer.action = 'RESET';
                         newTransfer(objReservationTransfer);
+                        // to add send mail here
                 }
             else
                 {

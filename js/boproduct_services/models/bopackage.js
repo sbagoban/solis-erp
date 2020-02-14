@@ -23,8 +23,12 @@ $('#is_pakage').on('change', function() {
         var valid_to = date_to_y+"-"+date_to_m+"-"+date_to_d;
         
         serviceCost(idService, valid_from.replace(/\s/g, ''), valid_to.replace(/\s/g, ''));
+        $('#id_creditor').val(1);
+        $('#id_creditor').attr("disabled", true);
     } else { 
         $('#services_block').css("display", "none");
+        $('#id_creditor').attr("disabled", false);
+        $('#id_creditor').val('');
     }
 });
 

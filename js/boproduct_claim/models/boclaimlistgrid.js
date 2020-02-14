@@ -214,6 +214,8 @@ function deleteServiceClaim(data) {
         success: function (data) {
             if (data.OUTCOME == 'OK') { 
                 swal("Deleted!", "Deleted !", "success");
+                resetProductServicesClaim();
+                extraServiceGridClaim(data);
             }
         },
         error: function (error) {

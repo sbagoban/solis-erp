@@ -175,6 +175,18 @@ $('#btn-saveProductServices').click(function () {
             document.getElementById('service_name').style.border ="1px solid red";
             alert("Please add a service name");
         } 
+
+        else if (service_name.trim() == "OTHER COAST") {
+            alert("Please Note that 'OTHER COAST' is a reserved word.");
+        } 
+
+        else if (service_name.trim() == "INTER HOTEL") {
+            alert("Please Note that 'INTER HOTEL' is a reserved word.");
+        } 
+
+        else if (service_name.trim() == "SOUTH EAST") {
+            alert("Please Note that 'SOUTH EAST' is a reserved word.");
+        } 
         
         else if (id_creditor == "") {
             alert("Please choose a supplier");
@@ -213,6 +225,8 @@ $('#btn-saveProductServices').click(function () {
     
     if (servicetype == "TRANSFER") {
         var isVisible = document.getElementById("special_name_transfer").style.display == "block";
+        var min_pax = document.getElementById("min_pax").value;
+        var max_pax = document.getElementById("max_pax").value;
         
         if (charge == null || charge == "") {
             alert("Please choose a Charge Pax / Unit");
@@ -242,7 +256,15 @@ $('#btn-saveProductServices').click(function () {
             document.getElementById('service_name_transfer').style.border ="1px solid #aaa";
             document.getElementById('service_name_transfer').style.border ="1px solid red";
         } 
+            
+        else if (min_pax == 0 || min_pax == null) {
+                alert('Please Fill in the age "Min Pax" for Adult.');
+        }   
         
+        else if (max_pax == 0 || max_pax == null) {
+                alert('Please Fill in the age "Max Pax" for Adult.');
+        }
+            
         else {
             saveService();
         }
@@ -299,9 +321,9 @@ function validateAgePolicy() {
     //         alert('Please Fill in the age "Min Age" for Adult.');
     // }   
     
-    else if (chkadult.checked && (max_age_product == 0 || max_age_product == null|| max_age_product === '0')) {
-            alert('Please Fill in the age "Max Age" for Adult.');
-    }
+    // else if (chkadult.checked && (max_age_product == 0 || max_age_product == null|| max_age_product === '0')) {
+    //         alert('Please Fill in the age "Max Age" for Adult.');
+    // }
     
     else if (($('#age_child_from').val()) != child_age_chk && (chkchild.checked) && (chkinfant.checked)) {
             alert('Child age "From" should be : ' + child_age_chk);

@@ -103,9 +103,9 @@ function productServiceClaimDelete(data) {
         data: objDelProduct,
         dataType: "json",
         success: function (data) {
-            console.log(data.OUTCOME,'sdfsd');
             if (data.OUTCOME == 'OK') { 
                 swal("Deleted!", "Deleted !", "success");
+                resetFormAddProduct();
             }
         },
         error: function (error) {

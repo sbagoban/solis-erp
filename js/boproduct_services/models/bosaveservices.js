@@ -421,7 +421,12 @@ function resetServicesForm() {
     $('#on_approved').prop('checked', false);    
     document.getElementById("idService").innerHTML = 0;
     document.getElementById("chargeDetail").innerHTML = '';
-    
+    // var date = new Date();
+    // var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    // var end = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    // console.log(today, end);
+    // $("#daterangeServiceFromTo1").data('daterangepicker').today.format('YYYY-MM-DD');
+    // $("#daterangeServiceFromTo1").data('daterangepicker').end.format('YYYY-MM-DD');
 }
 
 function specificServiceSelected(val, idserv, date_valid_from, date_valid_to) { 
