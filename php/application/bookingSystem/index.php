@@ -9,7 +9,7 @@
 <section class="content">
 	<!-- 1 row -->
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-md-12">
 			<!-- Booking Form -->
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -183,25 +183,19 @@
 			<!-- /.box -->
 		</div>
 		<!-- right column -->
-		<div class="col-md-3">
-			<!-- general form elements -->
+		<!--<div class="col-md-3">
 			<div class="box box-primary" style="height:520px">
 				<div class="box-header with-border">
 				<h3 class="box-title">Summary</h3>
 				</div>
-				<!-- /.box-header -->
-				<!-- form start -->
 				<form class="form-horizontal">
 					
-              		<!-- .box-body -->
               		<div class="box-body">
 						
 					</div>
-              		<!-- /.box-body -->
 				</form>
 			</div>
-			<!-- /.box -->
-		</div>
+		</div>-->
   	</div>
 	<!-- /.row -->
 	  <!-- End Seven Tab -->	  
@@ -254,13 +248,13 @@
 									</a>
 								</li>
 
-								<li class="nav-item">
+								<!--<li class="nav-item">
 									<a class="nav-link" id="service-tab" data-toggle="tab" href="#service" role="tab" aria-controls="service" aria-selected="true">
 										<span class="round-tabs five">
 											<i class="fa fa-tags fa-lg"></i><br>Service
 										</span>
 									</a>
-								</li>
+								</li>-->
 
 								<li class="nav-item">
 									<a class="nav-link" id="carRental-tab" data-toggle="tab" href="#carRental" role="tab" aria-controls="carRental" aria-selected="true">
