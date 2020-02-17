@@ -12,6 +12,7 @@ require_once("../../utils/utilities.php");
 ?>
 <script src="php/application/bookingSystem/js/bookingAccom.js"></script>
 <script src="php/application/bookingSystem/js/newAccom.js"></script>
+<script src="php/application/bookingSystem/js/phpMailer.js"></script>
 <!-- Accommodation Tab -->
 <div class="tab-pane active in fade" id="accom">
 <!-- left column -->	
