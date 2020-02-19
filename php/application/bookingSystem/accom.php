@@ -13,6 +13,7 @@ require_once("../../utils/utilities.php");
 <script src="php/application/bookingSystem/js/bookingAccom.js"></script>
 <script src="php/application/bookingSystem/js/newAccom.js"></script>
 <script src="php/application/bookingSystem/js/phpMailer.js"></script>
+<script src="php/application/bookingSystem/js/gridAccomDetails.js"></script>
 <!-- Accommodation Tab -->
 <div class="tab-pane active in fade" id="accom">
 <!-- left column -->	
@@ -83,13 +84,8 @@ require_once("../../utils/utilities.php");
                 
 				<div class="form-group">
 					<label class="col-sm-1 control-label">Room</label>
-					<div class="col-sm-7">
+					<div class="col-sm-11">
 						<select class="form-control" id="accom_room">
-						</select>
-					</div>
-					<div class="col-sm-4">
-						<select class="form-control" id="accom_occupancy" placeholder="Occupancy">
-							<option value="TO">OCCUPANCY</option>
 						</select>
 					</div>
 				</div>
@@ -220,9 +216,10 @@ require_once("../../utils/utilities.php");
                 <div class="panel-heading">
                         <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="serviceDetails"> Accom Details</a>
                 </div>
-                <div id="serviceDetails" class="panel-collapse collapse">
-                    <div class="panel-body">
-                        <table id="tbl-accomDetails" class="table table-bordered table-hover">
+                <!-- <div id="serviceDetails" class="panel-collapse collapse in"> -->
+                <div id="serviceDetails">
+                    <div class="panel-body" id="grid_accom_details">
+                        <!-- <table id="tbl-accomDetails" class="table table-bordered table-hover">
                             <tr>
                                 <th>Room Charge</th>
                                 <td colspan="3">PAX/UNIT</td>
@@ -287,149 +284,32 @@ require_once("../../utils/utilities.php");
                                     Rates include All Inclusive Package, 15 percent VAT and 15-30 percent discount. Free Green Fee at both our Golf Courses. Rate requires 50 per cent deposit of the total stay.
                                 </td>
                             </tr>
-                        </table>
-                        <!--<table id="tbl-bookingAccom" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th rowspan="2">OCCUPANCY</th>
-                                    <th class="col-sm-3" colspan="3" style="text-align: center">ADULT</th>
-                                    <th class="col-sm-3" colspan="3" style="text-align: center">TEEN</th>
-                                    <th class="col-sm-3" colspan="3" style="text-align: center">CHILD</th>
-                                    <th class="col-sm-3" colspan="3" style="text-align: center">INFANT</th>
-                                </tr>
-                                <tr>
-                                    <th>CLAIM</th>
-                                    <th>COST</th>
-                                    <th></th>
-                                    <th>CLAIM</th>
-                                    <th>COST</th>
-                                    <th></th>
-                                    <th>CLAIM</th>
-                                    <th>COST</th>
-                                    <th></th>
-                                    <th>CLAIM</th>
-                                    <th>COST</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>SINGLE</td>
-                                    <td><strike>365 USD</strike> <br><font color="red"> 345 USD </font> </td>
-                                    <td>300 USD </td>
-                                    <td>Max 1</td>
-                                    <td><strike>265 USD</strike> <br><font color="red"> 245 USD </font> </td>
-                                    <td>200 USD </td>
-                                    <td>Max 1</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td>SINGLE - SHARING</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strike>165 USD</strike> <br><font color="red"> 145 USD </font> </td>
-                                    <td>100 USD </td>
-                                    <td>Max 1</td>
-                                    <td><strike>65 USD</strike> <br><font color="red"> 45 USD </font> </td>
-                                    <td>10 USD </td>
-                                    <td>Max 1</td>
-                                </tr>
-                                <tr>
-                                    <td>DOUBLE</td>
-                                    <td><strike>355 USD</strike> <br><font color="red"> 345 USD </font> </td>
-                                    <td>295 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>255 USD</strike> <br><font color="red"> 245 USD </font> </td>
-                                    <td>195 USD </td>
-                                    <td>Max 1</td>
-                                    <td><strike>165 USD</strike> <br><font color="red"> 145 USD </font> </td>
-                                    <td>95 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>465 USD</strike> <br><font color="red"> 35 USD </font> </td>
-                                    <td>7 USD </td>
-                                    <td>Max 1</td>
-                                </tr>
-                                <tr>
-                                    <td>DOUBLE - Sharing</td>
-                                    <td><strike>345 USD</strike> <br><font color="red"> 315 USD </font> </td>
-                                    <td>280 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>245 USD</strike> <br><font color="red"> 215 USD </font> </td>
-                                    <td>180 USD </td>
-                                    <td>Max 1</td>
-                                    <td><strike>145 USD</strike> <br><font color="red"> 115 USD </font> </td>
-                                    <td>80 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>45 USD</strike> <br><font color="red"> 25 USD </font> </td>
-                                    <td>5 USD </td>
-                                    <td>Max 1</td>
-                                </tr>
-                                <tr>
-                                    <td>TRIPLE</td>
-                                    <td><strike>365 USD</strike> <br><font color="red"> 345 USD </font> </td>
-                                    <td>300 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>265 USD</strike> <br><font color="red"> 245 USD </font> </td>
-                                    <td>200 USD </td>
-                                    <td>Max 1</td>
-                                    <td><strike>165 USD</strike> <br><font color="red"> 145 USD </font> </td>
-                                    <td>100 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>65 USD</strike> <br><font color="red"> 45 USD </font> </td>
-                                    <td>10 USD </td>
-                                    <td>Max 1</td>
-                                </tr>
-                                <tr>
-                                    <td>TRIPLE - Sharing</td>
-                                    <td><strike>365 USD</strike> <br><font color="red"> 345 USD </font> </td>
-                                    <td>300 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>265 USD</strike> <br><font color="red"> 245 USD </font> </td>
-                                    <td>200 USD </td>
-                                    <td>Max 1</td>
-                                    <td><strike>165 USD</strike> <br><font color="red"> 145 USD </font> </td>
-                                    <td>100 USD </td>
-                                    <td>Max 2</td>
-                                    <td><strike>65 USD</strike> <br><font color="red"> 45 USD </font> </td>
-                                    <td>10 USD </td>
-                                    <td>Max 1</td>
-                                </tr>
-                            </tbody>
-                        </table>-->
+                        </table> -->
                     </div>
                 </div>
                 <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Accomodation</a>
+                    <div class="panel-heading">
+                            <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Accomodation</a>
+                    </div>
+                    <div id="dossierService" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table id="tbl-bookingAccom" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="col-sm-5">Accomodation</th>
+                                        <th class="col-sm-2">Stay Date</th>
+                                        <th class="col-sm-1">Rebate</th>
+                                        <th class="col-sm-2">Claim</th>
+                                        <th class="col-sm-2"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div id="dossierService" class="panel-collapse collapse">
-                    <div class="panel-body">
-		                <table id="tbl-bookingAccom" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th class="col-sm-5">Accomodation</th>
-                                    <th class="col-sm-2">Stay Date</th>
-                                    <th class="col-sm-1">Rebate</th>
-                                    <th class="col-sm-2">Claim</th>
-                                    <th class="col-sm-2"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                            </tbody>
-                        </table>
-	                </div>
-                </div>
-            </div>
             </div>
         </div>
 	</div>
