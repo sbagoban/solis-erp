@@ -193,7 +193,7 @@ function loadTourOperator(accomData){
 
 // Booking Client
 function loadBookingClient(accomData){
-         const url_search_booking = "php/api/bookingSystem/allClient.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +accomData.id_booking;
+        const url_search_booking = "php/api/bookingSystem/allClient.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +accomData.id_booking;
             $.ajax({
                 url: url_search_booking,
                 method: "POST",
@@ -254,25 +254,11 @@ function loadAccomContract(id_booking){
             console.log('Error ${error}');
         }
     });
-    /* var max_pax = 4
-
-    var arr_params_resa = {
-                mealplan : $('#accom_mealPlan').val(),
-                touroperator : $('#accom_payer').val(),
-                hotel :  $('#accom_hotel').val(),
-                hotelroom : $('#accom_room').val(),
-                checkin_date: checkin_date,
-                checkout_date: checkin_out,
-                booking_date : '2020-',
-                travel_date : $("#booking_travelDate").data('daterangepicker').startDate.format('YYYY-MM-DD'),
-                max_pax  : max_pax
-        }   */
 }
 // .Load Accom Contract
 
 
 function loadAccomTarif(data, max_pax) {
-    console.log(data, max_pax);
     var mealplan = $('#accom_mealPlan').val();
     var accom_payer = $('#accom_payer').val();
     var accom_hotel = $('#accom_hotel').val();
@@ -297,7 +283,6 @@ function loadAccomTarif(data, max_pax) {
         suppmealplan : '', 
         wedding_interested: 0
     }
-    console.log(arr_params_resa);
 
     const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
     $.ajax({
@@ -306,8 +291,11 @@ function loadAccomTarif(data, max_pax) {
         data : arr_params_resa, 
         dataType: "json",                                                                           
             success : function(data){
-                data = JSON.parse(data);
-                console.log(data);
+                console.log('sdkfjlg', data);
+                gridAccomDetails(data);
+            }, 
+            error: function (error) {
+                console.log('11Error ${error}');
             }
     });
 }
