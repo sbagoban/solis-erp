@@ -1681,194 +1681,658 @@ try {
     $room_clients = $_POST["room_clients"];
     
     //BOOKING ROOM CLAIM
-    $sqlRoomClaim = "SELECT * FROM booking_room_claim WHERE id_booking_room_claim = :id_booking_room_claim";
+    $sqlRoom = "SELECT * FROM booking_room WHERE id_booking_room = :id_booking_room";
     $stmt = $con->prepare($sqlRoomClaim);
-    $stmt->execute(array(":id_booking_room_claim" => $id_booking_room_claim));
+    $stmt->execute(array(":id_booking_room" => $id_booking_room));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES!");
     }
     
-        $sqlSaveRoomClaim= "
-        INSERT INTO booking_room_claim
+    $sqlSaveRoom= "
+        INSERT INTO booking_room
             (
-                id_booking,
-                room_service_paid_by,
-                id_tour_operator,
-                id_client,
-                room_stay_from,
-                room_stay_to,
-                room_booking_date,
-                id_contract,
-                id_hotel,
-                hotelname,
-                id_room,
-                room_details,
-                room_claim_calcultation,
+                stay_from,
+                stay_to,
                 room_adult_amt,
                 room_teen_amt,
                 room_child_amt,
                 room_infant_amt,
-                room_total_pax,
-                id_dept,
-                room_charge,
-                id_service_tax,
-                tax_value,
-                room_adult_claim_exTAX,
-                room_adult_claim,
-                room_teen_claim_exTAX,
-                room_teen_claim,
-                room_child_claim_exTAX,
-                room_child_claim,
-                room_infant_claim_exTAX,
-                room_infant_claim,
-                room_total_claim_exTAX,
-                room_total_claim,
-                room_rebate_claim_type,
-                room_rebate_claim_approve_by,
-                room_rebate_claim_percentage,
-                room_adult_claim_rebate,
-                room_adult_claim_after_rebate_exTAX,
-                room_adult_claim_after_rebate,
-                room_teen_claim_rebate,
-                room_teen_claim_after_rebate,
-                room_teen_claim_after_rebate_exTAX,
-                room_child_claim_rebate,
-                room_child_claim_after_rebate,
-                room_child_claim_after_rebate_exTAX,
-                room_infant_claim_rebate,
-                room_infant_claim_after_rebate,
-                room_infant_claim_after_rebate_exTAX,
-                room_total_claim_after_rebate_exTAX,
-                room_total_claim_after_rebate,
-                room_remarks,
-                room_internal_remarks,
                 room_status,
                 created_by,
                 created_name
             )
         VALUES
             (
-                :id_booking,
-                :room_service_paid_by.
-                :id_tour_operator.
-                :id_client.
-                :room_stay_from.
-                :room_stay_to.
-                :room_booking_date.
-                :id_contract.
-                :id_hotel.
-                :hotelname.
-                :id_room.
-                :room_details.
-                :room_claim_calcultation.
-                :room_adult_amt.
-                :room_teen_amt.
-                :room_child_amt.
-                :room_infant_amt.
-                :room_total_pax.
-                :id_dept.
-                :room_charge.
-                :id_service_tax.
-                :tax_value,
-                :room_adult_claim_exTAX.
-                :room_adult_claim.
-                :room_teen_claim_exTAX.
-                :room_teen_claim.
-                :room_child_claim_exTAX.
-                :room_child_claim.
-                :room_infant_claim_exTAX.
-                :room_infant_claim.
-                :room_total_claim_exTAX.
-                :room_total_claim.
-                :room_rebate_claim_type.
-                :room_rebate_claim_approve_by.
-                :room_rebate_claim_percentage.
-                :room_adult_claim_rebate.
-                :room_adult_claim_after_rebate_exTAX.
-                :room_adult_claim_after_rebate.
-                :room_teen_claim_rebate.
-                :room_teen_claim_after_rebate.
-                :room_teen_claim_after_rebate_exTAX.
-                :room_child_claim_rebate.
-                :room_child_claim_after_rebate.
-                :room_child_claim_after_rebate_exTAX.
-                :room_infant_claim_rebate.
-                :room_infant_claim_after_rebate.
-                :room_infant_claim_after_rebate_exTAX.
-                :room_total_claim_after_rebate_exTAX.
-                :room_total_claim_after_rebate.
-                :room_remarks.
-                :room_internal_remarks.
+                :stay_from,
+                :stay_to,
+                :room_adult_amt,
+                :room_teen_amt,
+                :room_child_amt,
+                :room_infant_amt,
                 :room_status,
-                :created_by.
+                :created_by,
                 :created_name
-              )";
+            )
+    ";
     
-        $stmt = $con->prepare($sqlSaveRoomClaim);
-        $stmt->execute(array(
-                ":id_booking"                                          =>$id_booking,
-                ":room_service_paid_by"                        =>$room_service_paid_by,
-                ":id_tour_operator"                                 =>$id_tour_operator,
-                ":id_client"                                              =>$id_client,
-                ":room_stay_from"                                  =>$room_stay_from,
-                ":room_stay_to"                                      =>$room_stay_to,
-                ":room_booking_date"                            =>$room_booking_date,
-                ":id_contract"                                          =>$id_contract,
-                ":id_hotel"                                               =>$id_hotel,
-                ":hotelname"                                           =>$hotelname,
-                ":id_room"                                               =>$id_room,
-                ":room_details"                                        =>$room_details,
-                ":room_claim_calcultation"                      =>$room_claim_calcultation,
-                ":room_adult_amt"                                   =>$room_adult_amt,
-                ":room_teen_amt"                                    =>$room_teen_amt,
-                ":room_child_amt"                                   =>$room_child_amt,
-                ":room_infant_amt"                                  =>$room_infant_amt,
-                ":room_total_pax"                                     =>$room_total_pax,
-                ":id_dept"                                                  =>$id_dept,
-                ":room_charge"                                          =>$room_charge,
-                ":id_service_tax"                                        =>$id_service_tax,
-                ":tax_value"                                                =>$tax_value,
-                ":room_adult_claim_exTAX"                        =>$room_adult_claim_exTAX,
-                ":room_adult_claim"                                    =>$room_adult_claim,
-                ":room_teen_claim_exTAX"                         =>$room_teen_claim_exTAX,
-                ":room_teen_claim"                                     =>$room_teen_claim,
-                ":room_child_claim_exTAX"                         =>$room_child_claim_exTAX,
-                ":room_child_claim"                                     =>$room_child_claim,
-                ":room_infant_claim_exTAX"                        =>$room_infant_claim_exTAX,
-                ":room_infant_claim"                                    =>$room_infant_claim,
-                ":room_total_claim_exTAX"                           =>$room_total_claim_exTAX,
-                ":room_total_claim"                                      =>$room_total_claim,
-                ":room_rebate_claim_type"                         =>$room_rebate_claim_type,
-                ":room_rebate_claim_approve_by"                =>$room_rebate_claim_approve_by,
-                ":room_rebate_claim_percentage"                 =>$room_rebate_claim_percentage,
-                ":room_adult_claim_rebate"                          =>$room_adult_claim_rebate,
-                ":room_adult_claim_after_rebate_exTAX"      =>$room_adult_claim_after_rebate_exTAX,
-                ":room_adult_claim_after_rebate"                  =>$room_adult_claim_after_rebate,
-                ":room_teen_claim_rebate"                            =>$room_teen_claim_rebate,
-                ":room_teen_claim_after_rebate"                   =>$room_teen_claim_after_rebate,
-                ":room_teen_claim_after_rebate_exTAX"        =>$room_teen_claim_after_rebate_exTAX,
-                ":room_child_claim_rebate"                            =>$room_child_claim_rebate,
-                ":room_child_claim_after_rebate"                   =>$room_child_claim_after_rebate,
-                ":room_child_claim_after_rebate_exTAX"       =>$room_child_claim_after_rebate_exTAX,
-                ":room_infant_claim_rebate"                          =>$room_infant_claim_rebate,
-                ":room_infant_claim_after_rebate"                 =>$room_infant_claim_after_rebate,
-                ":room_infant_claim_after_rebate_exTAX"      =>$room_infant_claim_after_rebate_exTAX,
-                ":room_total_claim_after_rebate_exTAX"        =>$room_total_claim_after_rebate_exTAX,
-                ":room_total_claim_after_rebate"                    =>$room_total_claim_after_rebate,
-                ":room_remarks"                                             =>$room_remarks,
-                ":room_internal_remarks"                                =>$room_internal_remarks,
-                ":room_status"                                                 =>$room_status,
-                ":created_by"                                                   =>$created_by,
-                ":created_name"                                              =>$created_name,
-            ));
+    $stmt = $con->prepare(sqlSaveRoom);
+    $stmt->execute(array(
+        ":stay_from"                     =>$stay_from,
+        ":stay_to"                         =>$stay_to,
+        ":room_adult_amt"           =>$room_adult_amt,
+        ":room_teen_amt"            =>$room_teen_amt,
+        ":room_child_amt"            =>$room_child_amt,
+        ":room_infant_amt"          =>$room_infant_amt,
+        ":room_status"                  =>$room_status,
+        ":created_by"                    =>$created_by,
+        ":created_name"               =>$created_name
+    ));
     
-        $id_booking_room_claim = $con->lastInsertId();    
-      
-        $sqlSaveRoomCost= "
-        INSERT INTO booking_room_cost
+    $id_booking_room = $con->lastInsertId();    
+    
+    $sqlSaveRoomLog= "
+        INSERT INTO booking_room
             (
+                id_booking_room,
+                stay_from,
+                stay_to,
+                room_adult_amt,
+                room_teen_amt,
+                room_child_amt,
+                room_infant_amt,
+                room_status,
+                created_by,
+                created_name
+            )
+        VALUES
+            (
+                :id_booking_room,
+                :stay_from,
+                :stay_to,
+                :room_adult_amt,
+                :room_teen_amt,
+                :room_child_amt,
+                :room_infant_amt,
+                :room_status,
+                :created_by,
+                :created_name
+            )
+    ";
+    
+    $stmt = $con->prepare(sqlSaveRoomLog);
+    $stmt->execute(array(
+        ":id_booking_room"         =>$id_booking_room,
+        ":stay_from"                     =>$stay_from,
+        ":stay_from"                     =>$stay_from,
+        ":stay_to"                         =>$stay_to,
+        ":room_adult_amt"           =>$room_adult_amt,
+        ":room_teen_amt"            =>$room_teen_amt,
+        ":room_child_amt"            =>$room_child_amt,
+        ":room_infant_amt"          =>$room_infant_amt,
+        ":room_status"                  =>$room_status,
+        ":created_by"                    =>$created_by,
+        ":created_name"               =>$created_name
+    ));
+    
+    $sqlSaveRoomClaim= "
+    INSERT INTO booking_room_claim
+        (
+            id_booking,
+            id_booking_room,
+            room_service_paid_by,
+            id_tour_operator,
+            id_client,
+            room_stay_from,
+            room_stay_to,
+            room_booking_date,
+            id_contract,
+            id_hotel,
+            hotelname,
+            id_room,
+            room_details,
+            room_claim_calcultation,
+            room_adult_amt,
+            room_teen_amt,
+            room_child_amt,
+            room_infant_amt,
+            room_total_pax,
+            id_dept,
+            room_charge,
+            id_service_tax,
+            tax_value,
+            room_adult_claim_exTAX,
+            room_adult_claim,
+            room_teen_claim_exTAX,
+            room_teen_claim,
+            room_child_claim_exTAX,
+            room_child_claim,
+            room_infant_claim_exTAX,
+            room_infant_claim,
+            room_total_claim_exTAX,
+            room_total_claim,
+            room_rebate_claim_type,
+            room_rebate_claim_approve_by,
+            room_rebate_claim_percentage,
+            room_adult_claim_rebate,
+            room_adult_claim_after_rebate_exTAX,
+            room_adult_claim_after_rebate,
+            room_teen_claim_rebate,
+            room_teen_claim_after_rebate,
+            room_teen_claim_after_rebate_exTAX,
+            room_child_claim_rebate,
+            room_child_claim_after_rebate,
+            room_child_claim_after_rebate_exTAX,
+            room_infant_claim_rebate,
+            room_infant_claim_after_rebate,
+            room_infant_claim_after_rebate_exTAX,
+            room_total_claim_after_rebate_exTAX,
+            room_total_claim_after_rebate,
+            room_remarks,
+            room_internal_remarks,
+            room_status,
+            created_by,
+            created_name
+        )
+    VALUES
+        (
+            :id_booking,
+            :id_booking_room.
+            :room_service_paid_by.
+            :id_tour_operator.
+            :id_client.
+            :room_stay_from.
+            :room_stay_to.
+            :room_booking_date.
+            :id_contract.
+            :id_hotel.
+            :hotelname.
+            :id_room.
+            :room_details.
+            :room_claim_calcultation.
+            :room_adult_amt.
+            :room_teen_amt.
+            :room_child_amt.
+            :room_infant_amt.
+            :room_total_pax.
+            :id_dept.
+            :room_charge.
+            :id_service_tax.
+            :tax_value,
+            :room_adult_claim_exTAX.
+            :room_adult_claim.
+            :room_teen_claim_exTAX.
+            :room_teen_claim.
+            :room_child_claim_exTAX.
+            :room_child_claim.
+            :room_infant_claim_exTAX.
+            :room_infant_claim.
+            :room_total_claim_exTAX.
+            :room_total_claim.
+            :room_rebate_claim_type.
+            :room_rebate_claim_approve_by.
+            :room_rebate_claim_percentage.
+            :room_adult_claim_rebate.
+            :room_adult_claim_after_rebate_exTAX.
+            :room_adult_claim_after_rebate.
+            :room_teen_claim_rebate.
+            :room_teen_claim_after_rebate.
+            :room_teen_claim_after_rebate_exTAX.
+            :room_child_claim_rebate.
+            :room_child_claim_after_rebate.
+            :room_child_claim_after_rebate_exTAX.
+            :room_infant_claim_rebate.
+            :room_infant_claim_after_rebate.
+            :room_infant_claim_after_rebate_exTAX.
+            :room_total_claim_after_rebate_exTAX.
+            :room_total_claim_after_rebate.
+            :room_remarks.
+            :room_internal_remarks.
+            :room_status,
+            :created_by.
+            :created_name
+          )";
+    
+    
+    $stmt = $con->prepare($sqlSaveRoomClaim);
+    $stmt->execute(array(
+        ":id_booking"                                          =>$id_booking,
+        ":id_booking_room"                                =>$id_booking_room,
+        ":room_service_paid_by"                        =>$room_service_paid_by,
+        ":id_tour_operator"                                 =>$id_tour_operator,
+        ":id_client"                                              =>$id_client,
+        ":room_stay_from"                                  =>$room_stay_from,
+        ":room_stay_to"                                      =>$room_stay_to,
+        ":room_booking_date"                            =>$room_booking_date,
+        ":id_contract"                                          =>$id_contract,
+        ":id_hotel"                                               =>$id_hotel,
+        ":hotelname"                                           =>$hotelname,
+        ":id_room"                                               =>$id_room,
+        ":room_details"                                        =>$room_details,
+        ":room_claim_calcultation"                      =>$room_claim_calcultation,
+        ":room_adult_amt"                                   =>$room_adult_amt,
+        ":room_teen_amt"                                    =>$room_teen_amt,
+        ":room_child_amt"                                   =>$room_child_amt,
+        ":room_infant_amt"                                  =>$room_infant_amt,
+        ":room_total_pax"                                     =>$room_total_pax,
+        ":id_dept"                                                  =>$id_dept,
+        ":room_charge"                                          =>$room_charge,
+        ":id_service_tax"                                        =>$id_service_tax,
+        ":tax_value"                                                =>$tax_value,
+        ":room_adult_claim_exTAX"                        =>$room_adult_claim_exTAX,
+        ":room_adult_claim"                                    =>$room_adult_claim,
+        ":room_teen_claim_exTAX"                         =>$room_teen_claim_exTAX,
+        ":room_teen_claim"                                     =>$room_teen_claim,
+        ":room_child_claim_exTAX"                         =>$room_child_claim_exTAX,
+        ":room_child_claim"                                     =>$room_child_claim,
+        ":room_infant_claim_exTAX"                        =>$room_infant_claim_exTAX,
+        ":room_infant_claim"                                    =>$room_infant_claim,
+        ":room_total_claim_exTAX"                           =>$room_total_claim_exTAX,
+        ":room_total_claim"                                      =>$room_total_claim,
+        ":room_rebate_claim_type"                           =>$room_rebate_claim_type,
+        ":room_rebate_claim_approve_by"                =>$room_rebate_claim_approve_by,
+        ":room_rebate_claim_percentage"                 =>$room_rebate_claim_percentage,
+        ":room_adult_claim_rebate"                          =>$room_adult_claim_rebate,
+        ":room_adult_claim_after_rebate_exTAX"      =>$room_adult_claim_after_rebate_exTAX,
+        ":room_adult_claim_after_rebate"                  =>$room_adult_claim_after_rebate,
+        ":room_teen_claim_rebate"                            =>$room_teen_claim_rebate,
+        ":room_teen_claim_after_rebate"                   =>$room_teen_claim_after_rebate,
+        ":room_teen_claim_after_rebate_exTAX"        =>$room_teen_claim_after_rebate_exTAX,
+        ":room_child_claim_rebate"                            =>$room_child_claim_rebate,
+        ":room_child_claim_after_rebate"                   =>$room_child_claim_after_rebate,
+        ":room_child_claim_after_rebate_exTAX"       =>$room_child_claim_after_rebate_exTAX,
+        ":room_infant_claim_rebate"                          =>$room_infant_claim_rebate,
+        ":room_infant_claim_after_rebate"                 =>$room_infant_claim_after_rebate,
+        ":room_infant_claim_after_rebate_exTAX"      =>$room_infant_claim_after_rebate_exTAX,
+        ":room_total_claim_after_rebate_exTAX"        =>$room_total_claim_after_rebate_exTAX,
+        ":room_total_claim_after_rebate"                    =>$room_total_claim_after_rebate,
+        ":room_remarks"                                             =>$room_remarks,
+        ":room_internal_remarks"                                =>$room_internal_remarks,
+        ":room_status"                                                 =>$room_status,
+        ":created_by"                                                   =>$created_by,
+        ":created_name"                                              =>$created_name
+    ));
+    
+    $id_booking_room_claim = $con->lastInsertId();    
+      
+    $sqlSaveRoomCost= "
+    INSERT INTO booking_room_cost
+        (
+            id_booking_room_claim,
+            id_booking,
+            id_booking_room,
+            room_service_paid_by,
+            id_tour_operator,
+            id_client,
+            room_stay_from,
+            room_stay_to,
+            room_booking_date,
+            id_contract,
+            id_hotel,
+            hotelname,
+            id_room,
+            room_details,
+            room_cost_calcultation,
+            room_adult_amt,
+            room_teen_amt,
+            room_child_amt,
+            room_infant_amt,
+            room_total_pax,
+            id_dept,
+            room_charge,
+            id_service_tax,
+            tax_value,
+            room_adult_cost_exTAX,
+            room_adult_cost,
+            room_teen_cost_exTAX,
+            room_teen_cost,
+            room_child_cost_exTAX,
+            room_child_cost,
+            room_infant_cost_exTAX,
+            room_infant_cost,
+            room_total_cost_exTAX,
+            room_total_cost,
+            room_rebate_cost_type,
+            room_rebate_cost_approve_by,
+            room_rebate_cost_percentage,
+            room_adult_cost_rebate,
+            room_adult_cost_after_rebate_exTAX,
+            room_adult_cost_after_rebate,
+            room_teen_cost_rebate,
+            room_teen_cost_after_rebate,
+            room_teen_cost_after_rebate_exTAX,
+            room_child_cost_rebate,
+            room_child_cost_after_rebate,
+            room_child_cost_after_rebate_exTAX,
+            room_infant_cost_rebate,
+            room_infant_cost_after_rebate,
+            room_infant_cost_after_rebate_exTAX,
+            room_total_cost_after_rebate_exTAX,
+            room_total_cost_after_rebate,
+            created_by,
+            created_name
+        )
+    VALUES
+        (
+            :id_booking_room_claim,
+            :id_booking,
+            :id_booking_room,
+            :room_service_paid_by.
+            :id_tour_operator.
+            :id_client.
+            :room_stay_from.
+            :room_stay_to.
+            :room_booking_date.
+            :id_contract.
+            :id_hotel.
+            :hotelname.
+            :id_room.
+            :room_details.
+            :room_cost_calcultation.
+            :room_adult_amt.
+            :room_teen_amt.
+            :room_child_amt.
+            :room_infant_amt.
+            :room_total_pax.
+            :id_dept.
+            :room_charge.
+            :id_service_tax.
+            :tax_value,
+            :room_adult_cost_exTAX.
+            :room_adult_cost.
+            :room_teen_cost_exTAX.
+            :room_teen_cost.
+            :room_child_cost_exTAX.
+            :room_child_cost.
+            :room_infant_cost_exTAX.
+            :room_infant_cost.
+            :room_total_cost_exTAX.
+            :room_total_cost.
+            :room_rebate_cost_type.
+            :room_rebate_cost_approve_by.
+            :room_rebate_cost_percentage.
+            :room_adult_cost_rebate.
+            :room_adult_cost_after_rebate_exTAX.
+            :room_adult_cost_after_rebate.
+            :room_teen_cost_rebate.
+            :room_teen_cost_after_rebate.
+            :room_teen_cost_after_rebate_exTAX.
+            :room_child_cost_rebate.
+            :room_child_cost_after_rebate.
+            :room_child_cost_after_rebate_exTAX.
+            :room_infant_cost_rebate.
+            :room_infant_cost_after_rebate.
+            :room_infant_cost_after_rebate_exTAX.
+            :room_total_cost_after_rebate_exTAX.
+            :room_total_cost_after_rebate.
+            :created_by.
+            :created_name
+          )";
+
+    $stmt = $con->prepare($sqlSaveRoomCost);
+    $stmt->execute(array(
+            ":id_booking_room_claim"                      =>$id_booking_room_claim,
+            ":id_booking"                                          =>$id_booking,
+            ":id_booking_room"                                =>$id_booking_room,
+            ":room_service_paid_by"                        =>$room_service_paid_by,
+            ":id_tour_operator"                                 =>$id_tour_operator,
+            ":id_client"                                              =>$id_client,
+            ":room_stay_from"                                  =>$room_stay_from,
+            ":room_stay_to"                                      =>$room_stay_to,
+            ":room_booking_date"                            =>$room_booking_date,
+            ":id_contract"                                          =>$id_contract,
+            ":id_hotel"                                               =>$id_hotel,
+            ":hotelname"                                           =>$hotelname,
+            ":id_room"                                               =>$id_room,
+            ":room_details"                                        =>$room_details,
+            ":room_cost_calcultation"                       =>$room_cost_calcultation,
+            ":room_adult_amt"                                   =>$room_adult_amt,
+            ":room_teen_amt"                                    =>$room_teen_amt,
+            ":room_child_amt"                                   =>$room_child_amt,
+            ":room_infant_amt"                                  =>$room_infant_amt,
+            ":room_total_pax"                                     =>$room_total_pax,
+            ":id_dept"                                                  =>$id_dept,
+            ":room_charge"                                          =>$room_charge,
+            ":id_service_tax"                                        =>$id_service_tax,
+            ":tax_value"                                                =>$tax_value,
+            ":room_adult_cost_exTAX"                        =>$room_adult_cost_exTAX,
+            ":room_adult_cost"                                    =>$room_adult_cost,
+            ":room_teen_cost_exTAX"                         =>$room_teen_cost_exTAX,
+            ":room_teen_cost"                                     =>$room_teen_cost,
+            ":room_child_cost_exTAX"                         =>$room_child_cost_exTAX,
+            ":room_child_cost"                                     =>$room_child_cost,
+            ":room_infant_cost_exTAX"                        =>$room_infant_cost_exTAX,
+            ":room_infant_cost"                                    =>$room_infant_cost,
+            ":room_total_cost_exTAX"                           =>$room_total_cost_exTAX,
+            ":room_total_cost"                                      =>$room_total_cost,
+            ":room_rebate_cost_type"                           =>$room_rebate_cost_type,
+            ":room_rebate_cost_approve_by"                =>$room_rebate_cost_approve_by,
+            ":room_rebate_cost_percentage"                 =>$room_rebate_cost_percentage,
+            ":room_adult_cost_rebate"                          =>$room_adult_cost_rebate,
+            ":room_adult_cost_after_rebate_exTAX"      =>$room_adult_cost_after_rebate_exTAX,
+            ":room_adult_cost_after_rebate"                  =>$room_adult_cost_after_rebate,
+            ":room_teen_cost_rebate"                            =>$room_teen_cost_rebate,
+            ":room_teen_cost_after_rebate"                   =>$room_teen_cost_after_rebate,
+            ":room_teen_cost_after_rebate_exTAX"        =>$room_teen_cost_after_rebate_exTAX,
+            ":room_child_cost_rebate"                            =>$room_child_cost_rebate,
+            ":room_child_cost_after_rebate"                   =>$room_child_cost_after_rebate,
+            ":room_child_cost_after_rebate_exTAX"       =>$room_child_cost_after_rebate_exTAX,
+            ":room_infant_cost_rebate"                          =>$room_infant_cost_rebate,
+            ":room_infant_cost_after_rebate"                 =>$room_infant_cost_after_rebate,
+            ":room_infant_cost_after_rebate_exTAX"      =>$room_infant_cost_after_rebate_exTAX,
+            ":room_total_cost_after_rebate_exTAX"        =>$room_total_cost_after_rebate_exTAX,
+            ":room_total_cost_after_rebate"                    =>$room_total_cost_after_rebate,
+            ":created_by"                                                 =>$created_by,
+            ":created_name"                                            =>$created_name
+        ));
+
+    $id_booking_room_cost = $con->lastInsertId();    
+
+     // CLIENT ROOM
+    $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room_claim,id_booking) 
+    VALUES (:booking_client, :id_booking_room_claim,:id_booking)";
+
+    $stmt = $con->prepare($sqlClientRoom);
+    $data = $room_clients;
+
+    foreach($data as $d) {
+        $stmt->execute(array( ':booking_client' => $d,':id_booking_room_claim' => $id_booking_room_claim,':id_booking' => $id_booking));
+    }
+
+    // CLIENT ROOM
+    $sqlSaveRoomClaimLog= "
+    INSERT INTO booking_room_claim_log
+        (
+            id_booking_room_claim,
+            id_booking,
+            id_booking_room,
+            room_service_paid_by,
+            id_tour_operator,
+            id_client,
+            room_stay_from,
+            room_stay_to,
+            room_booking_date,
+            id_contract,
+            id_hotel,
+            hotelname,
+            id_room,
+            room_details,
+            room_clients,
+            room_claim_calcultation,
+            room_adult_amt,
+            room_teen_amt,
+            room_child_amt,
+            room_infant_amt,
+            room_total_pax,
+            id_dept,
+            room_charge,
+            id_service_tax,
+            tax_value,
+            room_adult_claim_exTAX,
+            room_adult_claim,
+            room_teen_claim_exTAX,
+            room_teen_claim,
+            room_child_claim_exTAX,
+            room_child_claim,
+            room_infant_claim_exTAX,
+            room_infant_claim,
+            room_total_claim_exTAX,
+            room_total_claim,
+            room_rebate_claim_type,
+            room_rebate_claim_approve_by,
+            room_rebate_claim_percentage,
+            room_adult_claim_rebate,
+            room_adult_claim_after_rebate_exTAX,
+            room_adult_claim_after_rebate,
+            room_teen_claim_rebate,
+            room_teen_claim_after_rebate,
+            room_teen_claim_after_rebate_exTAX,
+            room_child_claim_rebate,
+            room_child_claim_after_rebate,
+            room_child_claim_after_rebate_exTAX,
+            room_infant_claim_rebate,
+            room_infant_claim_after_rebate,
+            room_infant_claim_after_rebate_exTAX,
+            room_total_claim_after_rebate_exTAX,
+            room_total_claim_after_rebate,
+            room_remarks,
+            room_internal_remarks,
+            room_status,
+            id_user,
+            uname,
+            log_status
+        )
+    VALUES
+        (
+            :id_booking_room_claim,
+            :id_booking,
+            :id_booking_room,
+            :room_service_paid_by.
+            :id_tour_operator.
+            :id_client.
+            :room_stay_from.
+            :room_stay_to.
+            :room_booking_date.
+            :id_contract.
+            :id_hotel.
+            :hotelname.
+            :id_room.
+            :room_details.
+            :room_clients.
+            :room_claim_calcultation.
+            :room_adult_amt.
+            :room_teen_amt.
+            :room_child_amt.
+            :room_infant_amt.
+            :room_total_pax.
+            :id_dept.
+            :room_charge.
+            :id_service_tax.
+            :tax_value,
+            :room_adult_claim_exTAX.
+            :room_adult_claim.
+            :room_teen_claim_exTAX.
+            :room_teen_claim.
+            :room_child_claim_exTAX.
+            :room_child_claim.
+            :room_infant_claim_exTAX.
+            :room_infant_claim.
+            :room_total_claim_exTAX.
+            :room_total_claim.
+            :room_rebate_claim_type.
+            :room_rebate_claim_approve_by.
+            :room_rebate_claim_percentage.
+            :room_adult_claim_rebate.
+            :room_adult_claim_after_rebate_exTAX.
+            :room_adult_claim_after_rebate.
+            :room_teen_claim_rebate.
+            :room_teen_claim_after_rebate.
+            :room_teen_claim_after_rebate_exTAX.
+            :room_child_claim_rebate.
+            :room_child_claim_after_rebate.
+            :room_child_claim_after_rebate_exTAX.
+            :room_infant_claim_rebate.
+            :room_infant_claim_after_rebate.
+            :room_infant_claim_after_rebate_exTAX.
+            :room_total_claim_after_rebate_exTAX.
+            :room_total_claim_after_rebate.
+            :room_remarks.
+            :room_internal_remarks.
+            :room_status,
+            :id_user,
+            :uname,
+            :log_status
+          )";
+
+    $stmt = $con->prepare($sqlSaveRoomClaim);
+    $stmt->execute(array(
+            ":id_booking_room_claim"                      =>$id_booking_room_claim,
+            ":id_booking"                                          =>$id_booking,
+            ":id_booking_room"                                =>$id_booking_room,
+            ":room_service_paid_by"                        =>$room_service_paid_by,
+            ":id_tour_operator"                                 =>$id_tour_operator,
+            ":id_client"                                              =>$id_client,
+            ":room_stay_from"                                  =>$room_stay_from,
+            ":room_stay_to"                                      =>$room_stay_to,
+            ":room_booking_date"                            =>$room_booking_date,
+            ":id_contract"                                          =>$id_contract,
+            ":id_hotel"                                               =>$id_hotel,
+            ":hotelname"                                           =>$hotelname,
+            ":id_room"                                               =>$id_room,
+            ":room_details"                                        =>$room_details,
+            ":room_clients"                                        =>implode( ", ", $room_clients ),
+            ":room_claim_calcultation"                      =>$room_claim_calcultation,
+            ":room_adult_amt"                                   =>$room_adult_amt,
+            ":room_teen_amt"                                    =>$room_teen_amt,
+            ":room_child_amt"                                   =>$room_child_amt,
+            ":room_infant_amt"                                  =>$room_infant_amt,
+            ":room_total_pax"                                     =>$room_total_pax,
+            ":id_dept"                                                  =>$id_dept,
+            ":room_charge"                                          =>$room_charge,
+            ":id_service_tax"                                        =>$id_service_tax,
+            ":tax_value"                                                =>$tax_value,
+            ":room_adult_claim_exTAX"                        =>$room_adult_claim_exTAX,
+            ":room_adult_claim"                                    =>$room_adult_claim,
+            ":room_teen_claim_exTAX"                         =>$room_teen_claim_exTAX,
+            ":room_teen_claim"                                     =>$room_teen_claim,
+            ":room_child_claim_exTAX"                         =>$room_child_claim_exTAX,
+            ":room_child_claim"                                     =>$room_child_claim,
+            ":room_infant_claim_exTAX"                        =>$room_infant_claim_exTAX,
+            ":room_infant_claim"                                    =>$room_infant_claim,
+            ":room_total_claim_exTAX"                           =>$room_total_claim_exTAX,
+            ":room_total_claim"                                      =>$room_total_claim,
+            ":room_rebate_claim_type"                         =>$room_rebate_claim_type,
+            ":room_rebate_claim_approve_by"                =>$room_rebate_claim_approve_by,
+            ":room_rebate_claim_percentage"                 =>$room_rebate_claim_percentage,
+            ":room_adult_claim_rebate"                          =>$room_adult_claim_rebate,
+            ":room_adult_claim_after_rebate_exTAX"      =>$room_adult_claim_after_rebate_exTAX,
+            ":room_adult_claim_after_rebate"                  =>$room_adult_claim_after_rebate,
+            ":room_teen_claim_rebate"                            =>$room_teen_claim_rebate,
+            ":room_teen_claim_after_rebate"                   =>$room_teen_claim_after_rebate,
+            ":room_teen_claim_after_rebate_exTAX"        =>$room_teen_claim_after_rebate_exTAX,
+            ":room_child_claim_rebate"                            =>$room_child_claim_rebate,
+            ":room_child_claim_after_rebate"                   =>$room_child_claim_after_rebate,
+            ":room_child_claim_after_rebate_exTAX"       =>$room_child_claim_after_rebate_exTAX,
+            ":room_infant_claim_rebate"                          =>$room_infant_claim_rebate,
+            ":room_infant_claim_after_rebate"                 =>$room_infant_claim_after_rebate,
+            ":room_infant_claim_after_rebate_exTAX"      =>$room_infant_claim_after_rebate_exTAX,
+            ":room_total_claim_after_rebate_exTAX"        =>$room_total_claim_after_rebate_exTAX,
+            ":room_total_claim_after_rebate"                    =>$room_total_claim_after_rebate,
+            ":room_remarks"                                             =>$room_remarks,
+            ":room_internal_remarks"                                =>$room_internal_remarks,
+            ":room_status"                                                 =>$room_status,
+             ":id_user"                                                        => $id_user,
+             ":uname"                                                         => $uname,
+             ":log_status"                                                    => $log_status
+        ));
+
+
+        $sqlSaveRoomCost= "
+        INSERT INTO booking_room_cost_log
+            (
+                id_booking_room_cost,
                 id_booking_room_claim,
                 id_booking,
+                id_booking_room,
                 room_service_paid_by,
                 id_tour_operator,
                 id_client,
@@ -1917,13 +2381,16 @@ try {
                 room_infant_cost_after_rebate_exTAX,
                 room_total_cost_after_rebate_exTAX,
                 room_total_cost_after_rebate,
-                created_by,
-                created_name
+                id_user,
+                uname,
+                log_status
             )
         VALUES
             (
+                :id_booking_room_cost,
                 :id_booking_room_claim,
                 :id_booking,
+                :id_booking_room,
                 :room_service_paid_by.
                 :id_tour_operator.
                 :id_client.
@@ -1972,14 +2439,17 @@ try {
                 :room_infant_cost_after_rebate_exTAX.
                 :room_total_cost_after_rebate_exTAX.
                 :room_total_cost_after_rebate.
-                :created_by.
-                :created_name
+                :id_user,
+                :uname,
+                :log_status
               )";
-    
+
         $stmt = $con->prepare($sqlSaveRoomCost);
         $stmt->execute(array(
+                ":id_booking_room_cost"                      =>$id_booking_room_cost,
                 ":id_booking_room_claim"                      =>$id_booking_room_claim,
                 ":id_booking"                                          =>$id_booking,
+                ":id_booking_room"                                =>$id_booking_room,
                 ":room_service_paid_by"                        =>$room_service_paid_by,
                 ":id_tour_operator"                                 =>$id_tour_operator,
                 ":id_client"                                              =>$id_client,
@@ -2011,7 +2481,7 @@ try {
                 ":room_infant_cost"                                    =>$room_infant_cost,
                 ":room_total_cost_exTAX"                           =>$room_total_cost_exTAX,
                 ":room_total_cost"                                      =>$room_total_cost,
-                ":room_rebate_cost_type"                         =>$room_rebate_cost_type,
+                ":room_rebate_cost_type"                          =>$room_rebate_cost_type,
                 ":room_rebate_cost_approve_by"                =>$room_rebate_cost_approve_by,
                 ":room_rebate_cost_percentage"                 =>$room_rebate_cost_percentage,
                 ":room_adult_cost_rebate"                          =>$room_adult_cost_rebate,
@@ -2028,388 +2498,16 @@ try {
                 ":room_infant_cost_after_rebate_exTAX"      =>$room_infant_cost_after_rebate_exTAX,
                 ":room_total_cost_after_rebate_exTAX"        =>$room_total_cost_after_rebate_exTAX,
                 ":room_total_cost_after_rebate"                    =>$room_total_cost_after_rebate,
-                ":created_by"                                                 =>$created_by,
-                ":created_name"                                            =>$created_name,
+                 ":id_user"                                                      => $id_user,
+                 ":uname"                                                       => $uname,
+                 ":log_status"                                                  => $log_status
             ));
-    
-        $id_booking_room_cost = $con->lastInsertId();    
-    
-         // CLIENT ROOM
-        $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room_claim,id_booking) 
-        VALUES (:booking_client, :id_booking_room_claim,:id_booking)";
 
-        $stmt = $con->prepare($sqlClientRoom);
-        $data = $room_clients;
+            $bookingRoom_result= array("OUTCOME" => "OK", "id_booking"=>$id_booking, "id_booking_room_claim"=>$id_booking_room_claim, "created_by" =>$created_name);
+            echo json_encode($bookingRoom_result); 
 
-        foreach($data as $d) {
-            $stmt->execute(array( ':booking_client' => $d,':id_booking_room_claim' => $id_booking_room_claim,':id_booking' => $id_booking));
-        }
-    
-        // CLIENT ROOM
-        $sqlSaveRoomClaimLog= "
-        INSERT INTO booking_room_claim_log
-            (
-                id_booking_room_claim,
-                id_booking,
-                room_service_paid_by,
-                id_tour_operator,
-                id_client,
-                room_stay_from,
-                room_stay_to,
-                room_booking_date,
-                id_contract,
-                id_hotel,
-                hotelname,
-                id_room,
-                room_details,
-                room_clients,
-                room_claim_calcultation,
-                room_adult_amt,
-                room_teen_amt,
-                room_child_amt,
-                room_infant_amt,
-                room_total_pax,
-                id_dept,
-                room_charge,
-                id_service_tax,
-                tax_value,
-                room_adult_claim_exTAX,
-                room_adult_claim,
-                room_teen_claim_exTAX,
-                room_teen_claim,
-                room_child_claim_exTAX,
-                room_child_claim,
-                room_infant_claim_exTAX,
-                room_infant_claim,
-                room_total_claim_exTAX,
-                room_total_claim,
-                room_rebate_claim_type,
-                room_rebate_claim_approve_by,
-                room_rebate_claim_percentage,
-                room_adult_claim_rebate,
-                room_adult_claim_after_rebate_exTAX,
-                room_adult_claim_after_rebate,
-                room_teen_claim_rebate,
-                room_teen_claim_after_rebate,
-                room_teen_claim_after_rebate_exTAX,
-                room_child_claim_rebate,
-                room_child_claim_after_rebate,
-                room_child_claim_after_rebate_exTAX,
-                room_infant_claim_rebate,
-                room_infant_claim_after_rebate,
-                room_infant_claim_after_rebate_exTAX,
-                room_total_claim_after_rebate_exTAX,
-                room_total_claim_after_rebate,
-                room_remarks,
-                room_internal_remarks,
-                room_status,
-                id_user,
-                uname,
-                log_status
-            )
-        VALUES
-            (
-                :id_booking_room_claim,
-                :id_booking,
-                :room_service_paid_by.
-                :id_tour_operator.
-                :id_client.
-                :room_stay_from.
-                :room_stay_to.
-                :room_booking_date.
-                :id_contract.
-                :id_hotel.
-                :hotelname.
-                :id_room.
-                :room_details.
-                :room_clients.
-                :room_claim_calcultation.
-                :room_adult_amt.
-                :room_teen_amt.
-                :room_child_amt.
-                :room_infant_amt.
-                :room_total_pax.
-                :id_dept.
-                :room_charge.
-                :id_service_tax.
-                :tax_value,
-                :room_adult_claim_exTAX.
-                :room_adult_claim.
-                :room_teen_claim_exTAX.
-                :room_teen_claim.
-                :room_child_claim_exTAX.
-                :room_child_claim.
-                :room_infant_claim_exTAX.
-                :room_infant_claim.
-                :room_total_claim_exTAX.
-                :room_total_claim.
-                :room_rebate_claim_type.
-                :room_rebate_claim_approve_by.
-                :room_rebate_claim_percentage.
-                :room_adult_claim_rebate.
-                :room_adult_claim_after_rebate_exTAX.
-                :room_adult_claim_after_rebate.
-                :room_teen_claim_rebate.
-                :room_teen_claim_after_rebate.
-                :room_teen_claim_after_rebate_exTAX.
-                :room_child_claim_rebate.
-                :room_child_claim_after_rebate.
-                :room_child_claim_after_rebate_exTAX.
-                :room_infant_claim_rebate.
-                :room_infant_claim_after_rebate.
-                :room_infant_claim_after_rebate_exTAX.
-                :room_total_claim_after_rebate_exTAX.
-                :room_total_claim_after_rebate.
-                :room_remarks.
-                :room_internal_remarks.
-                :room_status,
-                :id_user,
-                :uname,
-                :log_status
-              )";
-    
-        $stmt = $con->prepare($sqlSaveRoomClaim);
-        $stmt->execute(array(
-                ":id_booking_room_claim"                      =>$id_booking_room_claim,
-                ":id_booking"                                          =>$id_booking,
-                ":room_service_paid_by"                        =>$room_service_paid_by,
-                ":id_tour_operator"                                 =>$id_tour_operator,
-                ":id_client"                                              =>$id_client,
-                ":room_stay_from"                                  =>$room_stay_from,
-                ":room_stay_to"                                      =>$room_stay_to,
-                ":room_booking_date"                            =>$room_booking_date,
-                ":id_contract"                                          =>$id_contract,
-                ":id_hotel"                                               =>$id_hotel,
-                ":hotelname"                                           =>$hotelname,
-                ":id_room"                                               =>$id_room,
-                ":room_details"                                        =>$room_details,
-                ":room_clients"                                        =>implode( ", ", $room_clients ),
-                ":room_claim_calcultation"                      =>$room_claim_calcultation,
-                ":room_adult_amt"                                   =>$room_adult_amt,
-                ":room_teen_amt"                                    =>$room_teen_amt,
-                ":room_child_amt"                                   =>$room_child_amt,
-                ":room_infant_amt"                                  =>$room_infant_amt,
-                ":room_total_pax"                                     =>$room_total_pax,
-                ":id_dept"                                                  =>$id_dept,
-                ":room_charge"                                          =>$room_charge,
-                ":id_service_tax"                                        =>$id_service_tax,
-                ":tax_value"                                                =>$tax_value,
-                ":room_adult_claim_exTAX"                        =>$room_adult_claim_exTAX,
-                ":room_adult_claim"                                    =>$room_adult_claim,
-                ":room_teen_claim_exTAX"                         =>$room_teen_claim_exTAX,
-                ":room_teen_claim"                                     =>$room_teen_claim,
-                ":room_child_claim_exTAX"                         =>$room_child_claim_exTAX,
-                ":room_child_claim"                                     =>$room_child_claim,
-                ":room_infant_claim_exTAX"                        =>$room_infant_claim_exTAX,
-                ":room_infant_claim"                                    =>$room_infant_claim,
-                ":room_total_claim_exTAX"                           =>$room_total_claim_exTAX,
-                ":room_total_claim"                                      =>$room_total_claim,
-                ":room_rebate_claim_type"                         =>$room_rebate_claim_type,
-                ":room_rebate_claim_approve_by"                =>$room_rebate_claim_approve_by,
-                ":room_rebate_claim_percentage"                 =>$room_rebate_claim_percentage,
-                ":room_adult_claim_rebate"                          =>$room_adult_claim_rebate,
-                ":room_adult_claim_after_rebate_exTAX"      =>$room_adult_claim_after_rebate_exTAX,
-                ":room_adult_claim_after_rebate"                  =>$room_adult_claim_after_rebate,
-                ":room_teen_claim_rebate"                            =>$room_teen_claim_rebate,
-                ":room_teen_claim_after_rebate"                   =>$room_teen_claim_after_rebate,
-                ":room_teen_claim_after_rebate_exTAX"        =>$room_teen_claim_after_rebate_exTAX,
-                ":room_child_claim_rebate"                            =>$room_child_claim_rebate,
-                ":room_child_claim_after_rebate"                   =>$room_child_claim_after_rebate,
-                ":room_child_claim_after_rebate_exTAX"       =>$room_child_claim_after_rebate_exTAX,
-                ":room_infant_claim_rebate"                          =>$room_infant_claim_rebate,
-                ":room_infant_claim_after_rebate"                 =>$room_infant_claim_after_rebate,
-                ":room_infant_claim_after_rebate_exTAX"      =>$room_infant_claim_after_rebate_exTAX,
-                ":room_total_claim_after_rebate_exTAX"        =>$room_total_claim_after_rebate_exTAX,
-                ":room_total_claim_after_rebate"                    =>$room_total_claim_after_rebate,
-                ":room_remarks"                                             =>$room_remarks,
-                ":room_internal_remarks"                                =>$room_internal_remarks,
-                ":room_status"                                                 =>$room_status,
-				 ":id_user"                                                        => $id_user,
-				 ":uname"                                                         => $uname,
-				 ":log_status"                                                    => $log_status
-            ));
-        
-      
-            $sqlSaveRoomCost= "
-            INSERT INTO booking_room_cost_log
-                (
-                    id_booking_room_cost,
-                    id_booking_room_claim,
-                    id_booking,
-                    room_service_paid_by,
-                    id_tour_operator,
-                    id_client,
-                    room_stay_from,
-                    room_stay_to,
-                    room_booking_date,
-                    id_contract,
-                    id_hotel,
-                    hotelname,
-                    id_room,
-                    room_details,
-                    room_cost_calcultation,
-                    room_adult_amt,
-                    room_teen_amt,
-                    room_child_amt,
-                    room_infant_amt,
-                    room_total_pax,
-                    id_dept,
-                    room_charge,
-                    id_service_tax,
-                    tax_value,
-                    room_adult_cost_exTAX,
-                    room_adult_cost,
-                    room_teen_cost_exTAX,
-                    room_teen_cost,
-                    room_child_cost_exTAX,
-                    room_child_cost,
-                    room_infant_cost_exTAX,
-                    room_infant_cost,
-                    room_total_cost_exTAX,
-                    room_total_cost,
-                    room_rebate_cost_type,
-                    room_rebate_cost_approve_by,
-                    room_rebate_cost_percentage,
-                    room_adult_cost_rebate,
-                    room_adult_cost_after_rebate_exTAX,
-                    room_adult_cost_after_rebate,
-                    room_teen_cost_rebate,
-                    room_teen_cost_after_rebate,
-                    room_teen_cost_after_rebate_exTAX,
-                    room_child_cost_rebate,
-                    room_child_cost_after_rebate,
-                    room_child_cost_after_rebate_exTAX,
-                    room_infant_cost_rebate,
-                    room_infant_cost_after_rebate,
-                    room_infant_cost_after_rebate_exTAX,
-                    room_total_cost_after_rebate_exTAX,
-                    room_total_cost_after_rebate,
-                    id_user,
-                    uname,
-                    log_status
-                )
-            VALUES
-                (
-                    :id_booking_room_cost,
-                    :id_booking_room_claim,
-                    :id_booking,
-                    :room_service_paid_by.
-                    :id_tour_operator.
-                    :id_client.
-                    :room_stay_from.
-                    :room_stay_to.
-                    :room_booking_date.
-                    :id_contract.
-                    :id_hotel.
-                    :hotelname.
-                    :id_room.
-                    :room_details.
-                    :room_cost_calcultation.
-                    :room_adult_amt.
-                    :room_teen_amt.
-                    :room_child_amt.
-                    :room_infant_amt.
-                    :room_total_pax.
-                    :id_dept.
-                    :room_charge.
-                    :id_service_tax.
-                    :tax_value,
-                    :room_adult_cost_exTAX.
-                    :room_adult_cost.
-                    :room_teen_cost_exTAX.
-                    :room_teen_cost.
-                    :room_child_cost_exTAX.
-                    :room_child_cost.
-                    :room_infant_cost_exTAX.
-                    :room_infant_cost.
-                    :room_total_cost_exTAX.
-                    :room_total_cost.
-                    :room_rebate_cost_type.
-                    :room_rebate_cost_approve_by.
-                    :room_rebate_cost_percentage.
-                    :room_adult_cost_rebate.
-                    :room_adult_cost_after_rebate_exTAX.
-                    :room_adult_cost_after_rebate.
-                    :room_teen_cost_rebate.
-                    :room_teen_cost_after_rebate.
-                    :room_teen_cost_after_rebate_exTAX.
-                    :room_child_cost_rebate.
-                    :room_child_cost_after_rebate.
-                    :room_child_cost_after_rebate_exTAX.
-                    :room_infant_cost_rebate.
-                    :room_infant_cost_after_rebate.
-                    :room_infant_cost_after_rebate_exTAX.
-                    :room_total_cost_after_rebate_exTAX.
-                    :room_total_cost_after_rebate.
-                    :id_user,
-                    :uname,
-                    :log_status
-                  )";
-
-            $stmt = $con->prepare($sqlSaveRoomCost);
-            $stmt->execute(array(
-                    ":id_booking_room_cost"                      =>$id_booking_room_cost,
-                    ":id_booking_room_claim"                      =>$id_booking_room_claim,
-                    ":id_booking"                                          =>$id_booking,
-                    ":room_service_paid_by"                        =>$room_service_paid_by,
-                    ":id_tour_operator"                                 =>$id_tour_operator,
-                    ":id_client"                                              =>$id_client,
-                    ":room_stay_from"                                  =>$room_stay_from,
-                    ":room_stay_to"                                      =>$room_stay_to,
-                    ":room_booking_date"                            =>$room_booking_date,
-                    ":id_contract"                                          =>$id_contract,
-                    ":id_hotel"                                               =>$id_hotel,
-                    ":hotelname"                                           =>$hotelname,
-                    ":id_room"                                               =>$id_room,
-                    ":room_details"                                        =>$room_details,
-                    ":room_cost_calcultation"                       =>$room_cost_calcultation,
-                    ":room_adult_amt"                                   =>$room_adult_amt,
-                    ":room_teen_amt"                                    =>$room_teen_amt,
-                    ":room_child_amt"                                   =>$room_child_amt,
-                    ":room_infant_amt"                                  =>$room_infant_amt,
-                    ":room_total_pax"                                     =>$room_total_pax,
-                    ":id_dept"                                                  =>$id_dept,
-                    ":room_charge"                                          =>$room_charge,
-                    ":id_service_tax"                                        =>$id_service_tax,
-                    ":tax_value"                                                =>$tax_value,
-                    ":room_adult_cost_exTAX"                        =>$room_adult_cost_exTAX,
-                    ":room_adult_cost"                                    =>$room_adult_cost,
-                    ":room_teen_cost_exTAX"                         =>$room_teen_cost_exTAX,
-                    ":room_teen_cost"                                     =>$room_teen_cost,
-                    ":room_child_cost_exTAX"                         =>$room_child_cost_exTAX,
-                    ":room_child_cost"                                     =>$room_child_cost,
-                    ":room_infant_cost_exTAX"                        =>$room_infant_cost_exTAX,
-                    ":room_infant_cost"                                    =>$room_infant_cost,
-                    ":room_total_cost_exTAX"                           =>$room_total_cost_exTAX,
-                    ":room_total_cost"                                      =>$room_total_cost,
-                    ":room_rebate_cost_type"                         =>$room_rebate_cost_type,
-                    ":room_rebate_cost_approve_by"                =>$room_rebate_cost_approve_by,
-                    ":room_rebate_cost_percentage"                 =>$room_rebate_cost_percentage,
-                    ":room_adult_cost_rebate"                          =>$room_adult_cost_rebate,
-                    ":room_adult_cost_after_rebate_exTAX"      =>$room_adult_cost_after_rebate_exTAX,
-                    ":room_adult_cost_after_rebate"                  =>$room_adult_cost_after_rebate,
-                    ":room_teen_cost_rebate"                            =>$room_teen_cost_rebate,
-                    ":room_teen_cost_after_rebate"                   =>$room_teen_cost_after_rebate,
-                    ":room_teen_cost_after_rebate_exTAX"        =>$room_teen_cost_after_rebate_exTAX,
-                    ":room_child_cost_rebate"                            =>$room_child_cost_rebate,
-                    ":room_child_cost_after_rebate"                   =>$room_child_cost_after_rebate,
-                    ":room_child_cost_after_rebate_exTAX"       =>$room_child_cost_after_rebate_exTAX,
-                    ":room_infant_cost_rebate"                          =>$room_infant_cost_rebate,
-                    ":room_infant_cost_after_rebate"                 =>$room_infant_cost_after_rebate,
-                    ":room_infant_cost_after_rebate_exTAX"      =>$room_infant_cost_after_rebate_exTAX,
-                    ":room_total_cost_after_rebate_exTAX"        =>$room_total_cost_after_rebate_exTAX,
-                    ":room_total_cost_after_rebate"                    =>$room_total_cost_after_rebate,
-                     ":id_user"                                                      => $id_user,
-                     ":uname"                                                       => $uname,
-                     ":log_status"                                                  => $log_status
-                ));
-    
-                $bookingRoom_result= array("OUTCOME" => "OK", "id_booking"=>$id_booking, "id_booking_room_claim"=>$id_booking_room_claim, "created_by" =>$created_name);
-                echo json_encode($bookingRoom_result); 
-    
 } catch (Exception $ex) {
-    die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
+die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 ?>
-    
-    
+
