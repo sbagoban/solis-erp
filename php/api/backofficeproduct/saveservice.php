@@ -65,7 +65,7 @@ try {
     $is_pakage = trim($_POST["is_pakage"]);
     $id_service_type = $_POST["id_service_type"];
     $id_product_type = $_POST["id_product_type"];
-    $id_product_service_induded = $_POST["id_product_service_induded"];
+    $id_product_service_included = $_POST["id_product_service_included"];
     $servicetype = $_POST["servicetype"];
     $special_name = strtoupper(trim($_POST["special_name"]));
     $id_user = $_SESSION["solis_userid"];
@@ -240,11 +240,11 @@ try {
             $id_product_service = $con->lastInsertId();
 
         if ($is_pakage == 'Y') {
-            $sqlTo = "INSERT INTO product_service_package (id_product_service, id_product, id_service_type, id_product_type, id_product_service_induded) 
-            VALUES (:id_product_service, :id_product, :id_service_type, :id_product_type, :id_product_service_induded)";
+            $sqlTo = "INSERT INTO product_service_package (id_product_service, id_product, id_service_type, id_product_type, id_product_service_included) 
+            VALUES (:id_product_service, :id_product, :id_service_type, :id_product_type, :id_product_service_included)";
 
             $stmt = $con->prepare($sqlTo);
-            $data = $id_product_service_induded;
+            $data = $id_product_service_included;
             
             if (is_array($data) || is_object($data)) {
                 foreach($data as $servcost) {
@@ -253,7 +253,7 @@ try {
                         ':id_product' => $id_product, 
                         ':id_service_type' => $id_service_type,
                         ':id_product_type' => $id_product_type,  
-                        ':id_product_service_induded' => $servcost));
+                        ':id_product_service_included' => $servcost));
                 }
             }
 

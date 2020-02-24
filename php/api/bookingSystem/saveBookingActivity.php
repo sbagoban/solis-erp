@@ -1916,7 +1916,7 @@ try {
                     product_service_package PSP,
                     product_service PS,
                     product_service_cost PS_COST
-                WHERE PSP.id_product_service_induded = PS.id_product_service
+                WHERE PSP.id_product_service_included = PS.id_product_service
                 AND PS.id_product_service = PS_COST.id_product_service
                 AND PSP.id_product_service = :id_product_service
                 AND :activity_date BETWEEN PS_COST.valid_from AND PS_COST.valid_to

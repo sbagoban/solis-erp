@@ -31,7 +31,7 @@ try {
     $id_product  = $_POST["id_product"];
     $id_service_type  = $_POST["id_service_type"];
     $id_product_type  = $_POST["id_product_type"];
-    $id_product_service_induded = $_POST["id_product_service_induded"];
+    $id_product_service_included = $_POST["id_product_service_included"];
 
     $con = pdo_con();
 
@@ -50,25 +50,25 @@ try {
             id_product,
             id_service_type,
             id_product_type,
-            id_product_service_induded
+            id_product_service_included
         ) 
                 VALUES (
                     :id_product_service,
                     :id_product,
                     :id_service_type,
                     :id_product_type,
-                    :id_product_service_induded
+                    :id_product_service_included
                 )";
 
         $stmt = $con->prepare($sql);
-        $data = $id_product_service_induded;
+        $data = $id_product_service_included;
         foreach($data as $d) {
             $stmt->execute(array(
                 ":id_product_service" => $id_product_service,
                 ":id_product" => $id_product,
                 ":id_service_type" => $id_service_type,
                 ":id_product_type" => $id_product_type,
-                ":id_product_service_induded" => $d));
+                ":id_product_service_included" => $d));
         }
         
         $id_product_service_package = $con->lastInsertId();
@@ -79,11 +79,11 @@ try {
                 id_product = :id_product,
                 id_service_type = :id_service_type,
                 id_product_type = :id_product_type,
-                id_product_service_induded = :id_product_service_induded
+                id_product_service_included = :id_product_service_included
                 WHERE id_product_service_package=:id_product_service_package";
 
         $stmt = $con->prepare($sql);
-        $data = $id_product_service_induded;
+        $data = $id_product_service_included;
         foreach($data as $d) {
             $stmt->execute(array(
                 ":id_product_service_package" => $id_product_service_package,
@@ -91,7 +91,7 @@ try {
                 ":id_product" => $id_product,
                 ":id_service_type" => $id_service_type,
                 ":id_product_type" => $id_product_type,
-                ":id_product_service_induded" => $d));
+                ":id_product_service_included" => $d));
         }
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_package"=>$id_product_service_package));

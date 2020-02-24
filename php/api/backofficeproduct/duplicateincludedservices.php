@@ -38,7 +38,7 @@ if ($row_count_c > 0) {
             'id_product'    => $row['id_product'],
             'id_service_type'    => $row['id_service_type'],
             'id_product_type' => $row['id_product_type'],
-            'id_product_service_induded' => $row['id_product_service_induded']
+            'id_product_service_included' => $row['id_product_service_included']
         );
     }
     $myData = $serviceIncluded;
@@ -47,7 +47,7 @@ if ($row_count_c > 0) {
             $id_product =$myData[$i]['id_product'];
             $id_service_type =$myData[$i]['id_service_type'];
             $id_product_type =$myData[$i]['id_product_type'];
-            $id_product_service_induded =$myData[$i]['id_product_service_induded'];
+            $id_product_service_included =$myData[$i]['id_product_service_included'];
 
             $sql2 = "INSERT INTO product_service_package 
                 (
@@ -55,21 +55,21 @@ if ($row_count_c > 0) {
                     id_product, 
                     id_service_type, 
                     id_product_type,
-                    id_product_service_induded
+                    id_product_service_included
                 )  
                 VALUES (
                     :id_prod_serv,
                     :id_product, 
                     :id_service_type, 
                     :id_product_type,
-                    :id_product_service_induded
+                    :id_product_service_included
                 )";
                 $stmt = $con->prepare($sql2);
                 $stmt->bindParam(':id_prod_serv', $id_prod_serv);
                 $stmt->bindParam(':id_product', $id_product);
                 $stmt->bindParam(':id_service_type', $id_service_type);
                 $stmt->bindParam(':id_product_type', $id_product_type);
-                $stmt->bindParam(':id_product_service_induded', $id_product_service_induded);
+                $stmt->bindParam(':id_product_service_included', $id_product_service_included);
                 
                 $stmt->execute(); 
         }

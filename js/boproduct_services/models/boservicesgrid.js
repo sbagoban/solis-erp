@@ -466,7 +466,7 @@ function duplicateProductServices(data) {
         is_pakage : data.is_pakage, 
         id_service_type : id_service_type, 
         id_product_type : id_product_type,
-        id_product_service_induded : 0,
+        id_product_service_included : 0,
         servicetype : servicetype,
         special_name : data.special_name,
         max_adult : data.max_adult,

@@ -39,7 +39,7 @@ if ($row_count_c > 0) {
             'id_product' => $row['id_product'],
             'id_service_type' => $row['id_service_type'],
             'id_product_type' => $row['id_product_type'],
-            'id_product_service_induded' => $row['id_product_service_induded']
+            'id_product_service_included' => $row['id_product_service_included']
         );
     }    $myData = $serviceSelected;
     echo json_encode($myData);
