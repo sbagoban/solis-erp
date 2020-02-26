@@ -281,7 +281,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr style="display: none">
                                 <!--<tr style="display: none">-->
                                     <td colspan="2">
 						                <input type="text" id="id_product_service_arr_claim">

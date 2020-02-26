@@ -550,7 +550,7 @@ $(function(){
             });
         }
 	});
-	//. Activity Client
+	//. Transfer Client
      
 	//Rebate Claim
 	$("#transfer_rebateClaim").change(function(){
