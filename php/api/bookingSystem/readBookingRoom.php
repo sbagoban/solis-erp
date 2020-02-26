@@ -40,6 +40,7 @@ try {
             SELECT 
                 BR_CLAIM.id_booking_room_claim,
                 BR_CLAIM.id_booking,
+                BR_CLAIM.id_booking_room,
                 BR_CLAIM.room_service_paid_by,
                 BR_CLAIM.id_tour_operator,
                 BR_CLAIM.id_client,
@@ -144,6 +145,7 @@ try {
             $bookingRoomDetails[] = array(
                 'id_booking_room_claim'                                => $row['id_booking_room_claim'],
                 'id_booking'                                                    => $row['id_booking'],
+                'id_booking_room'                                          => $row['id_booking_room'],
                 'room_service_paid_by'                                   => $row['room_service_paid_by'],
                 'id_tour_operator'                                           => $row['id_tour_operator'],
                 'id_client'                                                         => $row['id_client'],
@@ -241,6 +243,7 @@ try {
         $bookingRoomDetails[] = array(
                 'id_booking_room_claim'                                => '-',
                 'id_booking'                                                    => '-',
+                'id_booking_room'                                           => '-',
                 'room_service_paid_by'                                   => '-',
                 'id_tour_operator'                                           => '-',
                 'id_client'                                                         => '-',
