@@ -14,6 +14,7 @@ require_once("../../utils/utilities.php");
 <script src="php/application/bookingSystem/js/newAccom.js"></script>
 <script src="php/application/bookingSystem/js/phpMailer.js"></script>
 <script src="php/application/bookingSystem/js/gridAccomDetails.js"></script>
+<script src="php/application/bookingSystem/js/saveAccomDetails.js"></script>
 <!-- Accommodation Tab -->
 <div class="tab-pane active in fade" id="accom">
 <!-- left column -->	
@@ -26,6 +27,7 @@ require_once("../../utils/utilities.php");
 					<label class="col-sm-2 control-label">ID BOOKING ACCOM</label>
 					<div class="col-sm-2">
 						<input type="text" class="form-control bookingAccom" id="id_booking_accom_claim" placeholder="000" readonly>
+						<div id="id_contract" style="display:none;">0</div>
 					</div>
 				</div>
                 
@@ -102,19 +104,19 @@ require_once("../../utils/utilities.php");
 					<label class="col-sm-1 control-label"></label>
 					<div class="col-sm-11">
 						<div class="input-group">
-							<input type="number" class="form-control" id="accom_adultAmt">
+							<input type="number" class="form-control" id="accom_adultAmt" readonly>
 							<span class="input-group-addon">Adult</span>
-							<input type="number" class="form-control" id="accom_TeentAmt">
-							<span class="input-group-addon">Teen</span>
-							<input type="number" class="form-control" id="accom_childAmt">
+							<input type="number" class="form-control" id="accom_TeentAmt" readonly>
+							<span class="input-group-addon" >Teen</span>
+							<input type="number" class="form-control" id="accom_childAmt" readonly>
 							<span class="input-group-addon">Child</span>
-							<input type="number" class="form-control" id="accom_InfantAmt">
+							<input type="number" class="form-control" id="accom_InfantAmt" readonly>
 							<span class="input-group-addon">Infant</span>
 						</div>
 					</div>
 				</div>
 				
-				<div class="form-group">
+				<!-- <div class="form-group">
 					<label class="col-sm-1 control-label">Rebate</label>
 					<div class="col-sm-4">
 						<select class="form-control" id="accom_rebate">
@@ -185,7 +187,7 @@ require_once("../../utils/utilities.php");
 					<div class="col-sm-3">
 						<input type="text" class="form-control" id="accom_babyCotPrice">
 					</div>
-				</div>
+				</div> -->
 				
 				<div class="form-group">
 					<label class="col-sm-1 control-label">Service Remark</label>

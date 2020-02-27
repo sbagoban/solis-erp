@@ -67,7 +67,7 @@ $(function(){
 			$("#accom_hotel").empty();
 			$("#accom_hotel").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#accom_hotel").append('<option value="' + val.id + '">'+val.hotelname+'</option>');
+			$("#accom_hotel").append('<option value="' + val.id + '"  name="' + val.hotelname + '">'+val.hotelname+'</option>');
 			$("#accom_hotel").val('0');
 			$('#accom_hotel').select2().trigger('change');	
 			}); 
@@ -115,7 +115,7 @@ $(function(){
 			{
 				$("#accom_client").val('').selectpicker('refresh');
 				$.each(data, function (key, val) {
-				$("#accom_client").append('<option value="' + val.id_booking_client + '">'+val.title+ ' '+val.surname+' '+val.other_name+' - '+val.type+'</option>');
+				$("#accom_client").append('<option value="' + val.id_booking_client + '" name="' + val.age + '">'+val.title+ ' '+val.surname+' '+val.other_name+' - '+val.type+'</option>');
 				});  
 				$("#accom_client").selectpicker('refresh');
 
@@ -150,11 +150,6 @@ $(function(){
 		}
 	});
 	//.Approved Discount List
-    
-    
-    
-
-
 });
 
 // Tour Operator
@@ -190,7 +185,7 @@ function loadBookingClient(accomData){
                 {
                     $("#accom_payer").empty();
                     $.each(data, function (key, val) {
-                    $("#accom_payer").append('<option value="' + val.id_client + '">'+val.title+ ' '+val.surname+' '+val.other_name+'</option>');
+                    	$("#accom_payer").append('<option value="' + val.id_client + '" name="' + val.age + '">'+val.title+ ' '+val.surname+' '+val.other_name+'</option>');
                     });  
                 },
                 error: function (error) 

@@ -65,7 +65,7 @@ try {
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id_product_service_cost" => $id_product_service_cost));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        throw new Exception("DUPLICATE SERVICES!");
+        throw new Exception("DUPLICATE Booking ROOM!");
     }
 
     if ($id_product_service_cost == "-1") {
