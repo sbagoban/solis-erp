@@ -431,7 +431,7 @@ VALUES
 
     CREATE TABLE `booking_room_claim` (
       `id_booking_room_claim` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto increment',
-      `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from client table',
+      `id_booking` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from booking table',
       `id_booking_room` int(11) NOT NULL DEFAULT 0 COMMENT 'id_booking_room from booking_room table to regroup line of accom',
       `room_service_paid_by` varchar(11) NOT NULL DEFAULT 'TO' COMMENT 'TO/CLIENT',
       `id_tour_operator` int(11) NOT NULL DEFAULT 0 COMMENT 'id from tbltouroperator',
@@ -718,3 +718,11 @@ VALUES
       PRIMARY KEY (`id_booking_room_cost_log`),
       KEY `id_booking_room_cost` (`id_booking_room_cost`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    ALTER TABLE `dbsolis`.`booking_room`
+    ADD COLUMN `id_booking` INT(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from booking table' AFTER `id_booking_room`,
+    ADD KEY `id_bookingfk` (`id_booking`);
+
+    ALTER TABLE `dbsolis`.`booking_room_log`
+    ADD COLUMN `id_booking` INT(11) NOT NULL DEFAULT 0 COMMENT 'id_booking from booking table' AFTER `id_booking_room`,
+    ADD KEY `id_bookingfk` (`id_booking`);
