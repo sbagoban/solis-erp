@@ -114,7 +114,7 @@
 				</div>
 
 				<div class="pager">
-					<button type="button" class="btn btn-primary" id="btn-saveAccom">Save</button>
+					<button type="button" class="btn btn-primary" id="btn-saveCarRental">Save</button>
 					<button type="button" class="btn btn-primary" id="btn-deleteAccom">Delete</button>
 				</div>
 

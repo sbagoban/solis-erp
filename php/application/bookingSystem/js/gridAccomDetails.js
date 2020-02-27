@@ -1,4 +1,5 @@
 function gridAccomDetails(data) {
+    document.getElementById("id_contract").innerHTML = data.CONTRACT_ID;
     var html = '';
     if (data.ROOM_TYPE == 'PERSONS') {
         var  room_charge = 'PERSONS';
@@ -59,6 +60,9 @@ function gridAccomDetails(data) {
 
         // TOTAL_DISCOUNTED_CLAIM_AMOUNT amount
         var TOTAL_DISCOUNTED_CLAIM_AMOUNT = data.SPECIAL_OFFERS.TOTAL_DISCOUNTED_CLAIM_AMOUNT;
+        if (TOTAL_DISCOUNTED_CLAIM_AMOUNT ==  undefined) {
+            TOTAL_DISCOUNTED_CLAIM_AMOUNT = "No Special Offer Applied";
+        }
         html += '<tr>';
             html += '<td colspan="3"> Total discounted claim amount :</td>';
             html += '<td colspan="1">' + TOTAL_DISCOUNTED_CLAIM_AMOUNT  + '</td>';

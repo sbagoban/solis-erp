@@ -45,6 +45,7 @@ try {
     $arr_params_test["arr_pax"] = array();
     $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
     $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"");
+    $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
 
     require_once("../../connector/pdo_connect_main.php");
     require_once("../ratescalculator/_rates_get_contract.php");
@@ -63,6 +64,8 @@ try {
     $con = pdo_con();
 
     $the_contract_id = _rates_reservation_get_contract_id($con, $arr_params_test);
+   // $arr_combinations = _rates_calculator_reservation_gen_room_combination($con, $the_contract_id, $arr_params_test);
+
     $test = array();
     $test = _rates_calculator_reservation_get_cost_claim($con, $the_contract_id, $arr_params_test);
 

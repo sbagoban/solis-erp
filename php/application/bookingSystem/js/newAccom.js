@@ -42,7 +42,7 @@ $(function(){
                         var value = item.value;
                         var txt = item.text;
 
-                        $("#accom_room").append('<option value="' + value + '">'+txt+'</option>');
+                        $("#accom_room").append('<option value="' + value + '"  name="' + txt + '">'+txt+'</option>');
                         $("#accom_room").val('0');
                         $('#accom_room').select2().trigger('change');	
                     }
@@ -71,6 +71,14 @@ $(function(){
 	});
 	// .Hotel Room
     
+    // Client
+	$('#accom_client').change(function(){
+        if ($('#accom_client').val() != 0 )
+            {
+                validationValueAccomContract(id_booking);
+            }
+	});
+    // .Hotel Room
     
 	//Rebate
 	$("#accom_rebate").change(function(){
@@ -229,7 +237,12 @@ function resetClient(){
 
 // Validation Param Accom Contract
 function validationValueAccomContract(id_booking){
-    if ($("#accom_bookingDate").val() != "" && $("#accom_paidBy").val() != "" && $("#accom_payer").val() != 0 && $("#accom_payer").val() != "" && $("#accom_stay").val() != "" && $("#accom_night").val() != "" && $("#accom_hotel").val() != 0 && $("#accom_mealPlan").val() != 0 && $("#accom_room").val() != 0 && $("#accom_room").val() != "" ) 
+    if ($("#accom_bookingDate").val() != "" && $("#accom_paidBy").val() != "" 
+    && $("#accom_payer").val() != 0 && $("#accom_payer").val() != "" 
+    && $("#accom_stay").val() != "" && $("#accom_night").val() != "" 
+    && $("#accom_hotel").val() != 0 && $("#accom_mealPlan").val() != 0 
+    && $("#accom_room").val() != 0 && $("#accom_room").val() != "" 
+    && $("#accom_client").val() != 0 && $("#accom_client").val() != "") 
     {
          loadAccomContract(id_booking);
     }
@@ -291,8 +304,12 @@ function loadAccomTarif(data, max_pax) {
         data : arr_params_resa, 
         dataType: "json",                                                                           
             success : function(data){
-                console.log('sdkfjlg', data);
-                gridAccomDetails(data);
+                if (data.OUTCOME == "OK") {
+                    gridAccomDetails(data);
+                    saveAccomDetails(data);
+                } else if (data == "FAIL_NO_CONTRACT") {
+                    toastr.warning('No Tarif found.');
+                }
             }, 
             error: function (error) {
                 console.log('11Error ${error}');
