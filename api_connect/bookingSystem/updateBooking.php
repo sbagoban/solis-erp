@@ -71,8 +71,13 @@
 
         $con = pdo_con();
         
-		$stmt = $con->prepare("SELECT * FROM booking WHERE id_booking = :id_booking AND active = 1");
-		$stmt->execute(array(":id_booking"=>$id_booking));
+		$stmt = $con->prepare("
+            SELECT * 
+            FROM booking 
+            WHERE id_booking = :id_booking
+            AND id_tour_operator = :id_tour_operator
+            AND active = 1");
+		$stmt->execute(array(":id_booking"=>$id_booking,":id_tour_operator"=>$id_tour_operator));
 		$row_count_c = $stmt->rowCount();
 	
 		if ($row_count_c > 0) {
