@@ -100,7 +100,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div>
 				
-				<!-- <div class="form-group">
+				 <div class="form-group">
 					<label class="col-sm-1 control-label"></label>
 					<div class="col-sm-11">
 						<div class="input-group">
@@ -114,7 +114,7 @@ require_once("../../utils/utilities.php");
 							<span class="input-group-addon">Infant</span>
 						</div>
 					</div>
-				</div> -->
+				</div> 
 				
 				<!-- <div class="form-group">
 					<label class="col-sm-1 control-label">Rebate</label>
