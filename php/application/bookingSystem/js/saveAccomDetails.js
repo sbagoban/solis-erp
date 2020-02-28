@@ -17,6 +17,7 @@ function saveAccomDetails(data) {
         $('#accom_childAmt').val(0);
         $('#accom_InfantAmt').val(0);
     } else if (data.AGE_POLICIES.length == 1) {
+        console.log(numberOfClient, '<<--');
         data.AGE_POLICIES.forEach(element => {
             if (client_age > element.AGEFROM && client_age < element.AGETO) {
                 $('#accom_adultAmt').val(0);

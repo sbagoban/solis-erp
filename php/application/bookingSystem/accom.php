@@ -100,7 +100,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div>
 				
-				<div class="form-group">
+				<!-- <div class="form-group">
 					<label class="col-sm-1 control-label"></label>
 					<div class="col-sm-11">
 						<div class="input-group">
@@ -114,7 +114,7 @@ require_once("../../utils/utilities.php");
 							<span class="input-group-addon">Infant</span>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				
 				<!-- <div class="form-group">
 					<label class="col-sm-1 control-label">Rebate</label>
@@ -290,7 +290,7 @@ require_once("../../utils/utilities.php");
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <div class="panel-heading">
+                    <!-- <div class="panel-heading">
                             <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Accomodation</a>
                     </div>
                     <div id="dossierService" class="panel-collapse collapse">
@@ -310,7 +310,7 @@ require_once("../../utils/utilities.php");
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
