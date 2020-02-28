@@ -88,7 +88,7 @@ function checkForSpos(roomData, bookingDetails) {
 function saveBookingRoomClaim(roomData, bookingDetails) {
     var booking_dept = $('#booking_dept').val();
     var id_tour_operator = $('#accom_payer').val();
-    var room_booking_date = $('#accom_bookingDate').val();
+    var room_booking_date = $('#accom_bookingDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
     var id_hotel = $('#accom_hotel').val();
     var hotelname = $('#accom_hotel').find('option:selected').attr("name");
     var room_details = $('#accom_room').find('option:selected').attr("name");
