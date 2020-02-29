@@ -15,6 +15,7 @@ require_once("../../utils/utilities.php");
 <script src="php/application/bookingSystem/js/phpMailer.js"></script>
 <script src="php/application/bookingSystem/js/gridAccomDetails.js"></script>
 <script src="php/application/bookingSystem/js/saveAccomDetails.js"></script>
+<script src="php/application/bookingSystem/js/tableBookingAccom.js"></script>
 <!-- Accommodation Tab -->
 <div class="tab-pane active in fade" id="accom">
 <!-- left column -->	
@@ -24,9 +25,9 @@ require_once("../../utils/utilities.php");
 			<!-- .box-body -->
 			<div class="box-body">
                 <div class="form-group" style="">
-					<label class="col-sm-2 control-label">ID BOOKING ACCOM</label>
+					<label class="col-sm-2 control-label">ID BOOKING ROOM</label>
 					<div class="col-sm-2">
-						<input type="text" class="form-control bookingAccom" id="id_booking_accom_claim" placeholder="000" readonly>
+						<input type="text" class="form-control bookingAccom" id="id_booking_room" placeholder="000" readonly>
 						<div id="id_contract" style="display:none;">0</div>
 					</div>
 				</div>
@@ -290,7 +291,7 @@ require_once("../../utils/utilities.php");
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <!-- <div class="panel-heading">
+                     <div class="panel-heading">
                             <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Accomodation</a>
                     </div>
                     <div id="dossierService" class="panel-collapse collapse">
@@ -310,7 +311,7 @@ require_once("../../utils/utilities.php");
                                 </tbody>
                             </table>
                         </div>
-                    </div> -->
+                    </div> 
                 </div>
             </div>
         </div>

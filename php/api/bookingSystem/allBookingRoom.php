@@ -26,18 +26,18 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    if (!isset($_GET["id_booking_room"])) {
-        throw new Exception("INVALID ID". $_GET["id_booking_room"]);
+    if (!isset($_GET["id_booking"])) {
+        throw new Exception("INVALID ID". $_GET["id_booking"]);
     }
     
-    $id_booking_room = $_GET["id_booking_room"];
+    $id_booking = $_GET["id_booking"];
     
     require_once("../../connector/pdo_connect_main.php");
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    $qryBookingRoom = $con->prepare("
-            SELECT 
+
+    $sqlBookingRoom = $con->prepare("SELECT 
                 BR_CLAIM.id_booking_room_claim,
                 BR_CLAIM.id_booking,
                 BR_CLAIM.id_booking_room,
@@ -134,15 +134,14 @@ try {
                 tblcurrency C
             WHERE BR_CLAIM.id_booking_room_claim = BR_COST.id_booking_room_claim
             AND BR_CLAIM.id_claim_cur = C.id
-            AND BR_CLAIM.id_booking_room = :id_booking_room
-            AND BR_CLAIM.service_details = 'TARIFF'
+            AND BR_CLAIM.id_booking = :id_booking
             AND BR_CLAIM.active = 1
             AND BR_COST.active = 1");
-    $qryBookingRoom->execute(array(":id_booking_room"=>$id_booking_room));
-    $row_count_c = $qryBookingRoom->rowCount();
+    $sqlBookingRoom->execute(array(":id_booking"=>$id_booking));
+    $row_count_c = $sqlBookingRoom->rowCount();
 
     if ($row_count_c > 0) {
-        while ($row = $qryBookingRoom->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $sqlBookingRoom->fetch(PDO::FETCH_ASSOC)) {
             $bookingRoomDetails[] = array(
                 'id_booking_room_claim'                                => $row['id_booking_room_claim'],
                 'id_booking'                                                    => $row['id_booking'],
@@ -169,7 +168,7 @@ try {
                 'id_service_tax'                                                 => $row['id_service_tax'],
                 'tax_value'                                                        => $row['tax_value'],
                 'id_claim_cur'                                                    => $row['id_claim_cur'],
-                'currency_code'                                                => $row['room_teen_amt'],
+                'currency_code'                                                => $row['currency_code'],
                 'id_claim_cur'                                                     => $row['id_claim_cur'],
                 'room_adult_claim_exTAX'                                => $row['room_adult_claim_exTAX'],
                 'room_adult_claim'                                            => $row['room_adult_claim'],
@@ -239,7 +238,9 @@ try {
         }    
         $myData = $bookingRoomDetails;
         echo json_encode($myData);
-    } else {
+    } 
+    else 
+    {
         //echo "NO DATA";    
         $bookingRoomDetails[] = array(
                 'id_booking_room_claim'                                => '-',
@@ -334,9 +335,10 @@ try {
                 'created_name'                                           =>  '-',
                 'OUTCOME'                                               => 'NO DATA'
         );
+        $myData = $bookingRoomDetails;
+        echo json_encode($myData);
     }
-} catch (Exception $ex) {
+}catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 ?>
-

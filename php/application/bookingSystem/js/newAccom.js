@@ -174,6 +174,7 @@ function newAccom(dataDetails){
 	});
     // .Booking Date
 	loadTourOperator(dataDetails);
+    allBookingAccom(dataDetails.id_booking)
 }
 // .New Activity
 
@@ -232,6 +233,7 @@ function resetClient(){
             $("#accom_childAmt").val(0);
             $("#accom_infantAmt").val(0);
         }
+    
 }
 //.Reset Client
 
