@@ -15,16 +15,15 @@ try {
 
     session_start();
     
-// TO BE UPDATED
-    $_SESSION["solis_userid"] = 1;
-    $_SESSION["id_tour_operator"] = 1;
-    $_SESSION["id_country"] = 979;
-// TO BE UPDATED
+// // TO BE UPDATED
+//     $_SESSION["solis_userid"] = 1;
+//     $_SESSION["id_tour_operator"] = 1;
+//     $_SESSION["id_country"] = 979;
+// // TO BE UPDATED
     
     if (!isset($_SESSION["solis_userid"])) {
         throw new Exception("NO LOG IN!");
-    }
-    
+    }    
     if (!isset($_GET["t"])) {
         throw new Exception("INVALID TOKEN");
     }
@@ -38,7 +37,9 @@ try {
     
     $id_booking = $_GET["id_booking"];
     
-    require_once("../../php/connector/pdo_connect_main.php");
+	require_once("../../php/connector/pdo_connect_main.php");
+	require_once("../../php/connector/db_pdo.php");
+	require_once("../../php/connector/data_connector.php");
 
     $con = pdo_con();
     $stmt = $con->prepare("SELECT 

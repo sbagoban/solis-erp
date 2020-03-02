@@ -16,9 +16,9 @@ try {
     session_start();
     
 // TO BE UPDATED
-    $_SESSION["solis_userid"] = 1;
-    $_SESSION["id_tour_operator"] = 1;
-    $_SESSION["id_country"] = 979;
+    // $_SESSION["solis_userid"] = 1;
+    // $_SESSION["id_tour_operator"] = 1;
+    // $_SESSION["id_country"] = 979;
 // TO BE UPDATED
     
     if (!isset($_SESSION["solis_userid"])) {

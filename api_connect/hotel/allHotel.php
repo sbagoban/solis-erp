@@ -1,17 +1,10 @@
 <?php
 
 session_start();
-    
-// TO BE UPDATED
-    $_SESSION["solis_userid"] = 1;
-    $_SESSION["id_tour_operator"] = 1;
-    $_SESSION["id_country"] = 979;
-// TO BE UPDATED
 
 if (!isset($_SESSION["solis_userid"])) {
     die("NO LOG IN!");
 }
-
 if (!isset($_GET["t"])) {
     die("INVALID TOKEN");
 }
@@ -20,6 +13,8 @@ if ($_GET["t"] != $_SESSION["token"]) {
 }
 
 require_once("../../php/connector/pdo_connect_main.php");
+require_once("../../php/connector/db_pdo.php");
+require_once("../../php/connector/data_connector.php");
 
 $con = pdo_con();
 
