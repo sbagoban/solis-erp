@@ -230,7 +230,7 @@ try {
         ":room_child_cost_after_rebate" => $room_child_cost_after_rebate,
         ":room_infant_cost_rebate" => $room_infant_cost_rebate,
         ":room_infant_cost_after_rebate" => $room_infant_cost_after_rebate,
-        ":room_total_cost_after_rebate" => $room_total_cost_after_rebate,
+        ":room_total_cost_after_rebate" => $room_total_cost, // TO be update
         // ":room_status" => $room_status,
         ":created_by" => $created_by,
         ":created_name" => $created_name

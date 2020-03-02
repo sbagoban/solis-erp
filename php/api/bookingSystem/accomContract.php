@@ -43,9 +43,19 @@ try {
     $arr_params_test["wedding_interested"] = $_POST["wedding_interested"];
 
     $arr_params_test["arr_pax"] = array();
+
+    // CLIENT ACTIVITY
+//     $data = $arr_params_test["arr_pax"];
+// echo $data;
+//     // foreach($data as $d) {
+//     //     $arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+//     //     $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
+//     // }
     $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
     $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"");
-    $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
+    // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>35,"bride_groom"=>"");
+    // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
+    // $arr_params_test["arr_pax"][] = array("count"=>6,"age"=>17,"bride_groom"=>"");
 
     require_once("../../connector/pdo_connect_main.php");
     require_once("../ratescalculator/_rates_get_contract.php");

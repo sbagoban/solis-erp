@@ -74,6 +74,7 @@ try {
     $room_remarks = $_POST["room_remarks"];
     $room_internal_remarks = $_POST["room_internal_remarks"];
     $room_status = $_POST["room_status"];
+    $booking_client = $_POST["booking_client"];
     
     // Session User details
     $created_by = $_SESSION["solis_userid"];
@@ -233,7 +234,7 @@ try {
         ":room_child_claim_after_rebate" => $room_child_claim_after_rebate,
         ":room_infant_claim_rebate" => $room_infant_claim_rebate,
         ":room_infant_claim_after_rebate" => $room_infant_claim_after_rebate,
-        ":room_total_claim_after_rebate" => $room_total_claim_after_rebate,
+        ":room_total_claim_after_rebate" => $room_total_claim, // To be update
         ":room_remarks" => $room_remarks,
         ":room_internal_remarks" => $room_internal_remarks,
         ":room_status" => $room_status,
@@ -242,6 +243,17 @@ try {
     ));
     
     $id_booking_room_claim = $con->lastInsertId();
+
+    // CLIENT ACTIVITY
+    $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room_claim, id_booking) 
+    VALUES (:booking_client, :id_booking_room_claim, :id_booking)";
+
+    $stmt = $con->prepare($sqlClientRoom);
+    $data = $booking_client;
+
+    foreach($data as $d) {
+        $stmt->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+    }
     
     $sqlSaveRoomClaimLog= "INSERT INTO booking_room_claim_log
             (
