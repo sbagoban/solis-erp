@@ -101,7 +101,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div>
 				
-				 <div class="form-group">
+				 <div class="form-group" style="display: none">
 					<label class="col-sm-1 control-label"></label>
 					<div class="col-sm-11">
 						<div class="input-group">
