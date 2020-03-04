@@ -26,111 +26,101 @@ try {
         throw new Exception("INVALID TOKEN");
     }
     
-    if (!isset($_GET["id_booking_activity_claim"])) {
-        throw new Exception("INVALID ID". $_GET["id_booking_activity_claim"]);
+    if (!isset($_GET["id_booking"])) {
+        throw new Exception("INVALID ID". $_GET["id_booking"]);
     }
     
-    $id_booking_activity_claim = $_GET["id_booking_activity_claim"];
+    $id_booking = $_GET["id_booking"];
     
-    require_once("../../connector/pdo_connect_main.php");
-    require_once("../../utils/utilities.php");
+    require_once("../../php/connector/pdo_connect_main.php");
 
     $con = pdo_con();
-    $qryBookingActivity = $con->prepare("SELECT 
-                                                                    BA_CLAIM.id_booking_activity_claim,
-                                                                    BA_CLAIM.id_booking,
-                                                                    BA_CLAIM.activity_service_paid_by,
-                                                                    BA_CLAIM.id_tour_operator,
-                                                                    BA_CLAIM.id_client,
-                                                                    BA_CLAIM.activity_date,
-                                                                    BA_CLAIM.activity_time,
-                                                                    BA_CLAIM.activity_booking_date,
-                                                                    BA_CLAIM.id_product,
-                                                                    P.product_name,
-                                                                    BA_CLAIM.id_product_service,
-                                                                    PS.service_name,
-                                                                    BA_CLAIM.activity_name,
-                                                                    BA_CLAIM.activity_duration,
-                                                                    BA_CLAIM.id_hotel,
-                                                                    BA_CLAIM.hotelname,
-                                                                    BA_CLAIM.activity_pickup_time,
-                                                                    BA_CLAIM.activity_adult_amt,
-                                                                    BA_CLAIM.activity_teen_amt,
-                                                                    BA_CLAIM.activity_child_amt,
-                                                                    BA_CLAIM.activity_infant_amt,
-                                                                    BA_CLAIM.activity_total_pax,
-                                                                    BA_CLAIM.id_product_service_claim,
-                                                                    BA_CLAIM.id_product_service_claim_cur,
-                                                                    C.currency_code,
-                                                                    BA_CLAIM.id_dept,
-                                                                    BA_CLAIM.activity_charge,
-                                                                    BA_CLAIM.id_service_tax,
-                                                                    BA_CLAIM.tax_value,
-                                                                    BA_CLAIM.activity_adult_claim_exTAX,
-                                                                    BA_CLAIM.activity_adult_claim,
-                                                                    BA_CLAIM.activity_teen_claim_exTAX,
-                                                                    BA_CLAIM.activity_teen_claim,
-                                                                    BA_CLAIM.activity_child_claim_exTAX,
-                                                                    BA_CLAIM.activity_child_claim,
-                                                                    BA_CLAIM.activity_infant_claim_exTAX,
-                                                                    BA_CLAIM.activity_infant_claim,
-                                                                    BA_CLAIM.activity_total_claim_exTAX,
-                                                                    BA_CLAIM.activity_total_claim,
-                                                                    BA_CLAIM.activity_rebate_claim_type,
-                                                                    BA_COST.activity_rebate_cost_type,
-                                                                    BA_CLAIM.activity_rebate_claim_approve_by,
-                                                                    BA_COST.activity_rebate_cost_approve_by,
-                                                                    BA_CLAIM.activity_rebate_claim_percentage,
-                                                                    BA_COST.activity_rebate_cost_percentage,
-                                                                    BA_CLAIM.activity_adult_claim_rebate,
-                                                                    BA_COST.activity_adult_cost_rebate,
-                                                                    BA_CLAIM.activity_adult_claim_after_rebate_exTAX,
-                                                                    BA_CLAIM.activity_adult_claim_after_rebate,
-                                                                    BA_CLAIM.activity_teen_claim_rebate,
-                                                                    BA_COST.activity_teen_cost_rebate,
-                                                                    BA_CLAIM.activity_teen_claim_after_rebate,
-                                                                    BA_CLAIM.activity_teen_claim_after_rebate_exTAX,
-                                                                    BA_CLAIM.activity_child_claim_rebate,
-                                                                    BA_COST.activity_child_cost_rebate,
-                                                                    BA_CLAIM.activity_child_claim_after_rebate,
-                                                                    BA_CLAIM.activity_child_claim_after_rebate_exTAX,
-                                                                    BA_CLAIM.activity_infant_claim_rebate,
-                                                                    BA_COST.activity_infant_cost_rebate,
-                                                                    BA_CLAIM.activity_infant_claim_after_rebate,
-                                                                    BA_CLAIM.activity_infant_claim_after_rebate_exTAX,
-                                                                    BA_CLAIM.activity_total_claim_after_rebate_exTAX,
-                                                                    BA_CLAIM.activity_total_claim_after_rebate,
-                                                                    BA_CLAIM.activity_client_room_no,
-                                                                    BA_CLAIM.id_language,
-                                                                    BA_CLAIM.id_rep,
-                                                                    BA_CLAIM.activity_voucher_no,
-                                                                    BA_CLAIM.activity_remarks,
-                                                                    BA_CLAIM.activity_internal_remarks,
-                                                                    BA_CLAIM.activity_invoice_no,
-                                                                    BA_CLAIM.activity_invoiced_date,
-                                                                    BA_CLAIM.activity_close,
-                                                                    BA_CLAIM.activity_close_on,
-                                                                    BA_CLAIM.activity_status,
-                                                                    BA_CLAIM.created_by,
-                                                                    BA_CLAIM.created_name
-                                                                FROM 
-                                                                    booking_activity_claim BA_CLAIM,
-                                                                    booking_activity_cost BA_COST,
-                                                                    product P,
-                                                                    product_service PS,
-                                                                    tblcurrency C
-                                                                WHERE BA_CLAIM.id_product = P.id_product
-                                                                AND BA_CLAIM.id_product_service = PS.id_product_service
-                                                                AND BA_CLAIM.id_product_service_claim_cur = C.id
-                                                                AND BA_CLAIM.id_booking_activity_claim = BA_COST.id_booking_activity_claim
-                                                                AND BA_CLAIM.id_booking_activity_claim = :id_booking_activity_claim
-                                                                AND BA_CLAIM.active = 1
-                                                                AND BA_COST.active = 1");
-    $qryBookingActivity->execute(array(":id_booking_activity_claim"=>$id_booking_activity_claim));
-    $row_count_c = $qryBookingActivity->rowCount();
+
+    $sqlBookingActivity = $con->prepare("SELECT 
+                                                                BA_CLAIM.id_booking_activity_claim,
+                                                                BA_CLAIM.id_booking,
+                                                                BA_CLAIM.activity_service_paid_by,
+                                                                BA_CLAIM.id_tour_operator,
+                                                                BA_CLAIM.id_client,
+                                                                BA_CLAIM.activity_date,
+                                                                BA_CLAIM.activity_time,
+                                                                BA_CLAIM.activity_booking_date,
+                                                                BA_CLAIM.id_product,
+                                                                P.product_name,
+                                                                BA_CLAIM.id_product_service,
+                                                                PS.service_name,
+                                                                BA_CLAIM.activity_name,
+                                                                BA_CLAIM.activity_duration,
+                                                                BA_CLAIM.id_hotel,
+                                                                BA_CLAIM.hotelname,
+                                                                BA_CLAIM.activity_pickup_time,
+                                                                BA_CLAIM.activity_adult_amt,
+                                                                BA_CLAIM.activity_teen_amt,
+                                                                BA_CLAIM.activity_child_amt,
+                                                                BA_CLAIM.activity_infant_amt,
+                                                                BA_CLAIM.activity_total_pax,
+                                                                BA_CLAIM.id_product_service_claim,
+                                                                BA_CLAIM.id_product_service_claim_cur,
+                                                                C.currency_code,
+                                                                BA_CLAIM.id_dept,
+                                                                BA_CLAIM.activity_charge,
+                                                                BA_CLAIM.id_service_tax,
+                                                                BA_CLAIM.tax_value,
+                                                                BA_CLAIM.activity_adult_claim_exTAX,
+                                                                BA_CLAIM.activity_adult_claim,
+                                                                BA_CLAIM.activity_teen_claim_exTAX,
+                                                                BA_CLAIM.activity_teen_claim,
+                                                                BA_CLAIM.activity_child_claim_exTAX,
+                                                                BA_CLAIM.activity_child_claim,
+                                                                BA_CLAIM.activity_infant_claim_exTAX,
+                                                                BA_CLAIM.activity_infant_claim,
+                                                                BA_CLAIM.activity_total_claim_exTAX,
+                                                                BA_CLAIM.activity_total_claim,
+                                                                BA_CLAIM.activity_rebate_claim_type,
+                                                                BA_CLAIM.activity_rebate_claim_approve_by,
+                                                                BA_CLAIM.activity_rebate_claim_percentage,
+                                                                BA_CLAIM.activity_adult_claim_rebate,
+                                                                BA_CLAIM.activity_adult_claim_after_rebate_exTAX,
+                                                                BA_CLAIM.activity_adult_claim_after_rebate,
+                                                                BA_CLAIM.activity_teen_claim_rebate,
+                                                                BA_CLAIM.activity_teen_claim_after_rebate,
+                                                                BA_CLAIM.activity_teen_claim_after_rebate_exTAX,
+                                                                BA_CLAIM.activity_child_claim_rebate,
+                                                                BA_CLAIM.activity_child_claim_after_rebate,
+                                                                BA_CLAIM.activity_child_claim_after_rebate_exTAX,
+                                                                BA_CLAIM.activity_infant_claim_rebate,
+                                                                BA_CLAIM.activity_infant_claim_after_rebate,
+                                                                BA_CLAIM.activity_infant_claim_after_rebate_exTAX,
+                                                                BA_CLAIM.activity_total_claim_after_rebate_exTAX,
+                                                                BA_CLAIM.activity_total_claim_after_rebate,
+                                                                BA_CLAIM.activity_client_room_no,
+                                                                BA_CLAIM.id_language,
+                                                                BA_CLAIM.id_rep,
+                                                                BA_CLAIM.activity_voucher_no,
+                                                                BA_CLAIM.activity_remarks,
+                                                                BA_CLAIM.activity_internal_remarks,
+                                                                BA_CLAIM.activity_invoice_no,
+                                                                BA_CLAIM.activity_invoiced_date,
+                                                                BA_CLAIM.activity_close,
+                                                                BA_CLAIM.activity_close_on,
+                                                                BA_CLAIM.activity_status,
+                                                                BA_CLAIM.created_by,
+                                                                BA_CLAIM.created_name
+                                                            FROM 
+                                                                booking_activity_claim BA_CLAIM,
+                                                                product P,
+                                                                product_service PS,
+                                                                tblcurrency C
+                                                            WHERE BA_CLAIM.id_product = P.id_product
+                                                            AND BA_CLAIM.id_product_service = PS.id_product_service
+                                                            AND BA_CLAIM.id_product_service_claim_cur = C.id
+                                                            AND BA_CLAIM.id_booking = :id_booking
+                                                            AND BA_CLAIM.active = 1");
+    $sqlBookingActivity->execute(array(":id_booking"=>$id_booking));
+    $row_count_c = $sqlBookingActivity->rowCount();
 
     if ($row_count_c > 0) {
-        while ($row = $qryBookingActivity->fetch(PDO::FETCH_ASSOC)) {
+        while ($row = $sqlBookingActivity->fetch(PDO::FETCH_ASSOC)) {
             $bookingActivityDetails[] = array(
                 'id_booking_activity_claim'   => $row['id_booking_activity_claim'],
                 'id_booking'   => $row['id_booking'],
@@ -172,25 +162,18 @@ try {
                 'activity_total_claim_exTAX'   => $row['activity_total_claim_exTAX'],
                 'activity_total_claim'   => $row['activity_total_claim'],
                 'activity_rebate_claim_type'   => $row['activity_rebate_claim_type'],
-                'activity_rebate_cost_type'   => $row['activity_rebate_cost_type'],
                 'activity_rebate_claim_approve_by'   => $row['activity_rebate_claim_approve_by'],
-                'activity_rebate_cost_approve_by'   => $row['activity_rebate_cost_approve_by'],
                 'activity_rebate_claim_percentage'   => $row['activity_rebate_claim_percentage'],
-                'activity_rebate_cost_percentage'   => $row['activity_rebate_cost_percentage'],
                 'activity_adult_claim_rebate'   => $row['activity_adult_claim_rebate'],
-                'activity_adult_cost_rebate'   => $row['activity_adult_cost_rebate'],
                 'activity_adult_claim_after_rebate_exTAX'   => $row['activity_adult_claim_after_rebate_exTAX'],
                 'activity_adult_claim_after_rebate'   => $row['activity_adult_claim_after_rebate'],
                 'activity_teen_claim_rebate'   => $row['activity_teen_claim_rebate'],
-                'activity_teen_cost_rebate'   => $row['activity_teen_cost_rebate'],
                 'activity_teen_claim_after_rebate'   => $row['activity_teen_claim_after_rebate'],
                 'activity_teen_claim_after_rebate_exTAX'   => $row['activity_teen_claim_after_rebate_exTAX'],
                 'activity_child_claim_rebate'   => $row['activity_child_claim_rebate'],
-                'activity_child_cost_rebate'   => $row['activity_child_cost_rebate'],
                 'activity_child_claim_after_rebate'   => $row['activity_child_claim_after_rebate'],
                 'activity_child_claim_after_rebate_exTAX'   => $row['activity_child_claim_after_rebate_exTAX'],
                 'activity_infant_claim_rebate'   => $row['activity_infant_claim_rebate'],
-                'activity_infant_cost_rebate'   => $row['activity_infant_cost_rebate'],
                 'activity_infant_claim_after_rebate'   => $row['activity_infant_claim_after_rebate'],
                 'activity_infant_claim_after_rebate_exTAX'   => $row['activity_infant_claim_after_rebate_exTAX'],
                 'activity_total_claim_after_rebate_exTAX'   => $row['activity_total_claim_after_rebate_exTAX'],
@@ -213,7 +196,9 @@ try {
         }    
         $myData = $bookingActivityDetails;
         echo json_encode($myData);
-    } else {
+    } 
+    else 
+    {
         //echo "NO DATA";    
         $bookingActivityDetails[] = array(
                 'id_booking_activity_claim'   => '-',
@@ -297,9 +282,10 @@ try {
                 'currency_code' => '-',
                 'OUTCOME' => 'NO DATA'
         );
+        $myData = $bookingActivityDetails;
+        echo json_encode($myData);
     }
-} catch (Exception $ex) {
+}catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 ?>
-

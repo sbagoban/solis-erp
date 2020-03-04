@@ -75,7 +75,6 @@ try {
             $id_product_service_claim = $row['id_product_service_claim'];
             $id_product_service_claim_cur = $row['id_product_service_claim_cur'];
             $id_dept = $row['id_dept'];
-            $activity_claim_dept = $row['activity_claim_dept'];
             $activity_charge = $row['activity_charge'];
             $id_service_tax = $row['id_service_tax'];
             $tax_value = $row['tax_value'];
@@ -224,7 +223,6 @@ try {
                     id_product_service_claim,
                     id_product_service_claim_cur,
                     id_dept,
-                    activity_claim_dept,
                     activity_charge,
                     id_service_tax,
                     tax_value,
@@ -296,7 +294,6 @@ try {
                     :id_product_service_claim,
                     :id_product_service_claim_cur,
                     :id_dept,
-                    :activity_claim_dept,
                     :activity_charge,
                     :id_service_tax,
                     :tax_value,
@@ -369,7 +366,6 @@ try {
                     "id_product_service_claim" => $id_product_service_claim,
                     "id_product_service_claim_cur" => $id_product_service_claim_cur,
                     "id_dept" => $id_dept,
-                    "activity_claim_dept" => $activity_claim_dept,
                     "activity_charge" => $activity_charge,
                     "id_service_tax" => $id_service_tax,
                     "tax_value" => $tax_value,
