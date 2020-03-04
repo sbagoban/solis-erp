@@ -24,15 +24,15 @@ try {
         throw new Exception("INVALID TOKEN");
     }
 
-    require_once("../../connector/pdo_connect_main.php");
+    require_once("../../php/connector/pdo_connect_main.php");
 	
     $con = pdo_con();
     
     $id_booking_transfer_claim = $_POST["id_booking_transfer_claim"];
     $id_booking = $_POST["id_booking"];
-    $transfer_service_paid_by = trim($_POST["transfer_service_paid_by"]);
-    $id_tour_operator = $_POST["id_tour_operator"];
-    $id_client = $_POST["id_client"];
+    $transfer_service_paid_by = 'TO';
+    $id_tour_operator = $_SESSION["id_tour_operator"];
+    $id_client = 0;
     $transfer_arrivalDate = trim($_POST["transfer_arrivalDate"]);
     $transfer_arrivalFlight = trim($_POST["transfer_arrivalFlight"]);
     $transfer_arrivalTime = trim($_POST["transfer_arrivalTime"]);
@@ -101,20 +101,26 @@ try {
     $id_product_service_arr_claim = trim($_POST["id_product_service_arr_claim"]);
     $id_product_service_dep_claim = trim($_POST["id_product_service_dep_claim"]);
     
+    // Booking Details
     $qry_bookingDetails = $con->prepare("
-		SELECT * FROM booking WHERE id_booking = :id_booking AND active =1");
+		SELECT * 
+        FROM booking 
+        WHERE id_booking = :id_booking 
+        AND id_tour_operator = :id_tour_operator
+        AND active =1");
 
-	$qry_bookingDetails->execute(array(":id_booking"=>$id_booking));
+	$qry_bookingDetails->execute(array(":id_booking"=>$id_booking, ":id_tour_operator"=>$id_tour_operator));
 
 	$row_count_bookingDetails = $qry_bookingDetails->rowCount();
-    
+	
 	if ($row_count_bookingDetails > 0) 
 	{
-		while ($rowDept = $qry_bookingDetails->fetch(PDO::FETCH_ASSOC))
+		while ($row = $qry_bookingDetails->fetch(PDO::FETCH_ASSOC))
 		{
-			$id_dept = $rowDept["id_dept"];
+			$id_dept = $row["id_dept"];
 		}
 	}
+    
     
     $qry_TAXDetails = $con->prepare("
         SELECT * 
@@ -135,14 +141,9 @@ try {
             $tax_value = $rowTAX["tax_value"];
         }
     }
-    
-    $transfer_rebate_claim_type = trim($_POST["transfer_rebateClaim"]);
-    $transfer_rebate_claim_approve_by = trim($_POST["transfer_rebateClaimApproveBy"]);
-    $transfer_rebate_claim_percentage = trim($_POST["transfer_claimPercentageRebate"]);
-    
     $transfer_remarks = trim($_POST["transfer_remarks"]);
-    $transfer_internal_remarks = trim($_POST["transfer_internal_remarks"]);
-    $transfer_status = trim($_POST["transfer_status"]);
+    $transfer_internal_remarks = '';
+    $transfer_status = 'PENDING';
     $transfer_client = $_POST["transfer_client"]; 
     
      if($transfer_service_paid_by == "TO")
@@ -295,61 +296,20 @@ try {
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
                         
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX  = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX  = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                            
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX)  + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -423,63 +383,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost) * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_childt_cost) * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infantt_cost) * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 else
@@ -548,60 +466,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -669,62 +548,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate= trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost)* ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $adult_rebate_markup_exTAX + $transfer_adult_cost;
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate= trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_child_cost)* ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $child_rebate_markup_exTAX + $transfer_child_cost;
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate= trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infant_cost)* ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $infant_rebate_markup_exTAX + $transfer_infant_cost;
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) +  ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 
@@ -1255,61 +1093,20 @@ try {
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
                         
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX  = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX  = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                            
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX)  + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -1383,63 +1180,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost) * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_childt_cost) * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infantt_cost) * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 else
@@ -1508,60 +1263,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -1629,62 +1345,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate= trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost)* ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $adult_rebate_markup_exTAX + $transfer_adult_cost;
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate= trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_child_cost)* ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $child_rebate_markup_exTAX + $transfer_child_cost;
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate= trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infant_cost)* ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $infant_rebate_markup_exTAX + $transfer_infant_cost;
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) +  ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 
@@ -2216,61 +1891,20 @@ try {
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
                         
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX  = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX  = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                            
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX)  + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -2344,63 +1978,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost) * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_childt_cost) * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infantt_cost) * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 else
@@ -2469,60 +2061,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -2590,62 +2143,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate= trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost)* ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $adult_rebate_markup_exTAX + $transfer_adult_cost;
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate= trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_child_cost)* ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $child_rebate_markup_exTAX + $transfer_child_cost;
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate= trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infant_cost)* ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $infant_rebate_markup_exTAX + $transfer_infant_cost;
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) +  ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 
@@ -3177,61 +2689,20 @@ try {
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
                         
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX  = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX  = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                            
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX)  + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim_after_rebate_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -3305,63 +2776,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost) * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_childt_cost) * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infantt_cost) * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate = 0;
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 else
@@ -3430,60 +2859,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate = trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = $transfer_adult_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate = trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = $transfer_child_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate = trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_infant_claim_rebate !=0)
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = $transfer_infant_claim_rebate * ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_rebate;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
                         
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) + ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                     else
                     {
@@ -3551,62 +2941,21 @@ try {
                         }
                         $id_product_service_cost = $rowTransfer["id_product_service_cost"];
                         $id_product_service_cost_cur = $rowTransfer["id_product_service_cost_cur"]; 
-                        $transfer_adult_claim_rebate= trim($_POST["transfer_adult_claim_after_rebate"]);
-                        if($transfer_adult_claim_rebate !=0)
-                        {
-                            $adult_rebate_markup_exTAX = ($transfer_adult_claim_rebate - $transfer_adult_cost)* ((100 - $tax_value)/100);
-                            $transfer_adult_claim_after_rebate_exTAX = $adult_rebate_markup_exTAX + $transfer_adult_cost;
-                            $transfer_adult_claim_after_rebate = $transfer_adult_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_adult_claim_after_rebate_exTAX = 0;
-                            $transfer_adult_claim_after_rebate = 0;
-                        }
-                        $transfer_child_claim_rebate= trim($_POST["transfer_child_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $child_rebate_markup_exTAX = ($transfer_child_claim_rebate - $transfer_child_cost)* ((100 - $tax_value)/100);
-                            $transfer_child_claim_after_rebate_exTAX = $child_rebate_markup_exTAX + $transfer_child_cost;
-                            $transfer_child_claim_after_rebate = $transfer_child_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_child_claim_after_rebate_exTAX = 0;
-                            $transfer_child_claim_after_rebate = 0;
-                        }
-                        $transfer_infant_claim_rebate= trim($_POST["transfer_infant_claim_after_rebate"]);
-                        if($transfer_child_claim_rebate !=0)
-                        {
-                            $infant_rebate_markup_exTAX = ($transfer_infant_claim_rebate - $transfer_infant_cost)* ((100 - $tax_value)/100);
-                            $transfer_infant_claim_after_rebate_exTAX = $infant_rebate_markup_exTAX + $transfer_infant_cost;
-                            $transfer_infant_claim_after_rebate = $transfer_infant_claim_after_rebate_exTAX;
-                        }
-                        else
-                        {
-                            $transfer_infant_claim_after_rebate_exTAX = 0;
-                            $transfer_infant_claim_after_rebate = 0;
-                        }
-                        if ($transfer_rebate_claim_type == 'Percentage')
-                        {
-                            $transfer_total_claim_after_rebate = $transfer_total_claim * ((100-$transfer_rebate_claim_percentage)/100);
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX * ((100-$transfer_rebate_claim_percentage)/100);
-                        }
-                        else if ($transfer_rebate_claim_type == 'Fixed Tariff')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = (($transfer_adult_amt * $transfer_adult_claim_after_rebate_exTAX) +  ($transfer_child_amt * $transfer_child_claim_after_rebate_exTAX) + ($transfer_infant_amt * $transfer_infant_claim_after_rebate_exTAX));
-                            $transfer_total_claim_after_rebate = (($transfer_adult_amt * $transfer_adult_claim_after_rebate) + ($transfer_child_amt * $transfer_child_claim_after_rebate) +($transfer_infant_amt * $transfer_infant_claim_after_rebate));
-                        }
-                        else if ($transfer_rebate_claim_type == 'FOC')
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = 0;
-                            $transfer_total_claim_after_rebate = 0;
-                        }
-                        else 
-                        {
-                            $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
-                            $transfer_total_claim_after_rebate = $transfer_total_claim;
-                        }
+                        
+                        $transfer_rebate_claim_type = 'NONE';
+                        $transfer_rebate_claim_approve_by = '0';
+                        $transfer_rebate_claim_percentage = '0';
+                        $transfer_adult_claim_rebate = 0;
+                        $transfer_adult_claim_after_rebate_exTAX = 0;
+                        $transfer_adult_claim_after_rebate = 0;
+                        $transfer_child_claim_rebate = 0;
+                        $transfer_child_claim_after_rebate_exTAX = 0;
+                        $transfer_child_claim_after_rebate = 0;
+                        $transfer_infant_claim_rebate = 0;
+                        $transfer_infant_claim_after_rebate_exTAX = 0;
+                        $transfer_infant_claim_after_rebate = 0;
+                        $transfer_total_claim_after_rebate_exTAX = $transfer_total_claim_exTAX;
+                        $transfer_total_claim_after_rebate = $transfer_total_claim;
                     }
                 }
                 

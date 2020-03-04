@@ -54,6 +54,7 @@ function deleteTransfer(transferData) {
                             allBookingTransfer(data.id_booking);
                             $("#dossierService").collapse('show');
                             $("#serviceDetails").collapse('hide');
+                            resetClient();
                         }
                      else if(objReservationTransfer.action == 'UPDATE')
                         {

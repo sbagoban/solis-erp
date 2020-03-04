@@ -12,7 +12,7 @@
 		<form class="form-horizontal">
 			<!-- .box-body -->
 			<div class="box-body">
-                <div class="form-group" style="">
+                <div class="form-group" style="display: none">
 					<label class="col-sm-2 control-label">ID BOOKING TRANSFER</label>
 					<div class="col-sm-2">
 						<input type="text" class="form-control bookingTransfer" id="id_booking_transfer_claim" placeholder="000" readonly>

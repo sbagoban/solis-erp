@@ -15,6 +15,12 @@ try {
 
     session_start();
     
+// TO BE UPDATED
+    $_SESSION["solis_userid"] = 1;
+    $_SESSION["id_tour_operator"] = 1;
+    $_SESSION["id_country"] = 979;
+// TO BE UPDATED
+    
     if (!isset($_SESSION["solis_userid"])) {
         throw new Exception("NO LOG IN!");
     }
@@ -32,8 +38,7 @@ try {
     
     $id_booking_transfer_claim = $_GET["id_booking_transfer_claim"];
     
-    require_once("../../connector/pdo_connect_main.php");
-    require_once("../../utils/utilities.php");
+    require_once("../../php/connector/pdo_connect_main.php");
 
     $con = pdo_con();
     $qryBookingTransfer = $con->prepare("SELECT 
