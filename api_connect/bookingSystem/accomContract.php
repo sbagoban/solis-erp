@@ -57,19 +57,20 @@ try {
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>6,"age"=>17,"bride_groom"=>"");
 
-    require_once("../../connector/pdo_connect_main.php");
-    require_once("../ratescalculator/_rates_get_contract.php");
-    require_once("../ratescalculator/_rates_calculator.php");
-    require_once("../hotelspecialoffers/_spo.php");
-    require_once("../hotelspecialoffers/_spo_taxcommi.php");
-    require_once("../hotelcontracts/_contract_capacityarr.php");
-    require_once("../hotelcontracts/_contract_exchangerates.php");
-    require_once("../hotelcontracts/_contract_calculatesp.php");
-    require_once("../hotelcontracts/_contract_taxcommi.php");
-    require_once("../hotelcontracts/_contract_combinations_rooms.php");
-    require_once("../../globalvars/globalvars.php");
+    require_once("../../php/connector/pdo_connect_main.php");
 
-    require_once("../../utils/utilities.php");
+    require_once("../room_tarif/ratescalculator/_rates_get_contract.php");
+    require_once("../room_tarif/ratescalculator/_rates_calculator.php");
+    require_once("../room_tarif/hotelspecialoffers/_spo.php");
+    require_once("../room_tarif/hotelspecialoffers/_spo_taxcommi.php");
+    require_once("../room_tarif/hotelcontracts/_contract_capacityarr.php");
+    require_once("../room_tarif/hotelcontracts/_contract_exchangerates.php");
+    require_once("../room_tarif/hotelcontracts/_contract_calculatesp.php");
+    require_once("../room_tarif/hotelcontracts/_contract_taxcommi.php");
+    require_once("../room_tarif/hotelcontracts/_contract_combinations_rooms.php");
+    require_once("../../php/globalvars/globalvars.php");
+
+    require_once("../../php/utils/utilities.php");
 
     $con = pdo_con();
 

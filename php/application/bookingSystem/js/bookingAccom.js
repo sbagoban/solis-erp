@@ -67,9 +67,9 @@ $(function(){
 			$("#accom_hotel").empty();
 			$("#accom_hotel").append('<option value="0">None</option>');
 			$.each(data, function (key, val) {
-			$("#accom_hotel").append('<option value="' + val.id + '"  name="' + val.hotelname + '">'+val.hotelname+'</option>');
-			$("#accom_hotel").val('0');
-			$('#accom_hotel').select2().trigger('change');	
+				$("#accom_hotel").append('<option value="' + val.id + '"  name="' + val.hotelname + '">'+val.hotelname+'</option>');
+				$("#accom_hotel").val('0');
+				$('#accom_hotel').select2().trigger('change');	
 			}); 
 
 		},
@@ -128,7 +128,7 @@ $(function(){
 	//.Client
     
     //Approved Discount List
-	const url_search_discountUserList = "php/api/users/approveDiscountUser.php?t=" + encodeURIComponent(global_token);
+	const url_search_discountUserList = "php/api/users/approverebateUser.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_discountUserList,
 		method: "POST",

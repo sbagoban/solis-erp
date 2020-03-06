@@ -23,7 +23,7 @@ try {
         throw new Exception("INVALID TOKEN");
     }
 
-    require_once("../../connector/pdo_connect_main.php");
+    require_once("../../php/connector/pdo_connect_main.php");
     
     $con = pdo_con();
 

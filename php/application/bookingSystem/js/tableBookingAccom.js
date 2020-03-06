@@ -111,7 +111,7 @@ function editAccom(id_booking_room) {
     });
 }
 
-// DISPLAY TRANSFER DATA
+// DISPLAY DATA
 function displayAccom(accomDetails) {
     accomDetails[0].action = 'RESET';
     newAccom(accomDetails[0]);
@@ -157,10 +157,9 @@ function displayAccom(accomDetails) {
                     $('#accom_client').find('[value='+selectedClient+']').prop('selected', true);
                     $("#accom_client").selectpicker('refresh');
                 });
-    $("#accom_adultAmt").val(accomDetails[0].accom_adult_amt);
-	$("#accom_childAmt").val(accomDetails[0].accom_child_amt);
-	$("#accom_infantAmt").val(accomDetails[0].accom_infant_amt);
-            
+                // $("#accom_adultAmt").val(accomDetails[0].accom_adult_amt);
+                // $("#accom_childAmt").val(accomDetails[0].accom_child_amt);
+                // $("#accom_infantAmt").val(accomDetails[0].accom_infant_amt);
         },
         error: function (error) {
             console.log('Error ${error}');

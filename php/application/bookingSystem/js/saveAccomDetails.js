@@ -4,79 +4,134 @@ $(document).ready(function() {
     dossierAccomodation();
 });
 
-function saveAccomDetails(data) {
+// function saveAccomDetails(data) {
     // global variable
-    bookingDetails_main = data;
-    var client_a = $('#accom_client').find('option:selected').attr("name");
-    var client_age = parseInt(client_a);
-    arrClient.push(client_age);
-    var numberOfClient = arrClient.length;
-    if (data.AGE_POLICIES.length == 0) {
-        $('#accom_adultAmt').val(numberOfClient);
-        $('#accom_TeentAmt').val(0);
-        $('#accom_childAmt').val(0);
-        $('#accom_InfantAmt').val(0);
-    } else if (data.AGE_POLICIES.length == 1) {
-        console.log(numberOfClient, '<<--');
-        data.AGE_POLICIES.forEach(element => {
-            if (client_age > element.AGEFROM && client_age < element.AGETO) {
-                $('#accom_adultAmt').val(0);
-                $('#accom_TeentAmt').val(0);
-                $('#accom_childAmt').val(numberOfClient);
-                $('#accom_InfantAmt').val(0);
-            } else {
-                arrClientAdult.push(client_age);
-                var numberOfAdultClient = arrClientAdult.length;
-                $('#accom_adultAmt').val(numberOfAdultClient);
-            }
-        });
-    }
-}
-
+    // bookingDetails_main = data;
+    // var client_a = $('#accom_client').find('option:selected').attr("name");
+    // var client_age = parseInt(client_a);
+    // arrClient.push(client_age);
+    // var numberOfClient = arrClient.length;
+    // if (data.AGE_POLICIES.length == 0) {
+    //     $('#accom_adultAmt').val(numberOfClient);
+    //     $('#accom_TeentAmt').val(0);
+    //     $('#accom_childAmt').val(0);
+    //     $('#accom_InfantAmt').val(0);
+    // } else if (data.AGE_POLICIES.length == 1) {
+    //     data.AGE_POLICIES.forEach(element => {
+    //         if (client_age > element.AGEFROM && client_age < element.AGETO) {
+    //             $('#accom_adultAmt').val(0);
+    //             $('#accom_TeentAmt').val(0);
+    //             $('#accom_childAmt').val(numberOfClient);
+    //             $('#accom_InfantAmt').val(0);
+    //         } else {
+    //             arrClientAdult.push(client_age);
+    //             var numberOfAdultClient = arrClientAdult.length;
+    //             $('#accom_adultAmt').val(numberOfAdultClient);
+    //         }
+    //     });
+    // }
+// }
 
 $('#btn-saveAccom').click(function() {
-    // id_booking_room_claim primary key
-    var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
-    var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
-    var id_booking = $('#id_booking').val();
-    var room_adult_amt = $('#accom_adultAmt').val();
-    var room_teen_amt = $('#accom_TeentAmt').val();
-    var room_child_amt = $('#accom_childAmt').val();
-    var room_infant_amt = $('#accom_InfantAmt').val();
-    var room_status = $('#booking_status').val();
-    var objBookingRoom = { 
-        id_booking_room: -1,
-        id_booking: id_booking,
-        stay_from: room_stay_from,
-        stay_to: room_stay_to,
-        room_adult_amt: room_adult_amt,
-        room_teen_amt: room_teen_amt,
-        room_child_amt: room_child_amt,
-        room_infant_amt: room_infant_amt,
-        room_status: room_status
-    }
-
-    const url_save_booking = "php/api/bookingSystem/saveBookingRoom.php?t=" + encodeURIComponent(global_token);
+    var id_booking = $("#id_booking").val();
+    const url_search_booking = "php/api/bookingSystem/readBooking.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +id_booking;
     $.ajax({
-        url : url_save_booking,
-        method : "POST",
-        data : objBookingRoom,
-		dataType: "json",
-        success : function(data){
-            console.log(data);
-            if (data.OUTCOME == "OK") {
-                checkForSpos(data, bookingDetails_main);
+        url: url_search_booking,
+        method: "POST",
+        dataType: "json",
+        success: function (dataRead)
+        {
+
+            var max_pax = parseInt(dataRead[0].adult_amt) +  parseInt(dataRead[0].teen_amt) +  parseInt(dataRead[0].child_amt) +  parseInt(dataRead[0].infant_amt);
+            var travelDate = dataRead[0].booking_from;
+            
+            // Load AcommContract
+            var mealplan = $('#accom_mealPlan').val();
+            var accom_payer = $('#accom_payer').val();
+            var accom_hotel = $('#accom_hotel').val();
+            var accom_room = $('#accom_room').val();
+            var accom_stay_start = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
+            var accom_stay_end = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
+            var accom_bookingDate = $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD');
+            var travel_date = dataRead[0].booking_from;
+            var accom_client = $('#accom_client').val();
+            var arr_params_resa = {
+                mealplan : mealplan,
+                touroperator : accom_payer,
+                hotel :  accom_hotel,
+                hotelroom : accom_room,
+                checkin_date: accom_stay_start,
+                checkout_date: accom_stay_end,
+                booking_date : accom_bookingDate,
+                travel_date : travel_date,
+                max_pax : max_pax, 
+                checkin_time : '', 
+                checkout_time : '', 
+                suppmealplan : '', 
+                wedding_interested: 0,
+                arr_pax: [accom_client]
             }
+        
+            const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
+            $.ajax({
+                url : getAccomContract,
+                method : "POST",
+                data : arr_params_resa, 
+                dataType: "json",
+                    success : function(contractData) {
+                         // id_booking_room_claim primary key
+                        var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
+                        var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
+                        var id_booking = $('#id_booking').val();
+                        var room_adult_amt = $('#accom_adultAmt').val();
+                        var room_teen_amt = $('#accom_TeentAmt').val();
+                        var room_child_amt = $('#accom_childAmt').val();
+                        var room_infant_amt = $('#accom_InfantAmt').val();
+                        var room_status = $('#booking_status').val();
+                        var objBookingRoom = { 
+                            id_booking_room: -1,
+                            id_booking: id_booking,
+                            stay_from: room_stay_from,
+                            stay_to: room_stay_to,
+                            room_adult_amt: room_adult_amt,
+                            room_teen_amt: room_teen_amt,
+                            room_child_amt: room_child_amt,
+                            room_infant_amt: room_infant_amt,
+                            room_status: room_status
+                        }
+
+                        const url_save_booking = "php/api/bookingSystem/saveBookingRoom.php?t=" + encodeURIComponent(global_token);
+                        $.ajax({
+                            url : url_save_booking,
+                            method : "POST",
+                            data : objBookingRoom,
+                            dataType: "json",
+                            success : function(data){
+                                console.log(data);
+                                if (data.OUTCOME == "OK") {
+                                    checkForSpos(data, contractData);
+                                }
+                            },
+                            error: function(error) {
+                                console.log('Error ${error}');
+                            }
+                        });
+                        
+                    }, 
+                    error: function (error) {
+                        console.log('Error ${error}');
+                    }
+            });
         },
-        error: function(error) {
+        error: function (error) 
+        {
             console.log('Error ${error}');
         }
     });
+    
 });
 
 function checkForSpos(roomData, bookingDetails) {
-    console.log('roomData', roomData);
-    console.log('bookingDetails', bookingDetails);
     if (bookingDetails.SPECIAL_OFFERS.SPOS.length == 0) {
         saveBookingRoomClaim(roomData, bookingDetails);
     } else {
@@ -124,6 +179,7 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
     var room_rebate_cost_approve_by = 0;
     var id_claim_cur = bookingDetails.CLAIM_CURRENCY_ID;
 
+    var accom_client = $('#accom_client').val();
     // Only Adult
     if (bookingDetails.COST_CLAIM_AMOUNTS.ADULTS.length > 0 && bookingDetails.COST_CLAIM_AMOUNTS.CHILDREN.length == 0) {
         adult_cost = bookingDetails.COST_CLAIM_AMOUNTS.ADULTS[0].COST;
@@ -207,7 +263,8 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
         room_total_claim_after_rebate: 0, 
         room_remarks: room_remarks, 
         room_internal_remarks: 	room_internal_remarks, 
-        room_status: roomData.room_status
+        room_status: roomData.room_status, 
+        booking_client: accom_client
     }
 
     const url_save_booking_claim = "php/api/bookingSystem/saveBookingRoomClaim.php?t=" + encodeURIComponent(global_token);
@@ -250,7 +307,6 @@ function saveBookingRoomCost(dataCost, bookingDetails) {
         children_cost = bookingDetails.COST_CLAIM_AMOUNTS.CHILDREN[0].COST;
         adult_cost = 0;
     }
-
     
     var room_rebate_cost_approve_by = 0;
     var room_cost_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].COST";
@@ -317,6 +373,9 @@ function saveBookingRoomCost(dataCost, bookingDetails) {
         success : function(data){
             if (data.OUTCOME == 'OK') {
                 toastr.success('New Booking saved successfully');
+                
+                var id_booking = $("#id_booking").val();
+                allBookingAccom(id_booking);
                 dossierAccomodation(data);
             }
         },
