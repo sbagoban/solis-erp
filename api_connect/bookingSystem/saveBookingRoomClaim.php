@@ -29,7 +29,6 @@ try {
 
 
     $id_booking = $_POST["id_booking"];
-    $id_booking_room_claim = $_POST["id_booking_room_claim"];
     $id_booking_room = $_POST["id_booking_room"];
     $room_service_paid_by = $_POST["room_service_paid_by"];
     $id_tour_operator = $_POST["id_tour_operator"];
@@ -82,14 +81,14 @@ try {
     $log_status = "CREATE";
 
     //check duplicates for save Booking
-    $sqlBookingRoomClaim = "SELECT * FROM booking_room_claim WHERE id_booking_room_claim = :id_booking_room_claim ";
+    $sqlBookingRoomClaim = "SELECT * FROM booking_room_claim WHERE id_booking_room = :id_booking_room ";
     $stmt = $con->prepare($sqlBookingRoomClaim);
-    $stmt->execute(array(":id_booking_room_claim" => $id_booking_room_claim));
+    $stmt->execute(array(":id_booking_room" => $id_booking_room));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE BOOKING ROOM CLAIMS!");
     }
 
-    if ($id_booking_room_claim == "-1") {
+    if ($id_booking_room == "-1") {
         $sqlSaveRoomClaim= "INSERT INTO booking_room_claim
             (
                 id_booking,
@@ -242,22 +241,22 @@ try {
         ":created_name" => $created_name
     ));
     
-    $id_booking_room_claim = $con->lastInsertId();
+    $id_booking_room = $con->lastInsertId();
 
     // CLIENT ACTIVITY
-    $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room_claim, id_booking) 
-    VALUES (:booking_client, :id_booking_room_claim, :id_booking)";
+    $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room, id_booking) 
+    VALUES (:booking_client, :id_booking_room, :id_booking)";
 
     $stmt = $con->prepare($sqlClientRoom);
     $data = $booking_client;
 
     foreach($data as $d) {
-        $stmt->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+        $stmt->execute(array(':id_booking_room' => $id_booking_room, ':id_booking' => $id_booking, ':booking_client' => $d));
     }
     
     $sqlSaveRoomClaimLog= "INSERT INTO booking_room_claim_log
             (
-                id_booking_room_claim,
+                id_booking_room,
                 id_booking,
                 id_booking_room,
                 room_service_paid_by,
@@ -309,7 +308,7 @@ try {
             )
         VALUES
             (
-                :id_booking_room_claim,
+                :id_booking_room,
                 :id_booking,
                 :id_booking_room,
                 :room_service_paid_by,
@@ -362,7 +361,7 @@ try {
     
         $stmt = $con->prepare($sqlSaveRoomClaimLog);
         $stmt->execute(array(
-            ":id_booking_room_claim" => $id_booking_room_claim,
+            ":id_booking_room" => $id_booking_room,
             ":id_booking" => $id_booking,
             ":id_booking_room" => $id_booking_room,
             ":room_service_paid_by" => $room_service_paid_by,
@@ -417,7 +416,7 @@ try {
 
     echo json_encode(array(
         "OUTCOME" => "OK",
-        "id_booking_room_claim" => $id_booking_room_claim,
+        "id_booking_room" => $id_booking_room,
         "id_booking" => $id_booking,
         "id_booking_room" => $id_booking_room,
         "room_service_paid_by" => $room_service_paid_by,

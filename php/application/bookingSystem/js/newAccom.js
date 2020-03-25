@@ -72,12 +72,12 @@ $(function(){
 	// .Hotel Room
     
     // Client
-	$('#accom_client').change(function() {
+    $('#accom_client').change(function() {
         if ($('#accom_client').val() != 0 ) {
             validationValueAccomContract(id_booking);
         }
 	});
-    // .Hotel Room
+    //Client
     
 	//Rebate
 	$("#accom_rebate").change(function(){
@@ -209,7 +209,7 @@ function loadBookingClient(accomData){
                 {
                     $("#accom_payer").empty();
                     $.each(data, function (key, val) {
-                    $("#accom_payer").append('<option value="' + val.id_client + '">'+val.title+ ' '+val.surname+' '+val.other_name+'</option>');
+                        $("#accom_payer").append('<option value="' + val.id_client + '">'+val.title+ ' '+val.surname+' '+val.other_name+'</option>');
                     });  
 
                 },
@@ -283,6 +283,13 @@ function loadAccomTarif(data, max_pax) {
     var accom_bookingDate = $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD');
     var travel_date = data[0].booking_from;
     var accom_client = $('#accom_client').val();
+    
+    var accom_client_age = $('#accom_client').find('option:selected').attr("name");
+    var accom_client_details = {
+        age: accom_client_age, 
+        bride_groom: ""
+    };
+    console.log('accom_client', accom_client);
     var arr_params_resa = {
         mealplan : mealplan,
         touroperator : accom_payer,
@@ -297,7 +304,7 @@ function loadAccomTarif(data, max_pax) {
         checkout_time : '', 
         suppmealplan : '', 
         wedding_interested: 0,
-        arr_pax: [accom_client]
+        arr_pax: accom_client_details
     }
 
     const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
@@ -312,6 +319,7 @@ function loadAccomTarif(data, max_pax) {
                     //saveAccomDetails(data);
                 } else if (data == "FAIL_NO_CONTRACT") {
                     toastr.warning('No Tarif found.');
+                    hideAccomDetails();
                 }
             }, 
             error: function (error) {
@@ -390,6 +398,11 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                 var accom_bookingDate = $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD');
                                 var travel_date = dataRead[0].booking_from;
                                 var accom_client = $('#accom_client').val();
+                                var accom_client_age = $('#accom_client').find('option:selected').attr("name");
+                                var accom_client_details = {
+                                    age: accom_client_age, 
+                                    bride_groom: ""
+                                };
                                 var arr_params_resa = {
                                     mealplan : mealplan,
                                     touroperator : accom_payer,
@@ -399,12 +412,12 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                     checkout_date: accom_stay_end,
                                     booking_date : accom_bookingDate,
                                     travel_date : travel_date,
-                                    max_pax : max_pax, 
-                                    checkin_time : '', 
-                                    checkout_time : '', 
-                                    suppmealplan : '', 
+                                    max_pax : max_pax,
+                                    checkin_time : '',
+                                    checkout_time : '',
+                                    suppmealplan : '',
                                     wedding_interested: 0,
-                                    arr_pax: [accom_client]
+                                    arr_pax: accom_client_details
                                 }
                             
                                 const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
@@ -414,7 +427,6 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                     data : arr_params_resa, 
                                     dataType: "json",
                                         success : function(contractData) {
-                                            console.log(contractData, 'asdfsf');
                                             if (contractData.OUTCOME == "OK") {
                                                 gridAccomDetails(contractData);
                                                 //saveAccomDetails(contractData);
@@ -474,6 +486,7 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                             }
                                             else if (contractData == "FAIL_NO_CONTRACT") {
                                                 toastr.warning('No Tarif found.');
+                                                hideAccomDetails();
                                             }
                                         }, 
                                         error: function (error) {
@@ -496,3 +509,13 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
     });
 
 });
+
+
+function hideAccomDetails() {
+    alert('No');
+    // hide accom details - 
+    // no accom detail found    
+    document.getElementById('serviceDetails').setAttribute('style', 'display: none');   
+    document.getElementById('serviceDetailsNotFound').setAttribute('style', 'display: block');
+    
+}

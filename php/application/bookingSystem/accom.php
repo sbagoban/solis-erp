@@ -222,76 +222,15 @@ require_once("../../utils/utilities.php");
                 <!-- <div id="serviceDetails" class="panel-collapse collapse in"> -->
                 <div id="serviceDetails">
                     <div class="panel-body" id="grid_accom_details">
-                        <!-- <table id="tbl-accomDetails" class="table table-bordered table-hover">
-                            <tr>
-                                <th>Room Charge</th>
-                                <td colspan="3">PAX/UNIT</td>
-                            </tr>
-                            <tr>
-                                <th>Room Status</th>
-                                <td colspan="3">On Request</td>
-                            </tr>
-                            <tr>
-                                <th>Room Policy</th>
-                                <td>Infant : 0-2</td>
-                                <td>Child : 3-11</td>
-                                <td>Team : 12-17 </td>
-                            </tr>
-                            <tr>
-                                <th class="text-center"  colspan="4">Room Claim Description</th>
-                            </tr>
-                            <tr>
-                                <th>Pax Type</th>
-                                <th>Claim </th>
-                                <th>Special Claim</th>
-                                <th>Cost</th>
-                            </tr>
-                            <tr>
-                                <td>Adult Bride</td>
-                                <td>$ 48 </td>
-                                <td>$ 48</td>
-                                <td>$ 45</td>
-                            </tr>
-                            <tr>
-                                <td>Adult Groom</td>
-                                <td>$ 48 </td>
-                                <td>$ 48</td>
-                                <td>$ 45</td>
-                            </tr>
-                            <tr>
-                                <td>Adult </td>
-                                <td>$ 48 </td>
-                                <td>$ 48</td>
-                                <td>$ 45</td>
-                            </tr>
-                            <tr>
-                                <td>Child </td>
-                                <td>$ 37 </td>
-                                <td>$ 37</td>
-                                <td>$ 35</td>
-                            </tr>
-                            <tr>
-                                <td>Child </td>
-                                <td>$ 37 </td>
-                                <td>$ 37</td>
-                                <td>$ 35</td>
-                            </tr>
-                            <tr>
-                                <th class="text-center"  colspan="4">Special Offer apply</th>
-                            </tr>
-                            <tr>
-                                <td  colspan="4">
-                                    SEASONAL OFFER - ALL INCLUSIVE
-                                    Breakfast Included
-                                    Seasonal Offer - All Inclusive
-                                    Rates include All Inclusive Package, 15 percent VAT and 15-30 percent discount. Free Green Fee at both our Golf Courses. Rate requires 50 per cent deposit of the total stay.
-                                </td>
-                            </tr>
-                        </table> -->
+                    </div>
+                </div>
+				<div id="serviceDetailsNotFound">
+                    <div class="panel-body" id="grid_accom_details">
+						Not Found
                     </div>
                 </div>
                 <div class="panel panel-default">
-                     <div class="panel-heading">
+                    <div class="panel-heading">
                             <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Accomodation</a>
                     </div>
                     <div id="dossierService" class="panel-collapse collapse">

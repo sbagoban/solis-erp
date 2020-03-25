@@ -42,15 +42,22 @@ try {
     $arr_params_test["travel_date"] = $_POST["travel_date"];
     $arr_params_test["wedding_interested"] = $_POST["wedding_interested"];
 
-    $arr_params_test["arr_pax"] = array();
+    // $arr_pax = array();
+    // $arr_params_test["arr_pax"] = $_POST["arr_pax"];
+    // echo '-->' . $arr_pax;
 
     // CLIENT ACTIVITY
-//     $data = $arr_params_test["arr_pax"];
-// echo $data;
-//     // foreach($data as $d) {
-//     //     $arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
-//     //     $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
-//     // }
+    // $data = $arr_params_test["arr_pax"];
+    // echo $data;
+    // $count = 0;
+    // foreach($data as $d) {
+    //     $count++;
+    //     //$arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+    //     $arr_params_test["arr_pax"][] = array(
+    //                                         "count"=>$count,
+    //                                         "age"=>30,
+    //                                         "bride_groom"=>"");
+    // }
     $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
     $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>35,"bride_groom"=>"");
@@ -74,7 +81,7 @@ try {
     $con = pdo_con();
 
     $the_contract_id = _rates_reservation_get_contract_id($con, $arr_params_test);
-   // $arr_combinations = _rates_calculator_reservation_gen_room_combination($con, $the_contract_id, $arr_params_test);
+    // // $arr_combinations = _rates_calculator_reservation_gen_room_combination($con, $the_contract_id, $arr_params_test);
 
     $test = array();
     $test = _rates_calculator_reservation_get_cost_claim($con, $the_contract_id, $arr_params_test);

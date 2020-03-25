@@ -245,14 +245,14 @@ try {
     $id_booking_room_claim = $con->lastInsertId();
 
     // CLIENT ACTIVITY
-    $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room_claim, id_booking) 
-    VALUES (:booking_client, :id_booking_room_claim, :id_booking)";
+    $sqlClientRoom = "INSERT INTO booking_room_client (id_client, id_booking_room, id_booking) 
+    VALUES (:booking_client, :id_booking_room, :id_booking)";
 
     $stmt = $con->prepare($sqlClientRoom);
     $data = $booking_client;
 
     foreach($data as $d) {
-        $stmt->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+        $stmt->execute(array(':id_booking_room' => $id_booking_room, ':id_booking' => $id_booking, ':booking_client' => $d));
     }
     
     $sqlSaveRoomClaimLog= "INSERT INTO booking_room_claim_log
