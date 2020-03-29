@@ -115,8 +115,8 @@ $(function(){
 			{
 				$("#accom_client").val('').selectpicker('refresh');
 				$.each(data, function (key, val) {
-				$("#accom_client").append('<option value="' + val.id_booking_client + '" name="' + val.age + '">'+val.title+ ' '+val.surname+' '+val.other_name+' - '+val.type+'</option>');
-				});  
+					$("#accom_client").append('<option value="' + val.id_booking_client+'" name="' + val.age + '">'+val.title+ ' '+val.surname+' '+val.other_name+' - '+val.type+'</option>');
+				});
 				$("#accom_client").selectpicker('refresh');
 
 			},
@@ -176,7 +176,7 @@ function loadTourOperator(accomData){
 
 // Booking Client
 function loadBookingClient(accomData){
-         const url_search_booking = "php/api/bookingSystem/allClient.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +accomData.id_booking;
+        const url_search_booking = "php/api/bookingSystem/allClient.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +accomData.id_booking;
             $.ajax({
                 url: url_search_booking,
                 method: "POST",

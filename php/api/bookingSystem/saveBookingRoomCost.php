@@ -242,7 +242,6 @@ try {
 
     echo json_encode(array(
         "OUTCOME" => "OK",
-        "id_booking_room_claim" => $id_booking_room_claim,
         "id_booking" => $id_booking,
         "id_booking_room" => $id_booking_room,
         "room_service_paid_by" => $room_service_paid_by,

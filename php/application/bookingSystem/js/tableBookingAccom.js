@@ -72,12 +72,11 @@ $('#tbl-bookingAccom').DataTable({
 					editAccom(data.id_booking_room);
                 })
                 .on( 'click', '#btnDeleteAccom', function (e) {
-                	var table = $('#tbl-bookingAccom').DataTable();
+                    var table = $('#tbl-bookingAccom').DataTable();
 					var accomData = table.row( $(this).parents('tr') ).data();
                     var deleteConfirm = confirm("Are you sure you want to delete the booking accom?");
-                    if(deleteConfirm)
-                    {
-                        accomData.action = 'DELETE'; 
+                    if(deleteConfirm) {
+                        accomData.action = 'DELETE';
                         deleteAccom(accomData);
                     }
                 })
@@ -88,8 +87,8 @@ $('#tbl-bookingAccom').DataTable({
 
 // EDIT ACCOM DATA
 function editAccom(id_booking_room) {
-     const url_search_bookingAccom = "php/api/bookingSystem/readBookingRoom.php?t=" + encodeURIComponent(global_token) + "&id_booking_room=" +id_booking_room;
-     $.ajax({
+    const url_search_bookingAccom = "php/api/bookingSystem/readBookingRoom.php?t=" + encodeURIComponent(global_token) + "&id_booking_room=" +id_booking_room;
+    $.ajax({
         url: url_search_bookingAccom,
         method: "POST",
         dataType: "json",
@@ -115,7 +114,6 @@ function editAccom(id_booking_room) {
 function displayAccom(accomDetails) {
     accomDetails[0].action = 'RESET';
     newAccom(accomDetails[0]);
-    console.log(accomDetails[0]);
 	$("#id_booking_room").val(accomDetails[0].id_booking_room);
     var bookingDate = accomDetails[0].accom_booking_date;
     var bookingDate = bookingDate.split("-").reverse();
@@ -143,30 +141,29 @@ function displayAccom(accomDetails) {
         id_booking_room : accomDetails[0].id_booking_room
     }
     
-   
+
     //.bookingAccomClient
     const url_search_bookingAccom = "php/api/bookingSystem/readBookingAccomClient.php?t=" + encodeURIComponent(global_token) + "&id_booking_room=" +accomDetails[0].id_booking_room;
-     $.ajax({
+    $.ajax({
         url: url_search_bookingAccom,
         method: "POST",
         dataType: "json",
         success: function (data) {
             $.each(data, function (key, val) {
                     var selectedClient = val.id_client;
-                console.log(selectedClient);
                     $('#accom_client').find('[value='+selectedClient+']').prop('selected', true);
                     $("#accom_client").selectpicker('refresh');
                 });
-                // $("#accom_adultAmt").val(accomDetails[0].accom_adult_amt);
-                // $("#accom_childAmt").val(accomDetails[0].accom_child_amt);
-                // $("#accom_infantAmt").val(accomDetails[0].accom_infant_amt);
         },
         error: function (error) {
             console.log('Error ${error}');
         }
     });
     //.bookingAccomClient
-    console.log(accomDetails[0].accom_adult_amt);
 	$("#accom_rebateClaim").val(accomDetails[0].accom_rebate_claim_type);
     $('#accom_rebateClaim').select2().trigger('change');
+}
+
+function deleteAccom(accomData) {
+    console.log('accomData', accomData);
 }
