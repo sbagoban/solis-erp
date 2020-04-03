@@ -79,13 +79,14 @@ try {
 
     //===========================================================================
     //check for overlapping contract
-    //mealplan + active_from - active_to + countries + rooms
+    //mealplan + active_from - active_to + countries + rooms + TO
     $sql = "SELECT sc.id, sc.contractname, 
             GROUP_CONCAT(DISTINCT c.countrycode_3 ORDER BY countrycode_3 ASC SEPARATOR ',') countries, 
             GROUP_CONCAT(DISTINCT hr.roomname ORDER BY roomname ASC SEPARATOR ',') AS rooms
             FROM tblservice_contract sc
             INNER JOIN tblservice_contract_countries scc ON sc.id = scc.service_contract_fk
             INNER JOIN tblservice_contract_rooms scr ON sc.id = scr.servicecontractfk
+            INNER JOIN tblservice_contract_touroperator sct ON sc.id = sct.service_contract_fk
             INNER JOIN tblcountries c on scc.countryfk = c.id
             INNER JOIN tblhotel_rooms hr on scr.roomfk = hr.id
             WHERE sc.hotelfk = :hotelfk 
@@ -94,6 +95,7 @@ try {
             and sc.deleted = 0 AND sc.id <> :id
             AND scc.countryfk IN ($market_countries_ids) 
             AND scr.roomfk IN ($rooms_ids)
+            AND sct.tofk IN ($touroperator_ids)
             group by sc.id, sc.contractname";
 
     $stmt = $con->prepare($sql);
@@ -105,7 +107,7 @@ try {
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
         throw new Exception("This Contract <b>overlaps</b> with an another contract based on:<br>" .
-                "1. Validity Date<br>2.Meal Plan<br>3. Market Countries <br>4. Rooms");
+                "1. Validity Date<br>2.Meal Plan<br>3. Market Countries <br>4. Tour Operators <br>5. Rooms");
     }
 
     //===========================================================================
@@ -1118,6 +1120,7 @@ function saveRmMealExtra($date_rwid, $arrextra) {
             $extra_id = $arrextra[$i]["extra_rwid"];
             $extra_extra_name = $arrextra[$i]["extra_extra_name"];
             $extra_mandatory = $arrextra[$i]["extra_mandatory"];
+            $extra_spo_deductable = $arrextra[$i]["extra_spo_deductable"];
             $extra_include_diner_rate_bb = $arrextra[$i]["extra_include_diner_rate_bb"];
             $extra_hb_mealplan_fk = $arrextra[$i]["extra_hb_mealplan_fk"];
             $extra_bb_mealplan_fk = $arrextra[$i]["extra_bb_mealplan_fk"];
@@ -1150,11 +1153,11 @@ function saveRmMealExtra($date_rwid, $arrextra) {
                 if ($extra_id < 0) {
                     $sql = "INSERT INTO tblservice_contract_extrasupplement 
                             (service_contract_roomcapacity_dates_fk,
-                            extra_name,mandatory,
+                            extra_name,mandatory,spo_deductable,
                             include_diner_rate_bb,hb_mealplan_fk,
                             bb_mealplan_fk,extra_date,adult_count)
                             VALUES
-                            (:date_rwid,:extra_name,:mandatory,
+                            (:date_rwid,:extra_name,:mandatory,:spo_deductable,
                             :include_diner_rate_bb,:hb_mealplan_fk,
                             :bb_mealplan_fk,:extra_date,:adult_count)";
 
@@ -1162,6 +1165,7 @@ function saveRmMealExtra($date_rwid, $arrextra) {
                     $stmt->execute(array(":date_rwid" => $date_rwid,
                         ":extra_name" => $extra_extra_name,
                         ":mandatory" => $extra_mandatory,
+                        ":spo_deductable" => $extra_spo_deductable,
                         ":include_diner_rate_bb" => $extra_include_diner_rate_bb,
                         ":hb_mealplan_fk" => $extra_hb_mealplan_fk,
                         ":bb_mealplan_fk" => $extra_bb_mealplan_fk,
@@ -1173,6 +1177,7 @@ function saveRmMealExtra($date_rwid, $arrextra) {
 
                     $sql = "UPDATE tblservice_contract_extrasupplement 
                             SET extra_name=:extra_name,mandatory=:mandatory,
+                            spo_deductable=:spo_deductable,
                             include_diner_rate_bb=:include_diner_rate_bb,
                             hb_mealplan_fk=:hb_mealplan_fk,
                             bb_mealplan_fk=:bb_mealplan_fk,
@@ -1183,6 +1188,7 @@ function saveRmMealExtra($date_rwid, $arrextra) {
                     $stmt->execute(array(":id" => $extra_id,
                         ":extra_name" => $extra_extra_name,
                         ":mandatory" => $extra_mandatory,
+                        ":spo_deductable" => $extra_spo_deductable,
                         ":include_diner_rate_bb" => $extra_include_diner_rate_bb,
                         ":hb_mealplan_fk" => $extra_hb_mealplan_fk,
                         ":bb_mealplan_fk" => $extra_bb_mealplan_fk,
@@ -2128,8 +2134,9 @@ function saveRmChildPolicyDtRules($date_rwid, $arr_childpolicies_rules) {
             $rule_category = $arr_childpolicies_rules[$i]["rule_category"];
             $rule_sharing_single = $arr_childpolicies_rules[$i]["rule_sharing_single"];
             $rule_action = $arr_childpolicies_rules[$i]["rule_action"];
+            $rule_ageranges = $arr_childpolicies_rules[$i]["rule_ageranges"];
             $arr_rule_policy = $arr_childpolicies_rules[$i]["rule_policy"];
-
+            
 
             if ($rule_action == "DELETE") {
                 $sql = "DELETE FROM tblservice_contract_childpolicy_room_dates_rules
@@ -2141,17 +2148,18 @@ function saveRmChildPolicyDtRules($date_rwid, $arr_childpolicies_rules) {
 
                     $sql = "INSERT INTO tblservice_contract_childpolicy_room_dates_rules
                             (service_contract_roomcapacity_dates_fk,
-                            rulecounter,rulecategory,sharing_single)
+                            rulecounter,rulecategory,sharing_single,ruleageranges)
                             VALUES
                             (:service_contract_roomcapacity_dates_fk,
-                            :rulecounter,:rulecategory,:sharing_single)";
+                            :rulecounter,:rulecategory,:sharing_single,:rule_ageranges)";
 
                     $stmt = $con->prepare($sql);
                     $stmt->execute(array(
                         ":service_contract_roomcapacity_dates_fk" => $date_rwid,
                         ":rulecounter" => $i,
                         ":rulecategory" => $rule_category,
-                        ":sharing_single" => $rule_sharing_single));
+                        ":sharing_single" => $rule_sharing_single,
+                        ":rule_ageranges"=>$rule_ageranges));
 
                     $rule_rwid = $con->lastInsertId();
                 } else {
@@ -2159,7 +2167,8 @@ function saveRmChildPolicyDtRules($date_rwid, $arr_childpolicies_rules) {
                     $sql = "UPDATE tblservice_contract_childpolicy_room_dates_rules SET 
                             rulecounter=:rulecounter,
                             rulecategory=:rulecategory,
-                            sharing_single=:sharing_single
+                            sharing_single=:sharing_single,
+                            ruleageranges=:rule_ageranges
                             WHERE id=:id";
 
                     $stmt = $con->prepare($sql);
@@ -2167,7 +2176,8 @@ function saveRmChildPolicyDtRules($date_rwid, $arr_childpolicies_rules) {
                         ":id" => $rule_rwid,
                         ":rulecounter" => $i,
                         ":rulecategory" => $rule_category,
-                        ":sharing_single" => $rule_sharing_single));
+                        ":sharing_single" => $rule_sharing_single,
+                        ":rule_ageranges"=>$rule_ageranges));
                 }
 
                 $outcome = saveRmChildPolicyDtRulesAges($rule_rwid, $arr_rule_policy);

@@ -59,7 +59,7 @@ try {
     //                                         "bride_groom"=>"");
     // }
     $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
-    $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"");
+    // $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>35,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>6,"age"=>17,"bride_groom"=>"");

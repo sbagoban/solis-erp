@@ -49,7 +49,6 @@ try {
     {
         throw new Exception("NO IMAGE UPLOAD MAX SIZE DEFINED!");
     }
-    
 
     $target_file = $absolute_server_path . basename($_FILES["photos"]["name"]);
     $uploadOk = 1;

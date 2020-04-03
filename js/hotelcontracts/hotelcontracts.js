@@ -724,7 +724,9 @@ function hotelcontracts()
             Array('select_all_rooms', 'obj', 'Select all Rooms', 'bedchecked.png'),
             Array('unselect_all_rooms', 'obj', 'UnSelect all Rooms', 'bedunchecked.png'),
             Array('select_specific_period', 'obj', 'Select This Period in all Rooms', 'gantt_chart_checked.png'),
-            Array('unselect_specific_period', 'obj', 'UnSelect This Period in all Rooms', 'gantt_chart_unchecked.png')
+            Array('unselect_specific_period', 'obj', 'UnSelect This Period in all Rooms', 'gantt_chart_unchecked.png'),
+            Array('sep2', 'sep', '', ''),
+            Array('delete_rates', 'obj', 'Delete All Rates', 'delete.png')
             );
 
 
@@ -743,6 +745,7 @@ function hotelcontracts()
     toolbar_capacity_dates.hideListOption("opts", "combi");
     toolbar_capacity_dates.hideListOption("opts", "modify");
     toolbar_capacity_dates.hideListOption("opts", "delete");
+    toolbar_capacity_dates.hideListOption("opts", "delete_rates");    
     toolbar_capacity_dates.showListOption("opts", "select_all_rooms");
     toolbar_capacity_dates.showListOption("opts", "unselect_all_rooms");
 
@@ -831,7 +834,29 @@ function hotelcontracts()
                     }
                 });
             }
-        } else if (id == "periods")
+        } 
+        else if(id == "delete_rates")
+        {
+            var nodeid = tree_roomdates.getSelectedItemId();
+            var node = tree_roomdates.getUserData(nodeid, "ROOM_SEASON_DATE");
+            
+            //clear all rates for that room
+            dhtmlx.confirm({
+                title: "Delete Room Rates",
+                type: "confirm",
+                text: "<font color='red'>Confirm <b>Deletion</b> of <b>ALL</b> Rates attached to that Room and Date Period?</font>",
+                callback: function (tf) {
+                    if (tf)
+                    {
+                        var date_rwid = tree_roomdates.getUserData(nodeid, "DATE_RWID");                            
+                        var date_roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
+                        deleteRoomRates(date_roomid, date_rwid);
+                        tree_roomdates.selectItem("ROOM_" + date_roomid, true, false);
+                    }
+                }
+            });
+        }
+        else if (id == "periods")
         {
             loadPeriods();
         } else if (id == "select_all_rooms")
@@ -969,6 +994,7 @@ function hotelcontracts()
 
 
     var tabRoomViews = roomslayout.cells("c").attachTabbar();
+    
     tabRoomViews.addTab("minstay", "<b>Rooms Minimum Stay</b>", "280px", '');
     tabRoomViews.addTab("capacity", "<b>Capacity</b>", "280px", '');
     tabRoomViews.addTab("policies", "<b>Policies</b>", "280px", '');
@@ -976,7 +1002,7 @@ function hotelcontracts()
     tabRoomViews.addTab("adult_policies", "<b>Adult Policies</b>", "280px", '');
     tabRoomViews.addTab("child_policies", "<b>Children Policies</b>", "280px", '');
     tabRoomViews.addTab("single_parent", "<b>Single Parent Policies</b>", "280px", '');
-
+    
 
     //=====================================================================
     //ROOM.MINSTAY TAB
@@ -1228,11 +1254,17 @@ function hotelcontracts()
     var accord_meal = tabRoomViews.cells("meal").attachAccordion();
     accord_meal.addItem("meal", "Meal Supplements");
     accord_meal.addItem("extra", "Extra Supplements");
-    //accord_meal.setEffect(true);
     accord_meal.cells("meal").open();
     accord_meal.cells("extra").close();
-
-    var toolbar_meals = accord_meal.cells("meal").attachToolbar();
+    
+    var layoutmeal = accord_meal.cells("meal").attachLayout("1C");
+    layoutmeal.cells("a").hideHeader();
+    
+    var layoutextra = accord_meal.cells("extra").attachLayout("1C");
+    layoutextra.cells("a").hideHeader();
+    layoutextra.setSizes(true);
+    
+    var toolbar_meals = layoutmeal.cells("a").attachToolbar();
     toolbar_meals.setIconsPath("images/");
     toolbar_meals.addButton("new", 1, "New Supplement", "add.png", "add.png");
     toolbar_meals.addButton("delete", 2, "Delete Supplement", "delete.png", "delete.png");
@@ -1259,10 +1291,10 @@ function hotelcontracts()
     toolbar_meals.hideItem("new");
     toolbar_meals.hideItem("delete");
 
-    var grid_meals = accord_meal.cells("meal").attachGrid();
+    var grid_meals = layoutmeal.cells("a").attachGrid();
     grid_meals.setIconsPath('libraries/dhtmlx/imgs/');
 
-    var toolbar_meals_extra = accord_meal.cells("extra").attachToolbar();
+    var toolbar_meals_extra = layoutextra.cells("a").attachToolbar();
     toolbar_meals_extra.setIconsPath("images/");
     toolbar_meals_extra.addButton("new", 1, "New Extra", "add.png", "add.png");
     toolbar_meals_extra.addButton("delete", 2, "Delete Extra", "delete.png", "delete.png");
@@ -1289,7 +1321,7 @@ function hotelcontracts()
     toolbar_meals_extra.hideItem("new");
     toolbar_meals_extra.hideItem("delete");
 
-    var grid_extras = accord_meal.cells("extra").attachGrid();
+    var grid_extras = layoutextra.cells("a").attachGrid();
     grid_extras.setIconsPath('libraries/dhtmlx/imgs/');
 
 
@@ -3286,12 +3318,12 @@ function hotelcontracts()
 
     function createExtrasGridStructure(nodeid)
     {
-        var header_str = "Name*,Date*,Is Manda tory,Include Diner Rate for BB,HB Meal Plan,BB Meal Plan,Adults";
-        var column_ids = "extra_name,extra_date,mandatory,include_diner_rate_bb,hb_mealplan_fk,bb_mealplan_fk,adult_count";
-        var column_types = "ed,dhxCalendar,ch,ch,combo,combo,edn";
-        var init_widths = "80,80,50,50,100,100," + (_agecolwidth + 30);
-        var col_align = "left,center,center,center,left,left,center";
-        var col_sorting = "str,date,int,int,str,str,int";
+        var header_str = "Name*,Date*,SPO Deduct,Manda tory,Include Diner Rate for BB,HB Meal Plan,BB Meal Plan,Adults";
+        var column_ids = "extra_name,extra_date,spo_deductable,mandatory,include_diner_rate_bb,hb_mealplan_fk,bb_mealplan_fk,adult_count";
+        var column_types = "ed,dhxCalendar,ch,ch,ch,combo,combo,edn";
+        var init_widths = "70,70,50,50,50,80,80," + (_agecolwidth + 30);
+        var col_align = "left,center,center,center,center,left,left,center";
+        var col_sorting = "str,date,int,int,int,str,str,int";
 
         var child_ages_ids = form_main.getItemValue("children_ages_ids");
         var arr_ids = child_ages_ids.split(",");
@@ -3307,7 +3339,7 @@ function hotelcontracts()
                 header_str += ",Ch " + agefrom + "-" + ageto;
                 column_ids += ",ch_" + agefrom + "_" + ageto;
                 column_types += ",edn";
-                init_widths += "," + (_agecolwidth + 30);
+                init_widths += "," + (_agecolwidth + 5);
                 col_align += ",center";
                 col_sorting += ",int";
             }
@@ -3316,7 +3348,7 @@ function hotelcontracts()
 
         grid_extras.clearAll();
         grid_extras = null;
-        grid_extras = accord_meal.cells("extra").attachGrid();
+        grid_extras = layoutextra.cells("a").attachGrid();
         grid_extras.setIconsPath('libraries/dhtmlx/imgs/');
         grid_extras.setHeader(header_str);
         grid_extras.setColumnIds(column_ids);
@@ -3327,7 +3359,7 @@ function hotelcontracts()
         grid_extras.enableAlterCss("", "");
         grid_extras.enableEditTabOnly(true);
         grid_extras.enableEditEvents(true, true, true);
-        grid_extras.setDateFormat("%d-%M-%Y", "%Y-%m-%d");
+        grid_extras.setDateFormat("%d-%m-%Y", "%Y-%m-%d");
         grid_extras.attachEvent("onEditCell", onGridExtraEdit);
         grid_extras.attachEvent("onCheck", onGridExtraCheck);
         grid_extras.init();
@@ -3424,6 +3456,9 @@ function hotelcontracts()
 
     function createMealsGridStructure(nodeid)
     {
+        accord_meal.setSizes();
+
+        
         var header_str = "MealPlan*,Is Main,Adults";
         var column_ids = "mealplanfk,is_main,adult_count";
         var column_types = "combo,ch,edn";
@@ -3455,7 +3490,7 @@ function hotelcontracts()
 
         grid_meals.clearAll();
         grid_meals = null;
-        grid_meals = accord_meal.cells("meal").attachGrid();
+        grid_meals = layoutmeal.cells("a").attachGrid();
         grid_meals.setIconsPath('libraries/dhtmlx/imgs/');
         grid_meals.setHeader(header_str);
         grid_meals.setColumnIds(column_ids);
@@ -3576,6 +3611,7 @@ function hotelcontracts()
             var extra_rwid = arrextras[i].extra_rwid;
             var extra_extra_name = arrextras[i].extra_extra_name;
             var extra_mandatory = arrextras[i].extra_mandatory;
+            var extra_spo_deductable = arrextras[i].extra_spo_deductable;            
             var extra_include_diner_rate_bb = arrextras[i].extra_include_diner_rate_bb;
             var extra_hb_mealplan_fk = arrextras[i].extra_hb_mealplan_fk;
             var extra_bb_mealplan_fk = arrextras[i].extra_bb_mealplan_fk;
@@ -3591,6 +3627,7 @@ function hotelcontracts()
 
                 grid_extras.cells(extra_rwid, grid_extras.getColIndexById("extra_name")).setValue(extra_extra_name);
                 grid_extras.cells(extra_rwid, grid_extras.getColIndexById("mandatory")).setValue(extra_mandatory);
+                grid_extras.cells(extra_rwid, grid_extras.getColIndexById("spo_deductable")).setValue(extra_spo_deductable);
                 grid_extras.cells(extra_rwid, grid_extras.getColIndexById("include_diner_rate_bb")).setValue(extra_include_diner_rate_bb);
                 grid_extras.cells(extra_rwid, grid_extras.getColIndexById("hb_mealplan_fk")).setValue(extra_hb_mealplan_fk);
                 grid_extras.cells(extra_rwid, grid_extras.getColIndexById("bb_mealplan_fk")).setValue(extra_bb_mealplan_fk);
@@ -4178,11 +4215,12 @@ function hotelcontracts()
                 if (!adult_node)
                 {
                     flg_add_node = true;
-                } else
+                } 
+                else
                 {
                     if (utils_parseInt(adult_node.capacity_minpax) == 0 &&
                             utils_parseInt(adult_node.capacity_maxpax) == 0)
-                    {
+                    {                        
                         flg_add_node = true;
                     }
                 }
@@ -4191,7 +4229,7 @@ function hotelcontracts()
                 //got a rule without parents
                 if (flg_add_node)
                 {
-                    var xobj = pushCapacitySingleParentChilrenObj(ruleobj);
+                    var xobj = pushCapacityChilrenObj(ruleobj);
                     arr_result.push(xobj);
                 }
             }
@@ -4269,6 +4307,128 @@ function hotelcontracts()
     }
 
 
+    function rule_capacity_has_children(arrrule_capacity)
+    {
+        //returns true if in this rule_capacity array, there is at least one child
+        //returns false other wise
+
+        for (var k = 0; k < arrrule_capacity.length; k++)
+        {
+            var capacityobj = arrrule_capacity[k];
+            if (capacityobj.capacity_action != "DELETE")
+            {
+                if (capacityobj.capacity_category == "CHILD")
+                {
+                    if (capacityobj.capacity_maxpax > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
+    function childrenSharingChildRanges(roomid, date_rwid)
+    {
+        //for each capacity rule, check if max_adult >= 2 and there is at least one child
+        //      push child_ages applicable to rule + min_max child
+        //next rule
+
+
+        var arr_result = [];
+        var arr_main_childages = [];
+
+        var dateobj = lookupCapacityRoomDateObj(roomid, date_rwid);
+        var arrrulecounter = dateobj.date_capacity_rules;
+
+        //===========================================================
+
+        for (var i = 0; i < dateobj.date_capacity_rules.length; i++)
+        {
+            var ruleobj = arrrulecounter[i];
+            if (ruleobj.rule_action != "DELETE")
+            {
+                var arrrule_capacity = ruleobj.rule_capacity;
+                for (var k = 0; k < arrrule_capacity.length; k++)
+                {
+                    var capacityobj = arrrule_capacity[k];
+                    if (capacityobj.capacity_action != "DELETE")
+                    {
+                        if (capacityobj.capacity_category == "ADULT")
+                        {
+                            if (capacityobj.capacity_maxpax >= 2)
+                            {
+                                //got a potential sharing parent obj
+                                //check if there is at least one child in the object
+                                if (rule_capacity_has_children(arrrule_capacity))
+                                {
+                                    var xobj = pushCapacityChilrenObj(ruleobj);
+                                    arr_result.push(xobj);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        //===========================================================
+        //===========================================================
+
+
+        for (var i = 0; i < arr_result.length; i++)
+        {
+            var arr_ageranges = arr_result[i].children_ages;
+            for (var j = 0; j < arr_ageranges.length; j++)
+            {
+                var capacity_child_agefrom = arr_ageranges[j]["capacity_child_agefrom"];
+                var capacity_child_ageto = arr_ageranges[j]["capacity_child_ageto"];
+
+
+                //combination must be based on contract.main
+                //if not, then add it there
+
+                if (is_age_in_main(capacity_child_agefrom, capacity_child_ageto))
+                {
+                    if (!checkAgeRangeInArray(arr_main_childages, capacity_child_agefrom, capacity_child_ageto))
+                    {
+                        arr_main_childages.push({age_from: capacity_child_agefrom, age_to: capacity_child_ageto});
+                    }
+                } else
+                {
+                    //explode the age range in the ranges defined in main
+                    //eg: main = 0-1, 2-11, 12-17 and here range is 0-11
+                    //return array 0-1, 2-11
+                    var arr_explode = explode_ageranges(capacity_child_agefrom, capacity_child_ageto);
+                    for (var x = 0; x < arr_explode.length; x++)
+                    {
+                        if (!checkAgeRangeInArray(arr_main_childages, arr_explode[x].age_from, arr_explode[x].age_to))
+                        {
+                            arr_main_childages.push({age_from: arr_explode[x].age_from,
+                                age_to: arr_explode[x].age_to});
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //===========================================================
+        arr_main_childages.sort(function (a, b) {
+            return parseFloat(a.age_from) - parseFloat(b.age_from);
+        });
+        //===========================================================
+
+        return {RESULT: arr_result, MAIN_CHILD_AGES: arr_main_childages};
+
+    }
+
     function singleParentGetChildRanges(roomid, date_rwid)
     {
         //for each capacity rule, check if min_adult = 1 and max_adult = 1
@@ -4306,7 +4466,7 @@ function hotelcontracts()
                             if (capacityobj.capacity_minpax == 1 && capacityobj.capacity_maxpax == 1)
                             {
                                 //got a single parent obj
-                                var xobj = pushCapacitySingleParentChilrenObj(ruleobj);
+                                var xobj = pushCapacityChilrenObj(ruleobj);
                                 arr_result.push(xobj);
                             }
                         }
@@ -4336,7 +4496,7 @@ function hotelcontracts()
                                 if (capacityobj.capacity_minpax == 1)
                                 {
                                     //got a single parent obj
-                                    var xobj = pushCapacitySingleParentChilrenObj(ruleobj);
+                                    var xobj = pushCapacityChilrenObj(ruleobj);
                                     arr_result.push(xobj);
                                 }
                             }
@@ -4468,7 +4628,8 @@ function hotelcontracts()
         var selected_currency_sell_ids = form_currency.getItemValue("selected_currency_sell_ids");
         var costprice_currencyid = cboCostPriceCurrency.getSelectedValue();
 
-
+        
+        
         grid_childpolicy_sharing_age.clearAll(true);
         grid_childpolicy_sharing_age = null;
         grid_childpolicy_sharing_age = accord_child.cells("sharing").attachGrid();
@@ -4480,49 +4641,61 @@ function hotelcontracts()
         grid_childpolicy_sharing_age.enableColSpan(true);
 
 
-        var max_child_count = 0;
-        var arr_childages_count = [];
-
-        var arr_ids = child_ages_ids.split(",");
-        for (var i = 0; i < arr_ids.length; i++)
+        
+        
+        //======================================
+        var url = "";
+        if (variant == "PERSONS")
         {
-            var id = arr_ids[i];
-            if (id != "")
+             var return_arr = childrenSharingChildRanges(roomid, date_rwid);
+             var arr_result = return_arr.RESULT;
+             var arr_main_childages = return_arr.MAIN_CHILD_AGES;
+                          
+             url = "php/api/hotelcontracts/grid_childpolicy_sharing_xml.php?" +
+                "t=" + encodeURIComponent(global_token) +
+                "&roomid=" + roomid +
+                "&arr_result=" + encodeURIComponent(JSON.stringify(arr_result)) +
+                "&arr_main_childages=" + encodeURIComponent(JSON.stringify(arr_main_childages)) +
+                "&child_mode=sharing" +
+                "&selected_currency_buy_ids=" + selected_currency_buy_ids +
+                "&selected_currency_sell_ids=" + selected_currency_sell_ids +
+                "&costprice_currencyid=" + costprice_currencyid;
+        
+                
+                
+
+        } else if (variant == "UNITS")
+        {
+            var max_child_count = 0;
+            var arr_childages_count = [];
+            
+            var arr_ids = child_ages_ids.split(",");
+            for (var i = 0; i < arr_ids.length; i++)
             {
-                var item = _dsChildPolicy.item(id);
-                var agefrom = parseInt(item.agefrom, 10);
-                var ageto = parseInt(item.ageto, 10);
-
-                var child_stats = null;
-
-                if (variant == "PERSONS")
+                var id = arr_ids[i];
+                if (id != "")
                 {
-                    child_stats = getPersonsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
-                } else if (variant == "UNITS")
-                {
+                    var item = _dsChildPolicy.item(id);
+                    var agefrom = parseInt(item.agefrom, 10);
+                    var ageto = parseInt(item.ageto, 10);
+
+                    var child_stats = null;
+
                     child_stats = getUnitsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
-                }
 
-                if (child_stats.sharing.max_child > 0)
-                {
-                    arr_childages_count.push(child_stats);
-
-                    if (max_child_count < child_stats.sharing.max_child)
+                    if (child_stats.sharing.max_child > 0)
                     {
-                        max_child_count = child_stats.sharing.max_child;
+                        arr_childages_count.push(child_stats);
+
+                        if (max_child_count < child_stats.sharing.max_child)
+                        {
+                            max_child_count = child_stats.sharing.max_child;
+                        }
                     }
                 }
             }
-        }
-
-        //CHANGES:: UPDATED FILE VARIABLE BELOW:
-        var file = "grid_childpolicy_sharing_xml";
-        if (variant == "UNITS")
-        {
-            file = "grid_childpolicy_units_xml";
-        }
-
-        var url = "php/api/hotelcontracts/" + file + ".php?" +
+            
+            url = "php/api/hotelcontracts/grid_childpolicy_units_xml.php?" +
                 "t=" + encodeURIComponent(global_token) +
                 "&roomid=" + roomid +
                 "&arr_childages_count=" + encodeURIComponent(JSON.stringify(arr_childages_count)) +
@@ -4531,11 +4704,21 @@ function hotelcontracts()
                 "&selected_currency_buy_ids=" + selected_currency_buy_ids +
                 "&selected_currency_sell_ids=" + selected_currency_sell_ids +
                 "&costprice_currencyid=" + costprice_currencyid;
-
-
+        }
+       //======================================     
+        
+        
         grid_childpolicy_sharing_age.loadXML(url, function () {
             //fill in values
-            fillChildPolicyGridValues(roomid, date_rwid, grid_childpolicy_sharing_age, "SHARING");
+            if(variant == "UNITS")
+            {
+                fillUnitsChildPolicyGridValues(roomid, date_rwid, grid_childpolicy_sharing_age, "SHARING");
+            }
+            else if(variant == "PERSONS")
+            {
+                fillPersonsChildSharingPolicyGridValues(roomid, date_rwid);
+            }
+            
 
             grid_childpolicy_sharing_age.setEditable(false);
             if (tree_roomdates.isItemChecked(nodeid))
@@ -4543,10 +4726,9 @@ function hotelcontracts()
                 grid_childpolicy_sharing_age.setEditable(true);
             }
         });
-
     }
 
-    function pushCapacitySingleParentChilrenObj(ruleobj)
+    function pushCapacityChilrenObj(ruleobj)
     {
         var xobj = {children_ages: []};
         var arrrule_capacity = ruleobj.rule_capacity;
@@ -4561,7 +4743,7 @@ function hotelcontracts()
                 var capacity_maxpax = utils_parseInt(capacityobj.capacity_maxpax);
                 var capacity_minpax = utils_parseInt(capacityobj.capacity_minpax);
 
-                if (capacity_maxpax != 0 && capacity_minpax != 0)
+                if (capacity_maxpax > 0)
                 {
                     xobj.children_ages.push(capacityobj);
                 }
@@ -4589,7 +4771,7 @@ function hotelcontracts()
         var return_arr = ownRoomGetChildRanges(roomid, date_rwid);
         var arr_result = return_arr.RESULT;
         var arr_main_childages = return_arr.MAIN_CHILD_AGES;
-
+        
         var selected_currency_buy_ids = form_currency.getItemValue("selected_currency_buy_ids");
         var selected_currency_sell_ids = form_currency.getItemValue("selected_currency_sell_ids");
         var costprice_currencyid = cboCostPriceCurrency.getSelectedValue();
@@ -4601,9 +4783,10 @@ function hotelcontracts()
         grid_childpolicy_own_age.enableAlterCss("", "");
         grid_childpolicy_own_age.enableEditTabOnly(true);
         grid_childpolicy_own_age.enableEditEvents(true, true, true);
-        grid_childpolicy_own_age.attachEvent("onEditCell", onGridChildSinglePolicyEdit);
+        grid_childpolicy_own_age.attachEvent("onEditCell", onGridChildOwnPolicyEdit);
         grid_childpolicy_own_age.enableColSpan(true);
-
+        
+        
 
         var url = "php/api/hotelcontracts/grid_childpolicy_own_xml.php?" +
                 "t=" + encodeURIComponent(global_token) +
@@ -5354,6 +5537,7 @@ function hotelcontracts()
         toolbar_capacity_dates.hideListOption("opts", "new");
         toolbar_capacity_dates.hideListOption("opts", "modify");
         toolbar_capacity_dates.hideListOption("opts", "delete");
+        toolbar_capacity_dates.hideListOption("opts", "delete_rates");
         toolbar_capacity_dates.hideListOption("opts", "select_all_rooms");
         toolbar_capacity_dates.hideListOption("opts", "unselect_all_rooms");
         toolbar_capacity_dates.hideListOption("opts", "select_specific_period");
@@ -5438,6 +5622,7 @@ function hotelcontracts()
             showHideRoomTabs(tabid);
             toolbar_capacity_dates.showListOption("opts", "modify");
             toolbar_capacity_dates.showListOption("opts", "delete");
+            toolbar_capacity_dates.showListOption("opts", "delete_rates");
             comboVariant.show(false);
 
 
@@ -6407,10 +6592,6 @@ function hotelcontracts()
                 return policyrulecell;
             }
         }
-
-
-
-
         return null;
     }
 
@@ -6471,30 +6652,33 @@ function hotelcontracts()
 
         return null;
     }
-
-    function lookupChildOwnPoliciesDateRuleObject(dateobj, child_index, rule_ageranges)
+    
+    
+    function lookupChildSharingPoliciesDateRuleObject(dateobj, number, rule_ageranges)
     {
-        //CHANGES:: ADDED FUNCTION
-        //returns adult policy room object from a capacity date object
+        //returns child sharing policy room object from a capacity date object
 
         var arrrules = dateobj.date_childpolicies_rules;
 
         for (var i = 0; i < arrrules.length; i++)
         {
-            if (arrrules[i].rule_category == child_index &&
+            if (arrrules[i].rule_category == number &&
+                    arrrules[i].rule_sharing_single == "SHARING" &&     
                     arrrules[i].rule_ageranges == rule_ageranges &&
-                    arrrules[i].rule_action != "DELETE" &&
-                    arrrules[i].rule_sharing_single == "SINGLE")
+                    arrrules[i].rule_action != "DELETE")
             {
+                //in case is sharing, there is an additional check
+              
                 return arrrules[i];
+                
             }
         }
 
         return null;
-
     }
-
-    function lookupChildPoliciesDateRuleObject(dateobj, number, sg_shr)
+    
+    
+    function lookupChildOwnPoliciesDateRuleObject(dateobj, number, rule_ageranges)
     {
         //returns adult policy room object from a capacity date object
 
@@ -6503,10 +6687,36 @@ function hotelcontracts()
         for (var i = 0; i < arrrules.length; i++)
         {
             if (arrrules[i].rule_category == number &&
-                    arrrules[i].rule_sharing_single == sg_shr &&
+                    arrrules[i].rule_sharing_single == "SINGLE" &&     
+                    arrrules[i].rule_ageranges == rule_ageranges &&
                     arrrules[i].rule_action != "DELETE")
             {
-                return arrrules[i];
+                
+               return arrrules[i];
+               
+                
+            }
+        }
+
+        return null;
+    }
+    
+    function lookupChildUnitsPoliciesDateRuleObject(dateobj, number)
+    {
+        //returns adult policy room object from a capacity date object
+
+        var arrrules = dateobj.date_childpolicies_rules;
+
+        for (var i = 0; i < arrrules.length; i++)
+        {
+            if (arrrules[i].rule_category == number &&
+                    arrrules[i].rule_sharing_single == "SHARING" &&                                      
+                    arrrules[i].rule_action != "DELETE")
+            {
+                
+               return arrrules[i];
+               
+                
             }
         }
 
@@ -7013,12 +7223,16 @@ function hotelcontracts()
         if (colid == "include_diner_rate_bb" && state == 0)
         {
             //clear hb_mealplan_fk, bb_mealplan_fk
-
+            grid_extras.editStop();
+            
+            grid_extras.cells(rId, grid_extras.getColIndexById("hb_mealplan_fk")).setValue("");
+            grid_extras.cells(rId, grid_extras.getColIndexById("bb_mealplan_fk")).setValue("");
+            
+            
             updateJsonExtras(rId, "hb_mealplan_fk", "");
             updateJsonExtras(rId, "bb_mealplan_fk", "");
             updateAllCheckedDatesNode("date_mealextrasupplement_rules");
-            grid_extras.cells(rId, grid_extras.getColIndexById("hb_mealplan_fk")).setValue("");
-            grid_extras.cells(rId, grid_extras.getColIndexById("bb_mealplan_fk")).setValue("");
+            
         }
 
         return true;
@@ -7750,10 +7964,10 @@ function hotelcontracts()
 
                     //display updates sales price if buying price changed
                     var currencyinputid = c.getAttribute("currencyid");
-                    calculateChildPolicySalesPrice(grid_childpolicy_sharing_age, rId, cInd, nValue, currencyinputid);
+                    calculateChildSharingPolicySalesPrice(rId, cInd, nValue, currencyinputid);
                 }
 
-                updateJsonChildPoliciesValues(cInd, roomid, daterwid, rId, nValue, "SHARING", grid_childpolicy_sharing_age);
+                updateJsonChildSharingPoliciesValues(cInd, roomid, daterwid, rId, nValue );
                 updateAllCheckedDatesNode("date_childpolicies_rules");
             }
         }
@@ -7761,7 +7975,7 @@ function hotelcontracts()
         return true;
     }
 
-    function onGridChildSinglePolicyEdit(stage, rId, cInd, nValue, oValue)
+    function onGridChildOwnPolicyEdit(stage, rId, cInd, nValue, oValue)
     {
         var nodeid = tree_roomdates.getSelectedItemId();
         var node = tree_roomdates.getUserData(nodeid, "ROOM_SEASON_DATE");
@@ -7807,10 +8021,10 @@ function hotelcontracts()
 
                     //display updates sales price if buying price changed
                     var currencyinputid = c.getAttribute("currencyid");
-                    calculateChildPolicySalesPrice(grid_childpolicy_own_age, rId, cInd, nValue, currencyinputid);
+                    calculateChildOwnPolicySalesPrice(grid_childpolicy_own_age, rId, cInd, nValue, currencyinputid);
                 }
 
-                updateJsonChildPoliciesValues(cInd, roomid, daterwid, rId, nValue, "SINGLE", grid_childpolicy_own_age);
+                updateJsonChildOwnPoliciesValues(cInd, roomid, daterwid, rId, nValue);
                 updateAllCheckedDatesNode("date_childpolicies_rules");
             }
         }
@@ -7879,8 +8093,6 @@ function hotelcontracts()
 
     function updateJsonSingleParentChildPoliciesValues(cInd, roomid, date_rwid, rId, nValue)
     {
-
-
         var c = grid_singleparentpolicy_age.cells(rId, cInd);
         var context = c.getAttribute("context");
         var child_index = c.getAttribute("child_index");
@@ -7950,16 +8162,15 @@ function hotelcontracts()
 
     }
 
-    function updateJsonChildPoliciesValues(cInd, roomid, date_rwid, rId, nValue, sg_shr, grid)
+    function updateJsonChildOwnPoliciesValues(cInd, roomid, date_rwid, rId, nValue)
     {
-        var c = grid.cells(rId, cInd);
+        var c = grid_childpolicy_own_age.cells(rId, cInd);
         var context = c.getAttribute("context");
-        var number = c.getAttribute("number");
+        var number = c.getAttribute("child_index");
         var currencyid = c.getAttribute("currencyid");
         var agefrom = c.getAttribute("agefrom");
         var ageto = c.getAttribute("ageto");
         var rule_ageranges = c.getAttribute("rule_ageranges"); //++
-
 
         var capacity_date_obj = lookupCapacityRoomDateObj(roomid, date_rwid);
         if (!capacity_date_obj)
@@ -7967,7 +8178,7 @@ function hotelcontracts()
             return;
         }
 
-        var ruleobj = lookupChildPoliciesDateRuleObject(capacity_date_obj, number, sg_shr);
+        var ruleobj = lookupChildOwnPoliciesDateRuleObject(capacity_date_obj, number, rule_ageranges);
         if (!ruleobj)
         {
             //insert rule object into json_capacity
@@ -7975,8 +8186,9 @@ function hotelcontracts()
             ruleobj = {rule_rwid: _childpolicy_room_date_rule_id,
                 rule_category: number,
                 rule_rulecounter: 0,
-                rule_sharing_single: sg_shr,
+                rule_sharing_single: "SINGLE",
                 rule_action: "INSERT",
+                rule_ageranges: rule_ageranges,
                 rule_policy: []};
 
             capacity_date_obj.date_childpolicies_rules.push(ruleobj);
@@ -8018,6 +8230,81 @@ function hotelcontracts()
 
         return;
     }
+    
+    
+    function updateJsonChildSharingPoliciesValues(cInd, roomid, date_rwid, rId, nValue)
+    {
+        var c = grid_childpolicy_sharing_age.cells(rId, cInd);
+        var context = c.getAttribute("context");
+        var number = c.getAttribute("number");
+        var currencyid = c.getAttribute("currencyid");
+        var agefrom = c.getAttribute("agefrom");
+        var ageto = c.getAttribute("ageto");
+        var rule_ageranges = c.getAttribute("rule_ageranges"); //++
+
+
+        var capacity_date_obj = lookupCapacityRoomDateObj(roomid, date_rwid);
+        if (!capacity_date_obj)
+        {
+            return;
+        }
+
+        var ruleobj = lookupChildSharingPoliciesDateRuleObject(capacity_date_obj, number, rule_ageranges);
+        if (!ruleobj)
+        {
+            //insert rule object into json_capacity
+            _childpolicy_room_date_rule_id--;
+            ruleobj = {rule_rwid: _childpolicy_room_date_rule_id,
+                rule_category: number,
+                rule_rulecounter: 0,
+                rule_sharing_single: "SHARING",
+                rule_action: "INSERT",
+                rule_ageranges: rule_ageranges,
+                rule_policy: []};
+
+            capacity_date_obj.date_childpolicies_rules.push(ruleobj);
+        }
+
+        var policyrulecell = lookupChildPoliciesDateRuleCellObject(ruleobj, context, number, agefrom, ageto);
+
+        if (!policyrulecell)
+        {
+            _childpolicy_room_date_rule_capacity_id--;
+            policyrulecell = {
+                policy_rwid: _childpolicy_room_date_rule_capacity_id,
+                policy_category: context,
+                policy_basis: number,
+                policy_units_additional_child_agefrom: agefrom,
+                policy_units_additional_child_ageto: ageto,
+                policy_action: "INSERT",
+                policy_values: []
+            };
+
+            ruleobj.rule_policy.push(policyrulecell);
+        }
+
+
+        var valuecell = lookupChildPoliciesDateRuleCellValueObject(policyrulecell, context, currencyid);
+        if (!valuecell)
+        {
+            _childpolicy_room_date_rule_capacity_value_id--;
+            valuecell = {value_rwid: _childpolicy_room_date_rule_capacity_value_id,
+                value_currencyfk: currencyid,
+                value_basis: context,
+                value_value: nValue,
+                value_action: "INSERT"};
+
+            policyrulecell.policy_values.push(valuecell);
+        }
+
+        valuecell.value_value = nValue;
+
+        return;
+    }
+    
+    
+    
+    
 
     function updateJsonAdultPoliciesValues(cInd, roomid, date_rwid, rId, nValue)
     {
@@ -8332,7 +8619,12 @@ function hotelcontracts()
                 } else if (colid == "mandatory")
                 {
                     arrextra[i].extra_mandatory = nValue;
-                } else if (colid == "include_diner_rate_bb")
+                } 
+                else if (colid == "spo_deductable")
+                {
+                    arrextra[i].extra_spo_deductable = nValue;
+                } 
+                else if (colid == "include_diner_rate_bb")
                 {
                     arrextra[i].extra_include_diner_rate_bb = nValue;
                 } else if (colid == "hb_mealplan_fk")
@@ -9031,6 +9323,7 @@ function hotelcontracts()
                             extra_rwid: _extras_id,
                             extra_extra_name: "",
                             extra_mandatory: "0",
+                            extra_spo_deductable: "0",
                             extra_include_diner_rate_bb: "0",
                             extra_hb_mealplan_fk: "",
                             extra_bb_mealplan_fk: "",
@@ -9039,7 +9332,7 @@ function hotelcontracts()
                             extra_action: "INSERT",
                             extra_children: []};
                         arrdates[j].date_mealextrasupplement_rules.push(obj);
-                        grid_extras.addRow(_extras_id, ["", "", 0, 0]);
+                        grid_extras.addRow(_extras_id, ["", "", 0, 0,0]);
                         grid_extras.setRowTextStyle(_extras_id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
 
                         return;
@@ -10110,6 +10403,9 @@ function hotelcontracts()
             });
         });
     }
+    
+    
+    
 
     function fillChildOwnPolicyGridValues(roomid, date_rwid)
     {
@@ -10131,7 +10427,7 @@ function hotelcontracts()
                 var buy_sell = c.getAttribute("buy_sell");
                 var child_index = c.getAttribute("child_index");
                 var rule_ageranges = c.getAttribute("rule_ageranges");
-
+                
                 if (type != "ro" && (buy_sell == "" || buy_sell == "buy"))
                 {
                     var ruleobj = lookupChildOwnPoliciesDateRuleObject(capacity_date_obj, child_index, rule_ageranges);
@@ -10161,9 +10457,91 @@ function hotelcontracts()
             });
         });
     }
+    
+    function fillPersonsChildSharingPolicyGridValues(roomid, date_rwid)
+    {
+        var capacity_date_obj = lookupCapacityRoomDateObj(roomid, date_rwid);
+        if (!capacity_date_obj)
+        {
+            return;
+        }
 
+        grid_childpolicy_sharing_age.forEachRow(function (rwid) {
+            grid_childpolicy_sharing_age.forEachCell(rwid, function (c) {
 
-    function fillChildPolicyGridValues(roomid, date_rwid, grid, sg_shr)
+                var child_index = c.getAttribute("number");
+                var context = c.getAttribute("context");
+                var rule_ageranges = c.getAttribute("rule_ageranges");
+                var currencyid = c.getAttribute("currencyid");
+                var type = c.getAttribute("type");
+                var agefrom = c.getAttribute("agefrom");
+                var ageto = c.getAttribute("ageto");
+                var buy_sell = c.getAttribute("buy_sell");
+
+                if (type != "ro" && (buy_sell == "" || buy_sell == "buy"))
+                {
+                    var ruleobj = lookupChildSharingPoliciesDateRuleObject(capacity_date_obj, child_index, rule_ageranges);
+                    if (ruleobj)
+                    {
+                        var policyrulecell = lookupChildSharingPoliciesDateRuleCellObject(ruleobj, context, child_index, agefrom, ageto);
+
+                        if (policyrulecell)
+                        {
+                            var valuecell = lookupChildSharingPoliciesDateRuleCellValueObject(policyrulecell, context, currencyid);
+                            if (valuecell)
+                            {
+                                c.setValue(valuecell.value_value);
+
+                                //calculate SP where necessary
+                                if (type == "edn" && buy_sell == "buy" && currencyid != "")
+                                {
+                                    calculateChildSharingPolicySalesPrice(rwid, c.cell.cellIndex, valuecell.value_value, currencyid);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    }
+    
+    function lookupChildSharingPoliciesDateRuleCellValueObject(policyrulecell, context, currencyid)
+    {
+        var arrvalues_policy = policyrulecell.policy_values;
+        for (var j = 0; j < arrvalues_policy.length; j++)
+        {
+            var valuecell = arrvalues_policy[j];
+            if (valuecell.value_currencyfk == currencyid &&
+                    valuecell.value_basis == context)
+            {
+                return valuecell;
+            }
+        }
+        return null;
+    }
+    
+    
+    function lookupChildSharingPoliciesDateRuleCellObject(ruleobj, context, child_index, agefrom, ageto, adult_child)
+    {
+        var arrrule_policy = ruleobj.rule_policy;
+        for (var i = 0; i < arrrule_policy.length; i++)
+        {
+            var policyrulecell = arrrule_policy[i];
+
+            if (policyrulecell.policy_category == context &&
+                    policyrulecell.policy_basis == child_index &&
+                    policyrulecell.policy_units_additional_child_agefrom == agefrom &&
+                    policyrulecell.policy_units_additional_child_ageto == ageto)
+            {
+                return policyrulecell;
+            }
+        }
+
+        return null;
+    }
+  
+
+    function fillUnitsChildPolicyGridValues(roomid, date_rwid, grid, sg_shr)
     {
         var capacity_date_obj = lookupCapacityRoomDateObj(roomid, date_rwid);
         if (!capacity_date_obj)
@@ -10186,8 +10564,11 @@ function hotelcontracts()
                 {
                     //context = category,basis,value
                     //category = 1,2,3 ... n
-
-                    var ruleobj = lookupChildPoliciesDateRuleObject(capacity_date_obj, number, sg_shr);
+                    
+                            
+    
+    
+                    var ruleobj = lookupChildUnitsPoliciesDateRuleObject(capacity_date_obj, number);
                     if (ruleobj)
                     {
                         var policyrulecell = lookupChildPoliciesDateRuleCellObject(ruleobj, context, number, agefrom, ageto);
@@ -10202,7 +10583,7 @@ function hotelcontracts()
                                 //calculate SP where necessary
                                 if (type == "edn" && buy_sell == "buy" && currencyid != "")
                                 {
-                                    calculateChildPolicySalesPrice(grid, rwid,
+                                    calculateChildOwnPolicySalesPrice(grid, rwid,
                                             c.cell.cellIndex,
                                             valuecell.value_value,
                                             currencyid);
@@ -10303,8 +10684,9 @@ function hotelcontracts()
             calculateSellingPrice(roomid, newvalue, currencyinputid, sell_currency_id, callbackDisplaySingleParentPolicySalesPrice, [rwid, cindx, sell_currency_id]);
         }
     }
-
-    function calculateChildPolicySalesPrice(grid, rwid, cindx, newvalue, currencyinputid)
+    
+    
+    function calculateChildSharingPolicySalesPrice(rwid, cindx, newvalue, currencyinputid)
     {
         var nodeid = tree_roomdates.getSelectedItemId();
         var node = tree_roomdates.getUserData(nodeid, "ROOM_SEASON_DATE");
@@ -10331,7 +10713,84 @@ function hotelcontracts()
         for (var i = 0; i < arr_currency_sell.length; i++)
         {
             var sell_currency_id = arr_currency_sell[i];
-            calculateSellingPrice(roomid, newvalue, currencyinputid, sell_currency_id, callbackDisplayChildPolicySalesPrice, [grid, rwid, cindx]);
+            calculateSellingPrice(roomid, newvalue, currencyinputid, sell_currency_id, callbackDisplayChildSharingPolicySalesPrice, [rwid, cindx]);
+        }
+    }
+    
+    function callbackDisplayChildSharingPolicySalesPrice(arr_arguements)
+    {
+        //[rwid, cindx, calc_obj]
+
+        var taxcommi_item = getObjCalcItemCode(arr_arguements[2], "SELLING", "FINALSP");
+
+        //extract the final sp value
+        if (!taxcommi_item)
+        {
+            return;
+        }
+
+        var finalsp = taxcommi_item.my_calculated_value;
+        var sp_currencyid = taxcommi_item.my_calculated_value_currencyid;
+
+
+        //place the value in the grid
+        var rwid = arr_arguements[0];
+        var cellidx = arr_arguements[1];
+
+        var cellObj = grid_childpolicy_sharing_age.cells(rwid, cellidx);
+
+        var context = cellObj.getAttribute("context");
+        var agefrom = cellObj.getAttribute("agefrom");
+        var ageto = cellObj.getAttribute("ageto");
+        var number = cellObj.getAttribute("number");
+        var rule_ageranges = cellObj.getAttribute("rule_ageranges");
+
+        grid_childpolicy_sharing_age.forEachCell(rwid, function (c) {
+
+            if (c.getAttribute("context") == context &&
+                    c.getAttribute("currencyid") == sp_currencyid &&
+                    c.getAttribute("agefrom") == agefrom &&
+                    c.getAttribute("ageto") == ageto &&
+                    c.getAttribute("number") == number &&
+                    c.getAttribute("rule_ageranges") == rule_ageranges &&
+                    c.getAttribute("buy_sell") == "sell")
+            {
+                c.setValue(finalsp);
+                return;
+            }
+        });
+
+    }
+    
+    
+    function calculateChildOwnPolicySalesPrice(grid, rwid, cindx, newvalue, currencyinputid)
+    {
+        var nodeid = tree_roomdates.getSelectedItemId();
+        var node = tree_roomdates.getUserData(nodeid, "ROOM_SEASON_DATE");
+        if (node != "DATE")
+        {
+            return;
+        }
+
+        var roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
+        //if room has exception taxcommi setting, then use this id
+        //otherwise use GENERAL taxcommi setting
+
+        var room_obj = lookupTaxCommiRoomObj(roomid);
+        if (!room_obj)
+        {
+            roomid = "GENERAL"; //fallback to general 
+        } else if (room_obj.room_hasexception == "NO")
+        {
+            roomid = "GENERAL"; //fallback to general 
+        }
+
+        var selected_currency_sell_ids = form_currency.getItemValue("selected_currency_sell_ids");
+        var arr_currency_sell = selected_currency_sell_ids.split(",");
+        for (var i = 0; i < arr_currency_sell.length; i++)
+        {
+            var sell_currency_id = arr_currency_sell[i];
+            calculateSellingPrice(roomid, newvalue, currencyinputid, sell_currency_id, callbackDisplayChildOwnPolicySalesPrice, [grid, rwid, cindx]);
         }
     }
 
@@ -10422,7 +10881,7 @@ function hotelcontracts()
 
     }
 
-    function callbackDisplayChildPolicySalesPrice(arr_arguements)
+    function callbackDisplayChildOwnPolicySalesPrice(arr_arguements)
     {
         //[grid, rwid, cindx, calc_obj]
 
@@ -10448,9 +10907,8 @@ function hotelcontracts()
         var context = cellObj.getAttribute("context");
         var agefrom = cellObj.getAttribute("agefrom");
         var ageto = cellObj.getAttribute("ageto");
-        var number = cellObj.getAttribute("number");
-        var max_count = cellObj.getAttribute("max_count");
-        var min_count = cellObj.getAttribute("min_count");
+        var number = cellObj.getAttribute("number");        
+        var rule_ageranges = cellObj.getAttribute("rule_ageranges");
 
         grid.forEachCell(rwid, function (c) {
 
@@ -10458,15 +10916,13 @@ function hotelcontracts()
                     c.getAttribute("currencyid") == sp_currencyid &&
                     c.getAttribute("agefrom") == agefrom &&
                     c.getAttribute("ageto") == ageto &&
-                    c.getAttribute("number") == number &&
-                    c.getAttribute("max_count") == max_count &&
-                    c.getAttribute("min_count") == min_count &&
+                    c.getAttribute("number") == number &&      
+                    c.getAttribute("rule_ageranges") == rule_ageranges &&
                     c.getAttribute("buy_sell") == "sell")
             {
                 c.setValue(finalsp);
             }
         });
-
     }
 
     function callbackDisplayAdultPolicySalesPrice(arr_arguements)
@@ -12523,11 +12979,11 @@ function hotelcontracts()
 
     function validate_room_capacity_overlapping(category, rule_capacity, min, max, age_from, age_to)
     {
-        if(max == 0 || category != "CHILD")
+        if (max == 0 || category != "CHILD")
         {
             return true; //no need to worry
         }
-        
+
         for (var l = 0; l < rule_capacity.length; l++)
         {
             if (rule_capacity[l].capacity_action != "DELETE" && rule_capacity[l].capacity_category == "CHILD")
@@ -12544,12 +13000,12 @@ function hotelcontracts()
                 if (_max == "") {
                     _max = 0;
                 }
-                
+
                 _max = parseInt(_max, 10);
-                
-                if(_max > 0)
+
+                if (_max > 0)
                 {
-                    if(_age_from != age_from || _age_to != age_to)
+                    if (_age_from != age_from || _age_to != age_to)
                     {
                         if (_age_from <= age_to && age_from <= _age_to)
                         {
@@ -12559,7 +13015,7 @@ function hotelcontracts()
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -12717,6 +13173,7 @@ function hotelcontracts()
                                 var err_extra_rwid = date_mealextrasupplement_rules[k].extra_rwid;
                                 var err_extra_extra_name = date_mealextrasupplement_rules[k].extra_extra_name;
                                 var err_extra_mandatory = date_mealextrasupplement_rules[k].extra_mandatory;
+                                var err_extra_spo_deductable = date_mealextrasupplement_rules[k].extra_spo_deductable;
                                 var err_extra_include_diner_rate_bb = date_mealextrasupplement_rules[k].extra_include_diner_rate_bb;
                                 var err_extra_hb_mealplan_fk = date_mealextrasupplement_rules[k].extra_hb_mealplan_fk;
                                 var err_extra_bb_mealplan_fk = date_mealextrasupplement_rules[k].extra_bb_mealplan_fk;
@@ -12955,11 +13412,13 @@ function hotelcontracts()
                                     var dtfrom = utils_formatDate(err_cancellation_dates_before_arrival_from, "DD-MM-YYYY");
                                     if (!subDatesWithinContract(dtfrom, ""))
                                     {
+                                        /*
                                         arr_errors.push({roomid: err_room_id,
                                             daterwid: err_room_date_rwid,
                                             rwid: err_cancellation_rwid,
                                             policytype: "cancellation",
                                             msg: "Cancellation Date Before Arrival From must be within Contract Dates " + form_main.getItemValue("active_from", true) + " and " + form_main.getItemValue("active_to", true)});
+                                         */
                                     }
                                 }
                                 if (err_cancellation_dates_before_arrival_to != "")
@@ -12967,11 +13426,14 @@ function hotelcontracts()
                                     var dtto = utils_formatDate(err_cancellation_dates_before_arrival_to, "DD-MM-YYYY");
                                     if (!subDatesWithinContract("", dtto))
                                     {
+                                       
+                                       /*
                                         arr_errors.push({roomid: err_room_id,
                                             daterwid: err_room_date_rwid,
                                             rwid: err_cancellation_rwid,
                                             policytype: "cancellation",
                                             msg: "Cancellation Date Before Arrival To must be within Contract Dates " + form_main.getItemValue("active_from", true) + " and " + form_main.getItemValue("active_to", true)});
+                                        */
                                     }
                                 }
 
@@ -15765,7 +16227,31 @@ function hotelcontracts()
         }
 
     }
-
+    
+    
+    function deleteRoomRates(roomid, daterwid)
+    {
+        var capacity_date_obj = lookupCapacityRoomDateObj(roomid, daterwid);
+        if (!capacity_date_obj)
+        {
+            return;
+        }
+        
+        var adults_arr = capacity_date_obj.date_adultpolicies_rules;
+        var children_arr = capacity_date_obj.date_childpolicies_rules;
+        var snglprnt_arr = capacity_date_obj.date_singleparentpolicies_rules;
+        
+        var arr_objs = [adults_arr, children_arr, snglprnt_arr];
+        for(var i = 0; i < arr_objs.length; i++)
+        {
+            var obj = arr_objs[i];
+            for(var j = 0; j  < obj.length; j++)
+            {
+                obj[j].rule_action = "DELETE";
+            }
+        }
+    }
+    
     grid_choices.selectRowById("currency", false, true, true);
     popupwin_capacitydates.hide();
     popupwin_loadperiods.hide();

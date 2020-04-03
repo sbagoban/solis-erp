@@ -1770,7 +1770,7 @@ function _rates_calculator_calc_rollover_percentage($arr_params, $arr) {
     return $arr;
 }
 
-function _rates_calculator_group_sharing_own_children_ageranges($rules, $sharing_own) {
+function _rates_calculator_group_sharing_children_ageranges($rules) {
 
     //create an array of rule_age_ranges
 
@@ -1778,7 +1778,7 @@ function _rates_calculator_group_sharing_own_children_ageranges($rules, $sharing
 
     for ($i = 0; $i < count($rules); $i++) {
         if ($rules[$i]["rule_action"] != "DELETE" &&
-                $rules[$i]["rule_sharing_single"] == $sharing_own) {
+                $rules[$i]["rule_sharing_single"] == "SHARING") {
 
             $rule_ageranges = $rules[$i]["rule_ageranges"];
             if (!in_array($rule_ageranges, $arr_group_age_ranges)) {
@@ -1790,39 +1790,28 @@ function _rates_calculator_group_sharing_own_children_ageranges($rules, $sharing
     return $arr_group_age_ranges;
 }
 
-function _rates_calculator_calculate_sharing_own_children_rates($arr_childrenpolicies_rules,
+function _rates_calculator_calculate_sharing_children_rates($arr_childrenpolicies_rules,
         $arr_adultpolicies_rules, $arr_params,
         $arr_eci, $this_date,
         $flg_looked_at_single_parent_first, $con,
-        $spo_contract, $sharing_own) {
+        $spo_contract) {
     $arr = array();
 
-
+    
     //==============================================================
-    //filter only these children that are SHARING/OWN room
+    //filter only these children that are SHARING
     $children = array();
     for ($i = 0; $i < count($arr_params["children"]); $i++) {
-
-        if (($arr_params["children"][$i]["sharing_own"] == "OWN" && $sharing_own == "SINGLE") ||
-                $arr_params["children"][$i]["sharing_own"] == "SHARING" && $sharing_own == "SHARING") {
-
-            //filter only those children that are sharing/own
+        if ($arr_params["children"][$i]["sharing_own"] == "SHARING") {
+            //filter only those children that are sharing
             $children[] = $arr_params["children"][$i];
         }
     }
-
-    if (count($children) == 0) {
-        //no children for that SHARING/SINGLE lookup
-        //return a blank array
-        return array();
-    }
-
-
     //==============================================================
     //for each age group, get the children that fall within that range
     $arr_group_children = _rates_calculator_regroup_children_by_age($arr_params, $children, $con, $spo_contract);
 
-    $arr_age_ranges = _rates_calculator_group_sharing_own_children_ageranges($arr_childrenpolicies_rules, $sharing_own);
+    $arr_age_ranges = _rates_calculator_group_sharing_children_ageranges($arr_childrenpolicies_rules);
 
 
     //============================================================================================
@@ -1843,24 +1832,29 @@ function _rates_calculator_calculate_sharing_own_children_rates($arr_childrenpol
 
     //================================================
 
+    if ($the_age_range == "") {
+        //really no rates defined for single parent!
+        $flg_got_rates = false;
+        $arr[] = array("MSG" => "<font color='red'>NO SHARING CHILDREN RAGES</font>", "COSTINGS" => array());
+    } else {
 
+        $flg_got_rates = true;
+        $arr_spo_summary_applied = array(); //summary of adults/childen per SPO
+        $rules_age_range = _rates_calculator_children_get_rules_by_agerange($arr_childrenpolicies_rules, $the_age_range);
 
-    $flg_got_rates = true;
-    $arr_spo_summary_applied = array(); //summary of adults/childen per SPO
-    $rules_age_range = _rates_calculator_children_get_rules_by_agerange($arr_childrenpolicies_rules, $the_age_range);
-
-    //calculate sharing/own children rates
-    $arr_children_rates = _rates_calculator_lookup_sharing_own_children_rates($arr_group_children, $rules_age_range, $arr_params, $arr_adultpolicies_rules, $arr_eci, $this_date, $arr_spo_summary_applied, $flg_looked_at_single_parent_first, $sharing_own);
-    $arr = array_merge($arr, $arr_children_rates);
+        //calculate sharing children rates
+        $arr_children_rates = _rates_calculator_lookup_sharing_children_rates($arr_group_children, $rules_age_range, $arr_params, $arr_adultpolicies_rules, $arr_eci, $this_date, $arr_spo_summary_applied, $flg_looked_at_single_parent_first);
+        $arr = array_merge($arr, $arr_children_rates);
+    }
 
 
     return $arr;
 }
 
-function _rates_calculator_lookup_sharing_own_children_rates_index($index, $rules, $age_from, $age_to, $cat_basis_val, $sharing_own) {
+function _rates_calculator_lookup_sharing_children_rates_index($index, $rules, $age_from, $age_to, $cat_basis_val) {
     for ($i = 0; $i < count($rules); $i++) {
         if ($rules[$i]["rule_action"] != "DELETE" &&
-                $rules[$i]["rule_sharing_single"] == $sharing_own &&
+                $rules[$i]["rule_sharing_single"] == "SHARING" &&
                 $rules[$i]["rule_category"] == $index) {
 
             $arrpolicies = $rules[$i]["rule_policy"];
@@ -1888,23 +1882,22 @@ function _rates_calculator_lookup_sharing_own_children_rates_index($index, $rule
     return "";
 }
 
-function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children, $rules, $arr_params,
-        $arr_adultpolicies_rules, $arr_eci, $this_date,
-        &$arr_spo_summary_applied,
-        $flg_looked_at_single_parent_first,
-        $sharing_own) {
+function _rates_calculator_lookup_sharing_children_rates($arr_group_children, $rules, $arr_params, 
+                                                          $arr_adultpolicies_rules, $arr_eci, $this_date, 
+                                                          &$arr_spo_summary_applied, 
+                                                          $flg_looked_at_single_parent_first) {
 
     $arr_final = array();
     $rates = 0;
     $workings = "";
     $workings_spo = "";
-
-
+    
+    
     $single_parent_comments = "";
     if ($flg_looked_at_single_parent_first) {
         $single_parent_comments = "<font color='orange'>NO <b>SINGLE PARENT</b> RATES FOUND!</font> REVERTING TO <B>NORMAL RATES</B>...<br>";
     }
-
+    
     //==============================FLAT RATE SPO? ================================
     if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
         //clearly SPO FLAT RATES will take over for this date
@@ -1932,13 +1925,13 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
         while ($child_index > 0) {
             $child_age = $arr_children[$child_index - 1]["age"];
 
-            $basis = _rates_calculator_lookup_sharing_own_children_rates_index($child_index, $rules, $age_from, $age_to, "basis", $sharing_own);
+            $basis = _rates_calculator_lookup_sharing_children_rates_index($child_index, $rules, $age_from, $age_to, "basis");
             //SINGLE, %, FLAT, DOUBLE, TRIPLE
 
-            $value = _rates_calculator_lookup_sharing_own_children_rates_index($child_index, $rules, $age_from, $age_to, "value", $sharing_own);
+            $value = _rates_calculator_lookup_sharing_children_rates_index($child_index, $rules, $age_from, $age_to, "value");
 
             if ($basis == "") {
-                $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index {$child_age}yr <font color='orange'>NO RATES</font>) => ";
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr <font color='orange'>NO RATES</font>) => ";
 
                 $arr[] = array("WORKINGS" => $workings, "RATES" => 0, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
 
@@ -1953,7 +1946,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
             } else {
                 if ($basis == "SINGLE") {
                     //here we are just taking the value attached to the child
-                    $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index {$child_age}yr SNGL $currency_buy $value) ";
+                    $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr SNGL $currency_buy $value) ";
                     $rates_children = $value;
 
                     $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
@@ -1962,7 +1955,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
                     break;
                 } else if ($basis == "FLAT") {
                     //here just take the flat rate
-                    $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index {$child_age}yr FLAT $currency_buy $value) ";
+                    $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr FLAT $currency_buy $value) ";
                     $rates_children = $value;
                     $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
 
@@ -1981,7 +1974,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
                     }
 
                     $rates_children = $child_rate_value;
-                    $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index {$child_age}yr $value% of AD $currency_buy $rates_adult = $currency_buy $child_rate_value)";
+                    $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr $value% of AD $currency_buy $rates_adult = $currency_buy $child_rate_value)";
 
                     $arr[] = array("WORKINGS" => $workings, "RATES" => $child_rate_value, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
 
@@ -1991,7 +1984,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
                     //implies take the adult double rate
                     //here we are just taking the value attached to the child (good?)
 
-                    $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index $basis {$child_age}yr DBL $currency_buy $value) ";
+                    $workings = "$workings_spo $single_parent_comments (CH #$child_index $basis {$child_age}yr DBL $currency_buy $value) ";
                     $rates_children = $value;
 
                     $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 2);
@@ -2002,7 +1995,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
                     //implies take the adult double rate
                     //here we are just taking the value attached to the child (good?)
 
-                    $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index $basis {$child_age}yr TRPL $currency_buy $value) ";
+                    $workings = "$workings_spo $single_parent_comments (CH #$child_index $basis {$child_age}yr TRPL $currency_buy $value) ";
                     $rates_children = $value;
 
                     $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 3);
@@ -2021,7 +2014,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
         $child_count_index = 1;
 
         $temp_arr = array();
-
+        
         for ($i = 0; $i < count($arr); $i++) {
             $work = $arr[$i]["WORKINGS"];
             $rates = $arr[$i]["RATES"];
@@ -2214,7 +2207,7 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
         $cumul_buyprice = 0;
 
         $arr_spo_summary_applied = array(); //count the summary of adults/children applied to SPOs
-        //splitting the adult rates for each adult
+
         for ($adinx = 1; $adinx <= $adult; $adinx++) {
             if ($adinx == $adult) {
                 $adult_buyprice = $rates - $cumul_buyprice;
@@ -2268,13 +2261,28 @@ function _rates_calculator_calc_children($children, $arr_childrenpolicies_rules,
     $arr_age_groups = _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contract);
 
     //======================================================================================
-    //now calculate rates for own room children
-    $_arr = _rates_calculator_calculate_sharing_own_children_rates($arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first, $con, $spo_contract, "SINGLE");
-    $arr = array_merge($arr, $_arr);
-    //======================================================================================
+    //for each age group, get children that fall within that range
+    for ($a = 0; $a < count($arr_age_groups); $a++) {
+        $age_from = $arr_age_groups[$a]["AGEFROM"];
+        $age_to = $arr_age_groups[$a]["AGETO"];
+
+        $arr_temp_children = array();
+        for ($i = 0; $i < count($children); $i++) {
+            if ($age_from <= $children[$i]["age"] && $children[$i]["age"] <= $age_to) {
+                $arr_temp_children[] = $children[$i];
+            }
+        }
+
+        //now calculate the rates for all OWN ROOM children in that age group
+        if (count($arr_temp_children) > 0) {
+            $_arr = _rates_calculator_calc_own_room_children_by_agegroup($arr_temp_children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
+            $arr = array_merge($arr, $_arr);
+        }
+    }
+
     //======================================================================================
     //now calculate rates for sharing children
-    $_arr = _rates_calculator_calculate_sharing_own_children_rates($arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first, $con, $spo_contract, "SHARING");
+    $_arr = _rates_calculator_calculate_sharing_children_rates($arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first, $con, $spo_contract);
     $arr = array_merge($arr, $_arr);
     //======================================================================================
 
@@ -2327,6 +2335,240 @@ function _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contra
     }
 
     return $arr_age_groups;
+}
+
+function _rates_calculator_calc_own_room_children_by_agegroup($children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first) {
+
+    $arr_single = array();
+    $arr_final = array();
+
+    //===============================================================
+    //split children sharing or single
+    for ($i = 0; $i < count($children); $i++) {
+        if ($children[$i]["sharing_own"] != "SHARING") {
+            $arr_single[] = $children[$i];
+        }
+    }
+
+
+    //===============================================================
+    //get single children rates    
+    $_arr = _rates_calculator_calculate_own_room_children_rates("SINGLE", $arr_single, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first);
+    $arr_final = array_merge($arr_final, $_arr);
+    //===========================================================================
+
+    return $arr_final;
+}
+
+function _rates_calculator_calculate_own_room_children_rates($sharing_single, $arr_children, $arr_childrenpolicies_rules, $arr_adultpolicies_rules, $arr_params, $arr_eci, $this_date, $flg_looked_at_single_parent_first) {
+
+    $single_parent_comments = "";
+    if ($flg_looked_at_single_parent_first) {
+        $single_parent_comments = "<font color='orange'>NO <b>SINGLE PARENT</b> RATES FOUND!</font> REVERTING TO <B>NORMAL RATES</B>...<br>";
+    }
+
+    $currency_buy = $arr_params["currency_buy_code"];
+
+    $arr = array();
+    $workings_spo = "";
+    $child_index = count($arr_children);
+    $rates_children = 0;
+
+    //==============================FLAT RATE SPO? ================================
+    if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
+        //clearly SPO FLAT RATES will take over for this date
+        $workings_spo .= $arr_params["flat_rate_spo_apply"]["COMMENTS"];
+    }
+    //=============================================================================
+
+
+    while ($child_index > 0) {
+        $child_age = $arr_children[$child_index - 1]["age"];
+        //get the basis and value for that childindex + age combination
+
+        $arr_lkup = _rates_calculator_lookup_child_basis_value($sharing_single, $child_index, $child_age, $arr_childrenpolicies_rules);
+        $basis = $arr_lkup["BASIS"];
+        $value = $arr_lkup["VALUE"];
+        $status = $arr_lkup["STATUS"];
+
+        if ($status == "NO_RATES") {
+            $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr <font color='orange'>NO RATES</font>) => ";
+
+            $arr[] = array("WORKINGS" => $workings, "RATES" => 0, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
+
+            //go to next child if possible
+            if ($child_index == 1) {
+                $workings .= "END";
+
+                $arr[count($arr) - 1]["WORKINGS"] = $workings;
+                //stop here
+                break;
+            }
+        } else {
+            if ($basis == "SINGLE") {
+                //here we are just taking the value attached to the child
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr SNGL $currency_buy $value) ";
+                $rates_children = $value;
+
+                $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
+
+                //stop here
+                break;
+            } else if ($basis == "FLAT") {
+                //here just take the flat rate
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr FLAT $currency_buy $value) ";
+                $rates_children = $value;
+                $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
+
+                //may need to go to next child if possible
+            } else if ($basis == "%") {
+
+                //here just calculate a percentage value of adult.index
+                //get adult rates
+                $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+                $arr_adult_workings = _rates_calculator_calc_adult_recur($child_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
+                $rates_adult = $arr_adult_workings["RATES_ADULT"];
+
+                $child_rate_value = 0;
+                if ($value > 0) {
+                    $child_rate_value = round(($value / 100) * $rates_adult, 2);
+                }
+
+                $rates_children = $child_rate_value;
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index {$child_age}yr $value% of AD $currency_buy $rates_adult = $currency_buy $child_rate_value)";
+
+                $arr[] = array("WORKINGS" => $workings, "RATES" => $child_rate_value, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 0);
+
+                //stop here
+                break;
+            } else if ($basis == "DOUBLE") {
+                //implies take the adult double rate
+                //here we are just taking the value attached to the child (good?)
+
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index $basis {$child_age}yr DBL $currency_buy $value) ";
+                $rates_children = $value;
+
+                $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 2);
+
+                //stop here
+                break;
+            } else if ($basis == "TRIPLE") {
+                //implies take the adult double rate
+                //here we are just taking the value attached to the child (good?)
+
+                $workings = "$workings_spo $single_parent_comments (CH #$child_index $basis {$child_age}yr TRPL $currency_buy $value) ";
+                $rates_children = $value;
+
+                $arr[] = array("WORKINGS" => $workings, "RATES" => $rates_children, "CHILDINDEX" => $child_index, "TO_SPLIT_BETWEEN" => 3);
+                //stop here
+                break;
+            }
+        }
+
+        $child_index--;
+    }
+
+    //need to split where to split:
+
+    $temp_arr = array();
+    $child_index_to_use = 1;
+    $arr_spo_summary_applied = array(); //count the summary of adults/children applied to SPOs
+
+    for ($i = 0; $i < count($arr); $i++) {
+        $work = $arr[$i]["WORKINGS"];
+        $rates = $arr[$i]["RATES"];
+        $childindex = $arr[$i]["CHILDINDEX"];
+        $split_between = $arr[$i]["TO_SPLIT_BETWEEN"];
+        $child_age = $arr_children[$childindex - 1]["age"];
+
+        if ($split_between == 0) {
+
+            //apply eci for that child if any
+            _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $work, $currency_buy);
+
+            //apply spo percent discount for that child if any
+            _rates_calculator_apply_spo_discount_percentage($rates, $work, $arr_params, "CHILDREN",
+                    $child_age, "", "ROOM", $this_date,
+                    $child_index_to_use, $arr_spo_summary_applied);
+
+            $child_index_to_use++;
+
+            $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates,
+                "ADCH" => "CHILDREN",
+                "AGE" => $child_age,
+                "BRIDEGROOM" => "");
+        } else {
+            //need to split
+            $ch_buyprice = round($rates / $split_between);
+            $cumul_buyprice = 0;
+
+            for ($chinx = 1; $chinx <= $split_between; $chinx++) {
+                if ($chinx == $split_between) {
+                    $ch_buyprice = $rates - $cumul_buyprice;
+                } else {
+                    $cumul_buyprice += $ch_buyprice;
+                }
+
+                $msg = "$work => Ch #$childindex => $currency_buy $ch_buyprice";
+
+                //apply eci percentage for that child if any
+                _rates_calculator_apply_rates_eci_percentage($ch_buyprice, $arr_eci, $msg, $currency_buy);
+
+                //apply spo percent discount for that child if any
+                _rates_calculator_apply_spo_discount_percentage($ch_buyprice, $msg, $arr_params,
+                        "CHILDREN", $child_age, "", "ROOM",
+                        $this_date, $child_index_to_use, $arr_spo_summary_applied);
+
+                $child_index_to_use++;
+
+                $temp_arr[] = array("MSG" => $msg,
+                    "COSTINGS" => $ch_buyprice,
+                    "ADCH" => "CHILDREN",
+                    "AGE" => $child_age,
+                    "BRIDEGROOM" => "");
+
+                $childindex--;
+            }
+        }
+    }
+
+
+    return $temp_arr;
+}
+
+function _rates_calculator_lookup_child_basis_value($sharing_single, $child_index, $child_age, $arr_childrenpolicies_rules) {
+    $arr = array("BASIS" => "", "VALUE" => 0, "STATUS" => "NO_RATES");
+
+    for ($i = 0; $i < count($arr_childrenpolicies_rules); $i++) {
+        if ($arr_childrenpolicies_rules[$i]["rule_sharing_single"] == $sharing_single &&
+                $arr_childrenpolicies_rules[$i]["rule_category"] == $child_index) {
+            $arr_rule_policy = $arr_childrenpolicies_rules[$i]["rule_policy"];
+
+            for ($j = 0; $j < count($arr_rule_policy); $j++) {
+                $policy_category = strtoupper($arr_rule_policy[$j]["policy_category"]);
+                $agfrom = $arr_rule_policy[$j]["policy_units_additional_child_agefrom"];
+                $agto = $arr_rule_policy[$j]["policy_units_additional_child_ageto"];
+
+                if ($agfrom <= $child_age && $child_age <= $agto) {
+                    $arr_policy_values = $arr_rule_policy[$j]["policy_values"];
+                    for ($k = 0; $k < count($arr_policy_values); $k++) {
+                        $value_value = $arr_policy_values[$k]["value_value"];
+                        $arr[$policy_category] = $value_value;
+
+                        $basis = trim($arr["BASIS"]);
+                        $basis = str_replace(chr(194) . chr(160), "", $basis);
+                        if ($basis != "") {
+                            $arr["STATUS"] = "OK";
+                        }
+
+                        //return $arr;
+                    }
+                }
+            }
+        }
+    }
+
+    return $arr;
 }
 
 function _rates_calculator_calc_adult_recur($adult, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params) {
@@ -2465,14 +2707,8 @@ function _rates_calculator_extra_meal_supp($arr_params, $this_date, $con) {
 
                 $extra_extra_name = $rules["extra_extra_name"];
 
-                //determine if extra meal is SPO deductable or not
-                $extra_spo_deductable = $rules["extra_spo_deductable"];
-
                 $workings = "<font color='blue'><b>EXTRA MANDATORY MEAL</b>: $extra_extra_name : </font>";
 
-                if ($extra_spo_deductable == 1) {
-                    $workings .= " (SPO DEDUCTABLE) ";
-                }
                 //============= now adult ==========
 
                 $arr_spo_summary_applied = array(); //count the summary of adults/children applied to SPOs
@@ -2486,13 +2722,10 @@ function _rates_calculator_extra_meal_supp($arr_params, $this_date, $con) {
                     $msg = "$workings Ad #{$a} = $currency_buy $extra_adult";
 
                     //apply any percentage discount if applicable
-                    if ($extra_spo_deductable == 1) {
-                        _rates_calculator_apply_spo_discount_percentage($extra_adult, $msg, $arr_params,
-                                "ADULT", $ad_pax["age"], $ad_pax["bride_groom"],
-                                "EXTRA_MEAL_SUPPLEMENT", $this_date, $a,
-                                $arr_spo_summary_applied);
-                    }
-
+                    _rates_calculator_apply_spo_discount_percentage($extra_adult, $msg, $arr_params,
+                            "ADULT", $ad_pax["age"], $ad_pax["bride_groom"],
+                            "EXTRA_MEAL_SUPPLEMENT", $this_date, $a,
+                            $arr_spo_summary_applied);
 
                     $arr[] = array("MSG" => $msg, "COSTINGS" => $extra_adult,
                         "ADCH" => "ADULT",
@@ -2504,7 +2737,7 @@ function _rates_calculator_extra_meal_supp($arr_params, $this_date, $con) {
 
                 //============= and now children ==========
                 $children_rules = $rules["extra_children"];
-                $arr_children_result = _rates_calculator_extra_meal_supplement_children($children_rules, $children, $con, $arr_params, $extra_extra_name, $this_date, $arr_spo_summary_applied, $extra_spo_deductable);
+                $arr_children_result = _rates_calculator_extra_meal_supplement_children($children_rules, $children, $con, $arr_params, $extra_extra_name, $this_date, $arr_spo_summary_applied);
                 $arr = array_merge($arr, $arr_children_result);
             }
         }
@@ -2632,15 +2865,11 @@ function _rates_calculator_meal_supp_lookup($arr_capacity, $workings_flat_rate, 
     return $arr;
 }
 
-function _rates_calculator_extra_meal_supplement_children($children_rules, $children, $con, $arr_params, $extra_extra_name, $this_date, &$arr_spo_summary_applied, $extra_spo_deductable) {
+function _rates_calculator_extra_meal_supplement_children($children_rules, $children, $con, $arr_params, $extra_extra_name, $this_date, &$arr_spo_summary_applied) {
     $workings = "";
     $arr = array();
 
     $workings = "<font color='blue'><b>EXTRA MANDATORY MEAL</b>: $extra_extra_name : </font>";
-
-    if ($extra_spo_deductable == 1) {
-        $workings .= " (SPO DEDUCTABLE) ";
-    }
 
     $currency_buy = $arr_params["currency_buy_code"];
 
@@ -2678,13 +2907,10 @@ function _rates_calculator_extra_meal_supplement_children($children_rules, $chil
                         $msg = "$workings Ch #{$ch} ({$age_from}-{$age_to}yrs) = $currency_buy $child_meal_rate";
 
                         //apply any percentage discount if applicable
-                        if ($extra_spo_deductable == 1) {
-                            _rates_calculator_apply_spo_discount_percentage($child_meal_rate, $msg, $arr_params,
-                                    "CHILDREN", $age, "",
-                                    "EXTRA_MEAL_SUPPLEMENT", $this_date, $child_total_index,
-                                    $arr_spo_summary_applied);
-                        }
-
+                        _rates_calculator_apply_spo_discount_percentage($child_meal_rate, $msg, $arr_params,
+                                "CHILDREN", $age, "",
+                                "EXTRA_MEAL_SUPPLEMENT", $this_date, $child_total_index,
+                                $arr_spo_summary_applied);
 
                         $arr[] = array("MSG" => $msg, "COSTINGS" => $child_meal_rate,
                             "ADCH" => "CHILDREN",

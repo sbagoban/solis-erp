@@ -343,10 +343,10 @@ try {
     if ($template == "wedding_anniversary") {
         $wedding_anniversary = json_decode($_POST["wedding_anniversary"], true);
 
-        $wedding_date_before_value = utils_DMY_YMD($wedding_anniversary["wedding_date_before_value"], null);
+        $wedding_date_before_value = utils_stringBlank($wedding_anniversary["wedding_date_before_value"], null);
         $wedding_date_before_basis = utils_stringBlank($wedding_anniversary["wedding_date_before_basis"], null);
 
-        $wedding_date_after_value = utils_DMY_YMD($wedding_anniversary["wedding_date_after_value"], null);
+        $wedding_date_after_value = utils_stringBlank($wedding_anniversary["wedding_date_after_value"], null);
         $wedding_date_after_basis = utils_stringBlank($wedding_anniversary["wedding_date_after_basis"], null);
 
         $wedding_anniversary_applicable_value = utils_stringBlank($wedding_anniversary["wedding_anniversary_applicable_value"], null);

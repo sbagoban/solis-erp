@@ -32,12 +32,13 @@ try {
     if ($_GET["t"] != $_SESSION["token"]) {
         die("INVALID TOKEN");
     }
+    
 
     require_once("../../connector/pdo_connect_main.php");
 
     $roomid = $_GET["roomid"];
-    $arr_childages_count = json_decode($_GET["arr_childages_count"], true);
-    $max_child_count = $_GET["max_child_count"];
+    $arr_main_childages = json_decode($_GET["arr_main_childages"], true);
+    $arr_result = json_decode($_GET["arr_result"], true);
     $selected_currency_buy_ids = $_GET["selected_currency_buy_ids"];
     $selected_currency_sell_ids = $_GET["selected_currency_sell_ids"];
     $costprice_currencyid = $_GET["costprice_currencyid"];
@@ -68,9 +69,9 @@ try {
     print '<column width="100" id="number" type="ro" align="center" sort="na">Number</column>';
 
 
-    for ($i = 0; $i < count($arr_childages_count); $i++) {
-        $agefrom = $arr_childages_count[$i]["age_from"];
-        $ageto = $arr_childages_count[$i]["age_to"];
+    for ($i = 0; $i < count($arr_main_childages); $i++) {
+        $agefrom = $arr_main_childages[$i]["age_from"];
+        $ageto = $arr_main_childages[$i]["age_to"];
 
         print '<column width="65" id="basis_' . $agefrom . '_' . $ageto . '" type="combo" '
                 . 'align="center"  sort="na">Child (' . $agefrom . '-' . $ageto . ')</column>  ';
@@ -101,7 +102,7 @@ try {
 
     print '#rspan';
     
-    for ($i = 0; $i < count($arr_childages_count); $i++) {
+    for ($i = 0; $i < count($arr_main_childages); $i++) {
         
         print ',Basis';
         
@@ -135,7 +136,7 @@ try {
     print '#rspan';
 
 
-    for ($i = 0; $i < count($arr_childages_count); $i++) {
+    for ($i = 0; $i < count($arr_main_childages); $i++) {
         print ',#rspan';
         for ($j = 0; $j < count($arr_currency_buy); $j++) {
             $buycurrencyid = $arr_currency_buy[$j]["ID"];
@@ -160,71 +161,120 @@ try {
     print '<settings><colwidth>px</colwidth></settings> ';
 
     print '</head>';
+    
+    for ($ruleindex = 0; $ruleindex < count($arr_result); $ruleindex++) {
 
-    for ($chindex = 1; $chindex <= $max_child_count; $chindex++) {
-        print "<row id='number_$chindex'>";
-
-        print "<cell type='ro' align='center' context='number'  "
-                . "sort='na' number='$chindex' agefrom='0' ageto='0' "
-                . "currencyid='' buy_sell='' "
-                . "max_count='' min_count='' "
-                . "style='$cellstyle $cellstylelocked'>" . decideNumberCaption($chindex) . " Child</cell>";
-
-
-        for ($i = 0; $i < count($arr_childages_count); $i++) {
-            $agefrom = $arr_childages_count[$i]["age_from"];
-            $ageto = $arr_childages_count[$i]["age_to"];
-            $maxcount = $arr_childages_count[$i][$child_mode]["max_child"];
-            $mincount = $arr_childages_count[$i][$child_mode]["min_child"];
-
-            $arr_basis = decideBaisCell($chindex, $maxcount);
-
-            print "<cell type='" . $arr_basis["CELLTYPE_COMBO"] . "' "
-                    . "align='center' context='basis'  "
-                    . "sort='na' number='$chindex' agefrom='$agefrom' ageto='$ageto' "
-                    . "currencyid='' buy_sell=''  "
-                    . $arr_basis["XML"]
-                    . "max_count='$maxcount' min_count='$mincount' "
-                    . " style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . "'>" . $arr_basis["OPTIONS"] . "</cell>";
-
-            for ($j = 0; $j < count($arr_currency_buy); $j++) {
-                $buycurrencyid = $arr_currency_buy[$j]["ID"];
-                $buycurrencycode = $arr_currency_buy[$j]["CODE"];
-
-                print "<cell type='" . $arr_basis["CELLTYPE_EDN"] . "' "
-                        . "align='center' context='value'  "
-                        . " buy_sell='buy' "
-                        . "sort='na' number='$chindex' agefrom='$agefrom' ageto='$ageto' "
-                        . "currencyid='" . $buycurrencyid . "'  "
-                        . "max_count='$maxcount' min_count='$mincount' "
-                        . "style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . "'></cell>";
-            }
-
-            for ($j = 0; $j < count($arr_currency_sell); $j++) {
-                $sellcurrencyid = $arr_currency_sell[$j]["ID"];
-                $sellcurrencycode = $arr_currency_sell[$j]["CODE"];
-
-                print "<cell type='ron' "
-                        . "align='center' context='value' buy_sell='sell' "
-                        . "sort='na' number='$chindex' "
-                        . " agefrom='$agefrom' ageto='$ageto' "
-                        . "currencyid='" . $sellcurrencyid . "'  "
-                        . "max_count='$maxcount' min_count='$mincount' "
-                        . "style='$cellstyle $cellstylelocked'></cell>";
-            }
-        }
-
-
-
-
-        print "</row>";
-    }
+        printRuleCells($ruleindex);
+    }   
 
     print '</rows>';
 } catch (Exception $ex) {
 
     die("ERROR: " . $ex->getMessage());
 }
+
+//==================================================================
+//==================================================================
+
+function printRuleCells($ruleindex) {
+
+    global $arr_result;
+    global $arr_currency_buy;
+    global $arr_currency_sell;
+    global $arr_main_childages;
+    global $cellstyle;
+    global $cellstylelocked;
+    
+    //get the max child count of that rule
+    $rule_ageranges = ";";
+    $max_child = 0;
+    for ($i = 0; $i < count($arr_result[$ruleindex]["children_ages"]); $i++) {
+
+        $capacity_child_agefrom = $arr_result[$ruleindex]["children_ages"][$i]["capacity_child_agefrom"];
+        $capacity_child_ageto = $arr_result[$ruleindex]["children_ages"][$i]["capacity_child_ageto"];
+        
+        
+        $child_max = $arr_result[$ruleindex]["children_ages"][$i]["capacity_maxpax"];
+        $child_min = $arr_result[$ruleindex]["children_ages"][$i]["capacity_minpax"];
+        
+        $rule_ageranges .= "{$capacity_child_agefrom}_{$capacity_child_ageto}:{$child_min}^{$child_max};";
+        
+        if ($max_child < $child_max) {
+            $max_child = $child_max;
+        }
+        
+    }
+    
+    for ($chindex = 1; $chindex <= $max_child; $chindex++) {
+
+        $lower_border_style = "";
+        if ($chindex == $max_child) {
+            $lower_border_style = " border-bottom: 3px solid black;";
+        }
+        
+        print "<row id='id_{$ruleindex}_{$chindex}' >";
+        
+        
+        //=============================================================================
+        //CHILD
+
+      
+        print "<cell type='ro' align='center' context='number'  "
+                . "sort='na' number='$chindex' agefrom='0' ageto='0' "
+                . "currencyid='' buy_sell='' "
+                . "max_count='' min_count='' "
+                . "rule_ageranges='$rule_ageranges'  "
+                . "style='$cellstyle $cellstylelocked $lower_border_style'>" . decideNumberCaption($chindex) . " Child</cell>";
+
+
+        for ($i = 0; $i < count($arr_main_childages); $i++) {
+
+            $agefrom = $arr_main_childages[$i]["age_from"];
+            $ageto = $arr_main_childages[$i]["age_to"];
+
+            $arr_basis = decideBaisCell($chindex, $agefrom, $ageto, $ruleindex);
+            
+            print "<cell type='" . $arr_basis["CELLTYPE_COMBO"] . "' "
+                    . "align='center' context='basis'  "
+                    . "sort='na' number='$chindex' agefrom='$agefrom' ageto='$ageto' "
+                    . "currencyid='' buy_sell=''  "
+                    . $arr_basis["XML"]
+                    . "rule_ageranges='$rule_ageranges'  "
+                    . " style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . " $lower_border_style'>" . $arr_basis["OPTIONS"] . "</cell>";
+
+            for ($j = 0; $j < count($arr_currency_buy); $j++) {
+                $buycurrencyid = $arr_currency_buy[$j]["ID"];
+
+                print "<cell type='" . $arr_basis["CELLTYPE_EDN"] . "' "
+                        . "align='center' context='value'  "
+                        . " buy_sell='buy' "
+                        . "sort='na' number='$chindex' agefrom='$agefrom' ageto='$ageto' "
+                        . "currencyid='" . $buycurrencyid . "'  "
+                        . "rule_ageranges='$rule_ageranges'  "
+                        . "style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . " $lower_border_style'></cell>";
+            }
+
+            for ($j = 0; $j < count($arr_currency_sell); $j++) {
+                $sellcurrencyid = $arr_currency_sell[$j]["ID"];
+
+                print "<cell type='ron' "
+                        . "align='center' context='value' buy_sell='sell' "
+                        . "sort='na' number='$chindex' "
+                        . " agefrom='$agefrom' ageto='$ageto' "
+                        . "rule_ageranges='$rule_ageranges'  "
+                        . "currencyid='" . $sellcurrencyid . "'  "
+                        . "style='$cellstyle $cellstylelocked $lower_border_style'></cell>";
+            }
+        }
+        print "</row>";
+    }
+    
+}
+
+//==================================================================
+//==================================================================
+
+
 
 function decideNumberCaption($i) {
     if ($i == 1) {
@@ -253,27 +303,41 @@ function getCurrencyArray($selected_currency_ids, $con) {
     return $arrcodes;
 }
 
-function decideBaisCell($chindex, $count) {
+function decideBaisCell($chindex, $main_agefrom, $main_ageto, $ruleindex) {
     global $cellstylelocked;
     global $basis_options;
-
+    global $arr_result;
+    
     $celltype_combo = "ro";
     $celltype_edn = "ro";
-    $options = "";
+    $mybasis_options = "";
     $xml = "";
     $cellstyleadd = $cellstylelocked;
 
-    if ($chindex <= $count) {
-        $celltype_combo = "combo";
-        $celltype_edn = "edn";
-        $options = $basis_options;
-        $xml = " xmlcontent=\"true\" editable=\"0\" ";
-        $cellstyleadd = "";
+    for ($i = 0; $i < count($arr_result[$ruleindex]["children_ages"]); $i++) {
+        
+        $capacity_child_agefrom = $arr_result[$ruleindex]["children_ages"][$i]["capacity_child_agefrom"];
+        $capacity_child_ageto = $arr_result[$ruleindex]["children_ages"][$i]["capacity_child_ageto"];
+        $capacity_maxpax = $arr_result[$ruleindex]["children_ages"][$i]["capacity_maxpax"];
+
+        if ($main_agefrom >= $capacity_child_agefrom && 
+            $main_ageto <= $capacity_child_ageto) {
+
+            if ($chindex <= $capacity_maxpax) {
+                $celltype_combo = "combo";
+                $celltype_edn = "edn";
+                $mybasis_options = $basis_options;
+                $xml = " xmlcontent=\"true\" editable=\"0\" ";
+                $cellstyleadd = "";
+            }
+        }
     }
+
+   
 
     return array("CELLTYPE_COMBO" => $celltype_combo,
         "CELLTYPE_EDN" => $celltype_edn,
-        "OPTIONS" => $options, "XML" => $xml,
+        "OPTIONS" => $mybasis_options, "XML" => $xml,
         "CELLSTYLELOCKED" => $cellstyleadd);
 }
 ?>

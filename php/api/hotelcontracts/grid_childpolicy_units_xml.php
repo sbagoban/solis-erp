@@ -168,6 +168,7 @@ try {
                 . "sort='na' number='$chindex' agefrom='0' ageto='0' "
                 . "currencyid='' buy_sell='' "
                 . "max_count='' min_count='' "
+                . "rule_ageranges='' "
                 . "style='$cellstyle $cellstylelocked'>Extra " . decideNumberCaption($chindex) . " Child</cell>";
 
 
@@ -185,6 +186,7 @@ try {
                     . "currencyid='' buy_sell=''  "
                     . $arr_basis["XML"]
                     . "max_count='$maxcount' min_count='$mincount' "
+                    . "rule_ageranges='' "
                     . " style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . "'>" . $arr_basis["OPTIONS"] . "</cell>";
 
             for ($j = 0; $j < count($arr_currency_buy); $j++) {
@@ -196,6 +198,7 @@ try {
                         . " buy_sell='buy' "
                         . "sort='na' number='$chindex' agefrom='$agefrom' ageto='$ageto' "
                         . "currencyid='" . $buycurrencyid . "'  "
+                        . "rule_ageranges='' "
                         . "max_count='$maxcount' min_count='$mincount' "
                         . "style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . "'></cell>";
             }
@@ -207,6 +210,7 @@ try {
                 print "<cell type='ron' "
                         . "align='center' context='value' buy_sell='sell' "
                         . "sort='na' number='$chindex' "
+                        . "rule_ageranges='' "
                         . " agefrom='$agefrom' ageto='$ageto' "
                         . "currencyid='" . $sellcurrencyid . "'  "
                         . "max_count='$maxcount' min_count='$mincount' "

@@ -1,7 +1,7 @@
 // JavaScript Document
-/*Date : 2020, 09 January
+/*Date : 2020, 30 January
 Application : Activity - Booking Accom
-Developer : slouis@solis360.com*/
+Developer : sbagoban@solis360.com*/
 var target_action = 'NULL';
 
 $(function(){
@@ -285,10 +285,64 @@ function loadAccomTarif(data, max_pax) {
     var accom_client = $('#accom_client').val();
     
     var accom_client_age = $('#accom_client').find('option:selected').attr("name");
-    var accom_client_details = {
-        age: accom_client_age, 
-        bride_groom: ""
-    };
+
+    
+    console.log('-->', accom_client);
+    const url_read_booking_client = "php/api/bookingSystem/readBookingClient.php?t=" + encodeURIComponent(global_token) + "&id_booking_client=" +accom_client;
+            $.ajax({
+                url: url_read_booking_client,
+                method: "POST",
+                dataType: "json",
+                success: function (clientData) {
+                    console.log('clientData -->', clientData[0].age);
+                    clientType = clientData[0].type;
+                }, error: function (error) {
+                    console.log('Error ${error}');
+                }
+            });
+            
+            // var inegibleClient = $('#accom_client option[value="'+val+'"]').val();
+            // $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
+            // $("#accom_client").selectpicker('refresh');
+
+    // var accom_client_details = [
+    //     var test = { age: accom_client_age, 
+    //         bride_groom: ""
+    //     };
+    // ];
+    // populate this array first 
+    // sandeep 
+    // get age -- call api client 
+    // take age push in object 
+    // get remarks
+    var accom_client_details = [
+        {count:1, age:30, bride_groom:"BRIDE"}
+    ];
+
+// var accom_client_details = [
+// {count:1,age:30,bride_groom:"BRIDE"},
+
+// var accom_client_details = [
+// {count:1,age:30,bride_groom:"BRIDE"},
+// {count:1,age:30,bride_groom:"BRIDE"},
+// {count:1,age:30,bride_groom:"BRIDE"}
+// var accom_client_details = [
+// {count:1, age:30, bride_groom:"BRIDE"},
+// {count:2, age:30, bride_groom:"GROOM"},
+// {count:3, age:5, bride_groom:""}
+// ]
+// var accom_client_details = [
+// {count:1, age:30, bride_groom:"BRIDE"},
+// {count:2, age:30, bride_groom:"GROOM"},
+// {count:3, age:5, bride_groom:""}
+// ]
+
+    // var accom_client_details = [
+    //     {count:1, age:30, bride_groom:"BRIDE"},
+    //     {count:2, age:30, bride_groom:"GROOM"},
+    //     {count:3, age:5, bride_groom:""}
+    //     ]
+        
     console.log('accom_client', accom_client);
     var arr_params_resa = {
         mealplan : mealplan,
@@ -375,6 +429,7 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
 
                     if (clientData[0].age == null) {
                         // no age
+                        //  Consider as adult
                     } else {
                         // readBooking
                         const url_search_booking = "php/api/bookingSystem/readBooking.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +id_booking;

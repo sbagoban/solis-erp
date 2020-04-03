@@ -448,6 +448,7 @@ function _contract_getRoomDatesExtraSupplementRules($con, $date_rwid) {
         $extra_id = $rw["id"];
         $extra_extra_name = $rw["extra_name"];
         $extra_mandatory = $rw["mandatory"];
+        $extra_spo_deductable = $rw["spo_deductable"];
         $extra_include_diner_rate_bb = $rw["include_diner_rate_bb"];
         $extra_hb_mealplan_fk = $rw["hb_mealplan_fk"];
         $extra_bb_mealplan_fk = $rw["bb_mealplan_fk"];
@@ -466,6 +467,7 @@ function _contract_getRoomDatesExtraSupplementRules($con, $date_rwid) {
         $arr_extra[] = array("extra_rwid" => $extra_id,
             "extra_extra_name" => $extra_extra_name,
             "extra_mandatory" => $extra_mandatory,
+            "extra_spo_deductable" => $extra_spo_deductable,
             "extra_include_diner_rate_bb" => $extra_include_diner_rate_bb,
             "extra_hb_mealplan_fk" => $extra_hb_mealplan_fk,
             "extra_bb_mealplan_fk" => $extra_bb_mealplan_fk,
