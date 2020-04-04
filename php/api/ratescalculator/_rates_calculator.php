@@ -4,6 +4,7 @@ function _rates_calculator($con, $arr_params) {
     try {
 
 
+        
         $time_pre = microtime(true);
 
 
