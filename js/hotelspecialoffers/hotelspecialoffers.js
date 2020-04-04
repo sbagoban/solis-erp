@@ -10158,7 +10158,6 @@ function hotelspecialoffers()
         }
     }
 
-
     function calculateFlatRateSellingPrice(value_input, currencyid_input, currencyid_sell, callback, arr_arguements)
     {
         var arr_buy = _flat_rate_tax_commi_obj.buying_settings;
@@ -12695,31 +12694,19 @@ function hotelspecialoffers()
             return;
         }
 
-        var roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
-        //if room has exception taxcommi setting, then use this id
-        //otherwise use GENERAL taxcommi setting
-
-        var room_obj = lookupTaxCommiRoomObj(roomid);
-        if (!room_obj)
-        {
-            roomid = "GENERAL"; //fallback to general 
-        } else if (room_obj.room_hasexception == "NO")
-        {
-            roomid = "GENERAL"; //fallback to general 
-        }
-
-        var selected_currency_sell_ids = form_currency.getItemValue("selected_currency_sell_ids");
+        var selected_currency_sell_ids = form_flat_rate_currency.getItemValue("selected_currency_sell_ids");
+        
         var arr_currency_sell = selected_currency_sell_ids.split(",");
         for (var i = 0; i < arr_currency_sell.length; i++)
         {
             var sell_currency_id = arr_currency_sell[i];
-            calculateSellingPrice(roomid, newvalue, currencyinputid, sell_currency_id, callbackDisplayChildOwnPolicySalesPrice, [grid, rwid, cindx]);
+            calculateFlatRateSellingPrice(newvalue, currencyinputid, sell_currency_id, callbackDisplayChildOwnPolicySalesPrice, [rwid, cindx, sell_currency_id]);
         }
     }
     
     function callbackDisplayChildOwnPolicySalesPrice(arr_arguements)
     {
-        //[grid, rwid, cindx, calc_obj]
+        //[rwid, cindx, sellcurrencyid]
 
         var taxcommi_item = getObjCalcItemCode(arr_arguements[3], "SELLING", "FINALSP");
 
@@ -12734,11 +12721,10 @@ function hotelspecialoffers()
 
 
         //place the value in the grid
-        var grid = arr_arguements[0];
-        var rwid = arr_arguements[1];
-        var cellidx = arr_arguements[2];
+        var rwid = arr_arguements[0];
+        var cellidx = arr_arguements[1];
 
-        var cellObj = grid.cells(rwid, cellidx);
+        var cellObj = grid_childpolicy_own_age.cells(rwid, cellidx);
 
         var context = cellObj.getAttribute("context");
         var agefrom = cellObj.getAttribute("agefrom");
@@ -12746,7 +12732,7 @@ function hotelspecialoffers()
         var number = cellObj.getAttribute("number");        
         var rule_ageranges = cellObj.getAttribute("rule_ageranges");
 
-        grid.forEachCell(rwid, function (c) {
+        grid_childpolicy_own_age.forEachCell(rwid, function (c) {
 
             if (c.getAttribute("context") == context &&
                     c.getAttribute("currencyid") == sp_currencyid &&
@@ -12990,7 +12976,7 @@ function hotelspecialoffers()
         for (var i = 0; i < arr_currency_sell.length; i++)
         {
             var sell_currency_id = arr_currency_sell[i];
-            calculateFlatRateSellingPrice(newvalue, currencyinputid, sell_currency_id, callbackDisplayChildPolicySalesPrice, [grid, rwid, cindx]);
+            calculateFlatRateSellingPrice(newvalue, currencyinputid, sell_currency_id, callbackDisplayChildPolicySalesPrice, [rwid, cindx, sell_currency_id]);
         }
 
     }
@@ -13157,8 +13143,6 @@ function hotelspecialoffers()
         var roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
         var daterwid = tree_roomdates.getUserData(nodeid, "DATE_RWID");
 
-
-
         if (stage == 1)
         {
             if (grid_childpolicy_sharing_age.editor && grid_childpolicy_sharing_age.editor.obj)
@@ -13188,7 +13172,7 @@ function hotelspecialoffers()
 
                     //display updates sales price if buying price changed
                     var currencyinputid = c.getAttribute("currencyid");
-                    calculateChildPolicySalesPrice(grid_childpolicy_sharing_age, rId, cInd, nValue, currencyinputid);
+                    calculateChildSharingPolicySalesPrice(rId, cInd, nValue, currencyinputid);
                 }
 
                 updateJsonChildSharingPoliciesValues(cInd, roomid, daterwid, rId, nValue );
@@ -13327,33 +13311,23 @@ function hotelspecialoffers()
             return;
         }
 
-        var roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
-        //if room has exception taxcommi setting, then use this id
-        //otherwise use GENERAL taxcommi setting
-
-        var room_obj = lookupTaxCommiRoomObj(roomid);
-        if (!room_obj)
-        {
-            roomid = "GENERAL"; //fallback to general 
-        } else if (room_obj.room_hasexception == "NO")
-        {
-            roomid = "GENERAL"; //fallback to general 
-        }
-
-        var selected_currency_sell_ids = form_currency.getItemValue("selected_currency_sell_ids");
+        var selected_currency_sell_ids = form_flat_rate_currency.getItemValue("selected_currency_sell_ids");
+        
         var arr_currency_sell = selected_currency_sell_ids.split(",");
         for (var i = 0; i < arr_currency_sell.length; i++)
         {
             var sell_currency_id = arr_currency_sell[i];
-            calculateSellingPrice(roomid, newvalue, currencyinputid, sell_currency_id, callbackDisplayChildSharingPolicySalesPrice, [rwid, cindx]);
+            calculateFlatRateSellingPrice(newvalue, currencyinputid, sell_currency_id, callbackDisplayChildSharingPolicySalesPrice, [rwid, cindx, sell_currency_id]);
         }
     }
     
     function callbackDisplayChildSharingPolicySalesPrice(arr_arguements)
     {
+        console.log(arr_arguements);
+        
         //[rwid, cindx, calc_obj]
 
-        var taxcommi_item = getObjCalcItemCode(arr_arguements[2], "SELLING", "FINALSP");
+        var taxcommi_item = getObjCalcItemCode(arr_arguements[3], "SELLING", "FINALSP");
 
         //extract the final sp value
         if (!taxcommi_item)

@@ -2028,8 +2028,9 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
             $rule_category = $arr_childpolicies_rules[$i]["rule_category"];
             $rule_sharing_single = $arr_childpolicies_rules[$i]["rule_sharing_single"];
             $rule_action = $arr_childpolicies_rules[$i]["rule_action"];
+            $rule_ageranges = $arr_childpolicies_rules[$i]["rule_ageranges"];
             $arr_rule_policy = $arr_childpolicies_rules[$i]["rule_policy"];
-
+            
 
             if ($rule_action == "DELETE") {
                 $sql = "DELETE FROM 
@@ -2043,17 +2044,20 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
                     $sql = "INSERT INTO 
                             tblspecial_offer_flatrate_ch_rm_dt_rules
                             (spo_flatrate_roomcapacity_dates_fk,
-                            rulecounter,rulecategory,sharing_single)
+                            rulecounter,rulecategory,sharing_single,
+                            ruleageranges)
                             VALUES
                             (:spo_flatrate_roomcapacity_dates_fk,
-                            :rulecounter,:rulecategory,:sharing_single)";
+                            :rulecounter,:rulecategory,:sharing_single,
+                            :ruleageranges)";
 
                     $stmt = $con->prepare($sql);
                     $stmt->execute(array(
                         ":spo_flatrate_roomcapacity_dates_fk" => $date_rwid,
                         ":rulecounter" => $i,
                         ":rulecategory" => $rule_category,
-                        ":sharing_single" => $rule_sharing_single));
+                        ":sharing_single" => $rule_sharing_single,
+                        ":ruleageranges"=>$rule_ageranges));
 
                     $rule_rwid = $con->lastInsertId();
                 } else {
@@ -2062,7 +2066,8 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
                             tblspecial_offer_flatrate_ch_rm_dt_rules SET 
                             rulecounter=:rulecounter,
                             rulecategory=:rulecategory,
-                            sharing_single=:sharing_single
+                            sharing_single=:sharing_single,
+                            ruleageranges=:ruleageranges
                             WHERE id=:id";
 
                     $stmt = $con->prepare($sql);
@@ -2070,7 +2075,8 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
                         ":id" => $rule_rwid,
                         ":rulecounter" => $i,
                         ":rulecategory" => $rule_category,
-                        ":sharing_single" => $rule_sharing_single));
+                        ":sharing_single" => $rule_sharing_single,
+                        ":ruleageranges"=>$rule_ageranges));
                 }
 
                 $outcome = saveflatratermchildpolicydtrulesages($rule_rwid, $arr_rule_policy);

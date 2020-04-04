@@ -7164,7 +7164,7 @@ function hotelcontracts()
             if (grid_capacity_age.getRowsNum() > 0)
             {
                 dhtmlx.alert({
-                    text: "A maximum of One rule allowed for Persons!",
+                    text: "A maximum of One rule allowed for UNITS rooms!",
                     type: "alert-warning",
                     title: "New Rule",
                     callback: function () {
