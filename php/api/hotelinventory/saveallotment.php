@@ -39,9 +39,10 @@ try {
     $id = $details["id"];
     $hotelfk = $details["hotelfk"];
     $rooms_ids = $details["rooms_ids"];
-    $date_from = $details["date_from"];
-    $date_to = $details["date_to"];
+    $date_from = date("Y-m-d", strtotime($details["date_from"]));
+    $date_from = date("Y-m-d", strtotime($details["date_to"]));
     $release_type = $details["release_type"];
+    $priority = $details["priority"];
     $specific_no_days = utils_stringBlank($details["specific_no_days"], null);
     $specific_date = utils_stringBlank($details["specific_date"], null);
     $to_ids = $details["to_ids"];
@@ -53,97 +54,59 @@ try {
     if (!is_null($specific_date)) {
         $specific_date = date("Y-m-d", strtotime($specific_date));
     }
-   
-    $date_from = date("Y-m-d", strtotime($date_from));
-    $date_to = date("Y-m-d", strtotime($date_to));
-    
-    $date_from = new DateTime($date_from);
-    $date_to = new DateTime($date_to);    
-    $date_to->modify('+1 day');
-    
-    
-    
-    $interval = DateInterval::createFromDateString('1 day');
-      
-    
-    
 
-    //split room wise
-    $arr_room_ids = explode(",", $rooms_ids);
 
-    //split TO ids
-    $arr_to_ids = explode(",", $to_ids);
 
-    for ($i = 0; $i < count($arr_room_ids); $i++) {
-        $roomid = $arr_room_ids[$i]; //<------------------- room id
 
-        for ($j = 0; $j < count($arr_to_ids); $j++) {
-            $tofk = $arr_to_ids[$j]; //<------------------- tour operator id
-            
-           $period = new DatePeriod($date_from, $interval, $date_to);
-            
-            
-            
-            foreach ($period as $dt) {
-                $this_date = $dt->format("Y-m-d");
+    //is it an insert or an update
+    if ($id == "-1") {
+        $sql = "INSERT INTO tblinventory_allotment
+                (hotel_fk,created_on,created_by,deleted) 
+                VALUES (:hotel_fk, NOW(), :created_by, 0)";
 
-                //first check if there is a record for this date, room, hotel, touroperator
-                $id = -1;
-                
-                $sql = "SELECT * FROM tblinventory_allotment WHERE 
-                        allotment_date=:allotment_date AND
-                        hotel_fk=:hotelfk AND 
-                        room_fk=:roomfk AND 
-                        to_fk=:to_fk";
-
-                $query = $con->prepare($sql);
-                $query->execute(array(":allotment_date" => $this_date, ":hotelfk" => $hotelfk,
-                    ":roomfk" => $roomid, ":to_fk" => $tofk));
-
-                if (!$rw = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $sql = "INSERT INTO tblinventory_allotment
-                            (allotment_date,created_on,created_by,deleted) 
-                            VALUES (:allotment_date, NOW(), :created_by, 0)";
-
-                    $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":allotment_date" => $this_date,
-                                          ":created_by"=>$_SESSION["solis_userid"] ));
-                    $id = $con->lastInsertId();
-                }
-                else
-                {
-                    $id = $rw["id"];
-                }
-                
-                //=============================================
-
-                $sql = "UPDATE tblinventory_allotment SET 
-                        hotel_fk=:hotelfk,
-                        room_fk=:roomfk,
-                        to_fk=:to_fk,
-                        release_type=:release_type,
-                        specific_no_days=:specific_no_days, 
-                        specific_date=:specific_date,
-                        comment=:comment, 
-                        units=:units
-                        WHERE id=:id";
-
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(":id" => $id,
-                    ":hotelfk" => $hotelfk,
-                    ":roomfk" => $roomid,
-                    ":to_fk" => $tofk,
-                    ":release_type" => $release_type,
-                    ":specific_no_days" => $specific_no_days,
-                    ":specific_date" => $specific_date,
-                    ":comment" => $comment,
-                    ":units" => $units));
-            }
-        }
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":hotel_fk" => $hotelfk,
+            ":created_by" => $_SESSION["solis_userid"]));
+        $id = $con->lastInsertId();
     }
 
+    //=============================================
+
+    $sql = "UPDATE tblinventory_allotment SET 
+            release_type=:release_type,
+            specific_no_days=:specific_no_days, 
+            specific_date=:specific_date,
+            comment=:comment, 
+            units=:units,
+            priority=:priority
+            WHERE id=:id";
+
+    $stmt = $con->prepare($sql);
+    $stmt->execute(array(":id" => $id,
+        ":release_type" => $release_type,
+        ":specific_no_days" => $specific_no_days,
+        ":specific_date" => $specific_date,
+        ":comment" => $comment,
+        ":priority" => $priority,
+        ":units" => $units));
 
 
+    $outcome = saverooms($rooms_ids, $id);
+    if ($outcome != "OK") {
+        throw new Exception($outcome);
+    }
+    
+    $outcome = savetouroperators($to_ids, $id);
+    if ($outcome != "OK") {
+        throw new Exception($outcome);
+    }
+
+    $outcome = savecountries($market_countries_ids, $id);
+    if ($outcome != "OK") {
+        throw new Exception($outcome);
+    }
+    
+    
     //DONE
 
     $con->commit();
@@ -153,4 +116,114 @@ try {
     $con->rollBack();
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
+
+function savetouroperators($touroperator_ids, $id) {
+    try {
+
+        global $con;
+
+        $sql = "DELETE FROM tblinventory_allotment_to 
+                WHERE allotmentfk=:id AND 
+                tofk NOT IN ($touroperator_ids)";
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $id));
+
+        $arr_to_ids = explode(",", $touroperator_ids);
+        for ($i = 0; $i < count($arr_to_ids); $i++) {
+            $toid = trim($arr_to_ids[$i]);
+            $sql = "SELECT * FROM tblinventory_allotment_to WHERE 
+                allotmentfk=:id AND tofk=:tofk";
+
+            $stmt = $con->prepare($sql);
+            $stmt->execute(array(":id" => $id, ":tofk" => $toid));
+            if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                //insert 
+                $sql = "INSERT INTO tblinventory_allotment_to 
+                    (allotmentfk,tofk) 
+                    VALUES (:id,:tofk)";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $id, ":tofk" => $toid));
+            }
+        }
+
+        return "OK";
+    } catch (Exception $ex) {
+        return "SAVE TOUR OPERATORS: " . $ex->getMessage();
+    }
+}
+
+function savecountries($market_countries_ids, $id) {
+    try {
+
+        global $con;
+
+        $sql = "DELETE FROM tblinventory_allotment_countries 
+                WHERE allotmentfk=:id AND 
+                countryfk NOT IN ($market_countries_ids)";
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $id));
+
+        $arr_country_ids = explode(",", $market_countries_ids);
+        for ($i = 0; $i < count($arr_country_ids); $i++) {
+            $cid = trim($arr_country_ids[$i]);
+            $sql = "SELECT * FROM tblinventory_allotment_countries WHERE 
+                allotmentfk=:id AND countryfk=:countryfk";
+
+            $stmt = $con->prepare($sql);
+            $stmt->execute(array(":id" => $id, ":countryfk" => $cid));
+            if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                //insert 
+                $sql = "INSERT INTO tblinventory_allotment_countries 
+                    (allotmentfk,countryfk) 
+                    VALUES (:id,:countryfk)";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $id, ":countryfk" => $cid));
+            }
+        }
+
+        return "OK";
+    } catch (Exception $ex) {
+        return "SAVE COUNTRIES: " . $ex->getMessage();
+    }
+}
+
+function saverooms($rooms_ids, $id) {
+    try {
+
+        global $con;
+
+        $sql = "DELETE FROM tblinventory_allotment_rooms 
+                WHERE allotmentfk=:id AND 
+                roomfk NOT IN ($rooms_ids)";
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $id));
+
+        $arr_room_ids = explode(",", $rooms_ids);
+        for ($i = 0; $i < count($arr_room_ids); $i++) {
+            $rid = trim($arr_room_ids[$i]);
+            $sql = "SELECT * FROM tblinventory_allotment_rooms 
+                    WHERE 
+                    allotmentfk=:id AND roomfk=:roomfk";
+
+            $stmt = $con->prepare($sql);
+            $stmt->execute(array(":id" => $id, ":roomfk" => $rid));
+            if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                //insert 
+                $sql = "INSERT INTO tblinventory_allotment_rooms 
+                        (allotmentfk,roomfk) 
+                        VALUES (:id,:roomfk)";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $id, ":roomfk" => $rid));
+            }
+        }
+
+        return "OK";
+    } catch (Exception $ex) {
+        return "SAVE ROOMS: " . $ex->getMessage();
+    }
+}
+
 ?>

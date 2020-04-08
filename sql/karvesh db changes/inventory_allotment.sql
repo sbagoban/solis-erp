@@ -75,3 +75,6 @@ ADD INDEX `priority` (`priority` ASC);
 ALTER TABLE `dbsolis`.`tblinventory_allotment` 
 ADD INDEX `index8` (`date_from` ASC, `date_to` ASC);
 ;
+
+
+INSERT INTO `dbsolis`.`tblmenuprocess` (`menuid`, `processname`, `processdescription`) VALUES ('31', 'MODIFY ALLOTMENTS', 'MODIFY ALLOTMENTS');

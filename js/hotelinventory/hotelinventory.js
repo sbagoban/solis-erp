@@ -9,10 +9,14 @@ function hotelinventory()
     var pop_layout = null;
     var pop_form = null;
     var pop_toolbar = null;
-    
-    var _last_search_params = "";
+
+    var _last_search_inventory_params = "";
+    var _last_search_allotment_params = "";
 
     var icon_size = "25px";
+
+    var _dsRooms = new dhtmlXDataStore();
+    var dsAllotments = new dhtmlXDataStore();
 
     document.getElementById("aTitle").innerHTML = "Inventory: ";
 
@@ -25,7 +29,165 @@ function hotelinventory()
     var inventoryMainlayout = new dhtmlXLayoutObject("main_body", "1C");
     inventoryMainlayout.cells("a").hideHeader();
 
-    var inventorylayout = inventoryMainlayout.cells("a").attachLayout("2E");
+
+    var tabInventory = inventoryMainlayout.cells("a").attachTabbar();
+    tabInventory.addTab("inventory", "<b>Inventory</b>", "280px", '');
+    tabInventory.addTab("allotment", "<b>Allotment</b>", "280px", '');
+    tabInventory.setTabActive("inventory");
+
+
+    //=================================== ALLOTMENT TAB ==========================
+    var allotmentsearchlayout = tabInventory.cells("allotment").attachLayout("2E");
+    allotmentsearchlayout.cells("a").hideHeader();
+    allotmentsearchlayout.cells("b").hideHeader();
+    allotmentsearchlayout.cells("a").setHeight(50);
+    allotmentsearchlayout.cells("a").fixSize(true, true);
+
+    var allotmentinnersearchlayout = allotmentsearchlayout.cells("b").attachLayout("2U");
+    allotmentinnersearchlayout.cells("a").setText("Search Allotments");
+    allotmentinnersearchlayout.cells("b").setText("My Allotments");
+    allotmentinnersearchlayout.cells("b").setWidth(1000);
+    allotmentinnersearchlayout.cells("a").setWidth(450);
+
+    var grid_allotments = allotmentinnersearchlayout.cells("b").attachGrid();
+    grid_allotments.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_allotments.setHeader("Date From,Date To,Priority,Release Type,Units,Rooms,Countries,Tour Operators,Comment");
+    grid_allotments.setColumnIds("date_from,date_to,priority,release_type,units,roomnames,countries,tour_operator_names,comment");
+    grid_allotments.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro");
+    grid_allotments.setInitWidths("100,100,150,100,80,150,150,150,*");
+    grid_allotments.setColAlign("center,center,center,center,center,left,left,left,left");
+    grid_allotments.setColSorting('date,date,str,str,int,str,str,str,str');
+    grid_allotments.attachHeader("#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+    grid_allotments.init();
+
+    var str_search_allotment_details = [
+        {type: "settings", position: "label-left", id: "str_search_allotment_details"},
+        {type: "hidden", name: "hotelfk", value: global_hotel_id},
+        {type: "block", width: 420, list: [
+                {type: "calendar", name: "dtfrom", label: "Date From:",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28",
+                    labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "122",
+                    dateFormat: "%d-%m-%Y", required: true,
+                    note: {
+                        text: "Format: dd-mm-yyyy"
+                    }
+                }]},
+        {type: "block", width: 420, list: [
+                {type: "calendar", name: "dtto", label: "Date To:",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28",
+                    labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "122",
+                    dateFormat: "%d-%m-%Y", required: true,
+                    note: {
+                        text: "Format: dd-mm-yyyy"
+                    }
+                }]},
+        {type: "block", width: 420, list: [
+                {type: "combo", name: "priority", label: "Priority:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }]},
+
+        {type: "block", width: 420, list: [
+                {type: "input", name: "rooms_display", label: "Rooms:", labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    readonly: true, rows: 3
+                },
+                {type: "hidden", name: "rooms_ids"},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdLoadRooms", tooltip: "Select Hotel Rooms", value: "...", width: "30", height: "40", offsetLeft: 0}
+            ]},
+
+        {type: "block", width: 420, list: [
+                {type: "input", name: "market_countries_display", label: "Countries:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    readonly: true, rows: 3
+                },
+                {type: "hidden", name: "market_countries_ids"},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdLoadCountries", tooltip: "Select Market Countries", value: "...", width: "30", height: "40", offsetLeft: 0}
+            ]},
+
+        {type: "block", width: 420, list: [
+                {type: "input", name: "to_display", label: "Tour Operators:", labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
+                    readonly: true, rows: 3
+                },
+                {type: "hidden", name: "to_ids"},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdLoadTOs", tooltip: "Select Tour Operators", value: "...", width: "30", height: "40", offsetLeft: 0}
+            ]},
+
+        {type: "block", width: 420, list: [
+                {type: "button", name: "cmdSearch", tooltip: "Search Allotment", value: "Search Inventory", width: "130", height: "40", offsetLeft: 0}
+            ]}
+    ];
+
+
+    var form_search_allotment_details = allotmentinnersearchlayout.cells("a").attachForm(str_search_allotment_details);
+    form_search_allotment_details.attachEvent("onButtonClick", function (name, command) {
+        hidePopUps();
+        if (name == "cmdLoadCountries")
+        {
+            showPopUpCountries(form_search_allotment_details, "Countries", "market_countries_display", "market_countries_ids", null);
+        } else if (name == "cmdLoadRooms")
+        {
+            showPopUp(form_search_allotment_details, "Rooms", "rooms_display", "rooms_ids", _dsRooms, null);
+        } else if (name == "cmdLoadTOs")
+        {
+            showPopUpTourOperators(form_search_allotment_details, "Tour Operators", "to_display", "to_ids", "MULTIPLE", null);
+        } else if (name == "cmdSearch")
+        {
+            searchAllotment();
+        }
+    });
+
+    var cboAllotmentPriority = form_search_allotment_details.getCombo("priority");
+    cboAllotmentPriority.enableOptionAutoPositioning(true);
+    cboAllotmentPriority.readonly(true);
+    cboAllotmentPriority.addOption([{value: "all", text: "ALL", img_src: "images/solution.png"}]);
+    cboAllotmentPriority.addOption([{value: "touroperator", text: "TOUR OPERATOR", img_src: "images/solution.png"}]);
+    cboAllotmentPriority.addOption([{value: "market", text: "MARKET", img_src: "images/solution.png"}]);
+    cboAllotmentPriority.addOption([{value: "company", text: "COMPANY", img_src: "images/solution.png"}]);
+    cboAllotmentPriority.setComboValue("all");
+
+
+    var toolbar_allotment = allotmentsearchlayout.cells("a").attachToolbar();
+    toolbar_allotment.setIconsPath("images/");
+    toolbar_allotment.addButton("new_allot", 1, "Create Allotment Dates", "add.png", "add.png");
+    toolbar_allotment.addButton("modify_allot", 2, "Modify Allotments", "modify.png", "modify.png");
+    toolbar_allotment.addSpacer("modify_allot");
+    toolbar_allotment.addButton("back", 3, "Back to Hotels", "exit.png", "exit.png");
+    toolbar_allotment.setIconSize(32);
+
+    toolbar_allotment.attachEvent("onClick", function (id) {
+
+        if (id == "back")
+        {
+            window.location = "index.php?m=bckoffhotels&hid=" + global_hotel_id;
+
+        } else if (id == "new_allot")
+        {
+            newAllotment();
+
+        } else if (id == "modify_allot")
+        {
+
+        }
+    });
+
+
+
+    //=================================== INVENTORY TAB ==========================
+    var inventorylayout = tabInventory.cells("inventory").attachLayout("2E");
     inventorylayout.cells("a").hideHeader();
     inventorylayout.cells("b").hideHeader();
     inventorylayout.cells("a").setHeight(50);
@@ -43,7 +205,7 @@ function hotelinventory()
 
     var str_search_details = [
         {type: "settings", position: "label-left", id: "str_details"},
-        {type: "hidden", name: "hotelfk", value:global_hotel_id},
+        {type: "hidden", name: "hotelfk", value: global_hotel_id},
         {type: "block", width: 420, list: [
                 {type: "calendar", name: "dtfrom", label: "Date From:",
                     labelHeight: "22", inputWidth: "100", inputHeight: "28",
@@ -141,14 +303,13 @@ function hotelinventory()
     cboSearchType.addOption([{value: "renovation", text: "Renovation", img_src: "images/solution.png"}]);
     cboSearchType.setComboValue("all");
 
-    var _dsRooms = new dhtmlXDataStore();
+
 
 
     var toolbar_inventory = inventorylayout.cells("a").attachToolbar();
     toolbar_inventory.setIconsPath("images/");
     toolbar_inventory.addButton("new", 1, "Set Inventory Dates Status", "add.png", "add.png");
-    toolbar_inventory.addButton("new_allot", 1, "Create Allotment Dates", "add.png", "add.png");
-    toolbar_inventory.addSpacer("new_allot");
+    toolbar_inventory.addSpacer("new");
     toolbar_inventory.addButton("back", 2, "Back to Hotels", "exit.png", "exit.png");
     toolbar_inventory.setIconSize(32);
 
@@ -161,11 +322,11 @@ function hotelinventory()
         } else if (id == "new")
         {
             newInventory();
-        } else if (id == "new_allot")
-        {
-            newAllotment();
         }
     });
+
+
+
 
     function applyrights()
     {
@@ -177,8 +338,12 @@ function hotelinventory()
                 toolbar_inventory.setItemToolTip("new", "Not Allowed");
             } else if (json_rights[i].PROCESSNAME == "CREATE ALLOTMENTS" && json_rights[i].ALLOWED == "N")
             {
-                toolbar_inventory.disableItem("new_allot");
-                toolbar_inventory.setItemToolTip("new_allot", "Not Allowed");
+                toolbar_allotment.disableItem("new_allot");
+                toolbar_allotment.setItemToolTip("new_allot", "Not Allowed");
+            } else if (json_rights[i].PROCESSNAME == "MODIFY ALLOTMENTS" && json_rights[i].ALLOWED == "N")
+            {
+                toolbar_allotment.disableItem("modify_allot");
+                toolbar_allotment.setItemToolTip("modify_allot", "Not Allowed");
             }
         }
     }
@@ -219,6 +384,7 @@ function hotelinventory()
     dhxWins.enableAutoViewport(false);
     dhxWins.attachViewportTo(inventoryMainlayout.cells("a"));
 
+
     //==================================================================================
 
     var popupwin_allotments = dhxWins.createWindow("popupwin_allotments", 50, 50, 700, 440);
@@ -254,6 +420,14 @@ function hotelinventory()
         {type: "hidden", name: "id"},
         {type: "block", width: 900, list: [
                 {type: "combo", name: "release_type", label: "Release Type:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }]},
+        {type: "block", width: 900, list: [
+                {type: "combo", name: "priority", label: "Priority:",
                     labelWidth: "110",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
@@ -362,6 +536,14 @@ function hotelinventory()
         $("[name='date_from']").mask("99-99-9999");
         $("[name='date_to']").mask("99-99-9999");
     });
+
+    var cboPriority = form_allotment_details.getCombo("priority");
+    cboPriority.enableOptionAutoPositioning(true);
+    cboPriority.readonly(true);
+    cboPriority.addOption([{value: "touroperator", text: "TOUR OPERATOR", img_src: "images/solution.png"}]);
+    cboPriority.addOption([{value: "market", text: "MARKET", img_src: "images/solution.png"}]);
+    cboPriority.addOption([{value: "company", text: "COMPANY", img_src: "images/solution.png"}]);
+
 
 
     var cboReleaseType = form_allotment_details.getCombo("release_type");
@@ -983,6 +1165,7 @@ function hotelinventory()
         form_allotment_details.clear();
         form_allotment_details.setItemValue("id", "-1");
         form_allotment_details.setItemValue("hotelfk", global_hotel_id);
+        cboPriority.setComboValue("COMPANY");
     }
 
     function newInventory()
@@ -2130,6 +2313,77 @@ function hotelinventory()
         popupwin.setModal(true);
     }
 
+
+    function searchAllotment()
+    {
+        if (!form_search_allotment_details.validate())
+        {
+            dhtmlx.alert({
+                text: "Please enter missing highligted fields!",
+                type: "alert-warning",
+                title: "Search Allotment",
+                callback: function () {
+                }
+            });
+            return;
+        }
+
+        var dtfrom = form_search_allotment_details.getItemValue("dtfrom");
+        var dtto = form_search_allotment_details.getItemValue("dtto");
+
+        if (dtto < dtfrom)
+        {
+            dhtmlx.alert({
+                text: "Invalid Date From and To order!",
+                type: "alert-warning",
+                title: "Search Allotment",
+                callback: function () {
+                }
+            });
+            return;
+        }
+
+
+        grid_allotments.clearAll();
+
+        _last_search_allotment_params = form_search_allotment_details.getFormData();
+
+        delete _last_search_allotment_params.rooms_display;
+        delete _last_search_allotment_params.market_countries_display;
+        delete _last_search_allotment_params.to_display;
+
+
+        var url = "php/api/hotelinventory/grid_search_allotment.php?" +
+                "t=" + encodeURIComponent(global_token) +
+                "&params=" + encodeURIComponent(JSON.stringify(_last_search_allotment_params));
+
+
+        allotmentinnersearchlayout.cells("b").progressOn();
+
+        dsAllotments = new dhtmlXDataStore();
+
+        console.log(url);
+
+        dsAllotments.load(url, "json", function () {
+
+            allotmentinnersearchlayout.cells("b").progressOff();
+
+            grid_allotments.sync(dsAllotments);
+
+            grid_allotments.forEachRow(function (rwid) {
+                grid_allotments.forEachCell(rwid, function (c, ind) {
+                    var cellstyle = "font-weight:normal; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+                    grid_allotments.setCellTextStyle(rwid, ind, cellstyle);
+                });
+            });
+
+        });
+
+
+
+
+    }
+
     function searchInventory()
     {
         if (!form_search_details.validate())
@@ -2143,12 +2397,12 @@ function hotelinventory()
             });
             return;
         }
-        
+
         var dtfrom = form_search_details.getItemValue("dtfrom");
         var dtto = form_search_details.getItemValue("dtto");
 
         if (dtto < dtfrom)
-        {            
+        {
             dhtmlx.alert({
                 text: "Invalid Date From and To order!",
                 type: "alert-warning",
@@ -2158,7 +2412,7 @@ function hotelinventory()
             });
             return;
         }
-        
+
 
         grid_inventory_dates.clearAll(true);
         grid_inventory_dates = null;
@@ -2168,27 +2422,28 @@ function hotelinventory()
         grid_inventory_dates.enableColSpan(true);
         grid_inventory_dates.setEditable(false);
         grid_inventory_dates.init();
-        
-        _last_search_params = form_search_details.getFormData();
-        
-        delete _last_search_params.rooms_display;
-        delete _last_search_params.market_countries_display;
-        delete _last_search_params.to_display;
-        
-        
+
+        _last_search_inventory_params = form_search_details.getFormData();
+
+        delete _last_search_inventory_params.rooms_display;
+        delete _last_search_inventory_params.market_countries_display;
+        delete _last_search_inventory_params.to_display;
+
+
         var url = "php/api/hotelinventory/grid_search_calendarview_xml.php?" +
                 "t=" + encodeURIComponent(global_token) +
                 "&myicon_size=" + icon_size +
-                "&params=" + encodeURIComponent(JSON.stringify(_last_search_params));
-        
+                "&params=" + encodeURIComponent(JSON.stringify(_last_search_inventory_params));
+
         console.log(url);
-        
+
         inventorySearchLayout.progressOn();
         grid_inventory_dates.loadXML(url, function () {
             inventorySearchLayout.progressOff();
         });
     }
-    
+
+
     this.toggleSearchCalendarNextPrev = function (np, month, year)
     {
         hidePopUps();
@@ -2213,11 +2468,11 @@ function hotelinventory()
             }
         }
 
-     
+
         var url = "php/api/hotelinventory/grid_search_calendarview_xml.php?" +
                 "t=" + encodeURIComponent(global_token) +
                 "&myicon_size=" + icon_size +
-                "&params=" + encodeURIComponent(JSON.stringify(_last_search_params)) +
+                "&params=" + encodeURIComponent(JSON.stringify(_last_search_inventory_params)) +
                 "&focus_month=" + month + "&focus_year=" + year;
 
         inventorySearchLayout.progressOn();
