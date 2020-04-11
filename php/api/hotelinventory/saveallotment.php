@@ -40,7 +40,7 @@ try {
     $hotelfk = $details["hotelfk"];
     $rooms_ids = $details["rooms_ids"];
     $date_from = date("Y-m-d", strtotime($details["date_from"]));
-    $date_from = date("Y-m-d", strtotime($details["date_to"]));
+    $date_to = date("Y-m-d", strtotime($details["date_to"]));
     $release_type = $details["release_type"];
     $priority = $details["priority"];
     $specific_no_days = utils_stringBlank($details["specific_no_days"], null);
@@ -55,8 +55,15 @@ try {
         $specific_date = date("Y-m-d", strtotime($specific_date));
     }
 
-
-
+    
+    //======================================================
+    //test for overlapping dates for same TO and Room
+    $test_outcome = allotment_test_overlapping();
+    if($test_outcome != "OK")
+    {
+        throw new Exception($test_outcome);
+    }
+    //======================================================
 
     //is it an insert or an update
     if ($id == "-1") {
@@ -78,7 +85,9 @@ try {
             specific_date=:specific_date,
             comment=:comment, 
             units=:units,
-            priority=:priority
+            priority=:priority,
+            date_from=:date_from,
+            date_to=:date_to
             WHERE id=:id";
 
     $stmt = $con->prepare($sql);
@@ -88,6 +97,8 @@ try {
         ":specific_date" => $specific_date,
         ":comment" => $comment,
         ":priority" => $priority,
+        ":date_from" => $date_from,
+        ":date_to" => $date_to,
         ":units" => $units));
 
 
@@ -95,7 +106,7 @@ try {
     if ($outcome != "OK") {
         throw new Exception($outcome);
     }
-    
+
     $outcome = savetouroperators($to_ids, $id);
     if ($outcome != "OK") {
         throw new Exception($outcome);
@@ -105,8 +116,8 @@ try {
     if ($outcome != "OK") {
         throw new Exception($outcome);
     }
-    
-    
+
+
     //DONE
 
     $con->commit();
@@ -224,6 +235,88 @@ function saverooms($rooms_ids, $id) {
     } catch (Exception $ex) {
         return "SAVE ROOMS: " . $ex->getMessage();
     }
+}
+
+function allotment_test_overlapping() {
+    global $con, $id, $date_from, $date_to, $to_ids, $rooms_ids, $priority;
+
+    $sql = "SELECT a.id, a.date_from, a.date_to, 
+            group_concat(ar.roomfk SEPARATOR ',') as roomids,
+            group_concat(ato.tofk SEPARATOR ',') as toids
+            FROM tblinventory_allotment a
+            INNER JOIN tblinventory_allotment_rooms ar on a.id = ar.allotmentfk
+            INNER JOIN tblinventory_allotment_to ato on a.id = ato.allotmentfk
+            WHERE
+            a.deleted = 0 AND 
+            a.id <> :id AND
+            a.date_from <= :date_to AND
+            a.date_to >= :date_from AND
+            a.priority = :priority
+            AND ar.roomfk in ($rooms_ids)
+            AND ato.tofk in ($to_ids)
+            group by a.id, a.date_from, a.date_to";
+
+    $stmt = $con->prepare($sql);
+    $stmt->execute(array(":id" => $id, ":date_to" => $date_to, ":date_from" => $date_from,":priority"=>$priority));
+    if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        
+        //ouch! overlapping dates detected! inform overlapping for what priority, room and to
+        
+        $_roomids = $rw["roomids"];
+        $_toids = $rw["toids"];
+        $_date_from = $rw["date_from"];
+        $_date_to = $rw["date_to"];
+        $overlapping_to_names = "";
+        $overlapping_room_names = "";
+        
+        $arr_save_toids = explode(",", $to_ids);
+        $arr_save_roomids = explode(",", $rooms_ids);
+        
+        $_arr_roomids = explode(",", $_roomids);
+        $_arr_toids = explode(",", $_toids);
+        
+        //check for overlapping rooms and tos
+        $arr_common_rooms = array_intersect($_arr_roomids,$arr_save_roomids);
+        $arr_common_tos = array_intersect($_arr_toids,$arr_save_toids);
+        
+        
+        //now get the to names and room names
+        $overlapping_to_ids = implode(",", $arr_common_tos);
+        
+        $sql = "select group_concat(toname order by toname asc separator ',' ) as tonames
+                from tbltouroperator where id in ($overlapping_to_ids)";
+        $stmt = $con->prepare($sql);
+        $stmt->execute();
+        if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $overlapping_to_names = $rw["tonames"];
+        }
+        
+        
+        $overlapping_room_ids = implode(",", $arr_common_rooms);
+        
+        $sql = "select group_concat(roomname order by roomname asc separator ',' ) as roomnames
+                from tblhotel_rooms where id in ($overlapping_room_ids)";
+        $stmt = $con->prepare($sql);
+        $stmt->execute();
+        if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $overlapping_room_names = $rw["roomnames"];
+        }
+        
+        
+        
+        //return the error message
+        $msg = "<b><font color='red'>OVERLAPPING DETECTED</font></b> FOR THE FOLLOWING PARAMETERS:<BR>";
+        $msg .= "<B>DATE FROM:</B> " . date("d M Y", strtotime($_date_from)) . " <BR>";
+        $msg .= "<B>DATE TO:</B> " . date("d M Y", strtotime($_date_to)) . " <BR>";
+        $msg .= "<B>PRIORITY:</B> $priority <BR>";
+        $msg .= "<B>ROOMS:</B> $overlapping_room_names <BR>";
+        $msg .= "<B>TOUR OPERATORS:</B> $overlapping_to_names <BR>";
+        
+        return $msg;
+
+    }
+    
+    return "OK";
 }
 
 ?>

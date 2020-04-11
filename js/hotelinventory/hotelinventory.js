@@ -51,13 +51,13 @@ function hotelinventory()
 
     var grid_allotments = allotmentinnersearchlayout.cells("b").attachGrid();
     grid_allotments.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_allotments.setHeader("Date From,Date To,Priority,Release Type,Units,Rooms,Countries,Tour Operators,Comment");
-    grid_allotments.setColumnIds("date_from,date_to,priority,release_type,units,roomnames,countries,tour_operator_names,comment");
+    grid_allotments.setHeader("Date From,Date To,Priority,Release Type,Units,Rooms,Tour Operators,Comment");
+    grid_allotments.setColumnIds("date_from,date_to,priority,release_type,units,roomnames,tour_operator_names,comment");
     grid_allotments.setColTypes("ro,ro,ro,ro,ro,ro,ro,ro,ro");
-    grid_allotments.setInitWidths("100,100,150,100,80,150,150,150,*");
-    grid_allotments.setColAlign("center,center,center,center,center,left,left,left,left");
-    grid_allotments.setColSorting('date,date,str,str,int,str,str,str,str');
-    grid_allotments.attachHeader("#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");
+    grid_allotments.setInitWidths("70,70,80,80,50,200,200,1000");
+    grid_allotments.setColAlign("center,center,center,center,center,left,left,left");
+    grid_allotments.setColSorting('date,date,str,str,int,str,str,str');
+    grid_allotments.attachHeader("#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter");
     grid_allotments.init();
 
     var str_search_allotment_details = [
@@ -1242,6 +1242,16 @@ function hotelinventory()
                         }
                     });
 
+                    //populate the allotment to select the current record
+                    var id = json_obj.ID;
+                    var url = "php/api/hotelinventory/grid_search_allotment.php?" +
+                            "t=" + encodeURIComponent(global_token) +
+                            "&hotelfk=" + encodeURIComponent(global_hotel_id) +
+                            "&allotmentid=" + encodeURIComponent(id);
+                    populateAllotmentGrid(url);
+
+                    
+
                     popupwin_allotments.hide();
                     popupwin_allotments.setModal(false);
 
@@ -2357,7 +2367,12 @@ function hotelinventory()
                 "t=" + encodeURIComponent(global_token) +
                 "&params=" + encodeURIComponent(JSON.stringify(_last_search_allotment_params));
 
+        populateAllotmentGrid(url);
 
+    }
+
+    function populateAllotmentGrid(url)
+    {
         allotmentinnersearchlayout.cells("b").progressOn();
 
         dsAllotments = new dhtmlXDataStore();
@@ -2378,10 +2393,6 @@ function hotelinventory()
             });
 
         });
-
-
-
-
     }
 
     function searchInventory()

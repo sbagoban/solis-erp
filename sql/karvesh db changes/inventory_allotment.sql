@@ -78,3 +78,12 @@ ADD INDEX `index8` (`date_from` ASC, `date_to` ASC);
 
 
 INSERT INTO `dbsolis`.`tblmenuprocess` (`menuid`, `processname`, `processdescription`) VALUES ('31', 'MODIFY ALLOTMENTS', 'MODIFY ALLOTMENTS');
+
+ALTER TABLE `dbsolis`.`tblinventory_allotment_to` 
+DROP FOREIGN KEY `fk_tblinventory_allotment_to_2`;
+ALTER TABLE `dbsolis`.`tblinventory_allotment_to` 
+ADD CONSTRAINT `fk_tblinventory_allotment_to_2`
+  FOREIGN KEY (`allotmentfk`)
+  REFERENCES `dbsolis`.`tblinventory_allotment` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE NO ACTION;
