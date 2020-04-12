@@ -42,6 +42,12 @@ require_once("../../connector/data_connector.php");
 
 $con = pdo_con();
 
+//to prevent mysql from truncating group_concat values
+$sql = "SET SESSION group_concat_max_len=10000;";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+
+
 //get all spos for that hotel that are not already in a link
 
 $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,

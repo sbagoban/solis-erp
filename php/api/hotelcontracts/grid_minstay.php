@@ -26,6 +26,13 @@ require_once("../../connector/data_connector.php");
 
 $con = pdo_con();
 
+//to prevent mysql from truncating group_concat values
+$sql = "SET SESSION group_concat_max_len=10000;";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+
+
+
 $sql = "select 
         scm.id, scm.override_dtfrom, scm.override_dtto, 
         scm.duration, scm.description, 

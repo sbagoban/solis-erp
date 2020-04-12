@@ -3,7 +3,12 @@
 function _rates_calculator($con, $arr_params) {
     try {
 
-
+        
+        //to prevent mysql from truncating group_concat values
+        $sql = "SET SESSION group_concat_max_len=10000;";
+        $stmt = $con->prepare($sql);
+        $stmt->execute();
+    
         
         $time_pre = microtime(true);
 

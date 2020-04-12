@@ -164,8 +164,9 @@ function hotelinventory()
     toolbar_allotment.setIconsPath("images/");
     toolbar_allotment.addButton("new_allot", 1, "Create Allotment Dates", "add.png", "add.png");
     toolbar_allotment.addButton("modify_allot", 2, "Modify Allotments", "modify.png", "modify.png");
-    toolbar_allotment.addSpacer("modify_allot");
-    toolbar_allotment.addButton("back", 3, "Back to Hotels", "exit.png", "exit.png");
+    toolbar_allotment.addButton("delete_allot",3 , "Delete Allotments", "delete.png", "delete.png");
+        toolbar_allotment.addSpacer("delete_allot");
+    toolbar_allotment.addButton("back", 4, "Back to Hotels", "exit.png", "exit.png");
     toolbar_allotment.setIconSize(32);
 
     toolbar_allotment.attachEvent("onClick", function (id) {
@@ -180,7 +181,7 @@ function hotelinventory()
 
         } else if (id == "modify_allot")
         {
-
+            modifyAllotment();
         }
     });
 
@@ -309,8 +310,9 @@ function hotelinventory()
     var toolbar_inventory = inventorylayout.cells("a").attachToolbar();
     toolbar_inventory.setIconsPath("images/");
     toolbar_inventory.addButton("new", 1, "Set Inventory Dates Status", "add.png", "add.png");
-    toolbar_inventory.addSpacer("new");
-    toolbar_inventory.addButton("back", 2, "Back to Hotels", "exit.png", "exit.png");
+    toolbar_inventory.addButton("clear", 2, "Clear Inventory Status", "delete.png", "delete.png");
+    toolbar_inventory.addSpacer("clear");
+    toolbar_inventory.addButton("back",3, "Back to Hotels", "exit.png", "exit.png");
     toolbar_inventory.setIconSize(32);
 
     toolbar_inventory.attachEvent("onClick", function (id) {
@@ -322,6 +324,10 @@ function hotelinventory()
         } else if (id == "new")
         {
             newInventory();
+        }
+        else if (id == "clear")
+        {
+            clearInventory();
         }
     });
 
@@ -336,14 +342,26 @@ function hotelinventory()
             {
                 toolbar_inventory.disableItem("new");
                 toolbar_inventory.setItemToolTip("new", "Not Allowed");
-            } else if (json_rights[i].PROCESSNAME == "CREATE ALLOTMENTS" && json_rights[i].ALLOWED == "N")
+            }
+            if (json_rights[i].PROCESSNAME == "CLEAR INVENTORY" && json_rights[i].ALLOWED == "N")
+            {
+                toolbar_inventory.disableItem("clear");
+                toolbar_inventory.setItemToolTip("clear", "Not Allowed");
+            }
+            if (json_rights[i].PROCESSNAME == "CREATE ALLOTMENTS" && json_rights[i].ALLOWED == "N")
             {
                 toolbar_allotment.disableItem("new_allot");
                 toolbar_allotment.setItemToolTip("new_allot", "Not Allowed");
-            } else if (json_rights[i].PROCESSNAME == "MODIFY ALLOTMENTS" && json_rights[i].ALLOWED == "N")
+            } 
+            if (json_rights[i].PROCESSNAME == "MODIFY ALLOTMENTS" && json_rights[i].ALLOWED == "N")
             {
                 toolbar_allotment.disableItem("modify_allot");
                 toolbar_allotment.setItemToolTip("modify_allot", "Not Allowed");
+            }
+            if (json_rights[i].PROCESSNAME == "DELETE ALLOTMENTS" && json_rights[i].ALLOWED == "N")
+            {
+                toolbar_allotment.disableItem("delete_allot");
+                toolbar_allotment.setItemToolTip("delete_allot", "Not Allowed");
             }
         }
     }
@@ -570,6 +588,130 @@ function hotelinventory()
         } else if (name == "cmdSave")
         {
             saveAllotment();
+        }
+    });
+    
+     //==================================================================================
+     
+    var popupwin_clear_inventory = dhxWins.createWindow("popupwin_clear_inventory", 50, 50, 960, 400);
+    popupwin_clear_inventory.setText("Clear Inventory Status:");
+
+    popupwin_clear_inventory.denyResize();
+    popupwin_clear_inventory.denyPark();
+    popupwin_clear_inventory.button("close").hide();
+
+    var detailsClearLayout = popupwin_clear_inventory.attachLayout("2E");
+    detailsClearLayout.cells("a").hideHeader();
+    detailsClearLayout.cells("b").hideHeader();
+
+    detailsClearLayout.cells("a").setHeight(800);
+    detailsClearLayout.cells("b").setHeight(50);
+
+    detailsClearLayout.cells("a").fixSize(true, true);
+    detailsClearLayout.cells("b").fixSize(true, true);
+
+    var str_clear_details = [
+        {type: "settings", position: "label-left", id: "str_clear_details"},
+        {type: "hidden", name: "hotelfk"},
+        {type: "block", width: 800, list: [
+                {type: "input", name: "date_from", label: "Date From:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                },
+                {type: "newcolumn"},
+                {type: "newcolumn"},
+                {type: "input", name: "date_to", label: "Date To:",
+                    labelWidth: "70",
+                    labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+                }
+            ]},
+        {type: "block", width: 800, list: [
+                {type: "combo", name: "specific_to", label: "Specific To:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }]},
+        {type: "block", width: 800, list: [
+                {type: "input", name: "market_countries_display", label: "Countries:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "568", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    readonly: true, rows: 3
+                },
+                {type: "hidden", name: "market_countries_ids"},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdLoadCountries", tooltip: "Select Market Countries", value: "...", width: "30", height: "40", offsetLeft: 0}
+            ]},
+        {type: "block", width: 800, list: [
+                {type: "input", name: "rooms_display", label: "Rooms:", labelWidth: "110",
+                    labelHeight: "22", inputWidth: "568", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    readonly: true, rows: 3
+                },
+                {type: "hidden", name: "rooms_ids"},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdLoadRooms", tooltip: "Select Hotel Rooms", value: "...", width: "30", height: "40", offsetLeft: 0}
+            ]},
+        {type: "block", width: 800, list: [
+                {type: "input", name: "to_display", label: "Tour Operators:", labelWidth: "110",
+                    labelHeight: "22", inputWidth: "568", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    readonly: true, rows: 3
+                },
+                {type: "hidden", name: "to_ids"},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdLoadTOs", tooltip: "Select Tour Operators", value: "...", width: "30", height: "40", offsetLeft: 0}
+            ]}
+    ];
+
+
+    var form_clear_details = detailsClearLayout.cells("a").attachForm(str_clear_details);
+    form_clear_details.attachEvent("onButtonClick", function (name, command) {
+        hidePopUps();
+        if (name == "cmdLoadCountries")
+        {
+            showPopUpCountries(form_clear_details, "Countries", "market_countries_display", "market_countries_ids", null);
+        } else if (name == "cmdLoadRooms")
+        {
+            showPopUp(form_clear_details, "Rooms", "rooms_display", "rooms_ids", _dsRooms, null);
+        } else if (name == "cmdLoadTOs")
+        {
+            showPopUpTourOperators(form_clear_details, "Tour Operators", "to_display", "to_ids", "MULTIPLE", null);
+        }
+    });
+
+  
+    var cboClearSpecific = form_clear_details.getCombo("specific_to");
+    cboClearSpecific.enableOptionAutoPositioning(true);
+    cboClearSpecific.readonly(true);
+    cboClearSpecific.addOption([{value: "A", text: "Tour Operator (A)", img_src: "images/rate_32.png"}]);
+    cboClearSpecific.addOption([{value: "B", text: "World Wide (B)", img_src: "images/rate_32.png"}]);
+    cboClearSpecific.addOption([{value: "C", text: "Market (C)", img_src: "images/rate_32.png"}]);
+
+
+
+    var str_form_clear_details_buttons = [
+        {type: "settings", position: "label-left", id: "form_details_buttons"},
+        {type: "block", width: 900, list: [
+                {type: "button", name: "cmdClose", tooltip: "Return to Inventory", value: "Return to Inventory", width: "230", height: "60", offsetLeft: 0},
+                {type: "newcolumn"},
+                {type: "button", name: "cmdSave", tooltip: "Clear Inventory", value: "Clear Inventory Status", width: "230", height: "60", offsetLeft: 0}
+            ]}];
+
+    var form_clear_details_buttons = detailsClearLayout.cells("b").attachForm(str_form_clear_details_buttons);
+    form_clear_details_buttons.attachEvent("onButtonClick", function (name, command) {
+        hidePopUps();
+        if (name == "cmdClose")
+        {
+            popupwin_clear_inventory.hide();
+            popupwin_clear_inventory.setModal(false);
+        } else if (name == "cmdSave")
+        {
+            clearInventoryStatus();
         }
     });
 
@@ -1154,13 +1296,35 @@ function hotelinventory()
     }
 
     //==================================================================================
+    
+    function modifyAllotment()
+    {
+        var aid = grid_allotments.getSelectedRowId();
+        if (!aid)
+        {
+            return;
+        }
+        
+        form_allotment_details.clear();
+        form_allotment_details.setItemValue("id", aid);
+        form_allotment_details.setItemValue("hotelfk", global_hotel_id);
+        
+        var data = dsAllotments.item(aid);
 
+        form_allotment_details.setFormData(data);
+        
+        popupwin_allotments.center();
+        popupwin_allotments.setModal(true);
+        popupwin_allotments.show();
+        popupwin_allotments.setText("Modify Allotments Details:");
+        
+    }
     function newAllotment()
     {
         popupwin_allotments.center();
         popupwin_allotments.setModal(true);
         popupwin_allotments.show();
-        popupwin_allotments.setText("Allotments Details:");
+        popupwin_allotments.setText("New Allotments Details:");
 
         form_allotment_details.clear();
         form_allotment_details.setItemValue("id", "-1");
@@ -1179,6 +1343,128 @@ function hotelinventory()
         form_details.setItemValue("id", "-1");
         form_details.setItemValue("hotelfk", global_hotel_id);
         _arr_dates = [];
+    }
+    
+    function clearInventoryStatus()
+    {
+        if (!form_clear_details.validate())
+        {
+            dhtmlx.alert({
+                text: "Please enter missing highligted fields!",
+                type: "alert-warning",
+                title: "Clear Inventory",
+                callback: function () {
+                }
+            });
+            return;
+        }
+        
+        var date_from = utils_trim(form_clear_details.getItemValue("date_from"), " ");
+        var date_to = utils_trim(form_clear_details.getItemValue("date_to"), " ");
+
+        if (!utils_isDate(date_from)) {
+            form_clear_details.setItemValue("date_from", "");
+        }
+
+        if (!utils_isDate(date_to)) {
+            form_clear_details.setItemValue("date_to", "");
+        }
+
+
+        if (!utils_validateDateOrder(date_from, date_to))
+        {
+            dhtmlx.alert({
+                text: "Invalid Date From and To Order!",
+                type: "alert-warning",
+                title: "Clear Inventory",
+                callback: function () {
+                    form_clear_details.setItemFocus("date_from");
+                }
+            });
+
+            return false;
+        }
+        
+        
+        var params = "token=" + encodeURIComponent(global_token);
+
+        //details
+        var details = form_clear_details.getFormData();
+        params += "&details=" + encodeURIComponent(JSON.stringify(details));
+
+
+        detailsClearLayout.progressOn();
+
+        dhtmlxAjax.post("php/api/hotelinventory/deleteinventory.php", params, function (loader) {
+            detailsClearLayout.progressOff();
+
+            if (loader)
+            {
+                if (loader.xmlDoc.responseURL == "")
+                {
+                    dhtmlx.alert({
+                        text: "Connection Lost!",
+                        type: "alert-warning",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+
+                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+
+                if (!json_obj)
+                {
+                    dhtmlx.alert({
+                        text: loader.xmlDoc.responseText,
+                        type: "alert-warning",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+                if (json_obj.OUTCOME == "OK")
+                {
+                    dhtmlx.alert({
+                        text: "Deletion Successful",
+                        type: "alert",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+
+                    popupwin_clear_inventory.hide();
+                    popupwin_clear_inventory.setModal(false);
+
+                } else
+                {
+                    dhtmlx.alert({
+                        text: json_obj.OUTCOME,
+                        type: "alert-warning",
+                        title: "SAVE",
+                        callback: function () {
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+    
+    function clearInventory()
+    {
+        popupwin_clear_inventory.center();
+        popupwin_clear_inventory.setModal(true);
+        popupwin_clear_inventory.show();
+        popupwin_clear_inventory.setText("Clear Inventory Status:");
+
+        form_clear_details.clear();
+        form_clear_details.setItemValue("hotelfk", global_hotel_id);
     }
 
 
@@ -2496,5 +2782,6 @@ function hotelinventory()
     loadPopupDs();
     popupwin_inventory.hide();
     popupwin_allotments.hide();
+    popupwin_clear_inventory.hide();
 
 }

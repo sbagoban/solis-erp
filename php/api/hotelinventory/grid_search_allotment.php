@@ -70,6 +70,12 @@ require_once("../../connector/data_connector.php");
 
 $con = pdo_con();
 
+//to prevent mysql from truncating group_concat values
+$sql = "SET SESSION group_concat_max_len=10000;";
+$stmt = $con->prepare($sql);
+$stmt->execute();
+
+
 $data = new JSONDataConnector($con, "PDO");
 
 $sql = "
@@ -78,12 +84,12 @@ $sql = "
     a.*, 
     r.roomnames, r.rooms_display, r.rooms_ids,
     co.countries, co.market_countries_display, co.market_countries_ids, 
-    tp.tour_operator_names, tp.tour_operators_display, tp.tour_operators_ids
+    tp.tour_operator_names, tp.to_display, tp.to_ids
 
     FROM
     (
         select
-        a.id, 
+        a.id, a.hotel_fk,
         a.release_type, a.specific_no_days,
         a.priority,
         DATE_FORMAT(a.specific_date,'%d-%m-%Y') AS specific_date,
@@ -121,8 +127,8 @@ $sql = "
     (
         select a.id, 
         group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR '<br>') as tour_operator_names,
-        group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as tour_operators_display,
-        group_concat(tp.id ORDER BY tp.toname ASC SEPARATOR ',') as tour_operators_ids
+        group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as to_display,
+        group_concat(tp.id ORDER BY tp.toname ASC SEPARATOR ',') as to_ids
         from tblinventory_allotment a
         inner join tblinventory_allotment_to ato on a.id = ato.allotmentfk
         inner join tbltouroperator tp on ato.tofk = tp.id
@@ -159,7 +165,7 @@ $data->render_complex_sql($sql, "id", "hotel_fk,release_type,specific_no_days,sp
     created_by,created_on,date_from,date_to,
     market_countries_display,market_countries_ids,countries,
     rooms_display,rooms_ids,roomnames,
-    tour_operator_names,tour_operators_display,tour_operators_ids");
+    tour_operator_names,to_display,to_ids");
 ?>
 
 

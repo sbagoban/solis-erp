@@ -4,6 +4,12 @@
 function _spo_loadspo($con, $spoid, $hotelfk) {
     $arr_spo = array();
     
+    //to prevent mysql from truncating group_concat values
+    $sql = "SET SESSION group_concat_max_len=10000;";
+    $stmt = $con->prepare($sql);
+    $stmt->execute();
+
+    
     $arr_spo["GENERAL"] = _load_spo_general($con,$spoid);
     $arr_spo["APPLICABLE_CHILDSUPP_OWN"] = _load_childsupp_own_sharing($con,$spoid, "OWN");
     $arr_spo["APPLICABLE_CHILDSUPP_SHARING"] = _load_childsupp_own_sharing($con,$spoid, "SHARING");
