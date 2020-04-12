@@ -127,7 +127,7 @@ function hotelinventory()
             ]},
 
         {type: "block", width: 420, list: [
-                {type: "button", name: "cmdSearch", tooltip: "Search Allotment", value: "Search Inventory", width: "130", height: "40", offsetLeft: 0}
+                {type: "button", name: "cmdSearch", tooltip: "Search Allotment", value: "Search Allotment", width: "130", height: "40", offsetLeft: 0}
             ]}
     ];
 
@@ -164,8 +164,8 @@ function hotelinventory()
     toolbar_allotment.setIconsPath("images/");
     toolbar_allotment.addButton("new_allot", 1, "Create Allotment Dates", "add.png", "add.png");
     toolbar_allotment.addButton("modify_allot", 2, "Modify Allotments", "modify.png", "modify.png");
-    toolbar_allotment.addButton("delete_allot",3 , "Delete Allotments", "delete.png", "delete.png");
-        toolbar_allotment.addSpacer("delete_allot");
+    toolbar_allotment.addButton("delete_allot", 3, "Delete Allotments", "delete.png", "delete.png");
+    toolbar_allotment.addSpacer("delete_allot");
     toolbar_allotment.addButton("back", 4, "Back to Hotels", "exit.png", "exit.png");
     toolbar_allotment.setIconSize(32);
 
@@ -182,6 +182,10 @@ function hotelinventory()
         } else if (id == "modify_allot")
         {
             modifyAllotment();
+        }
+        else if (id == "delete_allot")
+        {
+            deleteAllotment();
         }
     });
 
@@ -312,7 +316,7 @@ function hotelinventory()
     toolbar_inventory.addButton("new", 1, "Set Inventory Dates Status", "add.png", "add.png");
     toolbar_inventory.addButton("clear", 2, "Clear Inventory Status", "delete.png", "delete.png");
     toolbar_inventory.addSpacer("clear");
-    toolbar_inventory.addButton("back",3, "Back to Hotels", "exit.png", "exit.png");
+    toolbar_inventory.addButton("back", 3, "Back to Hotels", "exit.png", "exit.png");
     toolbar_inventory.setIconSize(32);
 
     toolbar_inventory.attachEvent("onClick", function (id) {
@@ -324,8 +328,7 @@ function hotelinventory()
         } else if (id == "new")
         {
             newInventory();
-        }
-        else if (id == "clear")
+        } else if (id == "clear")
         {
             clearInventory();
         }
@@ -352,7 +355,7 @@ function hotelinventory()
             {
                 toolbar_allotment.disableItem("new_allot");
                 toolbar_allotment.setItemToolTip("new_allot", "Not Allowed");
-            } 
+            }
             if (json_rights[i].PROCESSNAME == "MODIFY ALLOTMENTS" && json_rights[i].ALLOWED == "N")
             {
                 toolbar_allotment.disableItem("modify_allot");
@@ -590,9 +593,9 @@ function hotelinventory()
             saveAllotment();
         }
     });
-    
-     //==================================================================================
-     
+
+    //==================================================================================
+
     var popupwin_clear_inventory = dhxWins.createWindow("popupwin_clear_inventory", 50, 50, 960, 400);
     popupwin_clear_inventory.setText("Clear Inventory Status:");
 
@@ -684,7 +687,7 @@ function hotelinventory()
         }
     });
 
-  
+
     var cboClearSpecific = form_clear_details.getCombo("specific_to");
     cboClearSpecific.enableOptionAutoPositioning(true);
     cboClearSpecific.readonly(true);
@@ -699,7 +702,7 @@ function hotelinventory()
         {type: "block", width: 900, list: [
                 {type: "button", name: "cmdClose", tooltip: "Return to Inventory", value: "Return to Inventory", width: "230", height: "60", offsetLeft: 0},
                 {type: "newcolumn"},
-                {type: "button", name: "cmdSave", tooltip: "Clear Inventory", value: "Clear Inventory Status", width: "230", height: "60", offsetLeft: 0}
+                {type: "button", name: "cmdClear", tooltip: "Clear Inventory", value: "Clear Inventory Status", width: "230", height: "60", offsetLeft: 0}
             ]}];
 
     var form_clear_details_buttons = detailsClearLayout.cells("b").attachForm(str_form_clear_details_buttons);
@@ -709,9 +712,19 @@ function hotelinventory()
         {
             popupwin_clear_inventory.hide();
             popupwin_clear_inventory.setModal(false);
-        } else if (name == "cmdSave")
+        } else if (name == "cmdClear")
         {
-            clearInventoryStatus();
+            dhtmlx.confirm({
+                title: "Clear Status?",
+                type: "confirm",
+                text: "Confirm Clearing the Status for the selected Tour Operators, Dates and Rooms?",
+                callback: function (tf) {
+                    if (tf)
+                    {
+                        clearInventoryStatus();
+                    }
+                }
+            });
         }
     });
 
@@ -1297,7 +1310,7 @@ function hotelinventory()
 
     //==================================================================================
     
-    function modifyAllotment()
+    function deleteAllotment()
     {
         var aid = grid_allotments.getSelectedRowId();
         if (!aid)
@@ -1305,19 +1318,108 @@ function hotelinventory()
             return;
         }
         
+        dhtmlx.confirm({
+            title: "Delete Allotment?",
+            type: "confirm",
+            text: "Confirm Deletion of selected Allotment?",
+            callback: function (tf) {
+                if (tf)
+                {
+                    deleteTheAllotment(aid);
+                }
+            }
+        });
+    }
+    
+    
+    function deleteTheAllotment(aid)
+    {
+        var params = "token=" + encodeURIComponent(global_token);
+        params += "&aid=" + encodeURIComponent(aid);
+
+
+        allotmentinnersearchlayout.progressOn();
+
+        dhtmlxAjax.post("php/api/hotelinventory/deleteallotment.php", params, function (loader) {
+            allotmentinnersearchlayout.progressOff();
+
+            if (loader)
+            {
+                if (loader.xmlDoc.responseURL == "")
+                {
+                    dhtmlx.alert({
+                        text: "Connection Lost!",
+                        type: "alert-warning",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+
+                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+
+                if (!json_obj)
+                {
+                    dhtmlx.alert({
+                        text: loader.xmlDoc.responseText,
+                        type: "alert-warning",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+                if (json_obj.OUTCOME == "OK")
+                {
+                    dhtmlx.alert({
+                        text: "Deletion Successful",
+                        type: "alert",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+                    
+                    grid_allotments.deleteRow(aid);
+                   
+                } else
+                {
+                    dhtmlx.alert({
+                        text: json_obj.OUTCOME,
+                        type: "alert-warning",
+                        title: "DELETE",
+                        callback: function () {
+                        }
+                    });
+                }
+            }
+        });
+    }
+    
+    function modifyAllotment()
+    {
+        var aid = grid_allotments.getSelectedRowId();
+        if (!aid)
+        {
+            return;
+        }
+
         form_allotment_details.clear();
         form_allotment_details.setItemValue("id", aid);
         form_allotment_details.setItemValue("hotelfk", global_hotel_id);
-        
+
         var data = dsAllotments.item(aid);
 
         form_allotment_details.setFormData(data);
-        
+
         popupwin_allotments.center();
         popupwin_allotments.setModal(true);
         popupwin_allotments.show();
         popupwin_allotments.setText("Modify Allotments Details:");
-        
+
     }
     function newAllotment()
     {
@@ -1344,7 +1446,7 @@ function hotelinventory()
         form_details.setItemValue("hotelfk", global_hotel_id);
         _arr_dates = [];
     }
-    
+
     function clearInventoryStatus()
     {
         if (!form_clear_details.validate())
@@ -1358,7 +1460,7 @@ function hotelinventory()
             });
             return;
         }
-        
+
         var date_from = utils_trim(form_clear_details.getItemValue("date_from"), " ");
         var date_to = utils_trim(form_clear_details.getItemValue("date_to"), " ");
 
@@ -1384,8 +1486,8 @@ function hotelinventory()
 
             return false;
         }
-        
-        
+
+
         var params = "token=" + encodeURIComponent(global_token);
 
         //details
@@ -1446,7 +1548,7 @@ function hotelinventory()
                     dhtmlx.alert({
                         text: json_obj.OUTCOME,
                         type: "alert-warning",
-                        title: "SAVE",
+                        title: "DELETE",
                         callback: function () {
                         }
                     });
@@ -1455,7 +1557,7 @@ function hotelinventory()
         });
 
     }
-    
+
     function clearInventory()
     {
         popupwin_clear_inventory.center();
@@ -1536,7 +1638,7 @@ function hotelinventory()
                             "&allotmentid=" + encodeURIComponent(id);
                     populateAllotmentGrid(url);
 
-                    
+
 
                     popupwin_allotments.hide();
                     popupwin_allotments.setModal(false);
