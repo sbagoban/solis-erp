@@ -1636,9 +1636,9 @@ function hotelinventory()
                             "t=" + encodeURIComponent(global_token) +
                             "&hotelfk=" + encodeURIComponent(global_hotel_id) +
                             "&allotmentid=" + encodeURIComponent(id);
-                    populateAllotmentGrid(url);
-
-
+                    populateAllotmentGrid(url, id);
+                    
+                    
 
                     popupwin_allotments.hide();
                     popupwin_allotments.setModal(false);
@@ -2755,11 +2755,11 @@ function hotelinventory()
                 "t=" + encodeURIComponent(global_token) +
                 "&params=" + encodeURIComponent(JSON.stringify(_last_search_allotment_params));
 
-        populateAllotmentGrid(url);
+        populateAllotmentGrid(url, null);
 
     }
 
-    function populateAllotmentGrid(url)
+    function populateAllotmentGrid(url, id)
     {
         allotmentinnersearchlayout.cells("b").progressOn();
 
@@ -2779,6 +2779,11 @@ function hotelinventory()
                     grid_allotments.setCellTextStyle(rwid, ind, cellstyle);
                 });
             });
+            
+            if(id)
+            {
+                grid_allotments.selectRowById(id, false, true, false);
+            }
 
         });
     }
