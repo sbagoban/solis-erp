@@ -5,10 +5,10 @@ function _inventory_attach_touroperator($con, $countryid, $touroperator_id = "")
     //if $touroperator_id blank then 
     //  get all touroperators belonging to that $countryid
     //  attach each one of them to the Inventory where $countryid 
-    //  is an element of Inventory.countries
+    //  is an element of Inventory.Allotment.countries
     //else
     //  attach the specified touroperator to the Inventory 
-    //  where $countryid is an element of Inventory.countries
+    //  where $countryid is an element of Inventory.Allotment.countries
     //end if
 
     try {
@@ -25,18 +25,18 @@ function _inventory_attach_touroperator($con, $countryid, $touroperator_id = "")
             }
         }
 
-        //now get all inventory ids where $countryid is an element 
-        //of inventory.countries
+        //now get all inventory.allotment ids where $countryid is an element 
+        //of inventory.allotment.countries
 
         $arr_inventoryids = array();
-        $sql = "SELECT DISTINCT soc.inventoryfk
-                FROM tblinventory_countries soc
-                INNER JOIN tblinventory so ON soc.inventoryfk = so.id
+        $sql = "SELECT DISTINCT soc.allotmentfk
+                FROM tblinventory_allotment_countries soc
+                INNER JOIN tblinventory_allotment so ON soc.allotmentfk = so.id
                 WHERE soc.countryfk = :countryfk AND so.deleted = 0";
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":countryfk" => $countryid));
         while ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $arr_inventoryids[] = $rw["inventoryfk"];
+            $arr_inventoryids[] = $rw["allotmentfk"];
         }
 
         //now bind all together in tblinventory_touroperators
@@ -46,19 +46,19 @@ function _inventory_attach_touroperator($con, $countryid, $touroperator_id = "")
                 $inventoryid = $arr_inventoryids[$i];
                 $toid = $arr_toids[$j];
 
-                $sql = "SELECT * FROM tblinventory_touroperators WHERE 
-                        inventoryfk=:inventoryfk AND tofk=:tofk";
+                $sql = "SELECT * FROM tblinventory_allotment_to WHERE 
+                        allotmentfk=:allotmentfk AND tofk=:tofk";
                 $stmt = $con->prepare($sql);
-                $stmt->execute(array(":inventoryfk" => $inventoryid,
+                $stmt->execute(array(":allotmentfk" => $inventoryid,
                     ":tofk" => $toid));
                 if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     //insert record
-                    $sql = "INSERT INTO tblinventory_touroperators
-                            (inventoryfk,tofk)
+                    $sql = "INSERT INTO tblinventory_allotment_to
+                            (allotmentfk,tofk)
                             VALUES 
-                            (:inventoryfk,:tofk)";
+                            (:allotmentfk,:tofk)";
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":inventoryfk" => $inventoryid,
+                    $stmt->execute(array(":allotmentfk" => $inventoryid,
                         ":tofk" => $toid));
                 }
             }
@@ -81,10 +81,10 @@ function _inventory_detach_touroperator($con, $countryid, $touroperator_id = "")
 
     try {
 
-        $sql = "DELETE FROM tblinventory_touroperators 
-                WHERE inventoryfk IN 
-                ( SELECT inventoryfk 
-                  FROM tblinventory_countries 
+        $sql = "DELETE FROM tblinventory_allotment_to 
+                WHERE allotmentfk IN 
+                ( SELECT allotmentfk 
+                  FROM tblinventory_allotment_countries 
                   WHERE countryfk=:countryfk
                 )";
 
