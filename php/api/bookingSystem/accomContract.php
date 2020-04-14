@@ -42,7 +42,7 @@ try {
     $arr_params_test["travel_date"] = $_POST["travel_date"];
     $arr_params_test["wedding_interested"] = $_POST["wedding_interested"];
 
-    // $arr_pax = array();
+    //$arr_pax = array();
     // $arr_params_test["arr_pax"] = $_POST["arr_pax"];
     // echo '-->' . $arr_pax;
 
@@ -58,8 +58,12 @@ try {
     //                                         "age"=>30,
     //                                         "bride_groom"=>"");
     // }
-    $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"");
-    // $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"");
+    
+    $arr_params_test["arr_pax"] = array();
+    $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
+    $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
+
+    print_r($arr_params_test);
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>35,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>6,"age"=>17,"bride_groom"=>"");

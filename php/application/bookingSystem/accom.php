@@ -101,7 +101,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div>
 				
-				 <div class="form-group" style="display: none">
+				 <div class="form-group">
 					<label class="col-sm-1 control-label"></label>
 					<div class="col-sm-11">
 						<div class="input-group">
@@ -117,7 +117,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div> 
 				
-				<!-- <div class="form-group">
+				<div class="form-group">
 					<label class="col-sm-1 control-label">Rebate</label>
 					<div class="col-sm-4">
 						<select class="form-control" id="accom_rebate">
@@ -143,17 +143,17 @@ require_once("../../utils/utilities.php");
 							<div class="input-group">
 								<input type="number" class="form-control" id="accom_adultRebate">
 								<span class="input-group-addon">Adult</span>
-								<input type="number" class="form-control" id="accom_TeentRebate">
+								<!-- <input type="number" class="form-control" id="accom_TeentRebate">
 								<span class="input-group-addon">Teen</span>
 								<input type="number" class="form-control" id="accom_childRebate">
 								<span class="input-group-addon">Child</span>
 								<input type="number" class="form-control" id="accom_InfantRebate">
-								<span class="input-group-addon">Infant</span>
+								<span class="input-group-addon">Infant</span> -->
 							</div>
 						</div>
 					</div>
 
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label class="col-sm-1 control-label">Sharing Rebate</label>
 						<div class="col-sm-11">
 							<div class="input-group">
@@ -167,7 +167,7 @@ require_once("../../utils/utilities.php");
 								<span class="input-group-addon">Infant</span>
 							</div>
 						</div>
-					</div>
+					</div> -->
 				</div>
 				
 				<div class="form-group">
@@ -180,7 +180,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div>
 				
-				<div class="form-group">
+				<!-- <div class="form-group">
 					<label class="col-sm-1 control-label">Baby Cot</label>
 					<div class="col-sm-3">
 						<input type="text" class="form-control" id="accom_babyCot">

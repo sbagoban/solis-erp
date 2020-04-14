@@ -227,9 +227,9 @@ function resetClient(){
         {
             $("#accom_client").val('default').selectpicker("refresh");    
             $("#accom_adultAmt").val(0);
-            $("#accom_teenAmt").val(0);
+            $("#accom_TeentAmt").val(0);
             $("#accom_childAmt").val(0);
-            $("#accom_infantAmt").val(0);
+            $("#accom_InfantAmt").val(0);
         }
     
 }
@@ -285,8 +285,6 @@ function loadAccomTarif(data, max_pax) {
     var accom_client = $('#accom_client').val();
     
     var accom_client_age = $('#accom_client').find('option:selected').attr("name");
-
-    
     console.log('-->', accom_client);
     const url_read_booking_client = "php/api/bookingSystem/readBookingClient.php?t=" + encodeURIComponent(global_token) + "&id_booking_client=" +accom_client;
             $.ajax({
@@ -316,7 +314,7 @@ function loadAccomTarif(data, max_pax) {
     // take age push in object 
     // get remarks
     var accom_client_details = [
-        {count:1, age:30, bride_groom:"BRIDE"}
+        {count:1, age:27, bride_groom:""}
     ];
 
 // var accom_client_details = [
@@ -373,7 +371,6 @@ function loadAccomTarif(data, max_pax) {
                     //saveAccomDetails(data);
                 } else if (data == "FAIL_NO_CONTRACT") {
                     toastr.warning('No Tarif found.');
-                    hideAccomDetails();
                 }
             }, 
             error: function (error) {
@@ -386,7 +383,6 @@ function loadAccomTarif(data, max_pax) {
 // Client 
 // Activity Client
 $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, oldValue) {
-
     var numberOfClient = $("#accom_client :selected").length;
     var valueOfClient = $("#accom_client").val();
     if (numberOfClient == 0) {
@@ -485,6 +481,22 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                             if (contractData.OUTCOME == "OK") {
                                                 gridAccomDetails(contractData);
                                                 //saveAccomDetails(contractData);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                                 if (contractData.PAX_LIMITS_POSSIBILITIES.length != 0) {
                                                     // Age Policies
                                                     if (contractData.AGE_POLICIES.length == 0) {
@@ -494,45 +506,91 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                             $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
                                                             $("#accom_client").selectpicker('refresh');
                                                         } else {
-                                                            var test = clientCount.adult_amt++;
-                                                            $('#accom_adultAmt_1').val(test);
-                                                        }
-                                                    } else if (contractData.AGE_POLICIES.length == 1) {
-                                                        if ((clientData[0].age > contractData.AGE_POLICIES[0].AGETO)) { // single line display ADULT
-                                                            // adult
-                                                            $('#accom_adultAmt_1').val(clientCount.adult_amt++);
-                                                        } else {
-                                                            // child
-                                                            $('#accom_childAmt').val(clientCount.child_amt++);
-                                                            // Display in Text Field Number of adult && Child selected
-                                                        }
-                                                    }  else if (contractData.AGE_POLICIES.length == 2) {
-                                                        if ((clientData[0].age < contractData.AGE_POLICIES[0].AGETO)) {
-                                                            // Infant
-                                                            $('#accom_InfantAmt').val(clientCount.infant_amt++);
-                                                        } else if ((clientData[0].age < contractData.AGE_POLICIES[1].AGETO)) {
-                                                            // child
-                                                            $('#accom_childAmt').val(clientCount.child_amt++);
-                                                        } else { 
-                                                            // Adult
-                                                            $('#accom_adultAmt_1').val(clientCount.adult_amt++);
-                                                        }
-                                                    }  else if (contractData.AGE_POLICIES.length == 3) {
-                                                        if ((clientData[0].age < contractData.AGE_POLICIES[0].AGETO)) {
-                                                            // Infant
-                                                            $('#accom_InfantAmt').val(clientCount.infant_amt++);
-                                                        } else if ((clientData[0].age < contractData.AGE_POLICIES[1].AGETO)) {
-                                                            // child
-                                                            $('#accom_childAmt').val(clientCount.child_amt++);
-                                                        } else if ((clientData[0].age < contractData.AGE_POLICIES[2].AGETO)) { 
-                                                            // Teen
-                                                            $('#accom_TeentAmt').val(clientCount.teen_amt++);
-                                                        } else {
-                                                            // Adult
-                                                            $('#accom_adultAmt_1').val(clientCount.adult_amt++);
+                                                            var adultAmount = clientCount.adult_amt++;
+                                                            $('#accom_adultAmt').val(adultAmount);
                                                         }
                                                     }
-                                                } else {
+                                                }
+                                                else if (contractData.AGE_POLICIES.length == 1) {
+                                                    alert("1 - pax policies");
+                                                    // adult & child
+                                                    // 0 --> 4
+                                                    // tout seki entre 0 a 4 child 
+                                                    // tout seki laO 4 li vinn adult
+                                                    if (clientData[0].age > contractData.AGE_POLICIES[1].AGEFROM && clientData[0].age < contractData.AGE_POLICIES[1].AGETO) {
+                                                        // child only
+                                                    } else if (clientData[0].age > contractData.AGE_POLICIES[1].AGETO) {
+                                                        // adult only
+                                                    }
+                                                }
+
+                                                else if (contractData.AGE_POLICIES.length == 2) {
+                                                    alert("2 - pax policies");
+                                                    // adult & child & infant
+                                                    // 0 --> 4 / 5 --> 11
+                                                    // tout seki entre 0 a 4 infant 
+                                                    // tout seki entre 5 a 11 child 
+                                                    // tout seki laO 11 li vinn adult
+                                                    if (clientData[0].age > contractData.AGE_POLICIES[0].AGEFROM && clientData[0].age < contractData.AGE_POLICIES[0].AGETO) {
+                                                        // infant only
+                                                    } else if (clientData[0].age > contractData.AGE_POLICIES[1].AGEFROM && clientData[0].age < contractData.AGE_POLICIES[1].AGETO) {
+                                                        // child only
+                                                    } else { 
+                                                        // adult
+                                                    }
+                                                }
+
+                                                else if (contractData.AGE_POLICIES.length == 3) {
+                                                    alert("3 - pax policies");
+                                                    // adult & teen & child & infant
+                                                        // 0 --> 4 / 5 --> 11 / 12 --> 17
+                                                        // tout seki entre 0 a 4 infant 
+                                                        // tout seki entre 5 a 11 child 
+                                                        // tout seki entre 12 a 17 Teen 
+                                                        // tout seki laO 17 li vinn adult
+                                                    if (clientData[0].age > contractData.AGE_POLICIES[0].AGEFROM && clientData[0].age < contractData.AGE_POLICIES[0].AGETO) {
+                                                        // infant only
+                                                    } else if (clientData[0].age > contractData.AGE_POLICIES[1].AGEFROM && clientData[0].age < contractData.AGE_POLICIES[1].AGETO) {
+                                                        // child only
+                                                    } else if (clientData[0].age > contractData.AGE_POLICIES[2].AGEFROM && clientData[0].age < contractData.AGE_POLICIES[2].AGETO) {
+                                                        // teen only
+                                                    } else { 
+                                                        // adult
+                                                    }
+                                                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                else {
                                                     alert("Pax Limit Reached.");
                                                     var inegibleClient = $('#accom_client option[value="'+val+'"]').val();
                                                     $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
@@ -541,7 +599,6 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                             }
                                             else if (contractData == "FAIL_NO_CONTRACT") {
                                                 toastr.warning('No Tarif found.');
-                                                hideAccomDetails();
                                             }
                                         }, 
                                         error: function (error) {
@@ -564,13 +621,3 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
     });
 
 });
-
-
-function hideAccomDetails() {
-    alert('No');
-    // hide accom details - 
-    // no accom detail found    
-    document.getElementById('serviceDetails').setAttribute('style', 'display: none');   
-    document.getElementById('serviceDetailsNotFound').setAttribute('style', 'display: block');
-    
-}
