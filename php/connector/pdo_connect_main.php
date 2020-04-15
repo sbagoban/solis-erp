@@ -4,7 +4,7 @@
 function pdo_con() {
 
     $host = 'localhost';
-    $dbname = 'dbsolis';
+    $dbname = 'dbsolis_sandeep';
     $user = 'root';
     $pass =  'SmS+2035_KgB';
 

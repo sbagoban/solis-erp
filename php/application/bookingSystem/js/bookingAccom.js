@@ -81,7 +81,7 @@ $(function(){
 	//.Hotel
     
     // Meal Plan
-	const url_search_mealplan = "php/api/mealPlans/allMealPlan.php?t=" + encodeURIComponent(global_token);
+	const url_search_mealplan = "php/api/mealplans/allMealPlan.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_mealplan,
 		method: "POST",
@@ -128,7 +128,7 @@ $(function(){
 	//.Client
     
     //Approved Discount List
-	const url_search_discountUserList = "php/api/users/approverebateUser.php?t=" + encodeURIComponent(global_token);
+	const url_search_discountUserList = "php/api/users/approveRebateUser.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_discountUserList,
 		method: "POST",

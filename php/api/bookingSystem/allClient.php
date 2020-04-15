@@ -40,7 +40,7 @@ $sql = $con->prepare("SELECT
 								BC.id_booking,
 								BC.id_quote,
 								BC.remarks
-							FROM booking_client BC, CLIENT C
+							FROM booking_client BC, client C
 							WHERE BC.id_client = C.id_client
 							AND BC.id_booking = :id_booking
 							AND BC.active = 1

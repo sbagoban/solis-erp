@@ -127,7 +127,7 @@ var target_action = 'NULL';
 	//.Client
     
     //Approved rebate List
-	const url_search_rebateUserList = "php/api/users/approverebateUser.php?t=" + encodeURIComponent(global_token);
+	const url_search_rebateUserList = "php/api/users/approveRebateUser.php?t=" + encodeURIComponent(global_token);
 	$.ajax({
 		url: url_search_rebateUserList,
 		method: "POST",
