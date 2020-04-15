@@ -3,13 +3,13 @@
 function _rates_calculator($con, $arr_params) {
     try {
 
-        
+
         //to prevent mysql from truncating group_concat values
         $sql = "SET SESSION group_concat_max_len=10000;";
         $stmt = $con->prepare($sql);
         $stmt->execute();
-    
-        
+
+
         $time_pre = microtime(true);
 
 
@@ -6501,240 +6501,246 @@ function _rates_calculator_reservation_get_applicable_spos($con, $arr_params) {
 }
 
 function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_resa) {
-    //get the cost and claim amount per pax
 
-    /**
-     * Summary.
-     *
-     * returns an array of cost/claim amount per pax for the parameters provided
-     *
-     *
-     * @param PDOConnection  $con PDO Connection Object
-     * @param Integer $contractid contract id    
-     * @param array $arr_params_resa {
-     *     Array of parameters from reservation
-     *
-     *     @type Integer    $mealplan           meal plan id 
-     *     @type Integer    $suppmealplan       supplement meal plan id (optional: can be blank string)
-     *     @type Integer    $touroperator       tour operator id
-     *     @type Integer    $hotel              hotel id
-     *     @type Integer    $hotelroom          hotel room id
-     *     @type Date       $checkin_date       checkin date in yyyy-mm-dd
-     *     @type Date       $checkout_date      checkout date in yyyy-mm-dd
-     *     @type Time       $checkin_time       checkin time in HH:mm (optional: can be blank string)
-     *     @type Time       $checkout_time      checkout time in HH:mm (optional: can be blank string)
-     *     @type Date       $booking_date       booking date in yyyy-mm-dd
-     *     @type Date       $travel_date        travel date in yyyy-mm-dd
-     *     @type Integer    $max_pax            maximum passengers in reservation
-     *     @type Boolean    $wedding_interested if interested in wedding SPOS (1/0)
-     *     @type array      $arr_pax {
-     *          Array of adults/children details mixed together
-     *          @type Integer $count        index of child/adult
-     *          @type Integer $age          age of the child/adult. If no age, then is adult
-     *          @type String  $bride_groom  if adult if bride or groom or none. values = {"BRIDE","GROOM",""}
-     *     }      
-     * }
-     * @return array An array of cost/claim amounts per pax for above parameters
-     * 
-     */
-    $mealplan = $arr_params_resa["mealplan"];
-    $suppmealplan = $arr_params_resa["suppmealplan"];
-    $touroperator = $arr_params_resa["touroperator"];
-    $hotel = $arr_params_resa["hotel"];
-    $hotelroom = $arr_params_resa["hotelroom"];
-    $checkin_date = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
-    $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
-    $booking_date = $arr_params_resa["booking_date"]; //yyyy-mm-dd
-    $travel_date = $arr_params_resa["travel_date"]; //yyyy-mm-dd
-    $checkin_time = $arr_params_resa["checkin_time"]; //HH:mm
-    $checkout_time = $arr_params_resa["checkout_time"]; //HH:mm
-    $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
-    $max_pax = $arr_params_resa["max_pax"];
-    $arr_pax = $arr_params_resa["arr_pax"];
+    try {
+        //get the cost and claim amount per pax
 
-    $arr_limits = array();
+        /**
+         * Summary.
+         *
+         * returns an array of cost/claim amount per pax for the parameters provided
+         *
+         *
+         * @param PDOConnection  $con PDO Connection Object
+         * @param Integer $contractid contract id    
+         * @param array $arr_params_resa {
+         *     Array of parameters from reservation
+         *
+         *     @type Integer    $mealplan           meal plan id 
+         *     @type Integer    $suppmealplan       supplement meal plan id (optional: can be blank string)
+         *     @type Integer    $touroperator       tour operator id
+         *     @type Integer    $hotel              hotel id
+         *     @type Integer    $hotelroom          hotel room id
+         *     @type Date       $checkin_date       checkin date in yyyy-mm-dd
+         *     @type Date       $checkout_date      checkout date in yyyy-mm-dd
+         *     @type Time       $checkin_time       checkin time in HH:mm (optional: can be blank string)
+         *     @type Time       $checkout_time      checkout time in HH:mm (optional: can be blank string)
+         *     @type Date       $booking_date       booking date in yyyy-mm-dd
+         *     @type Date       $travel_date        travel date in yyyy-mm-dd
+         *     @type Integer    $max_pax            maximum passengers in reservation
+         *     @type Boolean    $wedding_interested if interested in wedding SPOS (1/0)
+         *     @type array      $arr_pax {
+         *          Array of adults/children details mixed together
+         *          @type Integer $count        index of child/adult
+         *          @type Integer $age          age of the child/adult. If no age, then is adult
+         *          @type String  $bride_groom  if adult if bride or groom or none. values = {"BRIDE","GROOM",""}
+         *     }      
+         * }
+         * @return array An array of cost/claim amounts per pax for above parameters
+         * 
+         */
+        $mealplan = $arr_params_resa["mealplan"];
+        $suppmealplan = $arr_params_resa["suppmealplan"];
+        $touroperator = $arr_params_resa["touroperator"];
+        $hotel = $arr_params_resa["hotel"];
+        $hotelroom = $arr_params_resa["hotelroom"];
+        $checkin_date = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
+        $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
+        $booking_date = $arr_params_resa["booking_date"]; //yyyy-mm-dd
+        $travel_date = $arr_params_resa["travel_date"]; //yyyy-mm-dd
+        $checkin_time = $arr_params_resa["checkin_time"]; //HH:mm
+        $checkout_time = $arr_params_resa["checkout_time"]; //HH:mm
+        $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
+        $max_pax = $arr_params_resa["max_pax"];
+        $arr_pax = $arr_params_resa["arr_pax"];
 
-    $resa_rates = -1; //to be decided below:
-    //=========================================
-    //get the country of the TO
-    $countryid = -1;
-    $sql = "select * from tblto_countries where tofk = :toid limit 1";
-    $query = $con->prepare($sql);
-    $query->execute(array(":toid" => $touroperator));
-    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $countryid = $row["countryfk"];
-    }
-    //=========================================
-    //=========================================
-    //lookup the special and standard rates of that tour operator
-    $special_rate_id = -1;
-    $standard_rate_id = -1;
+        $arr_limits = array();
 
-    $sql = "select ratecode,specialratecode, 
+        $resa_rates = -1; //to be decided below:
+        //=========================================
+        //get the country of the TO
+        $countryid = -1;
+        $sql = "select * from tblto_countries where tofk = :toid limit 1";
+        $query = $con->prepare($sql);
+        $query->execute(array(":toid" => $touroperator));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $countryid = $row["countryfk"];
+        }
+        //=========================================
+        //=========================================
+        //lookup the special and standard rates of that tour operator
+        $special_rate_id = -1;
+        $standard_rate_id = -1;
+
+        $sql = "select ratecode,specialratecode, 
             ifnull(rc_std.id,-1) as stdid, ifnull(rc_spec.id,-1) as specid
             from tbltouroperator tourop
             left join tblratecodes rc_std on ratecode = rc_std.ratecodes
             left join tblratecodes rc_spec on specialratecode = rc_spec.ratecodes
             where tourop.id = :toid";
 
-    $query = $con->prepare($sql);
-    $query->execute(array(":toid" => $touroperator));
-    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $query = $con->prepare($sql);
+        $query->execute(array(":toid" => $touroperator));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        $special_rate_id = $row["specid"];
-        $standard_rate_id = $row["stdid"];
-    }
-    //============================================
-    //test which rate is the one that belongs to the contract
-    $sql = "select * from tblservice_contract_rates where 
+            $special_rate_id = $row["specid"];
+            $standard_rate_id = $row["stdid"];
+        }
+        //============================================
+        //test which rate is the one that belongs to the contract
+        $sql = "select * from tblservice_contract_rates where 
             service_contract_fk = :contractid and ratefk = :rateid";
 
-    $query = $con->prepare($sql);
-    $query->execute(array(":contractid" => $contractid, ":rateid" => $special_rate_id));
-    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $query = $con->prepare($sql);
+        $query->execute(array(":contractid" => $contractid, ":rateid" => $special_rate_id));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        $resa_rates = $special_rate_id;
-    } else {
-        $resa_rates = $standard_rate_id;
-    }
+            $resa_rates = $special_rate_id;
+        } else {
+            $resa_rates = $standard_rate_id;
+        }
 
 
-    //============================================
-    //=========================================
-    //reset my parameters
-    $arr_params["checkin_date"] = $checkin_date;
-    $arr_params["checkout_date"] = $checkout_date;
-    $arr_params["checkin_time"] = $checkin_time;
-    $arr_params["checkout_time"] = $checkout_time;
-    $arr_params["country"] = $countryid;
-    $arr_params["hotel"] = $hotel;
-    $arr_params["hotelroom"] = $hotelroom;
-    $arr_params["mealplan"] = $mealplan;
-    $arr_params["supp_mealplan"] = $suppmealplan;
-    $arr_params["touroperator"] = $touroperator;
-    $arr_params["contractids"] = "";
-    $arr_params["rate"] = $resa_rates;
-    $arr_params["spo_type"] = "both";
-    $arr_params["spo_booking_date"] = $booking_date;
-    $arr_params["spo_travel_date"] = $travel_date;
-    $arr_params["spo_party_pax"] = $max_pax;
-    $arr_params["spo_chk_is_wedding"] = $wedding_interested;
+        //============================================
+        //=========================================
+        //reset my parameters
+        $arr_params["checkin_date"] = $checkin_date;
+        $arr_params["checkout_date"] = $checkout_date;
+        $arr_params["checkin_time"] = $checkin_time;
+        $arr_params["checkout_time"] = $checkout_time;
+        $arr_params["country"] = $countryid;
+        $arr_params["hotel"] = $hotel;
+        $arr_params["hotelroom"] = $hotelroom;
+        $arr_params["mealplan"] = $mealplan;
+        $arr_params["supp_mealplan"] = $suppmealplan;
+        $arr_params["touroperator"] = $touroperator;
+        $arr_params["contractids"] = "";
+        $arr_params["rate"] = $resa_rates;
+        $arr_params["spo_type"] = "both";
+        $arr_params["spo_booking_date"] = $booking_date;
+        $arr_params["spo_travel_date"] = $travel_date;
+        $arr_params["spo_party_pax"] = $max_pax;
+        $arr_params["spo_chk_is_wedding"] = $wedding_interested;
 
-    //================================================================
-    //get age policies
-    $_arr_params = $arr_params;
-    $_arr_params["current_contract_id"] = $contractid;
-    $arr_age_policies = _rates_calculator_get_children_agegroups($_arr_params, $con, "CONTRACT");
-    //===========================================================
-    //
-    //split the pax array into adults and children
-    $arr_ad_ch = _rates_calculator_reservation_split_pax_arrays($arr_pax, $arr_age_policies);
-    $arr_params["adults"] = $arr_ad_ch["ADULTS"];
-    $arr_params["children"] = $arr_ad_ch["CHILDREN"];
-    //===========================================================
-    //==========================================
-    //get the SPO 
-    $arr_params["spo_chosen"] = "CHOICE";
-    $arr_spos = _rates_calculator_reservation_get_applicable_spos($con, $arr_params);
-    if ($arr_spos["OUTCOME"] != "OK") {
-        return $arr_spos["OUTCOME"];
-    }
+        //================================================================
+        //get age policies
+        $_arr_params = $arr_params;
+        $_arr_params["current_contract_id"] = $contractid;
+        $arr_age_policies = _rates_calculator_get_children_agegroups($_arr_params, $con, "CONTRACT");
+        //===========================================================
+        //
+        //split the pax array into adults and children
+        $arr_ad_ch = _rates_calculator_reservation_split_pax_arrays($arr_pax, $arr_age_policies);
+        $arr_params["adults"] = $arr_ad_ch["ADULTS"];
+        $arr_params["children"] = $arr_ad_ch["CHILDREN"];
+        //===========================================================
+        //==========================================
+        //get the SPO 
+        $arr_params["spo_chosen"] = "CHOICE";
+        $arr_spos = _rates_calculator_reservation_get_applicable_spos($con, $arr_params);
+        if ($arr_spos["OUTCOME"] != "OK") {
+            return $arr_spos["OUTCOME"];
+        }
 
-    //===============================================================
-    //get the room type: UNITS or PAX
-    $room_variant = "PERSONS";
-    $sql = "select * from tblservice_contract_roomcapacity 
+        //===============================================================
+        //get the room type: UNITS or PAX
+        $room_variant = "PERSONS";
+        $sql = "select * from tblservice_contract_roomcapacity 
             where service_contract_fk = :contractid and roomfk = :roomid";
-    $query = $con->prepare($sql);
-    $query->execute(array(":contractid" => $contractid, ":roomid" => $hotelroom));
-    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $query = $con->prepare($sql);
+        $query->execute(array(":contractid" => $contractid, ":roomid" => $hotelroom));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        $room_variant = $row["variant"];
+            $room_variant = $row["variant"];
+        }
+        //===========================================================
+        //get the contract Cost Currency Id
+        $currency_cost_id = "-1";
+        $sql = "select * from tblservice_contract where id = :contractid";
+        $query = $con->prepare($sql);
+        $query->execute(array(":contractid" => $contractid));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $currency_cost_id = $row["mycostprice_currencyfk"];
+        }
+        //===========================================================
+        //get the limits possibilities for the adults and children provided
+        $arr_limits = _rates_calculator_get_pax_limits($arr_params, $con, $contractid, $room_variant);
+        //===========================================================
+        //now launch the rates calculator with/without SPO:
+        //run rates calculator with LOWEST SPO applied
+        $arr_params["spo_chosen"] = "LOWEST";
+        $arr_outcome_with_spo = _rates_calculator($con, $arr_params);
+        $outcome = $arr_outcome_with_spo["OUTCOME"];
+
+        if ($outcome != "OK") {
+            return array("OUTCOME" => $outcome);
+        }
+
+        //run rates calculator without SPO applied
+        $arr_params["spo_chosen"] = "NONE";
+        $arr_outcome_without_spo = _rates_calculator($con, $arr_params);
+        $outcome = $arr_outcome_without_spo["OUTCOME"];
+
+        if ($outcome != "OK") {
+            return array("OUTCOME" => $outcome);
+        }
+
+
+        //==========================================================
+        //success in lookup
+        //proceed with extracting the amounts
+
+        $currency_sell_id = $arr_outcome_without_spo["DAILY"][0]["CURRENCY_SELL_ID"];
+
+        $arr_colidx = _rates_calculator_reservation_get_columns_cost_sp_colindex($arr_outcome_without_spo["COLUMNS"]);
+        $cost_colidx = $arr_colidx["COST_IDX"];
+        $sp_colidx = $arr_colidx["SP_IDX"];
+
+        //=====================================================
+
+        $arr_daily_status = _rates_calculator_reservation_get_daily_status($arr_outcome_without_spo["DAILY"]);
+
+        //=====================================================
+        //for each adult in arr_adults, lookup the amounts
+        $arr_adult_rates = _rates_calculator_reservation_get_cost_claim_per_pax(
+                $arr_outcome_without_spo["DAILY"][0]["COSTINGS_WORKINGS"],
+                $arr_outcome_with_spo["DAILY"][0]["COSTINGS_WORKINGS"],
+                "ROOM",
+                "ADULT", $cost_colidx, $sp_colidx);
+
+
+        //for each child in $arr_children, lookup the amounts
+        $arr_children_rates = _rates_calculator_reservation_get_cost_claim_per_pax(
+                $arr_outcome_without_spo["DAILY"][0]["COSTINGS_WORKINGS"],
+                $arr_outcome_with_spo["DAILY"][0]["COSTINGS_WORKINGS"],
+                "ROOM",
+                "CHILDREN", $cost_colidx, $sp_colidx);
+
+
+
+        $arr_amounts = _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant);
+
+
+        $arr_return = array("OUTCOME" => "OK",
+            "CONTRACT_ID" => $contractid,
+            "ROOM_TYPE" => $room_variant,
+            "ROOM_ID" => $hotelroom,
+            "PAX_LIMITS_POSSIBILITIES" => $arr_limits,
+            "DAILY_STATUS" => $arr_daily_status,
+            "COST_CURRENCY_ID" => $currency_cost_id,
+            "CLAIM_CURRENCY_ID" => $currency_sell_id,
+            "COST_CLAIM_AMOUNTS" => $arr_amounts,
+            "AGE_POLICIES" => $arr_age_policies,
+            "SPECIAL_OFFERS" => $arr_spos["SPOS"]);
+
+
+
+        return $arr_return;
+    } catch (Exception $ex) {
+        $arr_return = array("OUTCOME" => $ex->getMessage());
+        return $arr_return;
     }
-    //===========================================================
-    //get the contract Cost Currency Id
-    $currency_cost_id = "-1";
-    $sql = "select * from tblservice_contract where id = :contractid";
-    $query = $con->prepare($sql);
-    $query->execute(array(":contractid" => $contractid));
-    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-        $currency_cost_id = $row["mycostprice_currencyfk"];
-    }
-    //===========================================================
-    //get the limits possibilities for the adults and children provided
-    $arr_limits = _rates_calculator_get_pax_limits($arr_params, $con, $contractid, $room_variant);
-    //===========================================================
-    //now launch the rates calculator with/without SPO:
-    //run rates calculator with LOWEST SPO applied
-    $arr_params["spo_chosen"] = "LOWEST";
-    $arr_outcome_with_spo = _rates_calculator($con, $arr_params);
-    $outcome = $arr_outcome_with_spo["OUTCOME"];
-
-    if ($outcome != "OK") {
-        return array("OUTCOME" => $outcome);
-    }
-
-    //run rates calculator without SPO applied
-    $arr_params["spo_chosen"] = "NONE";
-    $arr_outcome_without_spo = _rates_calculator($con, $arr_params);
-    $outcome = $arr_outcome_without_spo["OUTCOME"];
-
-    if ($outcome != "OK") {
-        return array("OUTCOME" => $outcome);
-    }
-
-
-    //==========================================================
-    //success in lookup
-    //proceed with extracting the amounts
-
-    $currency_sell_id = $arr_outcome_without_spo["DAILY"][0]["CURRENCY_SELL_ID"];
-
-    $arr_colidx = _rates_calculator_reservation_get_columns_cost_sp_colindex($arr_outcome_without_spo["COLUMNS"]);
-    $cost_colidx = $arr_colidx["COST_IDX"];
-    $sp_colidx = $arr_colidx["SP_IDX"];
-
-    //=====================================================
-
-    $arr_daily_status = _rates_calculator_reservation_get_daily_status($arr_outcome_without_spo["DAILY"]);
-
-    //=====================================================
-    //for each adult in arr_adults, lookup the amounts
-    $arr_adult_rates = _rates_calculator_reservation_get_cost_claim_per_pax(
-            $arr_outcome_without_spo["DAILY"][0]["COSTINGS_WORKINGS"],
-            $arr_outcome_with_spo["DAILY"][0]["COSTINGS_WORKINGS"],
-            "ROOM",
-            "ADULT", $cost_colidx, $sp_colidx);
-
-
-    //for each child in $arr_children, lookup the amounts
-    $arr_children_rates = _rates_calculator_reservation_get_cost_claim_per_pax(
-            $arr_outcome_without_spo["DAILY"][0]["COSTINGS_WORKINGS"],
-            $arr_outcome_with_spo["DAILY"][0]["COSTINGS_WORKINGS"],
-            "ROOM",
-            "CHILDREN", $cost_colidx, $sp_colidx);
-
-
-
-    $arr_amounts = _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant);
-
-
-    $arr_return = array("OUTCOME" => "OK",
-        "CONTRACT_ID" => $contractid,
-        "ROOM_TYPE" => $room_variant,
-        "ROOM_ID" => $hotelroom,
-        "PAX_LIMITS_POSSIBILITIES" => $arr_limits,
-        "DAILY_STATUS" => $arr_daily_status,
-        "COST_CURRENCY_ID" => $currency_cost_id,
-        "CLAIM_CURRENCY_ID" => $currency_sell_id,
-        "COST_CLAIM_AMOUNTS" => $arr_amounts,
-        "AGE_POLICIES" => $arr_age_policies,
-        "SPECIAL_OFFERS" => $arr_spos["SPOS"]);
-
-
-
-    return $arr_return;
 }
 
 function _rates_calculator_reservation_get_daily_status($arr_daily) {
@@ -6920,7 +6926,7 @@ function _rates_calculator_reservation_get_cost_claim_per_pax($arr_before_spo,
                     if (isset($arr_before_spo[$i]["EXTRA"])) {
                         $extra = $arr_before_spo[$i]["EXTRA"];
                     }
-
+                    
                     $cost_value = $arr_before_spo[$i]["COSTINGS"][$cost_colidx]["VALUE"];
                     $sp_value_without_spo = $arr_before_spo[$i]["COSTINGS"][$sp_colidx]["VALUE"];
                     $sp_value_with_spo = $arr_afer_spo[$i]["COSTINGS"][$sp_colidx]["VALUE"];
