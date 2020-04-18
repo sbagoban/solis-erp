@@ -53,7 +53,7 @@ try {
 
     $note = $details["note"];
     $rooms_ids = $details["rooms_ids"];
-    $to_ids = $details["to_ids"];
+    $to_ids = trim($details["to_ids"]);
     $market_countries_ids = $details["market_countries_ids"];
     $specific_to = $details["specific_to"];
 
@@ -71,100 +71,38 @@ try {
 
     //split room wise
     $arr_room_ids = explode(",", $rooms_ids);
+
     
-    //split TO wise
-    $arr_to_ids = explode(",", $to_ids);
-    
+
     for ($i = 0; $i < count($arr_room_ids); $i++) {
         $roomid = $arr_room_ids[$i]; //<------------------- room id
 
         for ($j = 0; $j < count($arr_dates); $j++) {
 
             $date = $arr_dates[$j]; //<------------------- inventory date
-                        
-            for ($t = 0; $t < count($arr_to_ids); $t++) {
-
-                $tofk = $arr_to_ids[$t]; //<------------------- TO ID
-                
-                //first check if there is a record for this date, room, hotel, touroperator
-                $id = -1;
-                
-                $sql = "SELECT * FROM tblinventory_dates WHERE 
-                        inventory_date=:inventory_date AND
-                        hotelfk=:hotelfk AND 
-                        roomfk=:roomfk AND 
-                        to_fk=:to_fk";
-                
-                $query = $con->prepare($sql);
-                $query->execute(array(":inventory_date" => $date, ":hotelfk"=>$hotelfk,
-                                       ":roomfk"=>$roomid,":to_fk"=>$tofk));
-
-                if (!$rw = $query->fetch(PDO::FETCH_ASSOC)) {
-                    $sql = "INSERT INTO tblinventory_dates
-                            (inventory_date,date_created,deleted) 
-                            VALUES (:inventory_date,NOW(),0)";
-
-                    $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":inventory_date"=>$date));
-                    $id = $con->lastInsertId();
-                }
-                else
-                {
-                    $id = $rw["id"];
-                }
-                
-                //=============================================
-
-                $sql = "UPDATE tblinventory_dates SET 
-                        hotelfk=:hotelfk,
-                        roomfk=:roomfk,
-                        inventory_status=:inventory_status,
-                        to_fk=:to_fk,
-                        release_days_value=:release_days_value,
-                        release_date_value=:release_date_value, 
-                        autho_reserve_days_from=:autho_reserve_days_from,
-                        autho_reserve_days_to=:autho_reserve_days_to, 
-                        autho_reserve_date_from=:autho_reserve_date_from,
-                        autho_reserve_date_to=:autho_reserve_date_to,
-                        autho_reserve_time_from=:autho_reserve_time_from,
-                        autho_reserve_time_to=:autho_reserve_time_to,
-                        note=:note,
-                        title=:title,
-                        specific_to=:specific_to
-                        WHERE id=:id";
-
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(":id" => $id,
-                    ":hotelfk" => $hotelfk,
-                    ":roomfk" => $roomid,
-                    ":to_fk"=>$tofk,
-                    ":inventory_status" => $inventory_status,
-                    ":release_days_value" => $release_days_value,
-                    ":release_date_value" => $release_date_value,
-                    ":autho_reserve_days_from" => $autho_reserve_days_from,
-                    ":autho_reserve_days_to" => $autho_reserve_days_to,
-                    ":autho_reserve_date_from" => $autho_reserve_date_from,
-                    ":autho_reserve_date_to" => $autho_reserve_date_to,
-                    ":autho_reserve_time_from" => $autho_reserve_time_from,
-                    ":autho_reserve_time_to" => $autho_reserve_time_to,
-                    ":note" => $note,
-                    ":specific_to" => $specific_to,
-                    ":title" => $title));
-                
-                /*
-                $outcome = savetouroperators($to_ids, $id);
+            
+            if($to_ids == "")
+            {
+                $tofk = null; //<------------------- TO ID set to NULL
+                $outcome = saveinventory_record($tofk, $date, $roomid);
                 if ($outcome != "OK") {
                     throw new Exception($outcome);
                 }
-
-                $outcome = savecountries($market_countries_ids, $id);
-                if ($outcome != "OK") {
-                    throw new Exception($outcome);
-                }
-                *
-                */
-                
             }
+            else
+            {
+                //split TO wise
+                $arr_to_ids = explode(",", $to_ids);
+                for ($t = 0; $t < count($arr_to_ids); $t++) {
+
+                    $tofk = $arr_to_ids[$t]; //<------------------- TO ID
+                    $outcome = saveinventory_record($tofk, $date, $roomid);
+                    if ($outcome != "OK") {
+                        throw new Exception($outcome);
+                    }
+                }
+            }
+            
         }
     }
 
@@ -180,54 +118,94 @@ try {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 
-function savetouroperators($to_ids, $id) {
+function saveinventory_record($tofk, $date, $roomid) {
     try {
 
         global $con;
-        $arr_to_ids = explode(",", $to_ids);
+        global $hotelfk;
+        global $inventory_status;
+        global $title;
+        global $release_days_value;
+        global $release_date_value;
+        global $autho_reserve_days_from;
+        global $autho_reserve_days_to;
+        global $autho_reserve_date_from;
+        global $autho_reserve_date_to;
+        global $autho_reserve_time_from;
+        global $autho_reserve_time_to;
+        global $note;
+        global $specific_to;
 
-        for ($i = 0; $i < count($arr_to_ids); $i++) {
 
-            $tofk = $arr_to_ids[$i];
+        //first check if there is a record for this date, room, hotel, touroperator
+        $id = -1;
 
-            //insert
-            $sql = "INSERT INTO tblinventory_dates_to (inventory_date_fk, to_fk) VALUES 
-                        (:inventory_date_fk, :to_fk)";
-            
+        $sql = "SELECT * FROM tblinventory_dates WHERE 
+                inventory_date=:inventory_date AND
+                hotelfk=:hotelfk AND 
+                roomfk=:roomfk AND 
+                specific_to=:specific_to AND
+                to_fk=:to_fk";
+
+        $query = $con->prepare($sql);
+        $query->execute(array(":inventory_date" => $date, ":hotelfk" => $hotelfk,
+            ":roomfk" => $roomid, ":to_fk" => $tofk,
+            ":specific_to" => $specific_to));
+
+        if (!$rw = $query->fetch(PDO::FETCH_ASSOC)) {
+            $sql = "INSERT INTO tblinventory_dates
+                            (inventory_date,date_created,deleted) 
+                            VALUES (:inventory_date,NOW(),0)";
+
             $stmt = $con->prepare($sql);
-            $stmt->execute(array(":inventory_date_fk" => $id, ":to_fk" => $tofk));
+            $stmt->execute(array(":inventory_date" => $date));
+            $id = $con->lastInsertId();
+        } else {
+            $id = $rw["id"];
         }
+
+        //=============================================
+
+        $sql = "UPDATE tblinventory_dates SET 
+                hotelfk=:hotelfk,
+                roomfk=:roomfk,
+                inventory_status=:inventory_status,
+                to_fk=:to_fk,
+                release_days_value=:release_days_value,
+                release_date_value=:release_date_value, 
+                autho_reserve_days_from=:autho_reserve_days_from,
+                autho_reserve_days_to=:autho_reserve_days_to, 
+                autho_reserve_date_from=:autho_reserve_date_from,
+                autho_reserve_date_to=:autho_reserve_date_to,
+                autho_reserve_time_from=:autho_reserve_time_from,
+                autho_reserve_time_to=:autho_reserve_time_to,
+                note=:note,
+                title=:title,
+                specific_to=:specific_to
+                WHERE id=:id";
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute(array(":id" => $id,
+            ":hotelfk" => $hotelfk,
+            ":roomfk" => $roomid,
+            ":to_fk" => $tofk,
+            ":inventory_status" => $inventory_status,
+            ":release_days_value" => $release_days_value,
+            ":release_date_value" => $release_date_value,
+            ":autho_reserve_days_from" => $autho_reserve_days_from,
+            ":autho_reserve_days_to" => $autho_reserve_days_to,
+            ":autho_reserve_date_from" => $autho_reserve_date_from,
+            ":autho_reserve_date_to" => $autho_reserve_date_to,
+            ":autho_reserve_time_from" => $autho_reserve_time_from,
+            ":autho_reserve_time_to" => $autho_reserve_time_to,
+            ":note" => $note,
+            ":specific_to" => $specific_to,
+            ":title" => $title));
+
 
         return "OK";
     } catch (Exception $ex) {
-        return "SAVE TOUR OPERATORS: " . $ex->getMessage();
-    }
-}
-
-function savecountries($market_countries_ids, $id) {
-    try {
-
-        global $con;
-       
-        $arr_countries = explode(",", $market_countries_ids);
-
-        for ($i = 0; $i < count($arr_countries); $i++) {
-
-            $countryid = $arr_countries[$i];
-
-                //insert
-                $sql = "INSERT INTO tblinventory_dates_countries
-                        (inventory_date_fk, country_fk) VALUES 
-                        (:inventory_date_fk, :country_fk)";
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(":inventory_date_fk" => $id, ":country_fk" => $countryid));
-             
-        }
-
-
-        return "OK";
-    } catch (Exception $ex) {
-        return "SAVE COUNTRIES: " . $ex->getMessage();
+        return "SAVE INVENTORY RECORD: " . $ex->getMessage();
     }
 }
 

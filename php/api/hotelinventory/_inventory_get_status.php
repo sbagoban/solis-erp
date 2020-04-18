@@ -1,6 +1,6 @@
 <?php
 
-function _inventory_get_inventory_status($con, $toid, $roomid, $hotelid, $thedate) {
+function _inventory_get_inventory_status($con, $toid, $roomid, $hotelid, $thedate, $specific_to) {
 
     /**
      * Summary.
@@ -9,21 +9,28 @@ function _inventory_get_inventory_status($con, $toid, $roomid, $hotelid, $thedat
      *
      *
      * @param PDOConnection  $con   PDO Connection Object
-     * @param Integer $toid         Tour Operator ID
+     * @param Integer $toid         Tour Operator ID - MUST BE NULL if $specific_to is WORLDWIDE (B)
      * @param Integer $roomid       Room ID
      * @param Integer $hotelid      Hotel ID
      * @param Date $thedate         Date Search YYYY-mm-dd
+     * @param String $specific_to   Tour Operator (A), World Wide (B), Market (C)
      * 
      * @return status of given date
      * 
      */
     
-    $sql = "SELECT * FROM tblinventory_dates WHERE inventory_date=:thedate
-            AND hotelfk=:hotelfk AND roomfk=:roomfk AND to_fk=:to_fk AND deleted=0";
+    $sql = "SELECT * FROM tblinventory_dates 
+            WHERE inventory_date=:thedate
+            AND hotelfk=:hotelfk 
+            AND roomfk=:roomfk 
+            AND specific_to=:specific_to 
+            AND to_fk=:to_fk 
+            AND deleted=0";
 
     $query = $con->prepare($sql);
     $query->execute(array(":thedate" => $thedate,
-                           ":hotelfk" => $hotelid, ":roomfk" => $roomid, ":to_fk" => $toid));
+                           ":hotelfk" => $hotelid, ":roomfk" => $roomid, 
+                           ":to_fk" => $toid, ":specific_to" => $specific_to));
 
     $arr_status = array();
     
