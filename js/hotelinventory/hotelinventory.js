@@ -211,10 +211,18 @@ function hotelinventory()
         {type: "settings", position: "label-left", id: "str_details"},
         {type: "hidden", name: "hotelfk", value: global_hotel_id},
         {type: "block", width: 420, list: [
+                {type: "combo", name: "specific_to", label: "Specific To:",
+                    labelWidth: "110",
+                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    comboType: "image",
+                    comboImagePath: "../../images/"
+                }]},
+        {type: "block", width: 420, list: [
                 {type: "calendar", name: "dtfrom", label: "Date From:",
                     labelHeight: "22", inputWidth: "100", inputHeight: "28",
                     labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "122",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "110",
                     dateFormat: "%d-%m-%Y", required: true,
                     note: {
                         text: "Format: dd-mm-yyyy"
@@ -224,7 +232,7 @@ function hotelinventory()
                 {type: "calendar", name: "dtto", label: "Date To:",
                     labelHeight: "22", inputWidth: "100", inputHeight: "28",
                     labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "122",
+                    labelTop: "10", inputLeft: "10", inputTop: "10", labelWidth: "110",
                     dateFormat: "%d-%m-%Y", required: true,
                     note: {
                         text: "Format: dd-mm-yyyy"
@@ -250,11 +258,11 @@ function hotelinventory()
                 {type: "button", name: "cmdLoadRooms", tooltip: "Select Hotel Rooms", value: "...", width: "30", height: "40", offsetLeft: 0}
             ]},
 
-        {type: "block", width: 420, list: [
+        {type: "block", name: "blockCountries", width: 420, list: [
                 {type: "input", name: "market_countries_display", label: "Countries:",
                     labelWidth: "110",
                     labelHeight: "22", inputWidth: "200", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                     readonly: true, rows: 3
                 },
                 {type: "hidden", name: "market_countries_ids"},
@@ -262,7 +270,7 @@ function hotelinventory()
                 {type: "button", name: "cmdLoadCountries", tooltip: "Select Market Countries", value: "...", width: "30", height: "40", offsetLeft: 0}
             ]},
 
-        {type: "block", width: 420, list: [
+        {type: "block", name: "blockTO", width: 420, list: [
                 {type: "input", name: "to_display", label: "Tour Operators:", labelWidth: "110",
                     labelHeight: "22", inputWidth: "200", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10",
@@ -308,6 +316,14 @@ function hotelinventory()
     cboSearchType.setComboValue("all");
 
 
+    var cboSearchSpecific = form_search_details.getCombo("specific_to");
+    cboSearchSpecific.enableOptionAutoPositioning(true);
+    cboSearchSpecific.readonly(true);
+    cboSearchSpecific.addOption([{value: "A", text: "Tour Operator (A)", img_src: "images/rate_32.png"}]);
+    cboSearchSpecific.addOption([{value: "B", text: "World Wide (B)", img_src: "images/rate_32.png"}]);
+    cboSearchSpecific.addOption([{value: "C", text: "Market (C)", img_src: "images/rate_32.png"}]);
+    cboSearchSpecific.setComboValue("A");
+    cboSearchSpecific.attachEvent("onChange", onCboSearchInventorySpecificChange);
 
 
     var toolbar_inventory = inventorylayout.cells("a").attachToolbar();
@@ -637,7 +653,7 @@ function hotelinventory()
                     comboType: "image",
                     comboImagePath: "../../images/"
                 }]},
-        
+
         {type: "block", width: 800, list: [
                 {type: "input", name: "rooms_display", label: "Rooms:", labelWidth: "110",
                     labelHeight: "22", inputWidth: "568", labelLeft: "0",
@@ -652,7 +668,7 @@ function hotelinventory()
                 {type: "input", name: "market_countries_display", label: "Countries:",
                     labelWidth: "110",
                     labelHeight: "22", inputWidth: "568", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", 
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                     readonly: true, rows: 3
                 },
                 {type: "hidden", name: "market_countries_ids"},
@@ -662,7 +678,7 @@ function hotelinventory()
         {type: "block", name: "blockTO", width: 800, list: [
                 {type: "input", name: "to_display", label: "Tour Operators:", labelWidth: "110",
                     labelHeight: "22", inputWidth: "568", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", 
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                     readonly: true, rows: 3
                 },
                 {type: "hidden", name: "to_ids"},
@@ -1491,8 +1507,8 @@ function hotelinventory()
 
             return false;
         }
-        
-        
+
+
         //if the market is not Worldwide, need to have countries and TOs
         var countryids = utils_trim(form_clear_details.getItemValue("market_countries_ids"), " ");
         var toids = utils_trim(form_clear_details.getItemValue("to_ids"), " ");
@@ -1528,8 +1544,8 @@ function hotelinventory()
             }
 
         }
-        
-        
+
+
         //=================================================================
 
 
@@ -2886,6 +2902,8 @@ function hotelinventory()
             return;
         }
 
+
+
         var dtfrom = form_search_details.getItemValue("dtfrom");
         var dtto = form_search_details.getItemValue("dtto");
 
@@ -2901,6 +2919,43 @@ function hotelinventory()
             return;
         }
 
+
+        //if the market is not Worldwide, need to have countries and TOs
+        var countryids = utils_trim(form_search_details.getItemValue("market_countries_ids"), " ");
+        var toids = utils_trim(form_search_details.getItemValue("to_ids"), " ");
+        var specific = cboSearchSpecific.getSelectedValue();
+
+        if (specific != "B")
+        {
+            //not worldwide market
+            if (countryids == "")
+            {
+                dhtmlx.alert({
+                    text: "Please select Countries and Tour Operators for non Worldwide Markets",
+                    type: "alert-warning",
+                    title: "Search Inventory",
+                    callback: function () {
+                        showPopUpCountries(form_search_details, "Countries", "market_countries_display", "market_countries_ids", null);
+                    }
+                });
+                return false;
+            }
+
+            if (toids == "")
+            {
+                dhtmlx.alert({
+                    text: "Please select Tour Operators for non Worldwide Markets",
+                    type: "alert-warning",
+                    title: "Search Inventory",
+                    callback: function () {
+                        showPopUpTourOperators(form_search_details, "Tour Operators", "to_display", "to_ids", "MULTIPLE", null);
+                    }
+                });
+                return false;
+            }
+        }
+
+        //============================================================================
 
         grid_inventory_dates.clearAll(true);
         grid_inventory_dates = null;
@@ -2969,7 +3024,7 @@ function hotelinventory()
         });
     };
 
-    
+
     function onCboClearInventorySpecificChange()
     {
         var specific = cboClearSpecific.getSelectedValue();
@@ -2993,7 +3048,7 @@ function hotelinventory()
             form_clear_details.showItem("blockTO");
         }
     }
-    
+
     function onCboInventorySpecificChange()
     {
         var specific = cboSpecific.getSelectedValue();
@@ -3015,6 +3070,31 @@ function hotelinventory()
             //show countries and TO
             form_details.showItem("blockCountries");
             form_details.showItem("blockTO");
+        }
+    }
+
+
+    function onCboSearchInventorySpecificChange()
+    {
+        var specific = cboSearchSpecific.getSelectedValue();
+
+        if (specific == "B")
+        {
+            //hide countries and TO
+
+            form_search_details.hideItem("blockCountries");
+            form_search_details.hideItem("blockTO");
+
+            form_search_details.setItemValue("market_countries_display", "");
+            form_search_details.setItemValue("market_countries_ids", "");
+
+            form_search_details.setItemValue("to_display", "");
+            form_search_details.setItemValue("to_ids", "");
+        } else
+        {
+            //show countries and TO
+            form_search_details.showItem("blockCountries");
+            form_search_details.showItem("blockTO");
         }
     }
 

@@ -62,10 +62,11 @@ try {
     $dtto = $params["dtto"];
     $inventory_type = $params["inventory_type"];
     $rooms_ids = trim($params["rooms_ids"]);
-    $market_countries_ids = $params["market_countries_ids"];
+    $market_countries_ids = trim($params["market_countries_ids"]);
     $to_ids = trim($params["to_ids"]);
     $hotelfk = $params["hotelfk"];
-
+    $specific_to = $params["specific_to"];
+    
 
     $cellstyle = "font-weight:normal; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
     $cellstyle_title = "font-weight:bold; border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4; background-color:#C6E6FC;";
@@ -129,12 +130,14 @@ function getInventoryStatus($date) {
     global $market_countries_ids;
     global $to_ids;
     global $con;
+    global $specific_to;
 
     $arr_statuses = array();
 
     $sql = "SELECT inventory_status 
             FROM tblinventory_dates WHERE 
             hotelfk=:hotelfk AND 
+            specific_to = :specific_to AND
             roomfk IN ($rooms_ids) AND
             inventory_date=:inventory_date AND
             deleted = 0 ";
@@ -146,14 +149,26 @@ function getInventoryStatus($date) {
     }
 
     //====================================================================
-    if ($to_ids == "") {
-        //search based on countries
-        $sql .= " AND to_fk IN (SELECT tofk FROM tblto_countries 
-                  WHERE countryfk in ($market_countries_ids)) ";
-    } else {
-        //search based on tour operators
+    
+    if ($to_ids != "") {
+        //search based on tour operators (A)
         $sql .= " AND to_fk IN ($to_ids) ";
+    } 
+    else 
+    {
+        if($market_countries_ids != "")
+        {
+            //search based on countries (C)
+            $sql .= " AND to_fk IN (SELECT tofk FROM tblto_countries 
+                      WHERE countryfk in ($market_countries_ids)) ";
+        }
+        else
+        {
+            //search based on worldwide (B)
+            //nothing
+        }
     }
+    
     //====================================================================
 
 
@@ -161,7 +176,8 @@ function getInventoryStatus($date) {
 
 
     $query = $con->prepare($sql);
-    $query->execute(array(":hotelfk" => $hotelfk, ":inventory_date" => $date));
+    $query->execute(array(":hotelfk" => $hotelfk, ":inventory_date" => $date,
+                           ":specific_to"=>$specific_to));
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
         $arr_statuses[] = $rw["inventory_status"];
     }
