@@ -18,13 +18,11 @@ try {
     require_once("../../utils/utilities.php");
 
     $con = pdo_con();
-    
+
     //to prevent mysql from truncating group_concat values
     $sql = "SET SESSION group_concat_max_len=10000;";
     $stmt = $con->prepare($sql);
     $stmt->execute();
-
-
 
 
     $con->beginTransaction();
@@ -53,8 +51,8 @@ try {
     $priority = $details["priority"];
     $specific_no_days = utils_stringBlank($details["specific_no_days"], null);
     $specific_date = utils_stringBlank($details["specific_date"], null);
-    $to_ids = $details["to_ids"];
-    $market_countries_ids = $details["market_countries_ids"];
+    $to_ids = trim($details["to_ids"]);
+    $market_countries_ids = trim($details["market_countries_ids"]);
 
     $comment = trim($details["comment"]);
     $units = trim($details["units"]);
@@ -63,16 +61,15 @@ try {
         $specific_date = date("Y-m-d", strtotime($specific_date));
     }
 
-    
+
     //======================================================
     //test for overlapping dates for same TO and Room
     $test_outcome = allotment_test_overlapping();
-    if($test_outcome != "OK")
-    {
+    if ($test_outcome != "OK") {
         throw new Exception($test_outcome);
     }
-    //======================================================
 
+    //======================================================
     //is it an insert or an update
     if ($id == "-1") {
         $sql = "INSERT INTO tblinventory_allotment
@@ -125,7 +122,6 @@ try {
         throw new Exception($outcome);
     }
 
-
     //DONE
 
     $con->commit();
@@ -141,30 +137,35 @@ function savetouroperators($touroperator_ids, $id) {
 
         global $con;
 
+
         $sql = "DELETE FROM tblinventory_allotment_to 
-                WHERE allotmentfk=:id AND 
-                tofk NOT IN ($touroperator_ids)";
+                WHERE allotmentfk=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":id" => $id));
 
-        $arr_to_ids = explode(",", $touroperator_ids);
-        for ($i = 0; $i < count($arr_to_ids); $i++) {
-            $toid = trim($arr_to_ids[$i]);
-            $sql = "SELECT * FROM tblinventory_allotment_to WHERE 
+
+        if ($touroperator_ids != "") {
+            $arr_to_ids = explode(",", $touroperator_ids);
+
+            for ($i = 0; $i < count($arr_to_ids); $i++) {
+                $toid = trim($arr_to_ids[$i]);
+                $sql = "SELECT * FROM tblinventory_allotment_to WHERE 
                 allotmentfk=:id AND tofk=:tofk";
 
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $id, ":tofk" => $toid));
-            if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                //insert 
-                $sql = "INSERT INTO tblinventory_allotment_to 
-                    (allotmentfk,tofk) 
-                    VALUES (:id,:tofk)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":id" => $id, ":tofk" => $toid));
+                if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    //insert 
+                    $sql = "INSERT INTO tblinventory_allotment_to 
+                    (allotmentfk,tofk) 
+                    VALUES (:id,:tofk)";
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(":id" => $id, ":tofk" => $toid));
+                }
             }
         }
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -178,29 +179,31 @@ function savecountries($market_countries_ids, $id) {
         global $con;
 
         $sql = "DELETE FROM tblinventory_allotment_countries 
-                WHERE allotmentfk=:id AND 
-                countryfk NOT IN ($market_countries_ids)";
+                WHERE allotmentfk=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":id" => $id));
 
-        $arr_country_ids = explode(",", $market_countries_ids);
-        for ($i = 0; $i < count($arr_country_ids); $i++) {
-            $cid = trim($arr_country_ids[$i]);
-            $sql = "SELECT * FROM tblinventory_allotment_countries WHERE 
+        if ($market_countries_ids != "") {
+            $arr_country_ids = explode(",", $market_countries_ids);
+            for ($i = 0; $i < count($arr_country_ids); $i++) {
+                $cid = trim($arr_country_ids[$i]);
+                $sql = "SELECT * FROM tblinventory_allotment_countries WHERE 
                 allotmentfk=:id AND countryfk=:countryfk";
 
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":id" => $id, ":countryfk" => $cid));
-            if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                //insert 
-                $sql = "INSERT INTO tblinventory_allotment_countries 
-                    (allotmentfk,countryfk) 
-                    VALUES (:id,:countryfk)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":id" => $id, ":countryfk" => $cid));
+                if (!$rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    //insert 
+                    $sql = "INSERT INTO tblinventory_allotment_countries 
+                    (allotmentfk,countryfk) 
+                    VALUES (:id,:countryfk)";
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(":id" => $id, ":countryfk" => $cid));
+                }
             }
         }
+
 
         return "OK";
     } catch (Exception $ex) {
@@ -214,8 +217,7 @@ function saverooms($rooms_ids, $id) {
         global $con;
 
         $sql = "DELETE FROM tblinventory_allotment_rooms 
-                WHERE allotmentfk=:id AND 
-                roomfk NOT IN ($rooms_ids)";
+                WHERE allotmentfk=:id";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":id" => $id));
@@ -246,84 +248,121 @@ function saverooms($rooms_ids, $id) {
 }
 
 function allotment_test_overlapping() {
-    global $con, $id, $date_from, $date_to, $to_ids, $rooms_ids, $priority;
+    global $con, $id, $date_from, $date_to, $to_ids, $rooms_ids, $priority, $market_countries_ids;
 
     $sql = "SELECT a.id, a.date_from, a.date_to, 
             group_concat(ar.roomfk SEPARATOR ',') as roomids,
-            group_concat(ato.tofk SEPARATOR ',') as toids
+            group_concat(ato.tofk SEPARATOR ',') as toids,
+            group_concat(ac.countryfk SEPARATOR ',') as countryids
             FROM tblinventory_allotment a
             INNER JOIN tblinventory_allotment_rooms ar on a.id = ar.allotmentfk
-            INNER JOIN tblinventory_allotment_to ato on a.id = ato.allotmentfk
+            LEFT JOIN tblinventory_allotment_to ato on a.id = ato.allotmentfk
+            LEFT JOIN tblinventory_allotment_countries ac on a.id = ac.allotmentfk
             WHERE
             a.deleted = 0 AND 
             a.id <> :id AND
             a.date_from <= :date_to AND
             a.date_to >= :date_from AND
             a.priority = :priority
-            AND ar.roomfk in ($rooms_ids)
-            AND ato.tofk in ($to_ids)
-            group by a.id, a.date_from, a.date_to";
+            AND ar.roomfk in ($rooms_ids) ";
+
+    if ($to_ids != "") {
+        $sql .= " AND ato.tofk in ($to_ids) ";
+    } else if ($market_countries_ids != "") {
+        $sql .= " AND ac.countryfk in ($market_countries_ids) ";
+    }
+
+    $sql .= " group by a.id, a.date_from, a.date_to";
 
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id" => $id, ":date_to" => $date_to, ":date_from" => $date_from,":priority"=>$priority));
+    $stmt->execute(array(":id" => $id, ":date_to" => $date_to,
+        ":date_from" => $date_from,
+        ":priority" => $priority));
+
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        
+
         //ouch! overlapping dates detected! inform overlapping for what priority, room and to
-        
+
         $_roomids = $rw["roomids"];
         $_toids = $rw["toids"];
+        $_countryids = $rw["countryids"];
+
         $_date_from = $rw["date_from"];
         $_date_to = $rw["date_to"];
+
         $overlapping_to_names = "";
         $overlapping_room_names = "";
-        
+        $overlapping_country_names = "";
+
         $arr_save_toids = explode(",", $to_ids);
         $arr_save_roomids = explode(",", $rooms_ids);
-        
+        $arr_save_countryids = explode(",", $market_countries_ids);
+
         $_arr_roomids = explode(",", $_roomids);
         $_arr_toids = explode(",", $_toids);
-        
+        $_arr_countryids = explode(",", $_countryids);
+
         //check for overlapping rooms and tos
-        $arr_common_rooms = array_intersect($_arr_roomids,$arr_save_roomids);
-        $arr_common_tos = array_intersect($_arr_toids,$arr_save_toids);
-        
-        
-        //now get the to names and room names
+        $arr_common_rooms = array_intersect($_arr_roomids, $arr_save_roomids);
+        $arr_common_tos = array_intersect($_arr_toids, $arr_save_toids);
+        $arr_common_countries = array_intersect($_arr_countryids, $arr_save_countryids);
+
+        //============================================================================
+        //now get the to names and room names and country names
         $overlapping_to_ids = implode(",", $arr_common_tos);
-        
-        $sql = "select group_concat(toname order by toname asc separator ',' ) as tonames
-                from tbltouroperator where id in ($overlapping_to_ids)";
-        $stmt = $con->prepare($sql);
-        $stmt->execute();
-        if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $overlapping_to_names = $rw["tonames"];
+
+        if ($overlapping_to_ids != "") {
+            $sql = "select group_concat(toname order by toname asc separator ',' ) as tonames
+                    from tbltouroperator where id in ($overlapping_to_ids)";
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $overlapping_to_names = $rw["tonames"];
+            }
         }
-        
-        
+
+
+        //============================================================================
         $overlapping_room_ids = implode(",", $arr_common_rooms);
-        
-        $sql = "select group_concat(roomname order by roomname asc separator ',' ) as roomnames
+
+        if ($overlapping_room_ids != "") {
+            $sql = "select group_concat(roomname order by roomname asc separator ',' ) as roomnames
                 from tblhotel_rooms where id in ($overlapping_room_ids)";
-        $stmt = $con->prepare($sql);
-        $stmt->execute();
-        if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $overlapping_room_names = $rw["roomnames"];
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $overlapping_room_names = $rw["roomnames"];
+            }
         }
-        
-        
-        
+
+        //============================================================================
+        $overlapping_country_ids = implode(",", $arr_common_countries);
+
+        if ($overlapping_country_ids != "") {
+            $sql = "select group_concat(countrycode_3 order by countrycode_3 asc separator ',' ) as country_names
+                from tblcountries where id in ($overlapping_country_ids)";
+            $stmt = $con->prepare($sql);
+            $stmt->execute();
+            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $overlapping_country_names = $rw["country_names"];
+            }
+        }
+
+
+
         //return the error message
-        $msg = "<b><font color='red'>OVERLAPPING DETECTED</font></b> FOR THE FOLLOWING PARAMETERS:<BR>";
+        $msg = "<b><font color='red'>OVERLAPPING DETECTED</font></b>:<BR>";
         $msg .= "<B>DATE FROM:</B> " . date("d M Y", strtotime($_date_from)) . " <BR>";
         $msg .= "<B>DATE TO:</B> " . date("d M Y", strtotime($_date_to)) . " <BR>";
         $msg .= "<B>PRIORITY:</B> $priority <BR>";
         $msg .= "<B>ROOMS:</B> $overlapping_room_names <BR>";
+        $msg .= "<B>COUNTRIES:</B> $overlapping_country_names <BR>";
         $msg .= "<B>TOUR OPERATORS:</B> $overlapping_to_names <BR>";
-        
-        return $msg;
 
+
+        return $msg;
     }
-    
+
     return "OK";
 }
 

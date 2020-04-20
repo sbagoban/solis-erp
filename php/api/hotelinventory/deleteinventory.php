@@ -37,7 +37,7 @@ try {
     $hotelfk = $details["hotelfk"];
     $rooms_ids = $details["rooms_ids"];
     $to_ids = trim($details["to_ids"]);
-    $market_countries_ids = $details["market_countries_ids"];
+    $market_countries_ids = trim($details["market_countries_ids"]);
     $specific_to = $details["specific_to"];
     $date_from = date("Y-m-d", strtotime($details["date_from"]));
     $date_to = date("Y-m-d", strtotime($details["date_to"]));
@@ -46,8 +46,6 @@ try {
 
     //split room wise
     $arr_room_ids = explode(",", $rooms_ids);
-
-
 
     $date_from = new DateTime($date_from);
     $date_to = new DateTime($date_to);
@@ -63,21 +61,53 @@ try {
             $roomid = $arr_room_ids[$i]; //<------------------- room id
             
             //=================================================
-            if ($to_ids == "") {
+            if ($to_ids == "" && $market_countries_ids == "") {
                 
-                //TOUR OPERATOR IS NULL here
+                //TOUR OPERATOR AND COUNTRIES ARE NULL here
 
-                //delete the inventory status saved for that TO,ROOM,HOTEL,DATE,SPECIFIC_TO
+                //delete the inventory status saved for that TO,COUNTRY,ROOM,HOTEL,DATE,SPECIFIC_TO
                 $sql = "UPDATE tblinventory_dates SET deleted=1 WHERE 
-                        inventory_date=:inventory_date AND roomfk=:roomfk AND 
-                        hotelfk=:hotelfk AND to_fk=:to_fk AND specific_to=:specific_to";
+                        inventory_date=:inventory_date 
+                        AND roomfk=:roomfk 
+                        AND hotelfk=:hotelfk 
+                        AND to_fk=:to_fk 
+                        AND country_fk = :country_fk
+                        AND specific_to=:specific_to";
 
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":inventory_date" => $inventory_date, ":roomfk" => $roomid,
-                    ":hotelfk" => $hotelfk, ":to_fk" => NULL,
+                    ":hotelfk" => $hotelfk, ":to_fk" => null,
+                    ":country_fk" => null,
                     ":specific_to" => $specific_to));
-            } else {
+            } 
+            //===========================================================
+            else if ($market_countries_ids != "") {
+                //split COUNTRY wise
+                $arr_country_ids = explode(",", $market_countries_ids);
 
+                for ($t = 0; $t < count($arr_country_ids); $t++) {
+
+                    $countryfk = $arr_country_ids[$t]; //<------------------- COUNTRY ID
+                    
+                    //delete the inventory status saved for that TO,COUNTRY,ROOM,HOTEL,DATE,SPECIFIC_TO
+                    $sql = "UPDATE tblinventory_dates SET deleted=1 WHERE 
+                            inventory_date=:inventory_date 
+                            AND roomfk=:roomfk 
+                            AND hotelfk=:hotelfk 
+                            AND to_fk=:to_fk 
+                            AND country_fk=:country_fk 
+                            AND specific_to=:specific_to";
+
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(":inventory_date" => $inventory_date, 
+                        ":roomfk" => $roomid,
+                        ":hotelfk" => $hotelfk, ":to_fk" => null,
+                        ":country_fk" => $countryfk,
+                        ":specific_to" => $specific_to));
+                }
+            }
+            //===========================================================
+            else if ($to_ids != "") {
 
                 //split TO wise
                 $arr_to_ids = explode(",", $to_ids);
@@ -85,14 +115,20 @@ try {
                 for ($t = 0; $t < count($arr_to_ids); $t++) {
 
                     $tofk = $arr_to_ids[$t]; //<------------------- TO ID
-                    //delete the inventory status saved for that TO,ROOM,HOTEL,DATE,SPECIFIC_TO
+                    //delete the inventory status saved for that TO,COUNTRY,ROOM,HOTEL,DATE,SPECIFIC_TO
                     $sql = "UPDATE tblinventory_dates SET deleted=1 WHERE 
-                            inventory_date=:inventory_date AND roomfk=:roomfk AND 
-                            hotelfk=:hotelfk AND to_fk=:to_fk AND specific_to=:specific_to";
+                            inventory_date=:inventory_date 
+                            AND roomfk=:roomfk  
+                            AND hotelfk=:hotelfk 
+                            AND to_fk=:to_fk  
+                            AND country_fk=:country_fk 
+                            AND specific_to=:specific_to";
 
                     $stmt = $con->prepare($sql);
-                    $stmt->execute(array(":inventory_date" => $inventory_date, ":roomfk" => $roomid,
+                    $stmt->execute(array(":inventory_date" => $inventory_date, 
+                        ":roomfk" => $roomid,
                         ":hotelfk" => $hotelfk, ":to_fk" => $tofk,
+                        ":country_fk" => null,
                         ":specific_to" => $specific_to));
                 }
             }

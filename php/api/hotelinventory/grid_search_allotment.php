@@ -36,24 +36,24 @@ if(isset($_GET["params"]))
     $to_ids = trim($params["to_ids"]);
     
     
-    
     $condition_sql = " AND deleted=0 
                        AND date_from < '$date_to'
-                       AND date_to > '$date_from' ";
-    
-    if($priority != "all")
-    {
-        $condition_sql .= " AND priority='$priority' ";
-    }
+                       AND date_to > '$date_from' 
+                       AND priority='$priority' ";
     
     
     $condition_sql_rooms = " AND ar.roomfk IN ($rooms_ids)";
-    $condition_sql_countries = " AND so.countryfk IN ($market_countries_ids)";
+    
     
     if($to_ids != "")
     {
         $condition_sql_to = " AND ato.tofk IN ($to_ids)";
-    }       
+    }  
+    else if($market_countries_ids != "")
+    {
+        $condition_sql_countries = " AND so.countryfk IN ($market_countries_ids)";
+    }
+    
 }
 else
 {

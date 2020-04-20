@@ -54,7 +54,7 @@ try {
     $note = $details["note"];
     $rooms_ids = $details["rooms_ids"];
     $to_ids = trim($details["to_ids"]);
-    $market_countries_ids = $details["market_countries_ids"];
+    $market_countries_ids = trim($details["market_countries_ids"]);
     $specific_to = $details["specific_to"];
 
     if (!is_null($release_date_value)) {
@@ -72,8 +72,6 @@ try {
     //split room wise
     $arr_room_ids = explode(",", $rooms_ids);
 
-    
-
     for ($i = 0; $i < count($arr_room_ids); $i++) {
         $roomid = $arr_room_ids[$i]; //<------------------- room id
 
@@ -81,22 +79,48 @@ try {
 
             $date = $arr_dates[$j]; //<------------------- inventory date
             
-            if($to_ids == "")
+            
+            //=========================================================
+            //WORLDWIDE MARKET: NO TOs AND COUNTRIES
+            if($to_ids == "" && $market_countries_ids == "")
             {
                 $tofk = null; //<------------------- TO ID set to NULL
-                $outcome = saveinventory_record($tofk, $date, $roomid);
+                $countryfk = null; //<------------------- Country ID set to NULL
+                
+                $outcome = saveinventory_record($tofk, $countryfk, $date, $roomid);
                 if ($outcome != "OK") {
                     throw new Exception($outcome);
                 }
             }
-            else
+            //=========================================================
+            //COUNTRIES MARKET: COUNTRIES BUT NO TOs 
+            else if($market_countries_ids != "")
+            {
+                //split TO wise
+                $arr_country_ids = explode(",", $market_countries_ids);
+                for ($t = 0; $t < count($arr_country_ids); $t++) {
+                    
+                    $tofk = null; //<------------------- TO ID set to NULL
+                    $countryfk = $arr_country_ids[$t]; //<------------------- Country ID
+                    
+                    $outcome = saveinventory_record($tofk, $countryfk, $date, $roomid);
+                    if ($outcome != "OK") {
+                        throw new Exception($outcome);
+                    }
+                }
+            }
+            //=========================================================
+            //TO MARKET
+            else if($to_ids != "")
             {
                 //split TO wise
                 $arr_to_ids = explode(",", $to_ids);
                 for ($t = 0; $t < count($arr_to_ids); $t++) {
 
                     $tofk = $arr_to_ids[$t]; //<------------------- TO ID
-                    $outcome = saveinventory_record($tofk, $date, $roomid);
+                    $countryfk = null; //<------------------- Country ID set to NULL
+                    
+                    $outcome = saveinventory_record($tofk, $countryfk, $date, $roomid);
                     if ($outcome != "OK") {
                         throw new Exception($outcome);
                     }
@@ -105,9 +129,7 @@ try {
             
         }
     }
-
-
-
+    
     //DONE
 
     $con->commit();
@@ -118,7 +140,7 @@ try {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }
 
-function saveinventory_record($tofk, $date, $roomid) {
+function saveinventory_record($tofk, $countryfk, $date, $roomid) {
     try {
 
         global $con;
@@ -145,17 +167,19 @@ function saveinventory_record($tofk, $date, $roomid) {
                 hotelfk=:hotelfk AND 
                 roomfk=:roomfk AND 
                 specific_to=:specific_to AND
-                to_fk=:to_fk";
+                to_fk=:to_fk AND
+                country_fk=:country_fk";
 
         $query = $con->prepare($sql);
         $query->execute(array(":inventory_date" => $date, ":hotelfk" => $hotelfk,
             ":roomfk" => $roomid, ":to_fk" => $tofk,
+            ":country_fk" => $countryfk,
             ":specific_to" => $specific_to));
 
         if (!$rw = $query->fetch(PDO::FETCH_ASSOC)) {
             $sql = "INSERT INTO tblinventory_dates
-                            (inventory_date,date_created,deleted) 
-                            VALUES (:inventory_date,NOW(),0)";
+                    (inventory_date,date_created,deleted) 
+                    VALUES (:inventory_date,NOW(),0)";
 
             $stmt = $con->prepare($sql);
             $stmt->execute(array(":inventory_date" => $date));
@@ -171,6 +195,7 @@ function saveinventory_record($tofk, $date, $roomid) {
                 roomfk=:roomfk,
                 inventory_status=:inventory_status,
                 to_fk=:to_fk,
+                country_fk=:country_fk,
                 release_days_value=:release_days_value,
                 release_date_value=:release_date_value, 
                 autho_reserve_days_from=:autho_reserve_days_from,
@@ -189,6 +214,7 @@ function saveinventory_record($tofk, $date, $roomid) {
             ":hotelfk" => $hotelfk,
             ":roomfk" => $roomid,
             ":to_fk" => $tofk,
+            ":country_fk" => $countryfk,
             ":inventory_status" => $inventory_status,
             ":release_days_value" => $release_days_value,
             ":release_date_value" => $release_date_value,

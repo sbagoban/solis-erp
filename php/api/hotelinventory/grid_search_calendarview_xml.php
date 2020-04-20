@@ -154,18 +154,17 @@ function getInventoryStatus($date) {
         //search based on tour operators (A)
         $sql .= " AND to_fk IN ($to_ids) ";
     } 
-    else 
+    else  
     {
         if($market_countries_ids != "")
         {
             //search based on countries (C)
-            $sql .= " AND to_fk IN (SELECT tofk FROM tblto_countries 
-                      WHERE countryfk in ($market_countries_ids)) ";
+            $sql .= " AND country_fk IN ($market_countries_ids) ";
         }
         else
         {
             //search based on worldwide (B)
-            //nothing
+            $sql .= " AND country_fk IS NULL AND to_fk IS NULL ";
         }
     }
     
