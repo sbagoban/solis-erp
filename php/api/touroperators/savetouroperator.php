@@ -275,11 +275,13 @@ try {
                 throw new Exception("DETACH FROM SPO: $outcome");
             }
             
+            /*
             $outcome = _inventory_detach_touroperator($con,$oldcountryid,$id);
             if($outcome != "OK")
             {
                 throw new Exception("DETACH FROM INVENTORY: $outcome");
             }
+             */
             
             //========= attach =================
             
@@ -295,11 +297,14 @@ try {
                 throw new Exception("ATTACH TO SPO: $outcome");
             }
             
+            /*
             $outcome = _inventory_attach_touroperator($con,$newcountryid,$id);
             if($outcome != "OK")
             {
                 throw new Exception("ATTACH TO INVENTORY: $outcome");
             }
+             * 
+             */
             
         }
 
