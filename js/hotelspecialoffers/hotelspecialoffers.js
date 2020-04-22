@@ -907,16 +907,16 @@ function hotelspecialoffers()
             ]},
         {type: "block", width: 900, list: [
                 {type: "input", name: "sponame", label: "Name:",
-                    labelWidth: "100",
+                    labelWidth: "110",
                     labelHeight: "22", inputWidth: "600", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true
                 },
                 {type: "input", name: "spocode", label: "Code:",
-                    labelWidth: "100",
+                    labelWidth: "110",
                     labelHeight: "22", inputWidth: "600", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true
                 },
-                {type: "combo", name: "template", label: "Template:", labelWidth: "100",
+                {type: "combo", name: "template", label: "Template:", labelWidth: "110",
                     labelHeight: "22", inputWidth: "300", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
@@ -925,7 +925,7 @@ function hotelspecialoffers()
 
         {type: "block", width: 900, list: [
 
-                {type: "input", name: "rooms_display", label: "Rooms:", labelWidth: "100",
+                {type: "input", name: "rooms_display", label: "Rooms:", labelWidth: "110",
                     labelHeight: "22", inputWidth: "568", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     readonly: true, rows: 3
@@ -935,7 +935,7 @@ function hotelspecialoffers()
                 {type: "button", name: "cmdLoadRooms", tooltip: "Select Hotel Rooms", value: "...", width: "30", height: "40", offsetLeft: 0}
             ]},
         {type: "block", width: 900, list: [
-                {type: "input", name: "market_countries_display", label: "Countries:", labelWidth: "100",
+                {type: "input", name: "market_countries_display", label: "Countries:", labelWidth: "110",
                     labelHeight: "22", inputWidth: "568", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     readonly: true, rows: 3
@@ -6404,12 +6404,13 @@ function hotelspecialoffers()
                     var date_dtfrom = room_dates[d].date_dtfrom;
                     var date_dtto = room_dates[d].date_dtto;
                     var date_childpolicies_rules = room_dates[d].date_childpolicies_rules;
-
+                    var date_rwid = room_dates[d].date_rwid;
+                    
                     if (date_action != "DELETE")
                     {
                         if (room_variants == "PERSONS")
                         {
-                            cleanJsonChildren_by_date(sharing_single, room_id, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
+                            cleanJsonChildren_by_date_persons(sharing_single, room_id, date_rwid, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
                         } else if (room_variants == "UNITS" && sharing_single == "sharing")
                         {
                             cleanJsonChildren_by_date(sharing_single, room_id, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
@@ -6420,6 +6421,256 @@ function hotelspecialoffers()
             }
         }
     }
+    
+    function cleanJsonChildren_by_date_persons(sharing_single, room_id, date_rwid, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants)
+    {        
+        //get array group by rule_ageranges
+        var arr_ruleranges = getChildrenSharingOwnRuleRanges(sharing_single, room_id, date_rwid, date_childpolicies_rules);
+        
+        //now for each ruleranges, assess if they are outside or within scope
+        for (var i = 0; i < arr_ruleranges.length; i++)
+        {
+            cleanChildSharingOwnRuleRange(sharing_single, arr_ruleranges[i].rule_ageranges,
+                    arr_ruleranges[i].room_id,
+                    arr_ruleranges[i].date_rwid);
+                    
+           decideDeleteSharingOwnChildrenRuleRange(sharing_single, arr_ruleranges[i].rule_ageranges);
+        }   
+    }
+    
+    
+    function getChildrenSharingOwnRuleRanges(sharing_single, room_id, date_rwid, date_childpolicies_rules)
+    {
+        var arr = [];
+
+        for (var i = 0; i < date_childpolicies_rules.length; i++)
+        {
+            
+            if (date_childpolicies_rules[i].rule_action != "DELETE" && 
+                date_childpolicies_rules[i].rule_sharing_single == sharing_single.toUpperCase())
+            {
+                var rule_ageranges = date_childpolicies_rules[i].rule_ageranges;
+                var pos = arr.map(function (e) {
+                    return e.rule_ageranges;
+                }).indexOf(rule_ageranges);
+
+                if (pos == -1)
+                {
+                    arr.push({room_id: room_id, date_rwid: date_rwid, rule_ageranges: rule_ageranges});
+                }
+            }
+        }
+
+        return arr;
+    }
+    
+    
+    function enforceMaxPaxSharingOwnChildren(arr_rules, ag_from, ag_to, max_pax)
+    {        
+        for (var i = 0; i < arr_rules.length; i++)
+        {
+            var rule_category = arr_rules[i].rule_category;
+            var arr_rule_policy = arr_rules[i].rule_policy;
+
+            cleanAdultOrChildValuesCurrency(arr_rule_policy);
+
+            for (var j = 0; j < arr_rule_policy.length; j++)
+            {
+                var policy_adult_child = arr_rule_policy[j].policy_adult_child;
+                var agfrom = arr_rule_policy[j].policy_child_agefrom;
+                var agto = arr_rule_policy[j].policy_child_ageto;
+
+                if (policy_adult_child == "CHILD" && ag_from == agfrom && ag_to == agto)
+                {
+                    if (parseInt(rule_category, 10) > parseInt(max_pax, 10))
+                    {
+                        arr_rule_policy[j].policy_action = "DELETE";
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    function decideDeleteSharingOwnChildrenRuleRange(sharing_single, rule_ageranges)
+    {
+        
+        var arr_rules = getChildSharingOwnRulesByRuleRange(sharing_single, rule_ageranges);
+
+        for (var i = 0; i < arr_rules.length; i++)
+        {
+            var flg_delete = true;
+
+            var arr_rule_policy = arr_rules[i].rule_policy;
+            for (var j = 0; j < arr_rule_policy.length; j++)
+            {
+                var agfrom = arr_rule_policy[j].policy_units_additional_child_agefrom;
+                var agto = arr_rule_policy[j].policy_units_additional_child_ageto;
+                var policy_action = arr_rule_policy[j].policy_action;
+
+                if (policy_action != "DELETE")
+                {
+                    var arrvalues = arr_rule_policy[j].policy_values;
+                    for (var k = 0; k < arrvalues.length; k++)
+                    {
+                        var val = arrvalues[k].value_value;
+                        val = utils_trim(val, " ");
+                        val = utils_trim(val, String.fromCharCode(160));
+                        if (val != "")
+                        {
+                            flg_delete = false;
+                        }
+                    }
+                }
+            }
+
+            if (flg_delete)
+            {
+                arr_rules[i].rule_action = "DELETE";
+            }
+        }
+    }
+    
+    function sharingOwnChildrenAgesInCategory(children_ages, rule_ageranges)
+    {        
+        var copy_children_ages = utils_deepCopy(children_ages);
+
+        //rule_ageranges example: ; 0_1:0^2 ; 2_3:1^3 ;
+        //it means: age range 0-1 with capacity 0-2
+        //          age range 2-3 with capacity 1-3
+        //explode rule_ageranges and check if each of the ages are in children_ages
+
+        var arr_age_ranges = rule_ageranges.split(";");
+        for (var i = 0; i < arr_age_ranges.length; i++)
+        {
+            var _the_range = utils_trim(arr_age_ranges[i], " ");
+
+            if (_the_range != "")
+            {
+                var _the_ages = _the_range.split(":");
+                var age_value = arr_age_ranges[0];
+
+                if (utils_trim(age_value, " ") != "")
+                {
+                    var arr_age_from_to = age_value.split("_");
+                    var age_from = arr_age_from_to[0];
+                    var age_to = arr_age_from_to[1];
+                    var found = false;
+
+                    //now for this age range, search into copy_children_ages
+                    var j = copy_children_ages.length;
+
+                    while (j--) {
+
+                        if (copy_children_ages[j].capacity_child_agefrom == age_from &&
+                                copy_children_ages[j].capacity_child_ageto == age_to)
+                        {
+                            copy_children_ages.splice(j, 1);
+                            found = true;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+
+        }
+
+        //now check if array is empty
+        if (copy_children_ages.length == 0)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+    
+    function cleanChildSharingOwnRuleRange(sharing_single, rule_ageranges, roomid, date_rwid)
+    {
+        //get all rule lines for that _rulerange
+        var arr_rules = getChildSharingOwnRulesByRuleRange(sharing_single, rule_ageranges);
+
+        
+        var return_arr = [];
+        
+        if(sharing_single == "sharing")
+        {
+            return_arr = childrenSharingChildRanges(roomid, date_rwid);
+        }
+        else
+        {
+            return_arr = ownRoomGetChildRanges(roomid, date_rwid);
+        }
+        
+        var arr_result = return_arr.RESULT;
+
+        //for each result
+        for (var r = 0; r < arr_result.length; r++)
+        {
+            if (sharingOwnChildrenAgesInCategory(arr_result[r].children_ages, rule_ageranges))
+            {
+                for (var i = 0; i < arr_result[r].children_ages.length; i++)
+                {
+                    var ag_from = arr_result[r].children_ages[i].capacity_child_agefrom;
+                    var ag_to = arr_result[r].children_ages[i].capacity_child_ageto;
+                    var max_pax = arr_result[r].children_ages[i].capacity_maxpax;
+
+                    enforceMaxPaxSharingOwnChildren(arr_rules, ag_from, ag_to, max_pax);
+                }
+            }
+        }
+
+    }
+    
+    
+    function getChildSharingOwnRulesByRuleRange(rule_sharing_single, rulerange)
+    {        
+        var arr = [];
+
+        for (var i = 0; i < _json_capacity.length; i++)
+        {
+            if (_json_capacity[i].room_action != "DELETE")
+            {
+                var room_id = _json_capacity[i].room_id;
+                var room_variants = _json_capacity[i].room_variants;
+                var room_dates = _json_capacity[i].room_dates;
+                if (room_variants == "PERSONS")
+                {
+                    for (var d = 0; d < room_dates.length; d++)
+                    {
+                        var date_action = room_dates[d].date_action;
+                        var date_dtfrom = room_dates[d].date_dtfrom;
+                        var date_dtto = room_dates[d].date_dtto;
+
+                        if (date_action != "DELETE")
+                        {
+                            var date_rules = room_dates[d].date_childpolicies_rules;
+                            for (var ad = 0; ad < date_rules.length; ad++)
+                            {
+                                if (date_rules[ad].rule_action != "DELETE" && 
+                                    date_rules[ad].rule_sharing_single == rule_sharing_single.toUpperCase())
+                                {
+                                    var rule_ageranges = date_rules[ad].rule_ageranges;
+                                    if (rulerange == rule_ageranges)
+                                    {
+                                        arr.push(date_rules[ad]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return arr;
+    }
+    
 
     function cleanJsonChildren_by_date(sharing_single, roomid, dtfrom, dtto, arr_rules, room_variants)
     {

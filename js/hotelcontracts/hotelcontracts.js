@@ -11751,7 +11751,6 @@ function hotelcontracts()
     
     function getChildrenSharingOwnRuleRanges(sharing_single, room_id, date_rwid, date_childpolicies_rules)
     {
-        //CHANGES:: CREATE FUNCTION
         var arr = [];
 
         for (var i = 0; i < date_childpolicies_rules.length; i++)
@@ -11776,9 +11775,7 @@ function hotelcontracts()
     }
     
     function getChildSharingOwnRulesByRuleRange(rule_sharing_single, rulerange)
-    {
-        //CHANGES:: CREATED FUNCTION
-        
+    {        
         var arr = [];
 
         for (var i = 0; i < _json_capacity.length; i++)
@@ -11821,9 +11818,7 @@ function hotelcontracts()
     }
     
     function sharingOwnChildrenAgesInCategory(children_ages, rule_ageranges)
-    {
-        //CHANGES: CREATED FUNCTION
-        
+    {        
         var copy_children_ages = utils_deepCopy(children_ages);
 
         //rule_ageranges example: ; 0_1:0^2 ; 2_3:1^3 ;
@@ -11883,7 +11878,6 @@ function hotelcontracts()
     
     function enforceMaxPaxSharingOwnChildren(arr_rules, ag_from, ag_to, max_pax)
     {
-        //CHANGES:: CREATED FUNCTION
         
         for (var i = 0; i < arr_rules.length; i++)
         {
@@ -11912,7 +11906,6 @@ function hotelcontracts()
     
     function cleanChildSharingOwnRuleRange(sharing_single, rule_ageranges, roomid, date_rwid)
     {
-        //CHANGES:: CREATED FUNCTION
         //get all rule lines for that _rulerange
         var arr_rules = getChildSharingOwnRulesByRuleRange(sharing_single, rule_ageranges);
 
@@ -11950,7 +11943,6 @@ function hotelcontracts()
     
     function decideDeleteSharingOwnChildrenRuleRange(sharing_single, rule_ageranges)
     {
-        //CHANGES:: created function
         
         var arr_rules = getChildSharingOwnRulesByRuleRange(sharing_single, rule_ageranges);
 
@@ -11990,9 +11982,7 @@ function hotelcontracts()
     
     
     function cleanJsonChildren_by_date_persons(sharing_single, room_id, date_rwid, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants)
-    {
-        //CHANGES:: created function
-        
+    {        
         //get array group by rule_ageranges
         var arr_ruleranges = getChildrenSharingOwnRuleRanges(sharing_single, room_id, date_rwid, date_childpolicies_rules);
         
@@ -12004,10 +11994,7 @@ function hotelcontracts()
                     arr_ruleranges[i].date_rwid);
                     
            decideDeleteSharingOwnChildrenRuleRange(sharing_single, arr_ruleranges[i].rule_ageranges);
-        }
-        
-        
-            
+        }   
     }
 
     function cleanJsonSingleParent()
@@ -12292,7 +12279,6 @@ function hotelcontracts()
                     {
                         if (room_variants == "PERSONS")
                         {
-                            //CHANGES:: changed function
                             cleanJsonChildren_by_date_persons(sharing_single, room_id, date_rwid, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
                         } else if (room_variants == "UNITS" && sharing_single == "sharing")
                         {
