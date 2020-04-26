@@ -3727,11 +3727,11 @@ function hotelcontracts()
 
         if (variant == "UNITS")
         {
-            header_str = "Standard Occupation (Ad + Ch),#cspan,Addtional Adults,#cspan";
+            header_str = "Std Occup (Ad + Ch),#cspan,Xtra Adults,#cspan";
             header_attach = "Min,Max,Min,Max";
             column_ids = "standardoccupation_Mi_0,standardoccupation_Mx_0,additionalpersons_Mi_0,additionalpersons_Mx_0";
             column_types = "edn,edn,edn,edn";
-            init_widths = "70,70,70,70";
+            init_widths = "35,35,35,35";
             col_align = "center,center,center,center";
             col_sorting = "na,na,na,na";
 
@@ -3747,13 +3747,49 @@ function hotelcontracts()
                     var agefrom = item.agefrom;
                     var ageto = item.ageto;
 
-                    header_str += ",Additional Ch <br>(" + agefrom + "-" + ageto + "),#cspan";
-                    header_attach += ",Min,Max";
+                    header_str += ",Xtra Ch <br>(" + agefrom + "-" + ageto + "),#cspan";
+                    header_attach += ",Mi,Mx";
                     column_ids += ",Ch_Mi_" + agefrom + ",Ch_Mx_" + ageto;
                     column_types += ",edn,edn";
-                    init_widths += "," + (_agecolwidth + 20) + "," + (_agecolwidth + 20);
+                    init_widths += "," + (_agecolwidth) + "," + (_agecolwidth);
                     col_align += ",center,center";
                     col_sorting += ",na,na";
+                }
+            }
+            
+            //now generate mix ages
+            //eg: got 0-1, 2-11, 12-17
+            //generate 0-11, 0-17, 2-17
+
+            for (var i = 0; i < arr_ids.length; i++)
+            {
+                var id_1 = arr_ids[i];
+                var item_1 = _dsChildPolicy.item(id_1);
+                if (item_1)
+                {
+                    var agefrom_1 = parseInt(item_1.agefrom, 10);
+
+                    for (var j = 0; j < arr_ids.length; j++)
+                    {
+                        var id_2 = arr_ids[j];
+                        var item_2 = _dsChildPolicy.item(id_2);
+
+                        if (item_2)
+                        {
+                            var ageto_2 = parseInt(item_2.ageto, 10);
+
+                            if (agefrom_1 < ageto_2 && id_1 != id_2)
+                            {
+                                header_str += ",Xtra Ch Mix " + agefrom_1 + "-" + ageto_2 + ",#cspan";
+                                header_attach += ",Mi,Mx";
+                                column_ids += ",Ch_Mi_" + agefrom_1 + ",Ch_Mx_" + ageto_2;
+                                column_types += ",edn,edn";
+                                init_widths += "," + _agecolwidth + "," + _agecolwidth;
+                                col_align += ",center,center";
+                                col_sorting += ",na,na";
+                            }
+                        }
+                    }
                 }
             }
 
@@ -4304,7 +4340,33 @@ function hotelcontracts()
 
         return null;
     }
+    
+    
+    function rule_capacity_has_units_extra_children(arrrule_capacity)
+    {
+        //CHANGES: CREATED FUNCTION
+        
+        //returns true if in this rule_capacity array, there is at least one extra child
+        //returns false other wise
 
+        for (var k = 0; k < arrrule_capacity.length; k++)
+        {
+            var capacityobj = arrrule_capacity[k];
+            if (capacityobj.capacity_action != "DELETE")
+            {
+                if (capacityobj.capacity_category == "CH")
+                {
+                    if (capacityobj.capacity_maxpax > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+        
+    }
 
     function rule_capacity_has_children(arrrule_capacity)
     {
@@ -4328,8 +4390,122 @@ function hotelcontracts()
 
         return false;
     }
+    
+    
+    
+    function pushUnitsCapacityChilrenObj(ruleobj)
+    {
+        //CHANGES:: created function
+        
+        var xobj = {children_ages: []};
+        var arrrule_capacity = ruleobj.rule_capacity;
+        for (var k = 0; k < arrrule_capacity.length; k++)
+        {
+            var capacityobj = arrrule_capacity[k];
+            if (capacityobj.capacity_action != "DELETE" &&
+                capacityobj.capacity_category == "CH")
+            {
+
+                var capacity_maxpax = utils_parseInt(capacityobj.capacity_maxpax);
+                var capacity_minpax = utils_parseInt(capacityobj.capacity_minpax);
+
+                if (capacity_maxpax > 0)
+                {
+                    xobj.children_ages.push(capacityobj);
+                }
+            }
+        }
+
+        return xobj;
+    }
+    
+    function childrenUnitsChildRanges(roomid, date_rwid)
+    {
+        //CHANGES:: created function
+        
+        //for each capacity rule, check if at least one child extra child
+        //      push child_ages applicable to rule + min_max child
+        //next rule
 
 
+        var arr_result = [];
+        var arr_main_childages = [];
+
+        var dateobj = lookupCapacityRoomDateObj(roomid, date_rwid);
+        var arrrulecounter = dateobj.date_capacity_rules;
+
+        //===========================================================
+
+        for (var i = 0; i < dateobj.date_capacity_rules.length; i++)
+        {
+            var ruleobj = arrrulecounter[i];
+            if (ruleobj.rule_action != "DELETE")
+            {
+                var arrrule_capacity = ruleobj.rule_capacity;
+                
+                //got a potential parent obj
+                //check if there is at least one extra child in the object
+                if (rule_capacity_has_units_extra_children(arrrule_capacity))
+                {
+                    var xobj = pushUnitsCapacityChilrenObj(ruleobj);
+                    arr_result.push(xobj);
+                }
+            }
+        }
+
+
+
+        //===========================================================
+        //===========================================================
+
+
+        for (var i = 0; i < arr_result.length; i++)
+        {
+            var arr_ageranges = arr_result[i].children_ages;
+            for (var j = 0; j < arr_ageranges.length; j++)
+            {
+                var capacity_child_agefrom = arr_ageranges[j]["capacity_child_agefrom"];
+                var capacity_child_ageto = arr_ageranges[j]["capacity_child_ageto"];
+
+
+                //combination must be based on contract.main
+                //if not, then add it there
+
+                if (is_age_in_main(capacity_child_agefrom, capacity_child_ageto))
+                {
+                    if (!checkAgeRangeInArray(arr_main_childages, capacity_child_agefrom, capacity_child_ageto))
+                    {
+                        arr_main_childages.push({age_from: capacity_child_agefrom, age_to: capacity_child_ageto});
+                    }
+                } else
+                {
+                    //explode the age range in the ranges defined in main
+                    //eg: main = 0-1, 2-11, 12-17 and here range is 0-11
+                    //return array 0-1, 2-11
+                    var arr_explode = explode_ageranges(capacity_child_agefrom, capacity_child_ageto);
+                    for (var x = 0; x < arr_explode.length; x++)
+                    {
+                        if (!checkAgeRangeInArray(arr_main_childages, arr_explode[x].age_from, arr_explode[x].age_to))
+                        {
+                            arr_main_childages.push({age_from: arr_explode[x].age_from,
+                                age_to: arr_explode[x].age_to});
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //===========================================================
+        arr_main_childages.sort(function (a, b) {
+            return parseFloat(a.age_from) - parseFloat(b.age_from);
+        });
+        //===========================================================
+
+        return {RESULT: arr_result, MAIN_CHILD_AGES: arr_main_childages};
+
+    }
+    
 
     function childrenSharingChildRanges(roomid, date_rwid)
     {
@@ -4665,40 +4841,16 @@ function hotelcontracts()
 
         } else if (variant == "UNITS")
         {
-            var max_child_count = 0;
-            var arr_childages_count = [];
-            
-            var arr_ids = child_ages_ids.split(",");
-            for (var i = 0; i < arr_ids.length; i++)
-            {
-                var id = arr_ids[i];
-                if (id != "")
-                {
-                    var item = _dsChildPolicy.item(id);
-                    var agefrom = parseInt(item.agefrom, 10);
-                    var ageto = parseInt(item.ageto, 10);
-
-                    var child_stats = null;
-
-                    child_stats = getUnitsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
-
-                    if (child_stats.sharing.max_child > 0)
-                    {
-                        arr_childages_count.push(child_stats);
-
-                        if (max_child_count < child_stats.sharing.max_child)
-                        {
-                            max_child_count = child_stats.sharing.max_child;
-                        }
-                    }
-                }
-            }
-            
+            //CHANGES:: made changes below:
+            var return_arr = childrenUnitsChildRanges(roomid, date_rwid);
+            var arr_result = return_arr.RESULT;
+            var arr_main_childages = return_arr.MAIN_CHILD_AGES;
+                        
             url = "php/api/hotelcontracts/grid_childpolicy_units_xml.php?" +
                 "t=" + encodeURIComponent(global_token) +
                 "&roomid=" + roomid +
-                "&arr_childages_count=" + encodeURIComponent(JSON.stringify(arr_childages_count)) +
-                "&max_child_count=" + max_child_count +
+                "&arr_result=" + encodeURIComponent(JSON.stringify(arr_result)) +
+                "&arr_main_childages=" + encodeURIComponent(JSON.stringify(arr_main_childages)) +
                 "&child_mode=sharing" +
                 "&selected_currency_buy_ids=" + selected_currency_buy_ids +
                 "&selected_currency_sell_ids=" + selected_currency_sell_ids +
@@ -4711,7 +4863,8 @@ function hotelcontracts()
             //fill in values
             if(variant == "UNITS")
             {
-                fillUnitsChildPolicyGridValues(roomid, date_rwid, grid_childpolicy_sharing_age, "SHARING");
+                //CHANGES:: made changes below:
+                fillUnitsChildPolicyGridValues(roomid, date_rwid);
             }
             else if(variant == "PERSONS")
             {
@@ -5005,58 +5158,7 @@ function hotelcontracts()
     }
 
 
-    function getUnitsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto)
-    {
-        var statsobj = {
-            age_from: agefrom,
-            age_to: ageto,
-            sharing: {
-                min_child: 10000, max_child: 0
-            }};
-
-        var capacity_room_obj = lookupRoomObj(roomid);
-
-        if (capacity_room_obj)
-        {
-            var arrcapacitydates = capacity_room_obj.room_dates;
-            for (var i = 0; i < arrcapacitydates.length; i++)
-            {
-                if (arrcapacitydates[i].date_dtfrom == dtfrom &&
-                        arrcapacitydates[i].date_dtto == dtto &&
-                        arrcapacitydates[i].date_action != "DELETE")
-                {
-                    var arrrulecounter = arrcapacitydates[i].date_capacity_rules;
-                    for (var j = 0; j < arrrulecounter.length; j++)
-                    {
-                        if (arrrulecounter[j].rule_action != "DELETE")
-                        {
-                            //for each rule, get the adult stats and children stats
-                            var rule_stats = getCapacityRuleStats(arrrulecounter[j], agefrom, ageto, "ADULT", "CH");
-
-                            //child sharing room
-                            if (statsobj.sharing.min_child > rule_stats.min_child)
-                            {
-                                statsobj.sharing.min_child = rule_stats.min_child;
-                            }
-                            if (statsobj.sharing.max_child < rule_stats.max_child)
-                            {
-                                statsobj.sharing.max_child = rule_stats.max_child;
-                            }
-
-                        }
-                    }
-                }
-            }
-        }
-
-        if (statsobj.sharing.min_child == 10000)
-        {
-            statsobj.sharing.min_child = 0;
-        }
-
-        return statsobj;
-    }
-
+    
     function getPersonsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto)
     {
         var statsobj = {
@@ -7152,24 +7254,6 @@ function hotelcontracts()
         var roomid = tree_roomdates.getUserData(nodeid, "DATE_ROOMID");
 
         var nodeid_room = "ROOM_" + roomid;
-        var variant = tree_roomdates.getUserData(nodeid_room, "ROOM_VARIANT");
-
-        if (variant == "UNITS")
-        {
-            //one max row allowed
-            if (grid_capacity_age.getRowsNum() > 0)
-            {
-                dhtmlx.alert({
-                    text: "A maximum of One rule allowed for UNITS rooms!",
-                    type: "alert-warning",
-                    title: "New Rule",
-                    callback: function () {
-                    }
-                });
-
-                return false;
-            }
-        }
 
         for (var i = 0; i < _json_capacity.length; i++)
         {
@@ -10536,19 +10620,21 @@ function hotelcontracts()
     }
   
 
-    function fillUnitsChildPolicyGridValues(roomid, date_rwid, grid, sg_shr)
+    function fillUnitsChildPolicyGridValues(roomid, date_rwid)
     {
+        //CHANGES: function changed in parameters and body
         var capacity_date_obj = lookupCapacityRoomDateObj(roomid, date_rwid);
         if (!capacity_date_obj)
         {
             return;
         }
 
-        grid.forEachRow(function (rwid) {
-            grid.forEachCell(rwid, function (c) {
+        grid_childpolicy_sharing_age.forEachRow(function (rwid) {
+            grid_childpolicy_sharing_age.forEachCell(rwid, function (c) {
 
-                var number = c.getAttribute("number");
+                var child_index = c.getAttribute("number");
                 var context = c.getAttribute("context");
+                var rule_ageranges = c.getAttribute("rule_ageranges");
                 var currencyid = c.getAttribute("currencyid");
                 var type = c.getAttribute("type");
                 var agefrom = c.getAttribute("agefrom");
@@ -10557,20 +10643,14 @@ function hotelcontracts()
 
                 if (type != "ro" && (buy_sell == "" || buy_sell == "buy"))
                 {
-                    //context = category,basis,value
-                    //category = 1,2,3 ... n
-                    
-                            
-    
-    
-                    var ruleobj = lookupChildUnitsPoliciesDateRuleObject(capacity_date_obj, number);
+                    var ruleobj = lookupChildSharingPoliciesDateRuleObject(capacity_date_obj, child_index, rule_ageranges);
                     if (ruleobj)
                     {
-                        var policyrulecell = lookupChildPoliciesDateRuleCellObject(ruleobj, context, number, agefrom, ageto);
+                        var policyrulecell = lookupChildSharingPoliciesDateRuleCellObject(ruleobj, context, child_index, agefrom, ageto);
 
                         if (policyrulecell)
                         {
-                            var valuecell = lookupChildPoliciesDateRuleCellValueObject(policyrulecell, context, currencyid);
+                            var valuecell = lookupChildSharingPoliciesDateRuleCellValueObject(policyrulecell, context, currencyid);
                             if (valuecell)
                             {
                                 c.setValue(valuecell.value_value);
@@ -10578,10 +10658,7 @@ function hotelcontracts()
                                 //calculate SP where necessary
                                 if (type == "edn" && buy_sell == "buy" && currencyid != "")
                                 {
-                                    calculateChildOwnPolicySalesPrice(grid, rwid,
-                                            c.cell.cellIndex,
-                                            valuecell.value_value,
-                                            currencyid);
+                                    calculateChildSharingPolicySalesPrice(rwid, c.cell.cellIndex, valuecell.value_value, currencyid);
                                 }
                             }
                         }
@@ -11903,6 +11980,12 @@ function hotelcontracts()
         }
     }
     
+    function cleanChildSharingUnitsRuleRange(rule_ageranges, roomid, date_rwid)
+    {
+        //CHANGES:: CREATED FUNCTION
+        
+        
+    }
     
     function cleanChildSharingOwnRuleRange(sharing_single, rule_ageranges, roomid, date_rwid)
     {
@@ -12282,125 +12365,36 @@ function hotelcontracts()
                             cleanJsonChildren_by_date_persons(sharing_single, room_id, date_rwid, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
                         } else if (room_variants == "UNITS" && sharing_single == "sharing")
                         {
-                            cleanJsonChildren_by_date(sharing_single, room_id, date_dtfrom, date_dtto, date_childpolicies_rules, room_variants);
+                            cleanJsonChildren_Units_by_date(room_id, date_dtfrom, date_dtto, date_childpolicies_rules);
                         }
                     }
                 }
-
             }
         }
     }
     
     
 
-    function cleanJsonChildren_by_date(sharing_single, roomid, dtfrom, dtto, arr_rules, room_variants)
+    function cleanJsonChildren_Units_by_date(room_id, date_dtfrom, date_dtto, date_childpolicies_rules)
     {
-        var child_ages_ids = form_main.getItemValue("children_ages_ids");
-
-        //get count of children for each date first
-
-        var arr_childages_count = [];
-        var arr_ids = child_ages_ids.split(",");
-        for (var i = 0; i < arr_ids.length; i++)
+        //CHANGES:: CHANED HEADER AND BODY
+        
+        //get array group by rule_ageranges
+        var arr_ruleranges = getChildrenSharingOwnRuleRanges("sharing", room_id, date_rwid, date_childpolicies_rules);
+        
+        //now for each ruleranges, assess if they are outside or within scope
+        for (var i = 0; i < arr_ruleranges.length; i++)
         {
-            var id = arr_ids[i];
-            if (id != "")
-            {
-                var item = _dsChildPolicy.item(id);
-                var agefrom = parseInt(item.agefrom, 10);
-                var ageto = parseInt(item.ageto, 10);
-                var child_stats = null;
-
-                if (room_variants == "PERSONS")
-                {
-                    child_stats = getPersonsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
-                } else if (room_variants == "UNITS")
-                {
-                    child_stats = getUnitsCapacityRoomChildrenStats(roomid, dtfrom, dtto, agefrom, ageto);
-                }
-
-
-                if (child_stats[sharing_single].max_child > 0)
-                {
-                    arr_childages_count.push(child_stats);
-                }
-            }
-        }
-
-
-        //now for each rule, check if the index by age is respected
-        for (var i = 0; i < arr_rules.length; i++)
-        {
-            if (arr_rules[i].rule_action != "DELETE")
-            {
-                var rulecategory = arr_rules[i].rule_category;
-                var rule_sharing_single = arr_rules[i].rule_sharing_single;
-
-                if (rule_sharing_single == sharing_single.toUpperCase())
-                {
-                    var flg_delete = true;
-
-                    var rulepolicy = arr_rules[i].rule_policy;
-                    for (var j = 0; j < rulepolicy.length; j++)
-                    {
-                        if (rulepolicy[j].policy_action != "DELETE")
-                        {
-                            var policy_action = rulepolicy[j].policy_action;
-                            var agfrom = rulepolicy[j].policy_units_additional_child_agefrom;
-                            var agto = rulepolicy[j].policy_units_additional_child_ageto;
-
-                            if (policy_action != "DELETE")
-                            {
-                                //get the max children count from arr_childages_count
-                                //for that age from and to
-                                //if the max_children_count < rulecategory then delete this
-                                //policy
-
-                                var max = getMaxChildCountFromArrChildAges(arr_childages_count, agfrom, agto, sharing_single);
-                                if (max < rulecategory)
-                                {
-                                    rulepolicy[j].policy_action = "DELETE";
-                                } else
-                                {
-                                    flg_delete = false;
-                                }
-                            }
-                        }
-                    }
-
-                    if (flg_delete)
-                    {
-                        arr_rules[i].rule_action = "DELETE";
-                    }
-
-                    //clean up the values of adults if currency no longer in use
-                    if (arr_rules[i].rule_action != "DELETE")
-                    {
-                        cleanAdultOrChildValuesCurrency(arr_rules[i].rule_policy);
-                    }
-                }
-            }
-        }
+            cleanChildSharingUnitsRuleRange(arr_ruleranges[i].rule_ageranges,
+                    arr_ruleranges[i].room_id,
+                    arr_ruleranges[i].date_rwid);
+                    
+           decideDeleteSharingOwnChildrenRuleRange(sharing_single, arr_ruleranges[i].rule_ageranges);
+        }   
+        
     }
 
-    function getMaxChildCountFromArrChildAges(arr_childages_count, agfrom, agto, sharing_single)
-    {
-
-        agfrom = parseInt(agfrom, 10);
-        agto = parseInt(agto, 10);
-
-        for (var i = 0; i < arr_childages_count.length; i++)
-        {
-            var age_from = arr_childages_count[i].age_from;
-            var age_to = arr_childages_count[i].age_to;
-            if (age_from == agfrom && age_to == agto)
-            {
-                return arr_childages_count[i][sharing_single].max_child;
-            }
-        }
-
-        return 0;
-    }
+    
 
     function cleanJsonAdults()
     {
@@ -13227,20 +13221,26 @@ function hotelcontracts()
 
     function validate_room_capacity_overlapping(category, rule_capacity, min, max, age_from, age_to)
     {
-        if (max == 0 || category != "CHILD")
+        age_from = parseInt(age_from,10);
+        age_to = parseInt(age_to,10);
+        
+        
+        if (max == 0 || (category != "CHILD" && category != "CH"))
         {
             return true; //no need to worry
         }
 
         for (var l = 0; l < rule_capacity.length; l++)
+        
         {
-            if (rule_capacity[l].capacity_action != "DELETE" && rule_capacity[l].capacity_category == "CHILD")
+            if (rule_capacity[l].capacity_action != "DELETE" && 
+                (rule_capacity[l].capacity_category == "CHILD" || rule_capacity[l].capacity_category == "CH"))
             {
                 var _min = rule_capacity[l].capacity_minpax;
                 var _max = rule_capacity[l].capacity_maxpax;
 
-                var _age_from = rule_capacity[l].capacity_child_agefrom;
-                var _age_to = rule_capacity[l].capacity_child_ageto;
+                var _age_from = parseInt(rule_capacity[l].capacity_child_agefrom,10);
+                var _age_to = parseInt(rule_capacity[l].capacity_child_ageto,10);
 
                 if (_min == "") {
                     _min = 0;
@@ -13314,9 +13314,11 @@ function hotelcontracts()
 
                                         if (min == "") {
                                             min = 0;
+                                            rule_capacity[l].capacity_minpax = 0;
                                         }
                                         if (max == "") {
                                             max = 0;
+                                            rule_capacity[l].capacity_maxpax = 0;
                                         }
 
 
