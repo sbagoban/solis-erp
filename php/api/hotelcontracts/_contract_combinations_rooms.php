@@ -17,6 +17,7 @@ function _contract_combinations_rooms($arr_rooms, $roomid, $dateid) {
             $arr_room_combinations = array();
 
             $arr_roomdates = $arr_rooms[$i]["room_dates"];
+            
             for ($j = 0; $j < count($arr_roomdates); $j++) {
                 if ($arr_roomdates[$j]["date_action"] != "DELETE") {
 

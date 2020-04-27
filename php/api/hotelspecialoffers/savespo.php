@@ -156,19 +156,19 @@ try {
     //CONDITIONS
     $conditions = json_decode($_POST["conditions"], true);
     $meals_ids = $conditions["meals_ids"];
-    
+
     $min_stay_from = utils_stringBlank($conditions["min_stay_from"], null);
     $min_stay_to = utils_stringBlank($conditions["min_stay_to"], null);
     $min_stay_priority = utils_stringBlank($conditions["min_stay_priority"], null);
-    
+
     $adult_min = utils_stringBlank($conditions["adult_min"], null);
     $adult_max = utils_stringBlank($conditions["adult_max"], null);
     $adult_max_category = utils_stringBlank($conditions["adult_max_category"], null);
-    
+
     $children_min = utils_stringBlank($conditions["children_min"], null);
     $children_max = utils_stringBlank($conditions["children_max"], null);
     $children_max_category = utils_stringBlank($conditions["children_max_category"], null);
-    
+
     $conditions_text = $conditions["conditions_text"];
     $added_values_text = $conditions["added_values_text"];
 
@@ -188,7 +188,7 @@ try {
 
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":id" => $id,
-        ":min_stay_priority"=>$min_stay_priority,
+        ":min_stay_priority" => $min_stay_priority,
         ":min_stay_from" => $min_stay_from,
         ":min_stay_to" => $min_stay_to,
         ":conditions_text" => $conditions_text,
@@ -416,7 +416,7 @@ try {
         $family_offer = json_decode($_POST["family_offer"], true);
 
         $family_offer_room_applicable = utils_stringBlank($family_offer["family_offer_room_applicable"], null);
-       
+
 
         $sql = "UPDATE tblspecial_offer SET 
                 family_offer_room_applicable=:family_offer_room_applicable
@@ -842,26 +842,26 @@ function saveperiodvalidity($period_validity) {
 
             $valid_from = $period_validity[$i]["cells"]["valid_from"];
             $valid_to = $period_validity[$i]["cells"]["valid_to"];
-            $seasonid = utils_stringBlank($period_validity[$i]["cells"]["season"],null);
+            $seasonid = utils_stringBlank($period_validity[$i]["cells"]["season"], null);
 
             //check if exists
             $sql = "SELECT * FROM tblspecial_offer_validityperiods
                     WHERE spo_fk=:spo_fk AND 
                     valid_from=:valid_from AND valid_to=:valid_to";
-            
+
             $stmt = $con->prepare($sql);
             $stmt->execute(array(":spo_fk" => $id, ":valid_from" => $valid_from,
                 ":valid_to" => $valid_to));
 
             if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                
+
                 //update
                 $sql = "UPDATE tblspecial_offer_validityperiods 
                         SET season_fk = :season_fk WHERE id=:id";
                 $stmt = $con->prepare($sql);
-                $stmt->execute(array(":id" => $rw["id"], 
-                                     ":season_fk" => $seasonid));
-                    
+                $stmt->execute(array(":id" => $rw["id"],
+                    ":season_fk" => $seasonid));
+
                 $arr_needed_ids[] = $rw["id"];
             } else {
                 //insert
@@ -869,10 +869,10 @@ function saveperiodvalidity($period_validity) {
                         (spo_fk, valid_from, valid_to, season_fk) VALUES 
                         (:spo_fk, :valid_from, :valid_to, :season_fk)";
                 $stmt = $con->prepare($sql);
-                $stmt->execute(array(":spo_fk" => $id, 
-                                     ":valid_from" => $valid_from, 
-                                     ":valid_to" => $valid_to,
-                                     ":season_fk" => $seasonid));
+                $stmt->execute(array(":spo_fk" => $id,
+                    ":valid_from" => $valid_from,
+                    ":valid_to" => $valid_to,
+                    ":season_fk" => $seasonid));
                 $arr_needed_ids[] = $con->lastInsertId();
             }
         }
@@ -1953,7 +1953,7 @@ function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_
             $value_value = $arr_policy_values[$i]["value_value"];
             $value_action = $arr_policy_values[$i]["value_action"];
 
-            
+
             if ($value_action == "DELETE") {
                 $sql = "DELETE FROM tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values 
                         WHERE id=:id";
@@ -1961,7 +1961,7 @@ function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_
                 $stmt->execute(array(":id" => $value_rwid));
             } else {
                 if ($value_rwid < 0) {
-                $sql = "INSERT INTO 
+                    $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values
                         (spo_flatrate_snglprnt_rm_dt_rules_ages_fk,
                          currencyfk,basis,value)
@@ -1969,29 +1969,29 @@ function saveflatratermsngprntpolicydtrulesagesvalues($policy_rwid, $arr_policy_
                         (:spo_flatrate_snglprnt_rm_dt_rules_ages_fk,
                          :currencyfk,:basis,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":spo_flatrate_snglprnt_rm_dt_rules_ages_fk" => $policy_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":spo_flatrate_snglprnt_rm_dt_rules_ages_fk" => $policy_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            } else {
+                    $value_rwid = $con->lastInsertId();
+                } else {
 
-                $sql = "UPDATE tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values 
+                    $sql = "UPDATE tblspecial_offer_flatrate_snglprnt_rm_dt_rules_ages_values 
                         SET currencyfk=:currencyfk, basis=:basis,
                         value=:value WHERE id=:id";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
-            }
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
+                }
 
-            $arr_needed_ids[] = $value_rwid;
+                $arr_needed_ids[] = $value_rwid;
             }
         }
 
@@ -2030,7 +2030,7 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
             $rule_action = $arr_childpolicies_rules[$i]["rule_action"];
             $rule_ageranges = $arr_childpolicies_rules[$i]["rule_ageranges"];
             $arr_rule_policy = $arr_childpolicies_rules[$i]["rule_policy"];
-            
+
 
             if ($rule_action == "DELETE") {
                 $sql = "DELETE FROM 
@@ -2057,7 +2057,7 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
                         ":rulecounter" => $i,
                         ":rulecategory" => $rule_category,
                         ":sharing_single" => $rule_sharing_single,
-                        ":ruleageranges"=>$rule_ageranges));
+                        ":ruleageranges" => $rule_ageranges));
 
                     $rule_rwid = $con->lastInsertId();
                 } else {
@@ -2076,7 +2076,7 @@ function saveflatratermchildpolicydtrules($date_rwid, $arr_childpolicies_rules) 
                         ":rulecounter" => $i,
                         ":rulecategory" => $rule_category,
                         ":sharing_single" => $rule_sharing_single,
-                        ":ruleageranges"=>$rule_ageranges));
+                        ":ruleageranges" => $rule_ageranges));
                 }
 
                 $outcome = saveflatratermchildpolicydtrulesages($rule_rwid, $arr_rule_policy);
@@ -2207,7 +2207,7 @@ function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_va
             $value_basis = $arr_policy_values[$i]["value_basis"];
             $value_value = $arr_policy_values[$i]["value_value"];
             $value_action = $arr_policy_values[$i]["value_action"];
-            
+
             if ($value_action == "DELETE") {
                 $sql = "DELETE FROM tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values 
                         WHERE id=:id";
@@ -2215,7 +2215,7 @@ function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_va
                 $stmt->execute(array(":id" => $value_rwid));
             } else {
                 if ($value_rwid < 0) {
-                $sql = "INSERT INTO 
+                    $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values
                         (spo_flatrate_child_policy_room_dates_rules_ages_fk,
                          currencyfk,basis,value)
@@ -2223,29 +2223,29 @@ function saveflatratermchildpolicydtrulesagesvalues($policy_rwid, $arr_policy_va
                         (:spo_flatrate_child_policy_room_dates_rules_ages_fk,
                          :currencyfk,:basis,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":spo_flatrate_child_policy_room_dates_rules_ages_fk" => $policy_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":spo_flatrate_child_policy_room_dates_rules_ages_fk" => $policy_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            } else {
+                    $value_rwid = $con->lastInsertId();
+                } else {
 
-                $sql = "UPDATE tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values 
+                    $sql = "UPDATE tblspecial_offer_flatrate_ch_rm_dt_rules_ages_values 
                         SET currencyfk=:currencyfk, basis=:basis,
                         value=:value WHERE id=:id";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
-            }
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
+                }
 
-            $arr_needed_ids[] = $value_rwid;
+                $arr_needed_ids[] = $value_rwid;
             }
         }
 
@@ -2454,7 +2454,7 @@ function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values) {
                 $stmt->execute(array(":id" => $value_rwid));
             } else {
                 if ($value_rwid < 0) {
-                $sql = "INSERT INTO 
+                    $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_ad_rm_dt_rules_ages_values
                         (spo_fte_ad_rm_dt_rules_ag_fk,
                          currencyfk,basis,value)
@@ -2462,32 +2462,30 @@ function saveflatratermadultpolicydtrulesagesvalues($policy_rwid, $arr_values) {
                         (:spo_fte_ad_rm_dt_rules_ag_fk,
                          :currencyfk,:basis,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":spo_fte_ad_rm_dt_rules_ag_fk" => $policy_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":spo_fte_ad_rm_dt_rules_ag_fk" => $policy_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            } else {
+                    $value_rwid = $con->lastInsertId();
+                } else {
 
-                $sql = "UPDATE tblspecial_offer_flatrate_ad_rm_dt_rules_ages_values 
+                    $sql = "UPDATE tblspecial_offer_flatrate_ad_rm_dt_rules_ages_values 
                         SET currencyfk=:currencyfk, basis=:basis,
                         value=:value WHERE id=:id";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":currencyfk" => $value_currencyfk,
-                    ":basis" => $value_basis,
-                    ":value" => $value_value));
-            }
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":currencyfk" => $value_currencyfk,
+                        ":basis" => $value_basis,
+                        ":value" => $value_value));
+                }
 
-            $arr_needed_ids[] = $value_rwid;
+                $arr_needed_ids[] = $value_rwid;
             }
-            
-            
         }
 
         //clean ups
@@ -2587,24 +2585,34 @@ function saveflatratermcapdtruleages($rule_rwid, $arr_rule_capacity) {
             $capacity_action = $arr_rule_capacity[$i]["capacity_action"];
 
 
-            $sql = "SELECT * FROM 
+            if ($capacity_action == "DELETE") {
+                $sql = "DELETE FROM tblservice_contract_roomcapacity_dates_rules_ages
+                        WHERE id=:id";
+                $stmt = $con->prepare($sql);
+                $stmt->execute(array(":id" => $capacity_rwid));
+            } else {
+
+                if ($capacity_minpax == 0 && $capacity_maxpax == 0) {
+                    //do nothing
+                } else {
+                    $sql = "SELECT * FROM 
                     tblspecial_offer_flatrate_roomcapacity_dates_rules_ages
                     WHERE 
                     spo_flatrates_roomcapacity_dates_rules_fk=:rulerwid
                     AND category=:category AND minpax=:minpax AND maxpax=:maxpax
                     AND child_agefrom=:child_agefrom AND child_ageto=:child_ageto";
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(":rulerwid" => $rule_rwid,
-                ":category" => $capacity_category,
-                ":minpax" => $capacity_minpax,
-                ":maxpax" => $capacity_maxpax,
-                ":child_agefrom" => $capacity_child_agefrom,
-                ":child_ageto" => $capacity_child_ageto));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(":rulerwid" => $rule_rwid,
+                        ":category" => $capacity_category,
+                        ":minpax" => $capacity_minpax,
+                        ":maxpax" => $capacity_maxpax,
+                        ":child_agefrom" => $capacity_child_agefrom,
+                        ":child_ageto" => $capacity_child_ageto));
 
-            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $arr_needed_ids[] = $rw["id"];
-            } else {
-                $sql = "INSERT INTO 
+                    if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $arr_needed_ids[] = $rw["id"];
+                    } else {
+                        $sql = "INSERT INTO 
                         tblspecial_offer_flatrate_roomcapacity_dates_rules_ages
                         (spo_flatrates_roomcapacity_dates_rules_fk,
                         category,
@@ -2620,15 +2628,17 @@ function saveflatratermcapdtruleages($rule_rwid, $arr_rule_capacity) {
                         :child_agefrom,
                         :child_ageto)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(":rulerwid" => $rule_rwid,
-                    ":category" => $capacity_category,
-                    ":minpax" => $capacity_minpax,
-                    ":maxpax" => $capacity_maxpax,
-                    ":child_agefrom" => $capacity_child_agefrom,
-                    ":child_ageto" => $capacity_child_ageto));
+                        $stmt = $con->prepare($sql);
+                        $stmt->execute(array(":rulerwid" => $rule_rwid,
+                            ":category" => $capacity_category,
+                            ":minpax" => $capacity_minpax,
+                            ":maxpax" => $capacity_maxpax,
+                            ":child_agefrom" => $capacity_child_agefrom,
+                            ":child_ageto" => $capacity_child_ageto));
 
-                $arr_needed_ids[] = $con->lastInsertId();
+                        $arr_needed_ids[] = $con->lastInsertId();
+                    }
+                }
             }
         }
 
@@ -2782,50 +2792,49 @@ function saveFlatRateTaxCommiValues($setting_rwid, $arr_values) {
             $value_currency_fk = $arr_values[$i]["value_currency_fk"];
             $value_value = $arr_values[$i]["value_value"];
             $value_action = $arr_values[$i]["value_action"];
-            
+
             if ($value_action == "DELETE") {
                 $sql = "DELETE FROM tblspecial_offer_flatrate_taxcomm_values 
                         WHERE id=:id";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(":id" => $value_rwid));
             } else {
-                
+
                 $sql = "SELECT * FROM 
                 tblspecial_offer_flatrate_taxcomm_values WHERE
                 special_offer_taxcomm_fk=:special_offer_taxcomm_fk
                 AND currency_fk=:currency_fk";
 
-            $stmt = $con->prepare($sql);
-            $stmt->execute(array(
-                ":special_offer_taxcomm_fk" => $setting_rwid,
-                ":currency_fk" => $value_currency_fk));
-
-            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
-                $value_rwid = $rw["id"];
-                $sql = "UPDATE tblspecial_offer_flatrate_taxcomm_values SET 
-                    value=:value WHERE id=:id";
                 $stmt = $con->prepare($sql);
                 $stmt->execute(array(
-                    ":id" => $value_rwid,
-                    ":value" => $value_value));
-            } else {
-                $sql = "INSERT INTO tblspecial_offer_flatrate_taxcomm_values 
+                    ":special_offer_taxcomm_fk" => $setting_rwid,
+                    ":currency_fk" => $value_currency_fk));
+
+                if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                    $value_rwid = $rw["id"];
+                    $sql = "UPDATE tblspecial_offer_flatrate_taxcomm_values SET 
+                    value=:value WHERE id=:id";
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":id" => $value_rwid,
+                        ":value" => $value_value));
+                } else {
+                    $sql = "INSERT INTO tblspecial_offer_flatrate_taxcomm_values 
                     (special_offer_taxcomm_fk,currency_fk,value)
                     VALUES
                     (:special_offer_taxcomm_fk,:currency_fk,:value)";
 
-                $stmt = $con->prepare($sql);
-                $stmt->execute(array(
-                    ":special_offer_taxcomm_fk" => $setting_rwid,
-                    ":currency_fk" => $value_currency_fk,
-                    ":value" => $value_value));
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute(array(
+                        ":special_offer_taxcomm_fk" => $setting_rwid,
+                        ":currency_fk" => $value_currency_fk,
+                        ":value" => $value_value));
 
-                $value_rwid = $con->lastInsertId();
-            }
+                    $value_rwid = $con->lastInsertId();
+                }
 
-            $arr_needed_ids[] = $value_rwid;
-            
+                $arr_needed_ids[] = $value_rwid;
             }
         }
 

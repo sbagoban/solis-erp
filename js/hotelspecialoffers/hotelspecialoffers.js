@@ -7165,6 +7165,52 @@ function hotelspecialoffers()
                         if (roomdates[d].date_action != "DELETE")
                         {
 
+                            cleanJsonCapacityCategoryAge(room_id, roomdates[d].date_rwid);
+
+                            //=========== clean meal supplements from unnecessary ages =============
+                            var mealsupp = roomdates[d].date_mealsupplement_rules;
+                            for (var m = 0; m < mealsupp.length; m++)
+                            {
+                                if (mealsupp[m].meal_action != "DELETE")
+                                {
+                                    var mealchildren = mealsupp[m].meal_children;
+                                    for (var mc = 0; mc < mealchildren.length; mc++)
+                                    {
+                                        if (mealchildren[mc].child_action != "DELETE")
+                                        {
+                                            var agfrom = mealchildren[mc].child_agefrom;
+                                            var agto = mealchildren[mc].child_ageto;
+                                            if (!is_age_in_main(agfrom, agto))
+                                            {
+                                                mealchildren[mc].child_action = "DELETE"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            //=========== clean meal extra supplements from unnecessary ages =============
+                            var mealextrasupp = roomdates[d].date_mealextrasupplement_rules;
+                            for (var m = 0; m < mealextrasupp.length; m++)
+                            {
+                                if (mealextrasupp[m].extra_action != "DELETE")
+                                {
+                                    var extrachildren = mealextrasupp[m].extra_children;
+                                    for (var mc = 0; mc < extrachildren.length; mc++)
+                                    {
+                                        if (extrachildren[mc].child_action != "DELETE")
+                                        {
+                                            var agfrom = extrachildren[mc].child_agefrom;
+                                            var agto = extrachildren[mc].child_ageto;
+                                            if (!is_age_in_main(agfrom, agto))
+                                            {
+                                                extrachildren[mc].child_action = "DELETE"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             //=========== clean children sharing and single =============
                             var childpolicies_rules = roomdates[d].date_childpolicies_rules;
                             for (var cr = 0; cr < childpolicies_rules.length; cr++)
@@ -10761,13 +10807,111 @@ function hotelspecialoffers()
 
                 //place value in _json_capacity
                 updateJsonCapacityCategoryAge(cInd, variant, roomid, daterwid, rId, nValue);
+                cleanJsonCapacityCategoryAge(roomid, daterwid);
                 updateAllCheckedDatesNode("date_capacity_rules");
             }
 
         }
         return true;
     }
+    
+    
+    function cleanJsonCapacityCategoryAge(roomid, daterwid)
+    {
+        //delete nodes where capacity_maxpax == capacity_maxpax == 0
 
+        for (var i = 0; i < _json_capacity.length; i++)
+        {
+            if (_json_capacity[i].room_id == roomid)
+            {
+                var arrdates = _json_capacity[i].room_dates;
+                for (var j = 0; j < arrdates.length; j++)
+                {
+                    if (daterwid == arrdates[j].date_rwid)
+                    {
+                        var arrrules = arrdates[j].date_capacity_rules;
+                        for (var k = 0; k < arrrules.length; k++)
+                        {
+                            var arrcapacity = arrrules[k].rule_capacity;
+                            for (var l = 0; l < arrcapacity.length; l++)
+                            {
+                                var capacity_obj = arrcapacity[l];
+                                if (capacity_obj.capacity_action != "DELETE")
+                                {
+                                    if (capacity_obj.capacity_maxpax == 0 && capacity_obj.capacity_minpax == 0)
+                                    {
+                                        capacity_obj.capacity_action = "DELETE";
+                                    } else
+                                    {
+                                        //check children ages
+                                        var capacity_category = capacity_obj.capacity_category;
+                                        var child_age_from = capacity_obj.capacity_child_agefrom;
+                                        var child_age_to = capacity_obj.capacity_child_ageto;
+                                        if (capacity_category == "CHILD" || capacity_category == "CH")
+                                        {
+                                            //make sure the age is valid
+                                            var chk = is_age_in_main(child_age_from, child_age_to);
+                                            if (!chk)
+                                            {
+                                                //make sure it is a valid mix
+                                                chk = is_age_in_mix(child_age_from, child_age_to);
+                                                if (!chk)
+                                                {
+                                                    capacity_obj.capacity_action = "DELETE";
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    function is_age_in_mix(child_age_from, child_age_to)
+    {
+        //returns true if age is in mix ranges
+        var child_ages_ids = getChildrenAgeString()
+        
+        var arr_ids = child_ages_ids.split(",");
+
+        for (var i = 0; i < arr_ids.length; i++)
+        {
+            var id_1 = arr_ids[i];
+            var item_1 = _dsChildPolicy.item(id_1);
+            if (item_1)
+            {
+                var agefrom_1 = parseInt(item_1.agefrom, 10);
+
+                for (var j = 0; j < arr_ids.length; j++)
+                {
+                    var id_2 = arr_ids[j];
+                    var item_2 = _dsChildPolicy.item(id_2);
+
+                    if (item_2)
+                    {
+                        var ageto_2 = parseInt(item_2.ageto, 10);
+
+                        if (agefrom_1 < ageto_2 && id_1 != id_2)
+                        {
+                            if (agefrom_1 == child_age_from && ageto_2 == child_age_to)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    
     function updateAllCheckedDatesNode(context)
     {
         //from the update done to the current date node,
