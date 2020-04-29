@@ -34,7 +34,7 @@ try {
     $stay_from = $_POST["stay_from"];
     $stay_to = $_POST["stay_to"];
     $room_adult_amt = $_POST["room_adult_amt"];
-    $room_teen_amt = $_POST["room_teen_amt"];
+    $room_teen_amt = $_POST["room_teen_amt"];                                                                                                
     $room_child_amt = $_POST["room_child_amt"];
     $room_infant_amt = $_POST["room_infant_amt"];
     $room_status = $_POST["room_status"];

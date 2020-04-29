@@ -137,8 +137,8 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
     var room_rebate_cost_percentage = 0;
     var room_rebate_claim_percentage = 0;
     var room_rebate_claim_approve_by = 0;
-    var room_rebate_claim_type = "NONE";
-    var room_rebate_cost_approve_by = 0;
+    var room_rebate_claim_type = $('#accom_rebate').val();
+    var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
     var id_claim_cur = bookingDetails.CLAIM_CURRENCY_ID;
 
     var accom_client = $('#accom_client').val();
@@ -380,8 +380,8 @@ function saveBookingRoomClaimSpo(roomData, bookingDetails, costData, TOTAL_DISCO
     var room_internal_remarks = 'SPO - NAME' + bookingDetails.SPO_ID + 'SPO - NAME' + bookingDetails.SPO_NAME;
     var room_claim_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].CLAIM_WITHOUT_SPO";
     var id_room = costData.id_room;
-    var room_rebate_claim_approve_by = 0;
-    var room_rebate_claim_type = "NONE";
+    var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
+    var room_rebate_claim_type = $('#accom_rebate').val();    
     var id_claim_cur = roomData.id_claim_cur;
     var accom_client = $('#accom_client').val();
     
@@ -485,9 +485,10 @@ function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_
     var room_remarks = $('#accom_serviceRemark').val();
     var room_internal_remarks = 'SPO - NAME' + bookingDetails.SPO_ID + 'SPO - NAME' + bookingDetails.SPO_NAME;
     var room_claim_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].CLAIM_WITHOUT_SPO";
+    var room_cost_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].COST";
     var id_room = costData.id_room;
-    var room_rebate_claim_approve_by = 0;
-    var room_rebate_claim_type = "NONE";
+    var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
+    var room_rebate_claim_type = $('#accom_rebate').val();
     var id_claim_cur = roomData.id_claim_cur;
     var accom_client = $('#accom_client').val();
     
@@ -502,7 +503,8 @@ function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_
     var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
     // Object - 
     var objBookingRoomCostSpo = { 
-        id_booking_room_claim: -1,
+        id_booking_room_cost: -1,
+        id_booking_room_claim: data.id_booking_room_claim, 
         id_booking: roomData.id_booking,
         id_booking_room: roomData.id_booking_room, 
         room_service_paid_by: room_service_paid_by,
@@ -518,6 +520,7 @@ function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_
         room_details: room_details,
         service_details: "OFFER", 
         room_claim_calcultation: room_claim_calcultation,
+        room_cost_calcultation : room_cost_calcultation ,
         room_adult_amt: room_adult_amt,
         room_teen_amt: room_teen_amt,
         room_child_amt: room_child_amt,

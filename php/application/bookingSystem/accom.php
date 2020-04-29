@@ -121,6 +121,7 @@ require_once("../../utils/utilities.php");
 					<label class="col-sm-1 control-label">Rebate</label>
 					<div class="col-sm-4">
 						<select class="form-control" id="accom_rebate">
+							<option value="None">None</option>
 							<option value="Percentage">Percentage</option>
 							<option value="Fixed Tariff">Fixed Tariff</option>
 							<option value="FOC">FOC</option>
@@ -142,7 +143,7 @@ require_once("../../utils/utilities.php");
 						<div class="col-sm-11">
 							<div class="input-group">
 								<input type="number" class="form-control" id="accom_adultRebate">
-								<span class="input-group-addon">Adult</span>
+								<!-- <span class="input-group-addon">Adult</span> -->
 								<!-- <input type="number" class="form-control" id="accom_TeentRebate">
 								<span class="input-group-addon">Teen</span>
 								<input type="number" class="form-control" id="accom_childRebate">
@@ -224,11 +225,11 @@ require_once("../../utils/utilities.php");
                     <div class="panel-body" id="grid_accom_details">
                     </div>
                 </div>
-				<div id="serviceDetailsNotFound">
+				<!-- <div id="serviceDetailsNotFound">
                     <div class="panel-body" id="grid_accom_details">
 						Not Found
                     </div>
-                </div>
+                </div> -->
                 <div class="panel panel-default">
                     <div class="panel-heading">
                             <a class="panel-title" data-toggle="collapse" data-parent="#servicePanel" panel="dossierService"> Dossier Accomodation</a>
