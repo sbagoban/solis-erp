@@ -535,6 +535,33 @@
 </div>
 <!-- Modal 2 end -->
 
+
+<!-- Modal 3 -->
+<div class="modal fade" id="modal-pictures" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Upload Service Pictures <br> Code : <span id="id_product_service_modal"></span></h4>
+			</div>
+			<div class="modal-body">
+					<div class="row">
+						<div class="col-lg-12">
+							<div id="drag-drop-area"></div>
+						</div>
+					</div>
+				<div class="pager"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal 3 -->
+
+
+<div class="toast jam toast_added_image" aria-hidden="true" style="display:none;">
+    <span class="close" aria-role="button" tabindex="0">&times;</span> Images Added.
+</div>
+
 <div class="toast jam toast_added" aria-hidden="true" style="display:none;">
 	<span class="close" aria-role="button" tabindex="0">&times;</span> Service Added.
 </div>

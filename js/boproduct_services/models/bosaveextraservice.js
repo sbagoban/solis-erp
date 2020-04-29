@@ -7,7 +7,6 @@ function modalExtraService(data) {
         var extra_description = $('#extra_description').val();
         var charge = $('#chargeExtra').val();
         var id_product_service = data.id_product_service;
-console.log(charge, 'ddsfgsdfgddgdg');
         // Save Extra Service
         var objExtraService = {
             id_product_service_extra :-1, //for new items, id is always -1

@@ -86,6 +86,7 @@ if (isset($_GET["m"])) {
         } else if ($menu == "productservices") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">
             <link rel="stylesheet" href="css/bookingEngine.css">
+            <link href="css/uploader/uploader.css" rel="stylesheet">
             <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">';
         } else if ($menu == "backoff_product") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">';
@@ -942,7 +943,9 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/extraservices_script.js"></script>
             <script src="js/boproduct_services/models/boextraservicegrid.js"></script>
             <script src="js/boproduct_services/control/productCtrl.js"></script>
-            <script src="js/boproduct_services/models/bopackage.js"></script>';
+            <script src="js/boproduct_services/models/bopackage.js"></script>
+            <script src="dist/js/uploader.min.js"></script>
+            <script src="js/boproduct_services/script/saveimagesproduct.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
             <script src="js/boproduct_services/models/boservicecost.js"></script>            

@@ -110,6 +110,14 @@ function allServicesGrid(added) {
         "initComplete": function () {
             $('#tbl-productServices tbody')
                 .off()
+                .on( 'dblclick', 'tr', function (e) {
+                    // Open Modal                    
+                    var table = $('#tbl-productServices').DataTable();
+                    var data = table.row( this ).data();
+                    //saveImages(data);
+                    $('#modal-pictures').modal('show');
+                    document.getElementById('id_product_service_modal').textContent  = data.id_product_service;
+                })
                 .on( 'click', '#btnAddClaimTransfer', function (e) {
                     var table = $('#tbl-productServices').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();

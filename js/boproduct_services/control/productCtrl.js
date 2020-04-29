@@ -58,17 +58,6 @@ function onkeyupCtrl() {
     
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
-    // var servicetype = urlParams.get("servicetype"); 
-    // if (servicetype == 'ACTIVITY') {
-    //     if(service_name.length > 0) {
-    //         $('#btn-saveProductServices').attr('disabled', false); 
-    //     }          
-    //     else {
-    //         $('#btn-saveProductServices').attr('disabled',true);
-    //     }
-    // } else if (servicetype == 'TRANSFER') {
-    //     $('#btn-saveProductServices').attr('disabled', false);
-    // }
 }
 
 $('#btn-saveProductServicesCost').click(function (e) {
@@ -399,8 +388,6 @@ function validateAgePolicy() {
             $('#min_age').val(age_teen_from);
             saveService();
         } 
-        // else {
-        // }
     }
     
     else {

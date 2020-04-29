@@ -26,7 +26,6 @@ try {
     require_once("../../connector/pdo_connect_main.php");
     
     $con = pdo_con();
-
     $id_booking_room_cost = $_POST["id_booking_room_cost"];
     $id_booking = $_POST["id_booking"];
     $id_booking_room_claim = $_POST["id_booking_room_claim"];
