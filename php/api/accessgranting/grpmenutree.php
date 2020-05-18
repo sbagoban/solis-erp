@@ -1,7 +1,9 @@
 <?php
 
 header('Content-type: text/xml');
-
+mb_internal_encoding("iso-8859-1");
+mb_http_output( "iso-8859-1" );
+ob_start("mb_output_handler");
 print "<?xml version='1.0' encoding='iso-8859-1'?>";
 
 require_once("../../connector/pdo_connect_main.php");

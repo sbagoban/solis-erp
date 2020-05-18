@@ -1,6 +1,9 @@
 <?php
 
 error_reporting(E_ALL ^ E_NOTICE);
+mb_internal_encoding("iso-8859-1");
+mb_http_output( "iso-8859-1" );
+ob_start("mb_output_handler");
 
 if (stristr($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml")) {
     header("Content-type: application/xhtml+xml");
