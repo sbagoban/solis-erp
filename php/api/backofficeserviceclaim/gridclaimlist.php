@@ -31,7 +31,7 @@ $con = pdo_con();
 $query_c = $con->prepare("
 SELECT PRSC.id_product_service_claim, PRSC.id_product_service_cost, PRSC.id_product_service, PRSC.valid_from, PRSC.valid_to,
 PRSC.id_dept, PRSC.specific_to, PRSC.specific_to_name, PRSC.charge, PRSC.ps_adult_claim, PRSC.ps_teen_claim, PRSC.ps_child_claim, PRSC.ps_infant_claim, 
-PRSC.id_currency, PRSC.currency, PRSC.ex_monday, PRSC.ex_tuesday, PRSC.ex_wednesday, PRSC.ex_thursday, PRSC.ex_friday, PRSC.ex_saturday, PRSC.ex_sunday, TD.deptname, 
+PRSC.id_currency, PRSC.currency, PRSC.ex_monday, PRSC.ex_tuesday, PRSC.ex_wednesday, PRSC.ex_thursday, PRSC.ex_friday, PRSC.ex_saturday, PRSC.ex_sunday, PRSC.rollover_value, PRSC.rollover_type, TD.deptname, 
 PS.service_name, PR.product_name
 FROM product_service_claim PRSC
 JOIN tbldepartments TD on PRSC.id_dept = TD.id
@@ -76,7 +76,9 @@ if ($row_count_c > 0) {
             'deptname' => $row['deptname'],
             'service_name' => $row['service_name'],
             'product_name' => $row['product_name'],
-            'allName' => $row['service_name']. ' / ' .$row['product_name']
+            'allName' => $row['service_name']. ' / ' .$row['product_name'],            
+            'rollover_value' => $row['rollover_value'],
+            'rollover_type' => $row['rollover_type']
         );
     }
     $myData = $productServicesClaim;
@@ -110,7 +112,9 @@ if ($row_count_c > 0) {
         'deptname' => '-',
         'service_name' => '-',
         'product_name' => '-',
-        'allName' => '-'
+        'allName' => '-',
+        'rollover_value' => '-',
+        'rollover_type' => '-'
     );
     $myData = $productServicesClaim;
     echo json_encode($myData);

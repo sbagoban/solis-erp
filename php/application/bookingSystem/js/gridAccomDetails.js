@@ -10,11 +10,11 @@ function gridAccomDetails(data) {
     html += '<table id="tbl-accomDetails" class="table table-bordered table-hover">';
         html += '<tr>';
             html += '<th>Room Charge</th>';
-                html += '<td colspan="3">' + room_charge + '</td>';
+                html += '<td colspan="4">' + room_charge + '</td>';
         html += '</tr>';
         html += '<tr>';
             html += '<th>Room Status</th>';
-                html += '<td colspan="3">On Request</td>';
+                html += '<td colspan="4">On Request</td>';
         html += '</tr>';
         html += '<tr id="age_policies"';
             html += '<th>Room Policy</th>';
@@ -27,26 +27,54 @@ function gridAccomDetails(data) {
                 }
         html += '</tr>';
         html += '<tr>';
-            html += '<th class="text-center"  colspan="4">Room Claim Description</th>';
+            html += '<th class="text-center"  colspan="5">Room Claim Description</th>';
         html += '</tr>';
 
         html += '<tr>';
             html += '<th>Pax Type</th>';
+            html += '<th>Pax Quantity</th>';
             html += '<th>Claim</th>';
             html += '<th>Special Claim</th>';
             html += '<th>Cost</th>';
         html += '</tr>';
 
-        $.each(data.COST_CLAIM_AMOUNTS, function(key_name, value){
-            $.each(value, function(key, value){ 
+        var maxAdults = data.COST_CLAIM_AMOUNTS.ADULTS.length;
+        var maxChildren = data.COST_CLAIM_AMOUNTS.CHILDREN.length;
+
+        // $.each(data.COST_CLAIM_AMOUNTS.ADULTS, function(key_name, value){
+            
+            // $.each(value, function(key, value){ 
+
+            if(maxAdults > 0) {
                 html += '<tr>';
-                    html += '<td>' + key_name + '</td>';
-                    html += '<td>' + value.CLAIM_WITHOUT_SPO + '</td>';
-                    html += '<td>' + value.CLAIM_WITH_SPO + '</td>';
-                    html += '<td>' + value.COST + '</td>';
+                html += '<td>' + 'Adult' + '</td>';                    
+                html += '<td>' + maxAdults + '</td>';
+                html += '<td>' + data.COST_CLAIM_AMOUNTS.ADULTS[0].CLAIM_WITHOUT_SPO + '</td>';
+                html += '<td>' + data.COST_CLAIM_AMOUNTS.ADULTS[0].CLAIM_WITH_SPO + '</td>';
+                html += '<td>' + data.COST_CLAIM_AMOUNTS.ADULTS[0].COST + '</td>';
                 html += '</tr>';
-            });
-        });
+            } else {
+                html += '<tr>';
+                html += '<td colspan="5">' + 'No adult Found' + '</td>'; 
+                html += '</tr>';
+            }
+            
+            if (maxChildren > 0) {
+                html += '<tr>';
+                html += '<td>' + 'Children' + '</td>';                    
+                html += '<td>' + maxChildren + '</td>';
+                html += '<td>' + data.COST_CLAIM_AMOUNTS.CHILDREN[0].CLAIM_WITHOUT_SPO + '</td>';
+                html += '<td>' + data.COST_CLAIM_AMOUNTS.CHILDREN[0].CLAIM_WITH_SPO + '</td>';
+                html += '<td>' + data.COST_CLAIM_AMOUNTS.CHILDREN[0].COST + '</td>';
+                html += '</tr>';
+            } else {
+                html += '<tr>';
+                html += '<td colspan="5">' + 'No Children Found' + '</td>'; 
+                html += '</tr>';
+            }
+
+            // });
+        // });
 
         html += '<tr>';
             html += '<th class="text-center"  colspan="4">Special Offer apply</th>';
@@ -54,7 +82,7 @@ function gridAccomDetails(data) {
 
         $.each(data.SPECIAL_OFFERS.SPOS, function(key, value_1){
             html += '<tr>';
-                html += '<td colspan="4">' + value_1.SPO_NAME + '</td>';
+                html += '<td colspan="5">' + value_1.SPO_NAME + '</td>';
             html += '</tr>';
         });
 
@@ -64,7 +92,7 @@ function gridAccomDetails(data) {
             TOTAL_DISCOUNTED_CLAIM_AMOUNT = "No Special Offer Applied";
         }
         html += '<tr>';
-            html += '<td colspan="3"> Total discounted claim amount :</td>';
+            html += '<td colspan="4"> Total discounted claim amount :</td>';
             html += '<td colspan="1">' + TOTAL_DISCOUNTED_CLAIM_AMOUNT  + '</td>';
         html += '</tr>';
 

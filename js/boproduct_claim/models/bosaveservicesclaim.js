@@ -208,7 +208,7 @@ function saveClaim() {
     var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
     var specific_to = $('#specific_to').val();
     var id_currency = $('#id_currency').val();
-
+    
     const url_overlap_claim_date = "php/api/backofficeserviceclaim/gridclaimlist.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" +id_product_service_cost + "&id_product_service_claim=" +id_product_service_claim;
     $.ajax({
         url : url_overlap_claim_date,
@@ -243,15 +243,24 @@ function saveClaim() {
                     }
                     else if (specific_to == 'D') { // Directsales
                         console.log((valid_to == x.valid_to) || (valid_from == x.valid_from));
+                        
                         if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
-                            //alert('Please choose another Date for Direct Sales');
-                            
-                        }if (specific_to != x.specific_to) {
+                            alert('Please choose another Date for Direct Sales');
+                        } 
+                        console.log('id_currency', id_currency);
+                        if (id_currency == "Select an option" || id_currency == "") {
+                            alert('Please choose a currency for Direct Sales');
+                        }
+                        
+                        if (specific_to != x.specific_to) {
                             if (id_currency == x.id_currency) {
                                 alert('Please choose another currency for Direct Sales');
-                            } else {
+                            }
+                            else {
                                 addClaimProductService();
                             }
+                        } else { 
+                            alert('Please choose another Date for Direct Sales');
                         }
                         
                     }
@@ -348,7 +357,7 @@ function arrayCompareCountries(z, id_country) {
     if (!bExists) {    
         addClaimProductService();
     } else {
-        alert('bad request');
+        alert('bad request - Please Try another country');
     }
 }
 
@@ -358,10 +367,10 @@ function addClaimProductService(){
     var id_tour_operator = $('#ddlMultiSpecificTo').val();
     var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
 	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
-    var ps_adult_claim = $('#ps_adult_claim').val();
-    var ps_teen_claim = $('#ps_teen_claim').val();
-    var ps_child_claim = $('#ps_child_claim').val();
-    var ps_infant_claim = $('#ps_infant_claim').val();
+    var ps_adult_claim_num = $('#ps_adult_claim').val();
+    var ps_teen_claim_num = $('#ps_teen_claim').val();
+    var ps_child_claim_num = $('#ps_child_claim').val();
+    var ps_infant_claim_num = $('#ps_infant_claim').val();
     var id_currency = $('#id_currency').val();
     var currency = $('#id_currency').find(":selected").text();
     var specific_to = $('#specific_to').val();
@@ -381,6 +390,74 @@ function addClaimProductService(){
     var id_product_service_cost = urlParams.get("id_product_service_cost"); 
     var id_product_service = urlParams.get("id_product_service"); 
     var charge = urlParams.get("charge");
+
+    var rollover_type = $('#roll_over').val();
+    var rollover_value = $('#txtRollOver').val();
+
+    if (rollover_type == 'Percentage') {
+
+        if (ps_adult_claim_num == "" || ps_adult_claim_num == "0") {
+            ps_adult_claim = 0;
+        } else { 
+            ps_adult_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_adult_claim_num);
+            ps_adult_claim = ps_adult_claim_per + parseInt(ps_adult_claim_num);
+            console.log('---->', ps_adult_claim_num, ps_adult_claim);
+        }
+
+        if (ps_teen_claim_num == "" || ps_teen_claim_num == "0") {
+            ps_teen_claim = 0;
+        } else {
+            console.log('ps_teen_claim_num', ps_teen_claim_num);
+            ps_teen_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_teen_claim_num);
+            ps_teen_claim = ps_teen_claim_per + parseInt(ps_teen_claim_num);
+        }
+
+        if (ps_child_claim_num == "" || ps_child_claim_num == "0") {
+            ps_child_claim = 0;
+        } else {            
+            ps_child_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_child_claim_num);
+            ps_child_claim = ps_child_claim_per + parseInt(ps_child_claim_num);
+        }
+
+        if (ps_infant_claim_num == "" || ps_infant_claim_num == "0") {
+            ps_infant_claim = 0;
+        } else {
+            ps_infant_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_infant_claim_num);
+            ps_infant_claim = ps_infant_claim_per + parseInt(ps_infant_claim_num);
+        }
+
+    } else if (rollover_type == 'Fix Amount') {
+        //check if zero
+        if (ps_adult_claim_num == "" || ps_adult_claim_num == "0") {
+            ps_adult_claim = 0;
+        } else {
+            ps_adult_claim = parseInt(ps_adult_claim_num) + parseInt(rollover_value);
+        }
+
+        if (ps_teen_claim_num == "" || ps_teen_claim_num == "0") {
+            ps_teen_claim = 0;
+        } else {
+            ps_teen_claim = parseInt(ps_teen_claim_num) + parseInt(rollover_value);
+        }
+
+        if (ps_child_claim_num == "" || ps_child_claim_num == "0") {
+            ps_child_claim = 0;
+        } else {
+            ps_child_claim = parseInt(ps_child_claim_num) + parseInt(rollover_value);
+        }
+
+        if (ps_infant_claim_num == "" || ps_infant_claim_num == "0") {
+            ps_infant_claim = 0;
+        } else {
+            ps_infant_claim = parseInt(ps_infant_claim_num) + parseInt(rollover_value); 
+        }
+
+    } else { 
+        ps_adult_claim = $('#ps_adult_claim').val();
+        ps_teen_claim = $('#ps_teen_claim').val();
+        ps_child_claim = $('#ps_child_claim').val();
+        ps_infant_claim = $('#ps_infant_claim').val();
+    }
 
     if (chkmonday.checked) {
         ex_monday = 1;
@@ -470,7 +547,9 @@ function addClaimProductService(){
             ex_sunday: ex_sunday,
             id_country: id_country,
             id_tour_operator: id_tour_operator,
-            specific_to_name: specific_to_name
+            specific_to_name: specific_to_name, 
+            rollover_type : rollover_type,
+            rollover_value : rollover_value
         };
 
         console.log(objProductServiceClaim);
@@ -511,7 +590,9 @@ function addClaimProductService(){
             ex_sunday: ex_sunday,
             id_country: id_country,
             id_tour_operator: id_tour_operator,
-            specific_to_name: specific_to_name
+            specific_to_name: specific_to_name,
+            rollover_type : rollover_type,
+            rollover_value : rollover_value
         };
 
         $.ajax({
@@ -621,6 +702,10 @@ function resetProductServicesClaim() {
     $("#ex_sunday").prop("checked", false);
     $("#ddlmultiSpecificMarket").val('');
     $("#ddlMultiSpecificTo").val('');
+    $('#roll_over').val('Same Rate');    
+    $('#txtRollOver').attr('disabled', 'disabled');
+    $('#txtRollOver').val(0);
+
     document.getElementById("id_product_service_claim").innerHTML = '0';
 }
 

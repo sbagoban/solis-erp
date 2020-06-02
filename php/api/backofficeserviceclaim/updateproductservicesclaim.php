@@ -60,6 +60,9 @@
         $id_country = $_POST["id_country"];
         $id_tour_operator = $_POST["id_tour_operator"];
         $specific_to_name = $_POST["specific_to_name"];
+        
+        $rollover_type = $_POST["rollover_type"];
+        $rollover_value = $_POST["rollover_value"];
 		
 		
 		if ($ps_teen_claim == "") 
@@ -96,7 +99,9 @@
                 ex_friday=:ex_friday,
                 ex_saturday=:ex_saturday,
                 ex_sunday=:ex_sunday,
-                specific_to_name=:specific_to_name
+                specific_to_name=:specific_to_name,
+                rollover_type=:rollover_type,
+                rollover_value=:rollover_value
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);                        
@@ -119,7 +124,9 @@
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
             ":ex_sunday" => $ex_sunday,
-            ":specific_to_name" => $specific_to_name));
+            ":specific_to_name" => $specific_to_name,
+            ":rollover_type" => $rollover_type,
+            ":rollover_value" => $rollover_value));
 
             if ($specific_to == 'A' || $specific_to == 'C') {
                 $sqlToDelete = $con->prepare("DELETE FROM product_service_claim_to WHERE id_product_service_claim=:id_product_service_claim");

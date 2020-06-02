@@ -42,26 +42,25 @@ try {
     $arr_params_test["travel_date"] = $_POST["travel_date"];
     $arr_params_test["wedding_interested"] = $_POST["wedding_interested"];
 
-    //$arr_pax = array();
-    // $arr_params_test["arr_pax"] = $_POST["arr_pax"];
-    // echo '-->' . $arr_pax;
+    $arr_pax = array();
+    $arr_params_test["arr_pax"] = $_POST["arr_pax"];
+    
 
     // CLIENT ACTIVITY
-    // $data = $arr_params_test["arr_pax"];
-    // echo $data;
-    // $count = 0;
-    // foreach($data as $d) {
-    //     $count++;
-    //     //$arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
-    //     $arr_params_test["arr_pax"][] = array(
-    //                                         "count"=>$count,
-    //                                         "age"=>30,
-    //                                         "bride_groom"=>"");
-    // }
+    $data = $arr_params_test["arr_pax"];
+    $count = 0;
+    foreach($data as $d) {
+        $count++;
+        //$arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+        $arr_params_test["arr_pax"][] = array(
+                                            "count"=>$count,
+                                            "age"=>$d['age'],
+                                            "bride_groom"=>$d['bride_groom']);
+    }
     
-    $arr_params_test["arr_pax"] = array();
-    $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
-    $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
+    // $arr_params_test["arr_pax"] = array();
+    // $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
+    // $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
 
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>35,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");

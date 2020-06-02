@@ -4,6 +4,7 @@ $('#modal-pictures').on('hidden.bs.modal', function () {
 });
 
 const XHRUpload = Uppy.XHRUpload;
+// const ImageCompressor = require('uppy-plugin-image-compressor');
 var uppy = Uppy.Core()
 .use(Uppy.Dashboard, {
     inline: true,

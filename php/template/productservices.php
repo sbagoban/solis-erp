@@ -185,12 +185,15 @@
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">Description</label>
-								<div class="col-sm-4">
-									<textarea class="form-control" id="description" rows="3" style="resize: none"></textarea>
+								<div class="col-sm-10">
+									<textarea class="form-control" id="description" rows="5" style="resize: none"></textarea>
 								</div>
+							</div>
+
+							<div class="form-group">
 								<label class="col-sm-2 control-label">Comment</label>
-								<div class="col-sm-4">
-									<textarea class="form-control" id="comments" rows="3" style="resize: none"></textarea>
+								<div class="col-sm-10">
+									<textarea class="form-control" id="comments" rows="5" style="resize: none"></textarea>
 								</div>
 							</div>
 							

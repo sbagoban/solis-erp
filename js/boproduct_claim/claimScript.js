@@ -208,4 +208,33 @@ $(document).ready(function(){
         $("#ps_child_claim").css("display", "block");
         $("#ps_child_claim").attr("placeholder", "Child");
     }
+
+    /////////////////////////
+    ///////ROLL OVER ////////
+    /////////////////////////
+    $('#txtRollOver').attr('disabled', 'disabled');
+    $('#txtRollOver').val(0);
+    $("#roll_over").on('change', function() {
+
+        var roll_over = $('#roll_over').val();
+        if (roll_over == 'Same Rate') {
+            $('#txtRollOver').val(0);
+            $('#txtRollOver').attr('disabled', 'disabled');
+        }
+        if (roll_over == 'On Request') {
+            $('#txtRollOver').val(0);
+            $('#txtRollOver').attr('disabled', 'disabled');
+        }
+        if (roll_over == 'Percentage') {
+            $('#txtRollOver').removeAttr('disabled');
+        }
+
+        if (roll_over == 'Fix Amount') {
+            $('#txtRollOver').removeAttr('disabled');
+        }
+    });
+    
+    /////////////////////////
+    ///////ROLL OVER ////////
+    /////////////////////////
 });

@@ -30,6 +30,7 @@
 								</div>
 							</div>
 						</div>
+
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Charge</label>
 							<div class="col-sm-2">
@@ -50,6 +51,23 @@
 								<br>
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Roll Over</label>
+							<div class="col-sm-5" id="multiRollOver">
+								<select type="text" class="form-control" id="roll_over">
+									<option value="Same Rate" name="Same Rate">Same Rate</option>
+									<option value="On Request" name="On Request">On Request</option>
+									<option value="Percentage" name="Percentage">Percentage</option>
+									<option value="Fix Amount" name="Fix Amount">Fix Amount</option>
+								</select>
+							</div>
+							<div class="col-sm-3">
+								<input type="number" class="form-control"  id="txtRollOver" placeholder="Percentage / Fix Rate" min="0">
+								<!-- for display only  --->
+							</div>
+						</div>
+
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Currency</label>
 							<div class="col-sm-2">
@@ -85,7 +103,7 @@
 							</div>
 						</div>
 						<div class="form-group">
-								<label class="col-sm-2 control-label">Excluding</label>
+							<label class="col-sm-2 control-label">Excluding</label>
 								<div class="col-sm-10">
 									<div class="checkbox" style="display: flex">
 										<li class="checkBoxMain" id="ex_monday1" style="display: none;">
@@ -133,7 +151,7 @@
 									</div>
 								</div>
 							</div>
-					
+							
 						<div class="pager pull-right">
 							<button type="button" class="btn btn-default" id="btn-basckProductServices" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
 							<button type="button" class="btn btn-default" onclick="resetProductServicesClaim()"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;&nbsp;Reset</button>

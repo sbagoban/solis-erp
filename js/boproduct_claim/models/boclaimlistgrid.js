@@ -270,6 +270,25 @@ function editServiceClaim(data) {
     var chksaturday = data.ex_saturday;
     var chksunday = data.ex_sunday;
 
+    if (data.rollover_type == 'Same Rate') {
+        $('#txtRollOver').val(0);
+        $('#txtRollOver').attr('disabled', 'disabled');
+    }
+    if (data.rollover_type == 'On Request') {
+        $('#txtRollOver').val(0);
+        $('#txtRollOver').attr('disabled', 'disabled');
+    }
+    if (data.rollover_type == 'Percentage') {
+        $('#txtRollOver').val(data.rollover_value);        
+        $('#txtRollOver').removeAttr('disabled');
+    }
+
+    if (data.rollover_type == 'Fix Amount') {
+        $('#txtRollOver').val(data.rollover_value);
+        $('#txtRollOver').removeAttr('disabled');
+    }
+
+
     if (chkmonday == '1') {
         $('#ex_monday').prop('checked', true);
     } else if (chkmonday == '0') {
@@ -305,6 +324,7 @@ function editServiceClaim(data) {
     } else if (chksunday == '0') {
         $('#ex_sunday').prop('checked', false);
     }  
+
 }
 
 function toDetails(row2, e) {

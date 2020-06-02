@@ -48,6 +48,8 @@ try {
     $ex_saturday = trim($_POST["ex_saturday"]);
     $ex_sunday = trim($_POST["ex_sunday"]);
     $specific_to_name = $_POST["specific_to_name"];
+    $rollover_type = $_POST["rollover_type"];
+    $rollover_value = $_POST["rollover_value"];
 
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
@@ -104,7 +106,9 @@ try {
             ex_friday,
             ex_saturday,
             ex_sunday,
-            specific_to_name
+            specific_to_name,
+            rollover_type,
+            rollover_value
             ) 
                 VALUES (
                     :id_product_service_cost, 
@@ -127,7 +131,9 @@ try {
                     :ex_friday,
                     :ex_saturday,
                     :ex_sunday,
-                    :specific_to_name)";
+                    :specific_to_name,
+                    :rollover_type,
+                    :rollover_value)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -151,7 +157,9 @@ try {
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
             ":ex_sunday" => $ex_sunday,
-            ":specific_to_name" => $specific_to_name));
+            ":specific_to_name" => $specific_to_name,
+            ":rollover_type" => $rollover_type,
+            ":rollover_value" => $rollover_value));
         
             $id_product_service_claim = $con->lastInsertId();
 
@@ -298,7 +306,9 @@ try {
                 ex_friday=:ex_friday,
                 ex_saturday=:ex_saturday,
                 ex_sunday=:ex_sunday,
-                specific_to_name=:specific_to_name
+                specific_to_name=:specific_to_name,
+                rollover_type=:rollover_type,
+                rollover_value=:rollover_value
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);
@@ -323,7 +333,9 @@ try {
             ":ex_friday" => $ex_friday,
             ":ex_saturday" => $ex_saturday,
             ":ex_sunday" => $ex_sunday,
-            ":specific_to_name" => $specific_to_name));
+            ":specific_to_name" => $specific_to_name,
+            ":rollover_type" => $rollover_type,
+            ":rollover_value" => $rollover_value));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
 } catch (Exception $ex) {

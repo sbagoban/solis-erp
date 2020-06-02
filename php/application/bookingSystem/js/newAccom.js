@@ -123,19 +123,6 @@ $(function(){
 			}
 	});
 	//.Rebate
-    
-    // Room Combination
-	/*$('#accom_room').change(function(){
-        var arr_params_resa = {
-                max_pax: 0,
-                hotelroom: 0,
-                checkin_date: 0,
-            
-        }   
-        
-        _rates_calculator_reservation_gen_room_combination()
-    });*/
-    // .Room Combination
 	
 });
 // New Accom
@@ -288,7 +275,7 @@ function loadAccomTarif(data, max_pax) {
                 method: "POST",
                 dataType: "json",
                 success: function (clientData) {
-                    console.log('clientData -->', clientData[0].age);
+                    console.log('clientData --> 1', clientData[0].age);
                     clientType = clientData[0].type;
                 }, error: function (error) {
                     console.log('Error ${error}');
@@ -299,80 +286,51 @@ function loadAccomTarif(data, max_pax) {
             // $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
             // $("#accom_client").selectpicker('refresh');
 
-    // var accom_client_details = [
-    //     var test = { age: accom_client_age, 
-    //         bride_groom: ""
-    //     };
-    // ];
     // populate this array first 
     // sandeep 
     // get age -- call api client 
     // take age push in object 
     // get remarks
-    var accom_client_details = [
-        {count:1, age:27, bride_groom:"BRIDE"}
-    ];
-
-// var accom_client_details = [
-// {count:1,age:30,bride_groom:"BRIDE"},
-
-// var accom_client_details = [
-// {count:1,age:30,bride_groom:"BRIDE"},
-// {count:1,age:30,bride_groom:"BRIDE"},
-// {count:1,age:30,bride_groom:"BRIDE"}
-// var accom_client_details = [
-// {count:1, age:30, bride_groom:"BRIDE"},
-// {count:2, age:30, bride_groom:"GROOM"},
-// {count:3, age:5, bride_groom:""}
-// ]
-// var accom_client_details = [
-// {count:1, age:30, bride_groom:"BRIDE"},
-// {count:2, age:30, bride_groom:"GROOM"},
-// {count:3, age:5, bride_groom:""}
-// ]
-
     // var accom_client_details = [
-    //     {count:1, age:30, bride_groom:"BRIDE"},
-    //     {count:2, age:30, bride_groom:"GROOM"},
-    //     {count:3, age:5, bride_groom:""}
-    //     ]
-        
-    console.log('accom_client', accom_client);
-    var arr_params_resa = {
-        mealplan : mealplan,
-        touroperator : accom_payer,
-        hotel :  accom_hotel,
-        hotelroom : accom_room,
-        checkin_date: accom_stay_start,
-        checkout_date: accom_stay_end,
-        booking_date : accom_bookingDate,
-        travel_date : travel_date,
-        max_pax : max_pax, 
-        checkin_time : '', 
-        checkout_time : '', 
-        suppmealplan : '', 
-        wedding_interested: 1,
-        arr_pax: accom_client_details
-    }
+    //     {count:1, age:27, bride_groom:"BRIDE"}
+    // ];
 
-    const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
-    $.ajax({
-        url : getAccomContract,
-        method : "POST",
-        data : arr_params_resa, 
-        dataType: "json",
-            success : function(contractData){
-                if (contractData.OUTCOME == "OK") {
-                    gridAccomDetails(contractData);
-                    //saveAccomDetails(data);
-                } else if (data == "FAIL_NO_CONTRACT") {
-                    toastr.warning('No Tarif found.');
-                }
-            }, 
-            error: function (error) {
-                console.log('Error ${error}');
-            }
-    });
+    // console.log('accom_client', accom_client);
+    // var arr_params_resa = {
+    //     mealplan : mealplan,
+    //     touroperator : accom_payer,
+    //     hotel :  accom_hotel,
+    //     hotelroom : accom_room,
+    //     checkin_date: accom_stay_start,
+    //     checkout_date: accom_stay_end,
+    //     booking_date : accom_bookingDate,
+    //     travel_date : travel_date,
+    //     max_pax : max_pax, 
+    //     checkin_time : '', 
+    //     checkout_time : '', 
+    //     suppmealplan : '', 
+    //     wedding_interested: 1,
+    //     arr_pax: accom_client_details
+    // }
+
+    // const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
+    // $.ajax({
+    //     url : getAccomContract,
+    //     method : "POST",
+    //     data : arr_params_resa, 
+    //     dataType: "json",
+    //         success : function(contractData){
+    //             if (contractData.OUTCOME == "OK") {
+    //                 gridAccomDetails(contractData);
+    //                 //saveAccomDetails(data);
+    //             } else if (data == "FAIL_NO_CONTRACT") {
+    //                 toastr.warning('No Tarif found.');
+    //             }
+    //         }, 
+    //         error: function (error) {
+    //             console.log('Error ${error}', error);
+    //         }
+    // });
 }
 
 
@@ -418,10 +376,11 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                 success: function (clientData) {
                     var id_booking = $("#id_booking").val();
                     clientType = clientData[0].type;
-
                     if (clientData[0].age == null) {
                         // no age
                         //  Consider as adult
+                        var adultAmount = clientCount.adult_amt++;
+                        $('#accom_adultAmt').val(adultAmount);
                     } else {
                         // readBooking
                         const url_search_booking = "php/api/bookingSystem/readBooking.php?t=" + encodeURIComponent(global_token) + "&id_booking=" +id_booking;
@@ -446,9 +405,16 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                 var travel_date = dataRead[0].booking_from;
                                 var accom_client = $('#accom_client').val();
                                 var accom_client_age = $('#accom_client').find('option:selected').attr("name");
+                                // to add each age in array - 
+                                
+                                // console.log('accom_contract', clientData[0].age);
+                                // var arrClientAge = [];
+                                // arrClientAge.push(clientData[0].age);
+                                // console.log('-->', arrClientAge);
+
                                 var accom_client_details = [{
                                     age: accom_client_age, 
-                                    bride_groom: "BRIDE"
+                                    bride_groom: ""
                                 }];
                                 var arr_params_resa = {
                                     mealplan : mealplan,
@@ -473,26 +439,10 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                     method : "POST",
                                     data : arr_params_resa, 
                                     dataType: "json",
-                                        success : function(contractData) {
-                                            if (contractData.OUTCOME == "OK") {
-                                                gridAccomDetails(contractData);
-                                                //saveAccomDetails(contractData);
-
-                                                // if (contractData.PAX_LIMITS_POSSIBILITIES.length == 0) {
-                                                //     // Age Policies
-                                                //     if (contractData.AGE_POLICIES.length == 0) {
-                                                //         if (clientData[0].type != 'ADULT') {
-                                                //             alert('Room Policy - Adult Only');
-                                                //             var inegibleClient = $('#accom_client option[value="'+val+'"]').val();
-                                                //             $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
-                                                //             $("#accom_client").selectpicker('refresh');
-                                                //         } else {
-                                                //             var adultAmount = clientCount.adult_amt++;
-                                                //             $('#accom_adultAmt').val(adultAmount);
-                                                //         }
-                                                //     }
-                                                // } else {
-                                                if (contractData.AGE_POLICIES.length == 0) {
+                                        success : function(contractData_client) {
+                                            if (contractData_client.OUTCOME == "OK") {
+                                                gridAccomDetails(contractData_client);
+                                                if (contractData_client.AGE_POLICIES.length == 0) {
                                                     if (clientData[0].type != 'ADULT') {
                                                         alert('Room Policy - Adult Only');
                                                         var inegibleClient = $('#accom_client option[value="'+val+'"]').val();
@@ -503,9 +453,9 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                         $('#accom_adultAmt').val(adultAmount);
                                                     }
                                                 }
-                                                if (contractData.AGE_POLICIES.length == 1) {
+                                                if (contractData_client.AGE_POLICIES.length == 1) {
                                                     alert("1 - pax policies");
-                                                    if (parseInt(clientData[0].age) <= parseInt(contractData.AGE_POLICIES[0].AGETO)) {
+                                                    if (parseInt(clientData[0].age) <= parseInt(contractData_client.AGE_POLICIES[0].AGETO)) {
                                                         // child only
                                                         clientCount.child_amt ++;
                                                     } else { 
@@ -514,11 +464,11 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                     }
                                                 }
 
-                                                if (contractData.AGE_POLICIES.length == 2) {
-                                                    if (parseInt(clientData[0].age) <= parseInt(contractData.AGE_POLICIES[0].AGETO)) {
+                                                if (contractData_client.AGE_POLICIES.length == 2) {
+                                                    if (parseInt(clientData[0].age) <= parseInt(contractData_client.AGE_POLICIES[0].AGETO)) {
                                                         // infant only
                                                         clientCount.infant_amt ++;
-                                                    } else if (parseInt(clientData[0].age) <= parseInt(contractData.AGE_POLICIES[1].AGETO)) {
+                                                    } else if (parseInt(clientData[0].age) <= parseInt(contractData_client.AGE_POLICIES[1].AGETO)) {
                                                         // child only
                                                         clientCount.child_amt ++;
                                                     } else { 
@@ -527,14 +477,14 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                     }
                                                 }
 
-                                                if (contractData.AGE_POLICIES.length == 3) {
-                                                    if (parseInt(clientData[0].age) <= parseInt(contractData.AGE_POLICIES[0].AGETO)) {
+                                                if (contractData_client.AGE_POLICIES.length == 3) {
+                                                    if (parseInt(clientData[0].age) <= parseInt(contractData_client.AGE_POLICIES[0].AGETO)) {
                                                         // infant only
                                                         clientCount.infant_amt ++;
-                                                    } else if (parseInt(clientData[0].age) <= parseInt(contractData.AGE_POLICIES[1].AGETO)) {
+                                                    } else if (parseInt(clientData[0].age) <= parseInt(contractData_client.AGE_POLICIES[1].AGETO)) {
                                                         // child only
                                                         clientCount.child_amt ++;
-                                                    } else if (parseInt(clientData[0].age) <= parseInt(contractData.AGE_POLICIES[2].AGETO)) {
+                                                    } else if (parseInt(clientData[0].age) <= parseInt(contractData_client.AGE_POLICIES[2].AGETO)) {
                                                         // teen only
                                                         clientCount.teen_amt ++;
                                                     } else { 
@@ -553,7 +503,7 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                 $("#accom_TeentAmt").val(clientCount.teen_amt);
                                                 $("#accom_InfantAmt").val(clientCount.infant_amt);
                                             }
-                                            else if (contractData == "FAIL_NO_CONTRACT") {
+                                            else if (contractData_client == "FAIL_NO_CONTRACT") {
                                                 toastr.warning('No Tarif found.');
                                             }
                                         }, 
