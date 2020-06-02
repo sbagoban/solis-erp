@@ -367,10 +367,17 @@ function addClaimProductService(){
     var id_tour_operator = $('#ddlMultiSpecificTo').val();
     var valid_from = $("#daterangeServiceFromTo").data('daterangepicker').startDate.format('YYYY-MM-DD');
 	var valid_to = $("#daterangeServiceFromTo").data('daterangepicker').endDate.format('YYYY-MM-DD');
+    
     var ps_adult_claim_num = $('#ps_adult_claim').val();
     var ps_teen_claim_num = $('#ps_teen_claim').val();
     var ps_child_claim_num = $('#ps_child_claim').val();
     var ps_infant_claim_num = $('#ps_infant_claim').val();
+
+    var ps_adult_claim = $('#ps_adult_claim').val();
+    var ps_teen_claim = $('#ps_teen_claim').val();
+    var ps_child_claim = $('#ps_child_claim').val();
+    var ps_infant_claim = $('#ps_infant_claim').val();
+
     var id_currency = $('#id_currency').val();
     var currency = $('#id_currency').find(":selected").text();
     var specific_to = $('#specific_to').val();
@@ -397,66 +404,66 @@ function addClaimProductService(){
     if (rollover_type == 'Percentage') {
 
         if (ps_adult_claim_num == "" || ps_adult_claim_num == "0") {
-            ps_adult_claim = 0;
+            ps_adult_claim_rollover = 0;
         } else { 
             ps_adult_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_adult_claim_num);
-            ps_adult_claim = ps_adult_claim_per + parseInt(ps_adult_claim_num);
+            ps_adult_claim_rollover = ps_adult_claim_per + parseInt(ps_adult_claim_num);
             console.log('---->', ps_adult_claim_num, ps_adult_claim);
         }
 
         if (ps_teen_claim_num == "" || ps_teen_claim_num == "0") {
-            ps_teen_claim = 0;
+            ps_teen_claim_rollover = 0;
         } else {
             console.log('ps_teen_claim_num', ps_teen_claim_num);
             ps_teen_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_teen_claim_num);
-            ps_teen_claim = ps_teen_claim_per + parseInt(ps_teen_claim_num);
+            ps_teen_claim_rollover = ps_teen_claim_per + parseInt(ps_teen_claim_num);
         }
 
         if (ps_child_claim_num == "" || ps_child_claim_num == "0") {
-            ps_child_claim = 0;
+            ps_child_claim_rollover = 0;
         } else {            
             ps_child_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_child_claim_num);
-            ps_child_claim = ps_child_claim_per + parseInt(ps_child_claim_num);
+            ps_child_claim_rollover = ps_child_claim_per + parseInt(ps_child_claim_num);
         }
 
         if (ps_infant_claim_num == "" || ps_infant_claim_num == "0") {
-            ps_infant_claim = 0;
+            ps_infant_claim_rollover = 0;
         } else {
             ps_infant_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_infant_claim_num);
-            ps_infant_claim = ps_infant_claim_per + parseInt(ps_infant_claim_num);
+            ps_infant_claim_rollover = ps_infant_claim_per + parseInt(ps_infant_claim_num);
         }
 
     } else if (rollover_type == 'Fix Amount') {
         //check if zero
         if (ps_adult_claim_num == "" || ps_adult_claim_num == "0") {
-            ps_adult_claim = 0;
+            ps_adult_claim_rollover = 0;
         } else {
-            ps_adult_claim = parseInt(ps_adult_claim_num) + parseInt(rollover_value);
+            ps_adult_claim_rollover = parseInt(ps_adult_claim_num) + parseInt(rollover_value);
         }
 
         if (ps_teen_claim_num == "" || ps_teen_claim_num == "0") {
-            ps_teen_claim = 0;
+            ps_teen_claim_rollover = 0;
         } else {
-            ps_teen_claim = parseInt(ps_teen_claim_num) + parseInt(rollover_value);
+            ps_teen_claim_rollover = parseInt(ps_teen_claim_num) + parseInt(rollover_value);
         }
 
         if (ps_child_claim_num == "" || ps_child_claim_num == "0") {
-            ps_child_claim = 0;
+            ps_child_claim_rollover = 0;
         } else {
-            ps_child_claim = parseInt(ps_child_claim_num) + parseInt(rollover_value);
+            ps_child_claim_rollover = parseInt(ps_child_claim_num) + parseInt(rollover_value);
         }
 
         if (ps_infant_claim_num == "" || ps_infant_claim_num == "0") {
-            ps_infant_claim = 0;
+            ps_infant_claim_rollover = 0;
         } else {
-            ps_infant_claim = parseInt(ps_infant_claim_num) + parseInt(rollover_value); 
+            ps_infant_claim_rollover = parseInt(ps_infant_claim_num) + parseInt(rollover_value); 
         }
 
     } else { 
-        ps_adult_claim = $('#ps_adult_claim').val();
-        ps_teen_claim = $('#ps_teen_claim').val();
-        ps_child_claim = $('#ps_child_claim').val();
-        ps_infant_claim = $('#ps_infant_claim').val();
+        ps_adult_claim_rollover = 0;
+        ps_teen_claim_rollover = 0;
+        ps_child_claim_rollover = 0;
+        ps_infant_claim_rollover = 0;
     }
 
     if (chkmonday.checked) {
@@ -549,7 +556,11 @@ function addClaimProductService(){
             id_tour_operator: id_tour_operator,
             specific_to_name: specific_to_name, 
             rollover_type : rollover_type,
-            rollover_value : rollover_value
+            rollover_value : rollover_value,
+            ps_adult_claim_rollover: ps_adult_claim_rollover,
+            ps_teen_claim_rollover: ps_teen_claim_rollover,
+            ps_child_claim_rollover: ps_child_claim_rollover,
+            ps_infant_claim_rollover: ps_infant_claim_rollover
         };
 
         console.log(objProductServiceClaim);
@@ -592,7 +603,11 @@ function addClaimProductService(){
             id_tour_operator: id_tour_operator,
             specific_to_name: specific_to_name,
             rollover_type : rollover_type,
-            rollover_value : rollover_value
+            rollover_value : rollover_value,
+            ps_adult_claim_rollover: ps_adult_claim_rollover,
+            ps_teen_claim_rollover: ps_teen_claim_rollover,
+            ps_child_claim_rollover: ps_child_claim_rollover,
+            ps_infant_claim_rollover: ps_infant_claim_rollover
         };
 
         $.ajax({

@@ -51,6 +51,11 @@ try {
     $rollover_type = $_POST["rollover_type"];
     $rollover_value = $_POST["rollover_value"];
 
+    $ps_adult_claim_rollover = trim($_POST["ps_adult_claim_rollover"]);
+    $ps_teen_claim_rollover = trim($_POST["ps_teen_claim_rollover"]);
+    $ps_child_claim_rollover = trim($_POST["ps_child_claim_rollover"]);
+    $ps_infant_claim_rollover = trim($_POST["ps_infant_claim_rollover"]);
+
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
     $log_status = "CREATE";
@@ -108,7 +113,11 @@ try {
             ex_sunday,
             specific_to_name,
             rollover_type,
-            rollover_value
+            rollover_value,
+            ps_adult_claim_rollover,
+            ps_teen_claim_rollover,
+            ps_child_claim_rollover,
+            ps_infant_claim_rollover
             ) 
                 VALUES (
                     :id_product_service_cost, 
@@ -133,7 +142,11 @@ try {
                     :ex_sunday,
                     :specific_to_name,
                     :rollover_type,
-                    :rollover_value)";
+                    :rollover_value,
+                    :ps_adult_claim_rollover,
+                    :ps_teen_claim_rollover,
+                    :ps_child_claim_rollover,
+                    :ps_infant_claim_rollover)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -159,7 +172,11 @@ try {
             ":ex_sunday" => $ex_sunday,
             ":specific_to_name" => $specific_to_name,
             ":rollover_type" => $rollover_type,
-            ":rollover_value" => $rollover_value));
+            ":rollover_value" => $rollover_value,
+            ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
+            ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
+            ":ps_child_claim_rollover" => $ps_child_claim_rollover,
+            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover));
         
             $id_product_service_claim = $con->lastInsertId();
 
@@ -308,7 +325,11 @@ try {
                 ex_sunday=:ex_sunday,
                 specific_to_name=:specific_to_name,
                 rollover_type=:rollover_type,
-                rollover_value=:rollover_value
+                rollover_value=:rollover_value,
+                ps_adult_claim_rollover=:ps_adult_claim_rollover,
+                ps_teen_claim_rollover=:ps_teen_claim_rollover,
+                ps_child_claim_rollover=:ps_child_claim_rollover,
+                ps_infant_claim_rollover=:ps_infant_claim_rollover
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);
@@ -335,7 +356,11 @@ try {
             ":ex_sunday" => $ex_sunday,
             ":specific_to_name" => $specific_to_name,
             ":rollover_type" => $rollover_type,
-            ":rollover_value" => $rollover_value));
+            ":rollover_value" => $rollover_value,
+            ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
+            ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
+            ":ps_child_claim_rollover" => $ps_child_claim_rollover,
+            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
 } catch (Exception $ex) {

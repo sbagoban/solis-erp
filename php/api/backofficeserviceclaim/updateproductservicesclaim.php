@@ -63,6 +63,11 @@
         
         $rollover_type = $_POST["rollover_type"];
         $rollover_value = $_POST["rollover_value"];
+
+        $ps_adult_claim_rollover = trim($_POST["ps_adult_claim_rollover"]);
+        $ps_teen_claim_rollover = trim($_POST["ps_teen_claim_rollover"]);
+        $ps_child_claim_rollover = trim($_POST["ps_child_claim_rollover"]);
+        $ps_infant_claim_rollover = trim($_POST["ps_infant_claim_rollover"]);
 		
 		
 		if ($ps_teen_claim == "") 
@@ -101,7 +106,11 @@
                 ex_sunday=:ex_sunday,
                 specific_to_name=:specific_to_name,
                 rollover_type=:rollover_type,
-                rollover_value=:rollover_value
+                rollover_value=:rollover_value,                
+                ps_adult_claim_rollover=:ps_adult_claim_rollover,
+                ps_teen_claim_rollover=:ps_teen_claim_rollover,
+                ps_child_claim_rollover=:ps_child_claim_rollover,
+                ps_infant_claim_rollover=:ps_infant_claim_rollover
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);                        
@@ -126,7 +135,11 @@
             ":ex_sunday" => $ex_sunday,
             ":specific_to_name" => $specific_to_name,
             ":rollover_type" => $rollover_type,
-            ":rollover_value" => $rollover_value));
+            ":rollover_value" => $rollover_value,
+            ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
+            ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
+            ":ps_child_claim_rollover" => $ps_child_claim_rollover,
+            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover));
 
             if ($specific_to == 'A' || $specific_to == 'C') {
                 $sqlToDelete = $con->prepare("DELETE FROM product_service_claim_to WHERE id_product_service_claim=:id_product_service_claim");

@@ -273,18 +273,22 @@ function editServiceClaim(data) {
     if (data.rollover_type == 'Same Rate') {
         $('#txtRollOver').val(0);
         $('#txtRollOver').attr('disabled', 'disabled');
+        $('#roll_over').val('Same Rate');
     }
     if (data.rollover_type == 'On Request') {
         $('#txtRollOver').val(0);
         $('#txtRollOver').attr('disabled', 'disabled');
+        $('#roll_over').val('On Request');
     }
     if (data.rollover_type == 'Percentage') {
-        $('#txtRollOver').val(data.rollover_value);        
+        $('#txtRollOver').val(data.rollover_value);
+        $('#roll_over').val('Percentage');
         $('#txtRollOver').removeAttr('disabled');
     }
 
     if (data.rollover_type == 'Fix Amount') {
-        $('#txtRollOver').val(data.rollover_value);
+        $('#txtRollOver').val(data.rollover_value);        
+        $('#roll_over').val('Fix Amount');
         $('#txtRollOver').removeAttr('disabled');
     }
 
