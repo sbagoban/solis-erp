@@ -442,6 +442,10 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                         success : function(contractData_client) {
                                             if (contractData_client.OUTCOME == "OK") {
                                                 gridAccomDetails(contractData_client);
+
+                                                ////////////////////////////////////////
+                                                ////////////AGE POLICIES////////////////
+                                                //////////////////////////////////////// 
                                                 if (contractData_client.AGE_POLICIES.length == 0) {
                                                     if (clientData[0].type != 'ADULT') {
                                                         alert('Room Policy - Adult Only');
@@ -498,10 +502,35 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                     $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
                                                     $("#accom_client").selectpicker('refresh');
                                                 }
+
+                                                alert('LOADER');
+
+                                                
+                                                ////////////////////////////////////////
+                                                ////////////PAX QUANTITY////////////////
+                                                ////////////////////////////////////////
+
                                                 $("#accom_adultAmt").val(clientCount.adult_amt);
                                                 $("#accom_childAmt").val(clientCount.child_amt);
                                                 $("#accom_TeentAmt").val(clientCount.teen_amt);
                                                 $("#accom_InfantAmt").val(clientCount.infant_amt);
+                                                
+                                                ////////////////////////////////////////
+                                                ////////////AGE POLICIES////////////////
+                                                //////////////////////////////////////// 
+
+                                                ////////////////////////////////////////
+                                                ////////////PAX QUANTITY////////////////
+                                                //////////////////////////////////////// 
+                                                
+                                                var maxAdults = contractData_client.COST_CLAIM_AMOUNTS.ADULTS.length;
+                                                var maxChildren = contractData_client.COST_CLAIM_AMOUNTS.CHILDREN.length;
+
+                                                var number_of_adult = $('#accom_adultAmt').val();
+                                                if (number_of_adult > maxAdults) {
+                                                    alert('ok');
+                                                } 
+
                                             }
                                             else if (contractData_client == "FAIL_NO_CONTRACT") {
                                                 toastr.warning('No Tarif found.');

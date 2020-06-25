@@ -32,7 +32,7 @@ function gridAccomDetails(data) {
 
         html += '<tr>';
             html += '<th>Pax Type</th>';
-            html += '<th>Pax Quantity</th>';
+            html += '<th>Max Pax Quantity</th>';
             html += '<th>Claim</th>';
             html += '<th>Special Claim</th>';
             html += '<th>Cost</th>';
@@ -55,7 +55,7 @@ function gridAccomDetails(data) {
                 html += '</tr>';
             } else {
                 html += '<tr>';
-                html += '<td colspan="5">' + 'No adult Found' + '</td>'; 
+                html += '<td colspan="5" id="no_adult">' + 'No adult Found' + '</td>'; 
                 html += '</tr>';
             }
             
@@ -69,7 +69,7 @@ function gridAccomDetails(data) {
                 html += '</tr>';
             } else {
                 html += '<tr>';
-                html += '<td colspan="5">' + 'No Children Found' + '</td>'; 
+                html += '<td colspan="5" id="no_children">' + 'No Children Found' + '</td>'; 
                 html += '</tr>';
             }
 

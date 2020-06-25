@@ -86,7 +86,7 @@
 								<div class="col-sm-4">
 									<select type="text" class="form-control" id="id_country">
 										<!-- To modify - select from db -->
-										<option value="913">MAURITIUS</option>
+										<!-- <option value="913">MAURITIUS</option> -->
 									</select>
 								</div>
 								<label class="col-sm-2 control-label" id="id_coast_label">Coast</label>

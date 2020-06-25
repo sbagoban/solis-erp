@@ -64,6 +64,7 @@ try {
     }
 
     $absolute_server_path = utils_getsysparams($con, "PRODUCT", "PHOTO", "ABSOLUTE_PATH");
+    echo $absolute_server_path;
     $file_name = $_POST['name'];
     $filepath = $absolute_server_path . sha1($file_name) . '_' . basename($file_name);
     $files = $_FILES['files'];

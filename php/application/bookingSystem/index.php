@@ -9,7 +9,7 @@
 <section class="content">
 	<!-- 1 row -->
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-9">
 			<!-- Booking Form -->
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -183,7 +183,7 @@
 			<!-- /.box -->
 		</div>
 		<!-- right column -->
-		<!--<div class="col-md-3">
+		<div class="col-md-3">
 			<div class="box box-primary" style="height:520px">
 				<div class="box-header with-border">
 				<h3 class="box-title">Summary</h3>
@@ -191,11 +191,39 @@
 				<form class="form-horizontal">
 					
               		<div class="box-body">
-						
+					  <div class="card-body">
+							<ul class="list-group mb-3">
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+									<div>
+										<h6 class="my-0">Accomodation</h6>
+										<small class="text-muted">______________</small>
+									</div>
+									<span class="text-muted">$453</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+									<div>
+										<h6 class="my-0">Transfer</h6>
+										<small class="text-muted">______________</small>
+									</div>
+									<span class="text-muted">$58</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+									<div>
+										<h6 class="my-0">Activity</h6>
+										<small class="text-muted">______________</small>
+									</div>
+									<span class="text-muted">$432</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between">
+									<span>Total (USD)</span>
+									<strong>$1 709</strong>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</form>
 			</div>
-		</div>-->
+		</div>
   	</div>
 	<!-- /.row -->
 	  <!-- End Seven Tab -->	  

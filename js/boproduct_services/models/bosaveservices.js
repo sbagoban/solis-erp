@@ -1,4 +1,22 @@
 $(document).ready(function(){
+    // Pax Origin
+    const url_country = "php/api/countries/allCountryProduct.php?t=" + encodeURIComponent(global_token);
+
+    $.ajax({
+        type: "POST",
+        url: url_country,
+        dataType: "json",
+        cache: false,
+        success: function(data)
+            {
+                $.each(data, function (key, val) {
+                    $("#id_country").append('<option value="' + val.id_country + '">'+val.country_name+ '</option>');
+                });  
+            }
+        }
+    );
+    
+    $('#id_country').val(913);
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
     var product_name = urlParams.get("product_name");
@@ -21,7 +39,7 @@ $(document).ready(function(){
     if (servicetype == 'TRANSFER') {
         $('.adult_blk').css("display", "block");
     }
-   // loadSelectedService();
+    // loadSelectedService();
 });
 
 function changeTransfer() {
