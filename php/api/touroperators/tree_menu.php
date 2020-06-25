@@ -1,9 +1,9 @@
 <?php
 
 session_start();
-mb_internal_encoding("iso-8859-1");
-mb_http_output( "iso-8859-1" );
-ob_start("mb_output_handler");
+// mb_internal_encoding("iso-8859-1");
+// mb_http_output( "iso-8859-1" );
+// ob_start("mb_output_handler");
 
 if (!isset($_SESSION["solis_userid"])) {
     die("NO LOG IN!");
