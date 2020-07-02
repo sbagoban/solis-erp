@@ -257,6 +257,7 @@ function loadAccomContract(id_booking){
 
 // .Load Accom Contract
 function loadAccomTarif(data, max_pax) {
+
     var mealplan = $('#accom_mealPlan').val();
     var accom_payer = $('#accom_payer').val();
     var accom_hotel = $('#accom_hotel').val();
@@ -337,6 +338,9 @@ function loadAccomTarif(data, max_pax) {
 // Client 
 // Activity Client
 $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, oldValue) {
+        // dynamic age value
+        arrAge = [];
+        // dynamic age value
     var numberOfClient = $("#accom_client :selected").length;
     var valueOfClient = $("#accom_client").val();
     if (numberOfClient == 0) {
@@ -374,6 +378,12 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                 method: "POST",
                 dataType: "json",
                 success: function (clientData) {
+                    
+                    var checkAge = clientData[0].age;
+                    arrAge.push(checkAge);
+                    var allDataAge = arrAge.join(' ');
+                    document.getElementById("clientDetails").innerHTML = allDataAge;
+
                     var id_booking = $("#id_booking").val();
                     clientType = clientData[0].type;
                     if (clientData[0].age == null) {

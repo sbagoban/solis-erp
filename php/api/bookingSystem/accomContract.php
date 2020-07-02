@@ -49,6 +49,8 @@ try {
     // CLIENT ACTIVITY
     $data = $arr_params_test["arr_pax"];
     $count = 0;
+    
+    // var_dump($data); 
     foreach($data as $d) {
         $count++;
         //$arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));

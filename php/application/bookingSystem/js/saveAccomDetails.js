@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    arrClient = [];
     arrClientAdult = [];
     dossierAccomodation();
 });
@@ -27,72 +26,93 @@ $('#btn-saveAccom').click(function() {
             var accom_bookingDate = $("#accom_bookingDate").data('daterangepicker').startDate.format('YYYY-MM-DD');
             var travel_date = dataRead[0].booking_from;
             var accom_client = $('#accom_client').val();
-            var arr_params_resa = {
-                mealplan : mealplan,
-                touroperator : accom_payer,
-                hotel :  accom_hotel,
-                hotelroom : accom_room,
-                checkin_date: accom_stay_start,
-                checkout_date: accom_stay_end,
-                booking_date : accom_bookingDate,
-                travel_date : travel_date,
-                max_pax : max_pax, 
-                checkin_time : '', 
-                checkout_time : '', 
-                suppmealplan : '', 
-                wedding_interested: 0,
-                arr_pax: accom_client
-            }
-        
-            const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
-            $.ajax({
-                url : getAccomContract,
-                method : "POST",
-                data : arr_params_resa, 
-                dataType: "json",
-                    success : function(contractData) {
-                         // id_booking_room_claim primary key
-                        var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
-                        var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
-                        var id_booking = $('#id_booking').val();
-                        var room_adult_amt = $('#accom_adultAmt').val();
-                        var room_teen_amt = $('#accom_TeentAmt').val();
-                        var room_child_amt = $('#accom_childAmt').val();
-                        var room_infant_amt = $('#accom_InfantAmt').val();
-                        var room_status = $('#booking_status').val();
-                        var objBookingRoom = { 
-                            id_booking_room: -1,
-                            id_booking: id_booking,
-                            stay_from: room_stay_from,
-                            stay_to: room_stay_to,
-                            room_adult_amt: room_adult_amt,
-                            room_teen_amt: room_teen_amt,
-                            room_child_amt: room_child_amt,
-                            room_infant_amt: room_infant_amt,
-                            room_status: room_status
-                        }
 
-                        const url_save_booking = "php/api/bookingSystem/saveBookingRoom.php?t=" + encodeURIComponent(global_token);
-                        $.ajax({
-                            url : url_save_booking,
-                            method : "POST",
-                            data : objBookingRoom,
-                            dataType: "json",
-                            success : function(data){
-                                if (data.OUTCOME == "OK") {
-                                    saveBookingRoomClaim(data, contractData);
-                                }
-                            },
-                            error: function(error) {
-                                console.log('Error ${error}');
+            console.log('accom_client', accom_client);
+            // call accom client
+            // fetch accom client age
+            // otherFile.js
+            // initialize array
+            var checkClientDetails = document.getElementById("clientDetails").innerHTML;
+            // append new value to the array
+            // arrClientDetails.push(checkClientDetails);
+            string_to_array = function (str) {
+                return str.trim().split(" ");
+            };
+            var arrClientDetails = string_to_array(checkClientDetails);
+            console.log(arrClientDetails, 'arrClientDetails');
+            for (let index = 0; index < arrClientDetails.length; index++) {
+                const element = arrClientDetails[index];
+                accom_client_details = [{count:index, age: element, bride_groom:""}];
+                var arr_params_resa = {
+                    mealplan : mealplan,
+                    touroperator : accom_payer,
+                    hotel :  accom_hotel,
+                    hotelroom : accom_room,
+                    checkin_date: accom_stay_start,
+                    checkout_date: accom_stay_end,
+                    booking_date : accom_bookingDate,
+                    travel_date : travel_date,
+                    max_pax : max_pax, 
+                    checkin_time : '', 
+                    checkout_time : '', 
+                    suppmealplan : '', 
+                    wedding_interested: 0,
+                    arr_pax: accom_client_details
+                }
+            
+                const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
+                $.ajax({
+                    url : getAccomContract,
+                    method : "POST",
+                    data : arr_params_resa, 
+                    dataType: "json",
+                        success : function(contractData) {
+                            console.log(contractData, '1');
+                             // id_booking_room_claim primary key
+                            var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
+                            var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
+                            var id_booking = $('#id_booking').val();
+                            var room_adult_amt = $('#accom_adultAmt').val();
+                            var room_teen_amt = $('#accom_TeentAmt').val();
+                            var room_child_amt = $('#accom_childAmt').val();
+                            var room_infant_amt = $('#accom_InfantAmt').val();
+                            var room_status = $('#booking_status').val();
+                            var objBookingRoom = { 
+                                id_booking_room: -1,
+                                id_booking: id_booking,
+                                stay_from: room_stay_from,
+                                stay_to: room_stay_to,
+                                room_adult_amt: room_adult_amt,
+                                room_teen_amt: room_teen_amt,
+                                room_child_amt: room_child_amt,
+                                room_infant_amt: room_infant_amt,
+                                room_status: room_status
                             }
-                        });
-                        
-                    }, 
-                    error: function (error) {
-                        console.log('Error ${error}');
-                    }
-            });
+    
+                            const url_save_booking = "php/api/bookingSystem/saveBookingRoom.php?t=" + encodeURIComponent(global_token);
+                            $.ajax({
+                                url : url_save_booking,
+                                method : "POST",
+                                data : objBookingRoom,
+                                dataType: "json",
+                                success : function(data){
+                                    if (data.OUTCOME == "OK") {
+                                        console.log(data, 'data', contractData, 'contractData');
+                                        saveBookingRoomClaim(data, contractData);
+                                    }
+                                },
+                                error: function(error) {
+                                    console.log('Error ${error}');
+                                }
+                            });
+                            
+                        }, 
+                        error: function (error) {
+                            console.log('Error ${error}');
+                        }
+                });
+            }
+            
         },
         error: function (error) 
         {
@@ -142,6 +162,7 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
     var id_claim_cur = bookingDetails.CLAIM_CURRENCY_ID;
 
     var accom_client = $('#accom_client').val();
+    console.log('bookingDetails', bookingDetails);
     // Only Adult
     if (bookingDetails.COST_CLAIM_AMOUNTS.ADULTS.length > 0 && bookingDetails.COST_CLAIM_AMOUNTS.CHILDREN.length == 0) {
         adult_cost = bookingDetails.COST_CLAIM_AMOUNTS.ADULTS[0].COST;

@@ -226,7 +226,7 @@
 		</div>
   	</div>
 	<!-- /.row -->
-	  <!-- End Seven Tab -->	  
+	<!-- End Seven Tab -->	  
 	<div class="toast jam toast_found" aria-hidden="true" style="display:none;">
 		<span class="close" aria-role="button" tabindex="0">&times;</span> Dossier found.
 	</div>
@@ -234,6 +234,11 @@
 	<div class="toast-danger jam toast_notfound" aria-hidden="true" style="display:none;">
 		<span class="close" aria-role="button" tabindex="0">&times;</span> Dossier not found.
 	</div>
+
+	<!-- Create Grid all dossier -->
+	
+	<!-- Create Grid all dossier -->
+
 	<!-- 2 row -->
 	<div class="row">
 		<!-- main column -->

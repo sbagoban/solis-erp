@@ -24,13 +24,15 @@ require_once("../../utils/utilities.php");
 		<form class="form-horizontal">
 			<!-- .box-body -->
 			<div class="box-body">
-                <div class="form-group" style="">
+                <div class="form-group">
 					<label class="col-sm-2 control-label">ID BOOKING ROOM</label>
 					<div class="col-sm-2">
 						<input type="text" class="form-control bookingAccom" id="id_booking_room" placeholder="000" readonly>
 						<div id="id_contract" style="display:none;">0</div>
 					</div>
 				</div>
+				<div id="clientDetails"></div>
+				<div id="clientDetailsBride"></div>
                 
 				<div class="form-group">
 					<label class="col-sm-1 control-label">Booking Date</label>
