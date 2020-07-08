@@ -6,7 +6,13 @@
 <script src="php/application/bookingSystem/js/bookingTab.js"></script>
 <link rel="stylesheet" href="php/application/bookingSystem/css/bookingSystem.css">
 <!-- Main content -->
+
+
+
 <section class="content">
+<div id='loadingmessage_2'>
+	<img src='images/loader.gif'/>
+</div>
 	<!-- 1 row -->
 	<div class="row">
 		<div class="col-md-12">
@@ -313,4 +319,3 @@
 
 </section>
 <!-- /.content -->
-

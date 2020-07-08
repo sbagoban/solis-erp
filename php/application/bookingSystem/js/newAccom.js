@@ -415,12 +415,6 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                 var travel_date = dataRead[0].booking_from;
                                 var accom_client = $('#accom_client').val();
                                 var accom_client_age = $('#accom_client').find('option:selected').attr("name");
-                                // to add each age in array - 
-                                
-                                // console.log('accom_contract', clientData[0].age);
-                                // var arrClientAge = [];
-                                // arrClientAge.push(clientData[0].age);
-                                // console.log('-->', arrClientAge);
 
                                 var accom_client_details = [{
                                     age: accom_client_age, 
@@ -444,6 +438,8 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                 }
                             
                                 const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
+                                
+                                $('#loadingmessage_2').show();
                                 $.ajax({
                                     url : getAccomContract,
                                     method : "POST",
@@ -452,7 +448,7 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                         success : function(contractData_client) {
                                             if (contractData_client.OUTCOME == "OK") {
                                                 gridAccomDetails(contractData_client);
-
+                                                $('#loadingmessage_2').hide();
                                                 ////////////////////////////////////////
                                                 ////////////AGE POLICIES////////////////
                                                 //////////////////////////////////////// 
@@ -512,9 +508,6 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
                                                     $('#accom_client').find('[value='+inegibleClient+']').prop('selected', false);
                                                     $("#accom_client").selectpicker('refresh');
                                                 }
-
-                                                alert('LOADER');
-
                                                 
                                                 ////////////////////////////////////////
                                                 ////////////PAX QUANTITY////////////////
@@ -531,15 +524,14 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
 
                                                 ////////////////////////////////////////
                                                 ////////////PAX QUANTITY////////////////
-                                                //////////////////////////////////////// 
-                                                
+                                                ////////////////////////////////////////
                                                 var maxAdults = contractData_client.COST_CLAIM_AMOUNTS.ADULTS.length;
                                                 var maxChildren = contractData_client.COST_CLAIM_AMOUNTS.CHILDREN.length;
 
-                                                var number_of_adult = $('#accom_adultAmt').val();
-                                                if (number_of_adult > maxAdults) {
-                                                    alert('ok');
-                                                } 
+                                                // var number_of_adult = $('#accom_adultAmt').val();
+                                                // if (number_of_adult > maxAdults) {
+                                                //     alert('ok');
+                                                // } 
 
                                             }
                                             else if (contractData_client == "FAIL_NO_CONTRACT") {
@@ -564,5 +556,4 @@ $("#accom_client").on("changed.bs.select",function(e, clickedIndex, newValue, ol
             });
         }
     });
-
 });

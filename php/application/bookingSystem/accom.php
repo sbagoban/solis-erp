@@ -119,7 +119,7 @@ require_once("../../utils/utilities.php");
 					</div>
 				</div> 
 				
-				<div class="form-group">
+				<div class="form-group" style="display: none;">
 					<label class="col-sm-1 control-label">Rebate</label>
 					<div class="col-sm-4">
 						<select class="form-control" id="accom_rebate">
@@ -139,7 +139,7 @@ require_once("../../utils/utilities.php");
 						</select>
 					</div>
 				</div>
-				<div id="rebateSection">
+				<div id="rebateSection" style="display: none;">
 					<div class="form-group">
 						<label class="col-sm-1 control-label">Room Rebate</label>
 						<div class="col-sm-11">

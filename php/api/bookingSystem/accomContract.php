@@ -49,20 +49,15 @@ try {
     // CLIENT ACTIVITY
     $data = $arr_params_test["arr_pax"];
     $count = 0;
-    
-    // var_dump($data); 
     foreach($data as $d) {
         $count++;
         //$arr_params_test->execute(array(':id_booking_room_claim' => $id_booking_room_claim, ':id_booking' => $id_booking, ':booking_client' => $d));
+        $arr_params_test["arr_pax"] = array();
         $arr_params_test["arr_pax"][] = array(
                                             "count"=>$count,
                                             "age"=>$d['age'],
-                                            "bride_groom"=>$d['bride_groom']);
+                                            "bride_groom"=>'');
     }
-    
-    // $arr_params_test["arr_pax"] = array();
-    // $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
-    // $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
 
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>35,"bride_groom"=>"");
     // $arr_params_test["arr_pax"][] = array("count"=>4,"age"=>5,"bride_groom"=>"");

@@ -27,12 +27,12 @@ function gridAccomDetails(data) {
                 }
         html += '</tr>';
         html += '<tr>';
-            html += '<th class="text-center"  colspan="5">Room Claim Description</th>';
+            html += '<th class="text-center"  colspan="4">Room Claim Description</th>';
         html += '</tr>';
 
         html += '<tr>';
             html += '<th>Pax Type</th>';
-            html += '<th>Max Pax Quantity</th>';
+            // html += '<th>Max Pax Quantity</th>';
             html += '<th>Claim</th>';
             html += '<th>Special Claim</th>';
             html += '<th>Cost</th>';
@@ -48,7 +48,7 @@ function gridAccomDetails(data) {
             if(maxAdults > 0) {
                 html += '<tr>';
                 html += '<td>' + 'Adult' + '</td>';                    
-                html += '<td>' + maxAdults + '</td>';
+                // html += '<td>' + maxAdults + '</td>';
                 html += '<td>' + data.COST_CLAIM_AMOUNTS.ADULTS[0].CLAIM_WITHOUT_SPO + '</td>';
                 html += '<td>' + data.COST_CLAIM_AMOUNTS.ADULTS[0].CLAIM_WITH_SPO + '</td>';
                 html += '<td>' + data.COST_CLAIM_AMOUNTS.ADULTS[0].COST + '</td>';

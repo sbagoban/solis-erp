@@ -10,3 +10,22 @@ Developer : slouis@slois360.com*/
 .panel-title {
     cursor: pointer;
 }
+
+#loadingmessage_2 {
+    background-color: #e6f6ff8a;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.8;
+    z-index: 1;
+    display: none;
+}
+
+#loadingmessage_2 img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+}

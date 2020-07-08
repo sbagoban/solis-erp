@@ -61,12 +61,14 @@ $('#btn-saveAccom').click(function() {
                 }
             
                 const getAccomContract= "php/api/bookingSystem/accomContract.php?t=" + encodeURIComponent(global_token);
+                $('#loadingmessage_2').show();
                 $.ajax({
                     url : getAccomContract,
                     method : "POST",
                     data : arr_params_resa, 
                     dataType: "json",
                         success : function(contractData) {
+                            $('#loadingmessage_2').hide();
                              // id_booking_room_claim primary key
                             var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
                             var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -480,6 +482,7 @@ function saveBookingRoomClaimSpo(roomData, bookingDetails, costData, TOTAL_DISCO
 }
 
 function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_DISCOUNTED_CLAIM_AMOUNT) {
+        var id_booking = $('#id_booking').val();
         var booking_dept = $('#booking_dept').val();
         var id_tour_operator = $('#accom_payer').val();
         var room_booking_date = $('#accom_bookingDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -502,7 +505,6 @@ function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_
         var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
         var room_rebate_claim_type = $('#accom_rebate').val();
         var id_cost_cur = data.id_claim_cur;
-        console.log('_______________>', id_cost_cur);
     
         var accom_client = $('#accom_client').val();
         
@@ -569,7 +571,20 @@ function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_
             room_remarks: room_remarks, 
             room_internal_remarks: 	room_internal_remarks, 
             room_status: roomData.room_status, 
-            booking_client: accom_client
+            booking_client: accom_client, 
+            room_total_cost: costData.room_total_cost, 
+            room_rebate_cost_type: roomData.room_rebate_claim_type,
+            room_rebate_cost_approve_by: 0,
+            room_rebate_cost_percentage: 0,
+            room_adult_cost_rebate: 0,
+            room_adult_cost_after_rebate: 0, 
+            room_teen_cost_rebate: 0, 
+            room_teen_cost_after_rebate: 0,
+            room_child_cost_rebate: 0, 
+            room_child_cost_after_rebate: 0,
+            room_infant_cost_rebate: 0,
+            room_infant_cost_after_rebate: 0,
+            room_total_cost_after_rebate: 0
         }
     
         const url_save_booking_cost_spo = "php/api/bookingSystem/saveBookingRoomCost.php?t=" + encodeURIComponent(global_token);
@@ -584,6 +599,7 @@ function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_
                     setTimeout(function() {
                         toastr.info('New Booking offer saved successfully');
                     }, 5000);
+                    allBookingAccom(id_booking)
                 }
             },
             error: function(error) {
