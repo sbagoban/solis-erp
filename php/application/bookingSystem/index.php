@@ -9,7 +9,7 @@
 <section class="content">
 	<!-- 1 row -->
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-md-12">
 			<!-- Booking Form -->
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -183,7 +183,7 @@
 			<!-- /.box -->
 		</div>
 		<!-- right column -->
-		<div class="col-md-3">
+		<!-- <div class="col-md-3">
 			<div class="box box-primary" style="height:520px">
 				<div class="box-header with-border">
 				<h3 class="box-title">Summary</h3>
@@ -223,7 +223,7 @@
 					</div>
 				</form>
 			</div>
-		</div>
+		</div>  -->
   	</div>
 	<!-- /.row -->
 	<!-- End Seven Tab -->	  
