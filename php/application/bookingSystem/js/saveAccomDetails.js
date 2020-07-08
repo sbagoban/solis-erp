@@ -27,7 +27,6 @@ $('#btn-saveAccom').click(function() {
             var travel_date = dataRead[0].booking_from;
             var accom_client = $('#accom_client').val();
 
-            console.log('accom_client', accom_client);
             // call accom client
             // fetch accom client age
             // otherFile.js
@@ -39,10 +38,11 @@ $('#btn-saveAccom').click(function() {
                 return str.trim().split(" ");
             };
             var arrClientDetails = string_to_array(checkClientDetails);
-            console.log(arrClientDetails, 'arrClientDetails');
             for (let index = 0; index < arrClientDetails.length; index++) {
-                const element = arrClientDetails[index];
-                accom_client_details = [{count:index, age: element, bride_groom:""}];
+                count_person = index;
+                element = arrClientDetails[index];
+            }
+                accom_client_details = [{count:count_person, age: element, bride_groom:""}];
                 var arr_params_resa = {
                     mealplan : mealplan,
                     touroperator : accom_payer,
@@ -67,7 +67,6 @@ $('#btn-saveAccom').click(function() {
                     data : arr_params_resa, 
                     dataType: "json",
                         success : function(contractData) {
-                            console.log(contractData, '1');
                              // id_booking_room_claim primary key
                             var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
                             var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -97,7 +96,6 @@ $('#btn-saveAccom').click(function() {
                                 dataType: "json",
                                 success : function(data){
                                     if (data.OUTCOME == "OK") {
-                                        console.log(data, 'data', contractData, 'contractData');
                                         saveBookingRoomClaim(data, contractData);
                                     }
                                 },
@@ -111,7 +109,7 @@ $('#btn-saveAccom').click(function() {
                             console.log('Error ${error}');
                         }
                 });
-            }
+            // End For Loop} 
             
         },
         error: function (error) 
@@ -162,7 +160,6 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
     var id_claim_cur = bookingDetails.CLAIM_CURRENCY_ID;
 
     var accom_client = $('#accom_client').val();
-    console.log('bookingDetails', bookingDetails);
     // Only Adult
     if (bookingDetails.COST_CLAIM_AMOUNTS.ADULTS.length > 0 && bookingDetails.COST_CLAIM_AMOUNTS.CHILDREN.length == 0) {
         adult_cost = bookingDetails.COST_CLAIM_AMOUNTS.ADULTS[0].COST;
@@ -292,7 +289,7 @@ function saveBookingRoomCost(dataCost, bookingDetails) {
     
     var room_rebate_cost_approve_by = 0;
     var room_cost_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].COST";
-    var id_cost_cur = bookingDetails.COST_CURRENCY_ID;
+    var id_cost_cur = dataCost.id_claim_cur;
 
     var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
     var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -403,7 +400,7 @@ function saveBookingRoomClaimSpo(roomData, bookingDetails, costData, TOTAL_DISCO
     var id_room = costData.id_room;
     var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
     var room_rebate_claim_type = $('#accom_rebate').val();    
-    var id_claim_cur = roomData.id_claim_cur;
+    id_claim_cur = costData.id_cost_cur;
     var accom_client = $('#accom_client').val();
     
     if (roomData.ROOM_TYPE == "PERSONS") {
@@ -482,115 +479,120 @@ function saveBookingRoomClaimSpo(roomData, bookingDetails, costData, TOTAL_DISCO
     });
 }
 
-function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_DISCOUNTED_CLAIM_AMOUNT) {
-    console.log('data', data);
-    console.log('roomData', roomData);
-    console.log('bookingDetails', bookingDetails);
-    console.log('costData', costData);
-    console.log('TOTAL_DISCOUNTED_CLAIM_AMOUNT', TOTAL_DISCOUNTED_CLAIM_AMOUNT);
-
-    var booking_dept = $('#booking_dept').val();
-    var id_tour_operator = $('#accom_payer').val();
-    var room_booking_date = $('#accom_bookingDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
-    var id_hotel = $('#accom_hotel').val();
-    var hotelname = $('#accom_hotel').find('option:selected').attr("name");
-    var room_details = $('#accom_room').find('option:selected').attr("name");
-    var id_contract = document.getElementById("id_contract").innerHTML;
-    var id_client = $('#accom_client').val();
-    var room_service_paid_by = $('#accom_paidBy').val();
-    var room_adult_amt = $('#accom_adultAmt').val();
-    var room_teen_amt = $('#accom_TeentAmt').val();
-    var room_child_amt = $('#accom_childAmt').val();
-    var room_infant_amt = $('#accom_InfantAmt').val();
-    var room_total_pax = +room_adult_amt + +room_teen_amt + +room_child_amt + +room_infant_amt;
-    var room_remarks = $('#accom_serviceRemark').val();
-    var room_internal_remarks = 'SPO - NAME' + bookingDetails.SPO_ID + 'SPO - NAME' + bookingDetails.SPO_NAME;
-    var room_claim_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].CLAIM_WITHOUT_SPO";
-    var room_cost_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].COST";
-    var id_room = costData.id_room;
-    var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
-    var room_rebate_claim_type = $('#accom_rebate').val();
-    var id_claim_cur = roomData.id_claim_cur;
-    var accom_client = $('#accom_client').val();
+// function saveBookingRoomCostSpo(data, roomData, bookingDetails, costData, TOTAL_DISCOUNTED_CLAIM_AMOUNT) {
+//     console.log('data', data);
+//     console.log('roomData', roomData);
+//     console.log('bookingDetails', bookingDetails);
+//     console.log('costData', costData);
+//     console.log('TOTAL_DISCOUNTED_CLAIM_AMOUNT', TOTAL_DISCOUNTED_CLAIM_AMOUNT);
+//         var booking_dept = $('#booking_dept').val();
+//         var id_tour_operator = $('#accom_payer').val();
+//         var room_booking_date = $('#accom_bookingDate').data('daterangepicker').startDate.format('YYYY-MM-DD');
+//         var id_hotel = $('#accom_hotel').val();
+//         var hotelname = $('#accom_hotel').find('option:selected').attr("name");
+//         var room_details = $('#accom_room').find('option:selected').attr("name");
+//         var id_contract = document.getElementById("id_contract").innerHTML;
+//         var id_client = $('#accom_client').val();
+//         var room_service_paid_by = $('#accom_paidBy').val();
+//         var room_adult_amt = $('#accom_adultAmt').val();
+//         var room_teen_amt = $('#accom_TeentAmt').val();
+//         var room_child_amt = $('#accom_childAmt').val();
+//         var room_infant_amt = $('#accom_InfantAmt').val();
+//         var room_total_pax = +room_adult_amt + +room_teen_amt + +room_child_amt + +room_infant_amt;
+//         var room_remarks = $('#accom_serviceRemark').val();
+//         var room_internal_remarks = 'SPO - NAME' + bookingDetails.SPO_ID + 'SPO - NAME' + bookingDetails.SPO_NAME;
+//         var room_claim_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].CLAIM_WITHOUT_SPO";
+//         var room_cost_calcultation = "data.COST_CLAIM_AMOUNTS.ADULTS.length * data.COST_CLAIM_AMOUNTS.ADULTS.[0].COST";
+//         var id_room = costData.id_room;
+//         var room_rebate_claim_approve_by = $('#accom_approvedBy').val();
+//         var room_rebate_claim_type = $('#accom_rebate').val();
+//         var id_cost_cur = data.id_claim_cur;
+//         console.log('_______________>', id_cost_cur);
     
-    if (roomData.ROOM_TYPE == "PERSONS") {
-        room_charge = "PAX";
-    } else { 
-        room_charge = "UNIT"
-    }
-
+//         var accom_client = $('#accom_client').val();
+        
+//         if (roomData.ROOM_TYPE == "PERSONS") {
+//             room_charge = "PAX";
+//         } else { 
+//             room_charge = "UNIT"
+//         }
     
-    var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
-    var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
-    // Object - 
-    var objBookingRoomCostSpo = { 
-        id_booking_room_cost: -1,
-        id_booking_room_claim: data.id_booking_room_claim, 
-        id_booking: roomData.id_booking,
-        id_booking_room: roomData.id_booking_room, 
-        room_service_paid_by: room_service_paid_by,
-        id_tour_operator: id_tour_operator, 
-        id_client: 0,
-        room_stay_from: room_stay_from, 
-        room_stay_to: room_stay_to,
-        room_booking_date: room_booking_date,
-        id_contract: id_contract,
-        id_hotel: id_hotel,
-        hotelname: hotelname,
-        id_room: id_room,
-        room_details: room_details,
-        service_details: "OFFER", 
-        room_claim_calcultation: room_claim_calcultation,
-        room_cost_calcultation : room_cost_calcultation ,
-        room_adult_amt: room_adult_amt,
-        room_teen_amt: room_teen_amt,
-        room_child_amt: room_child_amt,
-        room_infant_amt: room_infant_amt,
-        room_total_pax: room_total_pax,
-        id_dept: booking_dept, 
-        room_charge: room_charge, 
-        id_service_tax: 3,
-        tax_value: 15, 
-        id_claim_cur: id_claim_cur, 
-        room_adult_claim: TOTAL_DISCOUNTED_CLAIM_AMOUNT, // add spo total here
-        room_teen_claim: 0,
-        room_child_claim: 0,
-        room_infant_claim: 0,
-        room_total_claim: TOTAL_DISCOUNTED_CLAIM_AMOUNT,
-        room_rebate_claim_type: room_rebate_claim_type,
-        room_rebate_claim_approve_by: room_rebate_claim_approve_by,
-        room_rebate_claim_percentage: 0,
-        room_adult_claim_rebate: 0,
-        room_adult_claim_after_rebate: 0, 
-        room_teen_claim_rebate: 0, 
-        room_teen_claim_after_rebate: 0,
-        room_child_claim_rebate: 0, 
-        room_child_claim_after_rebate: 0,
-        room_infant_claim_rebate: 0,
-        room_infant_claim_after_rebate: 0, 
-        room_total_claim_after_rebate: 0, 
-        room_remarks: room_remarks, 
-        room_internal_remarks: 	room_internal_remarks, 
-        room_status: roomData.room_status, 
-        booking_client: accom_client
-    }
-
-    const url_save_booking_cost_spo = "php/api/bookingSystem/saveBookingRoomCost.php?t=" + encodeURIComponent(global_token);
-
-    $.ajax({
-        url : url_save_booking_cost_spo,
-        method : "POST",
-        data : objBookingRoomCostSpo,
-		dataType: "json",
-        success : function(data){
-            if (data.OUTCOME == "OK") { 
-                setTimeout(function() {
-                    toastr.info('New Booking offer saved successfully');
-                }, 5000);
-            }
-        },
-        error: function(error) {
-            console.log('Error ${error}');
-        }
-    });
-}
+        
+//         var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
+//         var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
+//         // Object - 
+//         var objBookingRoomCostSpo = { 
+//             id_booking_room_cost: -1,
+//             id_booking_room_claim: data.id_booking_room_claim, 
+//             id_booking: roomData.id_booking,
+//             id_booking_room: roomData.id_booking_room, 
+//             room_service_paid_by: room_service_paid_by,
+//             id_tour_operator: id_tour_operator, 
+//             id_client: 0,
+//             room_adult_cost: costData.room_adult_cost,
+//             room_stay_from: room_stay_from, 
+//             room_stay_to: room_stay_to,
+//             room_booking_date: room_booking_date,
+//             id_contract: id_contract,
+//             id_hotel: id_hotel,
+//             hotelname: hotelname,
+//             id_room: id_room,
+//             room_details: room_details,
+//             service_details: "OFFER", 
+//             room_claim_calcultation: room_claim_calcultation,
+//             room_cost_calcultation : room_cost_calcultation ,
+//             room_adult_amt: room_adult_amt,
+//             room_teen_amt: room_teen_amt,
+//             room_child_amt: room_child_amt,
+//             room_infant_amt: room_infant_amt,
+//             room_total_pax: room_total_pax,
+//             id_dept: booking_dept, 
+//             room_charge: room_charge, 
+//             id_service_tax: 3,
+//             tax_value: 15, 
+//             id_cost_cur: id_cost_cur, 
+//             room_adult_claim: TOTAL_DISCOUNTED_CLAIM_AMOUNT, // add spo total here
+//             room_teen_claim: 0,
+//             room_child_claim: 0,
+//             room_infant_claim: 0,
+//             room_teen_cost: 0,
+//             room_child_cost: 0,
+//             room_infant_cost: 0,
+//             room_total_claim: TOTAL_DISCOUNTED_CLAIM_AMOUNT,
+//             room_rebate_claim_type: room_rebate_claim_type,
+//             room_rebate_claim_approve_by: room_rebate_claim_approve_by,
+//             room_rebate_claim_percentage: 0,
+//             room_adult_claim_rebate: 0,
+//             room_adult_claim_after_rebate: 0, 
+//             room_teen_claim_rebate: 0, 
+//             room_teen_claim_after_rebate: 0,
+//             room_child_claim_rebate: 0, 
+//             room_child_claim_after_rebate: 0,
+//             room_infant_claim_rebate: 0,
+//             room_infant_claim_after_rebate: 0, 
+//             room_total_claim_after_rebate: 0, 
+//             room_remarks: room_remarks, 
+//             room_internal_remarks: 	room_internal_remarks, 
+//             room_status: roomData.room_status, 
+//             booking_client: accom_client
+//         }
+    
+//         const url_save_booking_cost_spo = "php/api/bookingSystem/saveBookingRoomCost.php?t=" + encodeURIComponent(global_token);
+    
+//         $.ajax({
+//             url : url_save_booking_cost_spo,
+//             method : "POST",
+//             data : objBookingRoomCostSpo,
+//             dataType: "json",
+//             success : function(data){
+//                 if (data.OUTCOME == "OK") { 
+//                     setTimeout(function() {
+//                         toastr.info('New Booking offer saved successfully');
+//                     }, 5000);
+//                 }
+//             },
+//             error: function(error) {
+//                 console.log('Error ${error}');
+//             }
+//         });
+//     }
