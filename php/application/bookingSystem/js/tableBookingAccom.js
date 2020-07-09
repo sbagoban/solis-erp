@@ -47,21 +47,24 @@ $('#tbl-bookingAccom').DataTable({
         },{
             "data" : "room_rebate_claim_type"
         },{
+            "data" : "service_details"
+        },{
             
             data: null,
                 render: function ( data, type, row ) {
                     return data.room_total_claim_after_rebate+' '+data.currency_code;
                 },
                 editField: ['room_total_claim_after_rebate', 'currency_code']
-        },{
-                "targets": -1,
-                "data": null,                
-                "class": 'btnCol',
-                "defaultContent": 
-                '<div class="btn-group">' +
-                '<button type="button" id="btnEditAccom" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i>' +
-                '<button type="button" id="btnDeleteAccom" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
-            }
+        },
+        // {
+        //         "targets": -1,
+        //         "data": null,                
+        //         "class": 'btnCol',
+        //         "defaultContent": 
+        //         '<div class="btn-group">' +
+        //         '<button type="button" id="btnEditAccom" class="btn btn-primary"><i class="fa fa-fw fa-edit"></i>' +
+        //         '<button type="button" id="btnDeleteAccom" class="btn btn-primary"><i class="fa fa-fw fa-trash"></i></button></button></div>'
+        //     }
         ],
 		"initComplete": function () {
             $('#tbl-bookingAccom tbody')

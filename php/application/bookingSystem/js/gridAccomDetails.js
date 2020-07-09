@@ -88,6 +88,16 @@ function gridAccomDetails(data) {
 
         // TOTAL_DISCOUNTED_CLAIM_AMOUNT amount
         var TOTAL_DISCOUNTED_CLAIM_AMOUNT = data.SPECIAL_OFFERS.TOTAL_DISCOUNTED_CLAIM_AMOUNT;
+        console.log(data, 'sdfsdfsdfsf');
+        var number_of_adult = $('#accom_adultAmt').val();
+        console.log('number_of_adult',number_of_adult);
+        // var number_of_person = TOTAL_DISCOUNTED_CLAIM_AMOUNT * (number_of_adult.length);
+        
+        var accom_client = $('#accom_client').val();
+        var numb_client = accom_client.length;
+        console.log('test', numb_client );
+        // var number_of_person = TOTAL_DISCOUNTED_CLAIM_AMOUNT * (().length);
+
         if (TOTAL_DISCOUNTED_CLAIM_AMOUNT ==  undefined) {
             TOTAL_DISCOUNTED_CLAIM_AMOUNT = "No Special Offer Applied";
         }

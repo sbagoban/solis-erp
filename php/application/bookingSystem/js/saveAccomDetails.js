@@ -193,6 +193,9 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
     });
     var total_claim = arrClaim.reduce((a, b) => a + b, 0);
 
+    var accom_night = $('#accom_night').val();
+    var final_claim = (total_claim * room_adult_amt) * accom_night;
+
     if (roomData.ROOM_TYPE == "PERSONS") {
         room_charge = "PAX";
     } else { 
@@ -230,7 +233,7 @@ function saveBookingRoomClaim(roomData, bookingDetails) {
         room_teen_claim: children_claim,
         room_child_claim: children_claim,
         room_infant_claim: children_claim,
-        room_total_claim: total_claim,
+        room_total_claim: final_claim,
         room_rebate_claim_type: room_rebate_claim_type,    
         room_rebate_claim_approve_by: room_rebate_claim_approve_by,
         room_rebate_claim_percentage: 0,
@@ -411,6 +414,8 @@ function saveBookingRoomClaimSpo(roomData, bookingDetails, costData, TOTAL_DISCO
         room_charge = "UNIT"
     }
 
+    var final_offer_claim = TOTAL_DISCOUNTED_CLAIM_AMOUNT - roomData.room_total_claim;
+
     var room_stay_from = $("#accom_stay").data('daterangepicker').startDate.format('YYYY-MM-DD');
     var room_stay_to = $("#accom_stay").data('daterangepicker').endDate.format('YYYY-MM-DD');
     // Object - 
@@ -445,7 +450,7 @@ function saveBookingRoomClaimSpo(roomData, bookingDetails, costData, TOTAL_DISCO
         room_teen_claim: 0,
         room_child_claim: 0,
         room_infant_claim: 0,
-        room_total_claim: TOTAL_DISCOUNTED_CLAIM_AMOUNT,
+        room_total_claim: final_offer_claim,
         room_rebate_claim_type: room_rebate_claim_type,
         room_rebate_claim_approve_by: room_rebate_claim_approve_by,
         room_rebate_claim_percentage: 0,

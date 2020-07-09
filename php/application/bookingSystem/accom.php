@@ -243,9 +243,10 @@ require_once("../../utils/utilities.php");
                                     <tr>
                                         <th class="col-sm-5">Accomodation</th>
                                         <th class="col-sm-2">Stay Date</th>
-                                        <th class="col-sm-1">Rebate</th>
+                                        <th class="col-sm-1">Rebate</th>                                        
+                                        <th class="col-sm-1">Service Details</th>
                                         <th class="col-sm-2">Claim</th>
-                                        <th class="col-sm-2"></th>
+                                        <!-- <th class="col-sm-2"></th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
