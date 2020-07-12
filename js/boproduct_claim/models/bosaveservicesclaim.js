@@ -296,7 +296,6 @@ function checkTo(data) {
                 arrayCompareTo(z, id_tour_operator);     
         },    
         error: function(error) {
-            alert('ERROR');
             addClaimProductService();
         }
     });
