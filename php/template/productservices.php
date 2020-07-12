@@ -102,7 +102,7 @@
 										<option value="6">North East</option>
 										<option value="7">North West</option>
 										<option value="10">Centre</option>
-										<option value="11" disabled style="display:none">Others</option>
+										<option value="0">Others</option>
 									</select>
 								</div>
 							</div>
@@ -119,6 +119,8 @@
 										<option value="OTHER COAST">OTHER COAST</option>
 										<option value="INTER HOTEL">INTER HOTEL</option>
 										<option value="ACTIVITY">ACTIVITY</option>
+										<option value="ONE WAY">ONE WAY</option>
+										<option value="NORTHERN COAST">NORTHERN COAST</option>
 									</select>
 								</div>
 
@@ -255,6 +257,13 @@
 							</div>
 
 							<div class="form-group">
+								<label class="col-sm-2 control-label">General terms and Conditions</label>
+								<div class="col-sm-10">
+									<textarea class="form-control" id="generaltermscondition" rows="3" style="resize: none"></textarea>
+								</div>
+							</div>
+
+							<div class="form-group">
 								<label class="col-sm-2 control-label">Pax Policy</label>
 								<div class="col-sm-5">
 									<div class="input-group">
@@ -381,7 +390,7 @@
 											<tr>
 												<th>Code</th>
 												<th>Product</th>
-												<!-- <th class="col-sm-1">Supplier</th> -->
+												<th>Special Name</th>
 												<th>Dept</th>
 												<th>Charges</th>
 												<th>Date</th>

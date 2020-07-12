@@ -64,12 +64,15 @@ $("#specific_to").change(function () {
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $('#ddlMultiSpecificTo').multiselect('destroy');
     } 
-    if (specificto == "D") {
+    if (specificto == "D" || specificto == "E" || specificto == "F") {
         $("#multiSpecificTo").css("display", "none");
-        $("#multiSpecificMarket").css("display", "none");
+        // $("#multiSpecificMarket").css("display", "none");
         
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $('#ddlMultiSpecificTo').multiselect('destroy');
+        $("#multiSpecificTo").css("display", "none");
+        $("#multiSpecificMarket").css("display", "block");
+        loadCountryClaim();
     }
     if (specificto == "A") {
         $("#multiSpecificMarket").css("display", "none");
@@ -228,7 +231,7 @@ function saveClaim() {
                     if (specific_to == 'A') { // To
                         checkTo(x);
                         //alert('Date Overlap - Tour Operator');   
-                    } else if (specific_to == 'C') { // Market
+                    } else if (specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') { // Market
                         checkMarket(x);  
                         //alert('Date Overlap - Market');   
                     } 
@@ -241,7 +244,7 @@ function saveClaim() {
                             }
                         }
                     }
-                    else if (specific_to == 'D') { // Directsales
+                    else if (specific_to == 'D' || specific_to == 'E' || specific_to == 'F') { // Directsales
                         console.log((valid_to == x.valid_to) || (valid_from == x.valid_from));
                         
                         if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
@@ -401,6 +404,20 @@ function addClaimProductService(){
     var rollover_type = $('#roll_over').val();
     var rollover_value = $('#txtRollOver').val();
 
+    var on_approved_chk_claim = $('#on_approved_claim').prop('checked');
+    var on_api_chk_claim = $('#on_api_claim').prop('checked');
+    if (on_api_chk_claim == true) { 
+        var on_api_1 = 1;
+    } else { 
+        var on_api_1 = 0;
+    }
+
+    if (on_approved_chk_claim == true) { 
+        var on_approved_1 = 1;
+    } else  { 
+        var on_approved_1 = 0;
+    }
+
     if (rollover_type == 'Percentage') {
 
         if (ps_adult_claim_num == "" || ps_adult_claim_num == "0") {
@@ -507,10 +524,7 @@ function addClaimProductService(){
     } else if (specific_to == 'B') {
         id_country = 0;
         id_tour_operator = 0;
-    } else if (specific_to == 'C') {
-        id_tour_operator = 0;
-    } else if (specific_to == 'D') {
-        id_country = 0;
+    } else if (specific_to == 'C' || specific_to == 'D' || specific_to == "E" || specific_to == "F") {
         id_tour_operator = 0;
     }
 
@@ -560,7 +574,9 @@ function addClaimProductService(){
             ps_adult_claim_rollover: ps_adult_claim_rollover,
             ps_teen_claim_rollover: ps_teen_claim_rollover,
             ps_child_claim_rollover: ps_child_claim_rollover,
-            ps_infant_claim_rollover: ps_infant_claim_rollover
+            ps_infant_claim_rollover: ps_infant_claim_rollover, 
+            on_approved: on_approved_1, 
+            on_api: on_api_1
         };
 
         console.log(objProductServiceClaim);
@@ -607,7 +623,9 @@ function addClaimProductService(){
             ps_adult_claim_rollover: ps_adult_claim_rollover,
             ps_teen_claim_rollover: ps_teen_claim_rollover,
             ps_child_claim_rollover: ps_child_claim_rollover,
-            ps_infant_claim_rollover: ps_infant_claim_rollover
+            ps_infant_claim_rollover: ps_infant_claim_rollover,
+            on_approved: on_approved_1, 
+            on_api: on_api_1
         };
 
         $.ajax({
@@ -623,7 +641,7 @@ function addClaimProductService(){
             }
         });
 
-        if (specific_to == 'A' || specific_to == 'C') { 
+        if (specific_to == 'A' || specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') { 
             // UPDATE MULTISELECT
             var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
             const url_update_to_claim = "php/api/backofficeserviceclaim/deleteselectedto.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
@@ -674,7 +692,7 @@ function addClaimProductService(){
                     console.log('Error ${error}');
                 }
             });
-        } else if (specific_to == 'C') {
+        } else if (specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') {
             var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
             const url_save_country_claim = "php/api/backofficeserviceclaim/saveselectedcountries.php?t=" + encodeURIComponent(global_token);
             var objProductServiceClaimSaveCountry = {
@@ -720,6 +738,10 @@ function resetProductServicesClaim() {
     $('#roll_over').val('Same Rate');    
     $('#txtRollOver').attr('disabled', 'disabled');
     $('#txtRollOver').val(0);
+    $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+    $('#on_api_claim').prop('checked', false);
+    $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
+    $('#on_approved_claim').prop('checked', false);
 
     document.getElementById("id_product_service_claim").innerHTML = '0';
 }

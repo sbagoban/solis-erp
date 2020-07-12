@@ -57,7 +57,7 @@ function allServicesGrid(added) {
         "columnDefs": [
         ],
         "columns" : [ {
-            data : null,
+            "data" : null,
                     render: function( data, type, row ) {
                         var id_product_service = data.id_product_service;
                         if (data.on_approved == "1") {
@@ -69,6 +69,8 @@ function allServicesGrid(added) {
                     }
         }, {
             "data" : "allName"
+        }, {
+            "data" : "special_name"
         }, {
             "data" : "deptname"
         }, {
@@ -292,6 +294,7 @@ function serviceEdit(data) {
     $('#description').val(data.description);
     $('#comments').val(data.comments);
     $('#cancellation').val(data.cancellation);
+    $('#generaltermscondition').val(data.generaltermscondition);
     $('#age_inf_to').val(data.age_inf_to);
     $('#age_child_to').val(data.age_child_to);
     $('#age_teen_to').val(data.age_teen_to);

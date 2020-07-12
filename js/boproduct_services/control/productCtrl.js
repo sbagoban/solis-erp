@@ -176,6 +176,14 @@ $('#btn-saveProductServices').click(function () {
         else if (service_name.trim() == "SOUTH EAST") {
             alert("Please Note that 'SOUTH EAST' is a reserved word.");
         } 
+
+        else if (service_name.trim() == "ONE WAY") {
+            alert("Please Note that 'ONE WAY' is a reserved word.");
+        } 
+
+        else if (service_name.trim() == "NORTHERN COAST") {
+            alert("Please Note that 'NORTHERN COAST' is a reserved word.");
+        } 
         
         else if (id_creditor == "") {
             alert("Please choose a supplier");

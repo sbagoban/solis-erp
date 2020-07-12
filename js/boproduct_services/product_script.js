@@ -139,7 +139,7 @@ $(document).ready(function(){
                     $("#special_name_transfer option[value='NIGHT TOUR']").hide();
                     $("#special_name_transfer option[value='AIRPORT']").show();
                     $("#special_name_transfer option[value='PORT']").show();
-                } else if (service_name == "INTER HOTEL") {                     
+                } else if (service_name == "INTER HOTEL" || service_name == "ONE WAY"|| service_name == "NORTHERN COAST") {                     
                     $('#special_name_transfer').css('display', 'none');     
                     $('#special_name_transfer').val('');
                 } else if (service_name == "ACTIVITY") {        

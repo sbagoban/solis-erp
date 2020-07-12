@@ -28,7 +28,7 @@ $con = pdo_con();
 $query_c = $con->prepare("
 SELECT PRS.id_product_service, PRS.id_product, PRS.service_name, PRS.charge, PRS.valid_from, PRS.valid_to, PRS.transfer_included,
 PRS.id_dept, PRS.id_country, PRS.id_coast, PR.product_name, PRS.id_dept, DP.deptname, PRS.active, PRS.id_tax, PRS.charge, PRS.duration,
-PRS.comments, PRS.cancellation, PRS.description, PRS.age_child_to, PRS.age_inf_to, PRS.age_teen_to, PRS.min_pax, PRS.max_pax, 
+PRS.comments, PRS.cancellation, PRS.description, PRS.generaltermscondition, PRS.age_child_to, PRS.age_inf_to, PRS.age_teen_to, PRS.min_pax, PRS.max_pax, 
 PRS.on_monday, PRS.on_tuesday, PRS.on_wednesday,  PRS.on_thursday, PRS.on_friday, PRS.on_saturday, PRS.on_sunday, PRS.id_creditor,
 PRS.for_infant, PRS.for_child, PRS.for_teen, PRS.age_child_from, PRS.age_inf_from, PRS.age_teen_from, PRS.min_age, PRS.max_age, PRS.for_adult,  PRS.is_pakage, PRS.special_name, 
 PRS.max_adult, PRS.on_api, PRS.on_approved
@@ -62,8 +62,9 @@ if ($row_count_c > 0) {
             'charge' => $row['charge'], 
             'transfer_included' => $row['transfer_included'],
             'charge' => $row['charge'], 
-            'comments' => $row['comments'],
+            'comments' => $row['comments'], 
             'description' => $row['description'], 
+            'generaltermscondition' => $row['generaltermscondition'], 
             'cancellation' => $row['cancellation'],
             'age_child_to' => $row['age_child_to'],
             'age_inf_to' => $row['age_inf_to'], 
@@ -117,6 +118,7 @@ if ($row_count_c > 0) {
         'transfer_included' => '-', 
         'comments' => '-',
         'description' => '-',
+        'generaltermscondition' => '-',
         'cancellation' => '-',
         'age_child_to' => '-',
         'age_inf_to' => '-',

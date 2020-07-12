@@ -39,6 +39,7 @@ try {
     $transfer_included = trim($_POST["transfer_included"]);
     $description = trim($_POST["description"]);
     $comments = trim($_POST["comments"]);
+    $generaltermscondition = trim($_POST["generaltermscondition"]);
     $on_monday = trim($_POST["on_monday"]);
     $on_tuesday = trim($_POST["on_tuesday"]);
     $on_wednesday = trim($_POST["on_wednesday"]);
@@ -157,6 +158,7 @@ try {
                     transfer_included,
                     description,
                     comments,
+                    generaltermscondition,
                     on_monday,
                     on_tuesday,
                     on_wednesday,
@@ -187,7 +189,7 @@ try {
                     on_api,
                     on_approved)
                 VALUES (:id_product, :valid_from, :valid_to, :id_dept, :id_country, :id_coast, 
-                :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
+                :service_name, :id_tax, :charge, :duration, :transfer_included, :description, :comments, :generaltermscondition, :on_monday, :on_tuesday, :on_wednesday, :on_thursday, 
                 :on_friday, :on_saturday, :on_sunday, :cancellation, :age_inf_to, :age_child_to, :age_teen_to, :age_inf_from, :age_child_from, :age_teen_from,
                 :min_pax, :max_pax, :id_creditor, :for_infant, :for_child, :for_teen, :min_age, :max_age, :is_pakage, :special_name, :max_adult, :id_service_type, :id_product_type,
                 :on_api, :on_approved)";
@@ -207,6 +209,7 @@ try {
             ":transfer_included" => $transfer_included,
             ":description" => $description,
             ":comments" => $comments,
+            ":generaltermscondition" => $generaltermscondition,
             ":on_monday" => $on_monday,
             ":on_tuesday" => $on_tuesday,
             ":on_wednesday" => $on_wednesday,
@@ -372,6 +375,7 @@ $sqlLog = "INSERT INTO product_service_log (
     transfer_included,
     description,
     comments,
+    generaltermscondition,
     on_monday,
     on_tuesday,
     on_wednesday,
@@ -415,6 +419,7 @@ $sqlLog = "INSERT INTO product_service_log (
             :transfer_included,
             :description,
             :comments,
+            :generaltermscondition,
             :on_monday,
             :on_tuesday,
             :on_wednesday,
@@ -459,7 +464,8 @@ $stmt = $con->prepare($sqlLog);
                 ":duration" => $duration,
                 ":transfer_included" => $transfer_included,
                 ":description" => $description,
-                ":comments" => $comments,
+                ":comments" => $comments,                
+                ":generaltermscondition" => $generaltermscondition,
                 ":on_monday" => $on_monday,
                 ":on_tuesday" => $on_tuesday,
                 ":on_wednesday" => $on_wednesday,
@@ -505,6 +511,7 @@ $stmt = $con->prepare($sqlLog);
                 transfer_included =:transfer_included,
                 description =:description,
                 comments =:comments,
+                generaltermscondition =:generaltermscondition,
                 on_monday =:on_monday,
                 on_tuesday =:on_tuesday,
                 on_wednesday =:on_wednesday,
@@ -551,6 +558,7 @@ $stmt = $con->prepare($sqlLog);
             ":transfer_included" => $transfer_included,
             ":description" => $description,
             ":comments" => $comments,
+            ":generaltermscondition" => $generaltermscondition,
             ":on_monday" => $on_monday,
             ":on_tuesday" => $on_tuesday,
             ":on_wednesday" => $on_wednesday,
@@ -596,6 +604,7 @@ $stmt = $con->prepare($sqlLog);
         "transfer_included" => $transfer_included,
         "description" => $description,
         "comments" => $comments,
+        "generaltermscondition" => $generaltermscondition,
         "on_monday" => $on_monday,
         "on_tuesday" => $on_tuesday,
         "on_wednesday" => $on_wednesday,

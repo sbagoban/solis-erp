@@ -50,7 +50,8 @@ try {
     $specific_to_name = $_POST["specific_to_name"];
     $rollover_type = $_POST["rollover_type"];
     $rollover_value = $_POST["rollover_value"];
-
+    $on_api = trim($_POST["on_api"]);
+    $on_approved = trim($_POST["on_approved"]);
     $ps_adult_claim_rollover = trim($_POST["ps_adult_claim_rollover"]);
     $ps_teen_claim_rollover = trim($_POST["ps_teen_claim_rollover"]);
     $ps_child_claim_rollover = trim($_POST["ps_child_claim_rollover"]);
@@ -117,7 +118,9 @@ try {
             ps_adult_claim_rollover,
             ps_teen_claim_rollover,
             ps_child_claim_rollover,
-            ps_infant_claim_rollover
+            ps_infant_claim_rollover, 
+            on_api, 
+            on_approved
             ) 
                 VALUES (
                     :id_product_service_cost, 
@@ -146,7 +149,9 @@ try {
                     :ps_adult_claim_rollover,
                     :ps_teen_claim_rollover,
                     :ps_child_claim_rollover,
-                    :ps_infant_claim_rollover)";
+                    :ps_infant_claim_rollover,
+                    :on_api, 
+                    :on_approved)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -176,7 +181,9 @@ try {
             ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
             ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
             ":ps_child_claim_rollover" => $ps_child_claim_rollover,
-            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover));
+            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
+            ":on_api" => $on_api,
+            ":on_approved" => $on_approved));
         
             $id_product_service_claim = $con->lastInsertId();
 
@@ -192,7 +199,7 @@ try {
                 foreach($data as $to) {
                     $stmt->execute(array(':id_product_service_claim' => $id_product_service_claim, ':id_tour_operator' => $to));
                 }
-            } if($specific_to == 'C') {
+            } if($specific_to == 'C' || $specific_to == 'D' || $specific_to == 'E' || $specific_to == 'F') {
                 $sqlMarket = "INSERT INTO product_service_claim_country (id_product_service_claim,id_country) 
                 VALUES (:id_product_service_claim,:id_country)";
 
@@ -329,7 +336,9 @@ try {
                 ps_adult_claim_rollover=:ps_adult_claim_rollover,
                 ps_teen_claim_rollover=:ps_teen_claim_rollover,
                 ps_child_claim_rollover=:ps_child_claim_rollover,
-                ps_infant_claim_rollover=:ps_infant_claim_rollover
+                ps_infant_claim_rollover=:ps_infant_claim_rollover,
+                on_api=:on_api,
+                on_approved=:on_approved
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);
@@ -360,7 +369,9 @@ try {
             ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
             ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
             ":ps_child_claim_rollover" => $ps_child_claim_rollover,
-            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover));
+            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
+            ":on_api" => $on_api,
+            ":on_approved" => $on_approved));
     }
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
 } catch (Exception $ex) {

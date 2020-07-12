@@ -47,6 +47,7 @@
         $transfer_included = trim($_POST["transfer_included"]);
         $description = trim($_POST["description"]);
         $comments = trim($_POST["comments"]);
+        $generaltermscondition = trim($_POST["generaltermscondition"]);
         $on_monday = trim($_POST["on_monday"]);
         $on_tuesday = trim($_POST["on_tuesday"]);
         $on_wednesday = trim($_POST["on_wednesday"]);
@@ -131,6 +132,7 @@
                 transfer_included =:transfer_included,
                 description =:description,
                 comments =:comments,
+                generaltermscondition =:generaltermscondition,
                 on_monday =:on_monday,
                 on_tuesday =:on_tuesday,
                 on_wednesday =:on_wednesday,
@@ -177,6 +179,7 @@
                 ":transfer_included" => $transfer_included,
                 ":description" => $description,
                 ":comments" => $comments,
+                ":generaltermscondition" => $generaltermscondition,
                 ":on_monday" => $on_monday,
                 ":on_tuesday" => $on_tuesday,
                 ":on_wednesday" => $on_wednesday,

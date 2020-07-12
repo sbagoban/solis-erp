@@ -60,7 +60,7 @@ function specialNameTransfer() {
     return special_name_transfer;
 }
 
-function saveService() {
+ function saveService() {
     var idService = document.getElementById("idService").innerHTML;
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);
@@ -83,6 +83,7 @@ function saveService() {
     var description = $('#description').val();
     var comments = $('#comments').val();
     var cancellation = $('#cancellation').val();
+    var generaltermscondition = $('#generaltermscondition').val();
     var age_inf_to = $('#age_inf_to').val();
     var age_child_to = $('#age_child_to').val();
     var age_teen_to = $('#age_teen_to').val();
@@ -186,7 +187,7 @@ function saveService() {
     if (servicetype == 'TRANSFER') { 
         //var service_name = $('#service_name_transfer option:selected').text();
         var service_name = changeTransfer();
-            if (service_name == 'INTER HOTEL') {
+            if (service_name == 'INTER HOTEL' || service_name == 'ONE WAY' || service_name == 'NORTHERN COAST') {
                 var special_name = 'None';
             } else {
                 var special_name = specialNameTransfer();
@@ -221,6 +222,7 @@ function saveService() {
             transfer_included : transfer_included,
             description : description,
             comments : comments,
+            generaltermscondition: generaltermscondition,
             on_monday : on_monday,
             on_tuesday : on_tuesday,
             on_wednesday : on_wednesday,
@@ -299,6 +301,7 @@ function saveService() {
             transfer_included : transfer_included,
             description : description,
             comments : comments,
+            generaltermscondition: generaltermscondition,
             on_monday : on_monday,
             on_tuesday : on_tuesday,
             on_wednesday : on_wednesday,
@@ -396,6 +399,7 @@ function resetServicesForm() {
     //$('#transfer_included').val('');
     $('#description').val('');
     $('#comments').val('');
+    $('#generaltermscondition').val('');
     $('#cancellation').val('');
     $('#age_inf_to').val('');
     $('#age_child_to').val('');

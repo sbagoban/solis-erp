@@ -82,7 +82,8 @@ if (isset($_GET["m"])) {
             <link rel="stylesheet" href="css/bookingEngine.css">';
         }   else if ($menu == "servicerate_claim") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">
-            <link rel="stylesheet" href="css/bookingEngine.css">';
+            <link rel="stylesheet" href="css/bookingEngine.css">
+            <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">';
         } else if ($menu == "productservices") {
             echo '<link rel="stylesheet" href="css/gridStyle.css">
             <link rel="stylesheet" href="css/bookingEngine.css">

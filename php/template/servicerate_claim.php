@@ -5,9 +5,21 @@
 			<div class="box box-info">
 				<div class="box-header with-border">
 					<h3 class="box-title">Services Claim</h3>
+					<!-- Add Toggle here -->
+					<div class="checkbox_tgl pull-right">
+							
+						<!-- <button type="button" class="btn btn-default" id="modalClosureDate" data-toggle="modal" data-target="#modal-closureDate">Special Closure Date</button> -->
+
+						<label>
+							<input id="on_approved_claim" class="testClass" type="checkbox" data-toggle="toggle" data-on="Live" data-off="Not Live" data-onstyle="success">
+						</label>
+						<label>
+							<input id="on_api_claim" class="testClass"  type="checkbox" data-toggle="toggle" data-on="On Api" data-off="Off by Api" data-onstyle="success" disabled>
+						</label>
+					</div>
 				</div>
 				
-<div id ="alert_placeholder"></div>
+				<div id ="alert_placeholder"></div>
 				<!-- /.box-header -->
 				<!-- form start -->
 				<form class="form-horizontal">
@@ -91,6 +103,8 @@
 									<option value="B" name="Worldwide">Worldwide</option>
 									<option value="C" name="Market">Market</option>
 									<option value="D" name="Direct Sales">Direct Sales</option>
+									<option value="E" name="Local Sales">Local Sales</option>
+									<option value="F" name="Mice">Mice</option>
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">

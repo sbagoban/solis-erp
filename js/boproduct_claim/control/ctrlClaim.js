@@ -1,5 +1,21 @@
 $(document).ready(function () {
     document.getElementById("aTitle").innerHTML = "";
+
+    // Validation For On approved an on_api
+    $('#on_approved_claim').on('change', function() {
+        var liveOnChange = $(this).prop('checked');
+        if(liveOnChange == true) {
+            $('#on_api_claim').removeAttr("disabled");
+            $('.toggle').removeAttr("disabled");
+            $(".toggle:eq(1)").removeClass("add_disabled");
+        } else {
+            $('.toggle').prop('disabled', "disabled");
+            $('#on_api_claim').prop("disabled", true);
+            $('.toggle:eq(1)').addClass('btn-default off').removeClass('btn-success');
+            $('#on_api_claim').prop('checked', false);
+            $(".toggle:eq(1)").addClass("add_disabled");
+        }
+    });
 });
 
 $('#btn-saveServicesClaim').click(function (e) {
