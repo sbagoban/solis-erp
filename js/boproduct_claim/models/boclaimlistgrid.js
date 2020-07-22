@@ -110,7 +110,7 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim, 
                 render: function( data, type, row ) {
                     var multiple_price = data.multiple_price ;
                     if (data.multiple_price == 1) {
-                        var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#00a65a"title="Multiple Price" id="btnPaxBreaks"></i> &nbsp; &nbsp;';
+                        var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#00a65a" title="Multiple Price" id="btnPaxBreaks"></i> &nbsp; &nbsp;';
                     } else {
                         var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#e6e6e6" title="Single price"></i> &nbsp; &nbsp;';                            
                     }
@@ -138,7 +138,6 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim, 
                     editServiceClaim(data);
                     extraServiceGridClaim(data);
                 })
-                .off()
                 .on( 'click', '#btnPaxBreaks', function (e) {
                     var table = $('#tbl-productServicesClaim').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();

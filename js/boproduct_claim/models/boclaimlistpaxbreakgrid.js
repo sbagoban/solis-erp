@@ -5,11 +5,26 @@ $(document).ready(function() {
     id_product_service = urlParams.get("id_product_service"); 
     id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     charge = urlParams.get("charge"); 
-});
 
-// function modalPaxBreaks(data) {
-// 	console.log('data', data);
-// }
+    // Check from - two textfield
+     $('#pax_to').on('change', function() {
+
+		var pax_from = $('#pax_from').val();
+        var pax_to_val = $(this).val();
+
+        if (pax_from > pax_to_val) { 
+        	alert('"Pax from" should be greater or equal to "pax to"');
+        	// disable button
+        	$("#enableCounter").css("display", "none");
+			$("#disableCounter").css("display", "block");
+        } else { 
+        	// Activate button
+        	console.log('Good value');
+        	$("#enableCounter").css("display", "block");
+			$("#disableCounter").css("display", "none");
+        }
+    });
+});
 
 $("#modal-paxBreakServicesClaim").on("hidden.bs.modal", function(){
 	$('#serviceLineId').text('');
@@ -26,123 +41,137 @@ function multiplePriceServiceClaim(data) {
 	// Active Line Data
 	$('#modal-paxBreakServicesClaim').modal('show');
 	$('#serviceLineId').text(data.id_product_service_claim);
+
+
 	// Action Save
-	$('#btnCounter').click(function (event) { 
-		var charge_pax_break = $('#charge_pax_break').val();
-		var pax_from = $('#pax_from').val();
-		var pax_to = $('#pax_to').val();	
+	$('#btnCounter_pax').click(function (event) { 
 
-		if (charge == 'UNIT') { 
-			ps_adult_claim_break = $('#ps_adult_claim_modal').val();
-			ps_teen_claim_break = 0;
-			ps_child_claim_break = 0;
-			ps_infant_claim_break = 0;
-		} else {
-			ps_adult_claim_break = $('#ps_adult_claim_modal').val();
-			ps_teen_claim_break = $('#ps_teen_claim_modal').val();
-			ps_child_claim_break = $('#ps_child_claim_modal').val();
-			ps_infant_claim_break = $('#ps_infant_claim_modal').val();
+		// check wheter on same service line claim before adding - why this 
+		//  a bit weird reaction while adding form in bootstrap modal
+		serviceLineId = $("#serviceLineId").text();
+		if (data.id_product_service_claim == serviceLineId) {
+			var charge_pax_break = $('#charge_pax_break').val();
+			var pax_from = $('#pax_from').val();
+			var pax_to = $('#pax_to').val();
+
+			if (charge == 'UNIT') { 
+				ps_adult_claim_break = $('#ps_adult_claim_modal').val();
+				ps_teen_claim_break = 0;
+				ps_child_claim_break = 0;
+				ps_infant_claim_break = 0;
+			} else {
+				ps_adult_claim_break = $('#ps_adult_claim_modal').val();
+				ps_teen_claim_break = $('#ps_teen_claim_modal').val();
+				ps_child_claim_break = $('#ps_child_claim_modal').val();
+				ps_infant_claim_break = $('#ps_infant_claim_modal').val();
+			}
+
+			// Check RollOver for pax breaks
+		    if (data.rollover_type == 'Percentage') {
+
+		        if (ps_adult_claim_break == "" || ps_adult_claim_break == "0") {
+		            ps_adult_claim_rollover = 0;
+		        } else { 
+		            ps_adult_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_adult_claim_break);
+		            ps_adult_claim_rollover = ps_adult_claim_per + parseInt(ps_adult_claim_break);
+		        }
+
+		        if (ps_teen_claim_break == "" || ps_teen_claim_break == "0") {
+		            ps_teen_claim_rollover = 0;
+		        } else {
+		            ps_teen_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_teen_claim_break);
+		            ps_teen_claim_rollover = ps_teen_claim_per + parseInt(ps_teen_claim_break);
+		        }
+
+		        if (ps_child_claim_break == "" || ps_child_claim_break == "0") {
+		            ps_child_claim_rollover = 0;
+		        } else {            
+		            ps_child_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_child_claim_break);
+		            ps_child_claim_rollover = ps_child_claim_per + parseInt(ps_child_claim_break);
+		        }
+
+		        if (ps_infant_claim_break == "" || ps_infant_claim_break == "0") {
+		            ps_infant_claim_rollover = 0;
+		        } else {
+		            ps_infant_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_infant_claim_break);
+		            ps_infant_claim_rollover = ps_infant_claim_per + parseInt(ps_infant_claim_break);
+		        }
+
+		    } else if (data.rollover_type == 'Fix Amount') {
+		        //check if zero
+		        if (ps_adult_claim_break == "" || ps_adult_claim_break == "0") {
+		            ps_adult_claim_rollover = 0;
+		        } else {
+		            ps_adult_claim_rollover = parseInt(ps_adult_claim_break) + parseInt(data.rollover_value);
+		        }
+
+		        if (ps_teen_claim_break == "" || ps_teen_claim_break == "0") {
+		            ps_teen_claim_rollover = 0;
+		        } else {
+		            ps_teen_claim_rollover = parseInt(ps_teen_claim_break) + parseInt(data.rollover_value);
+		        }
+
+		        if (ps_child_claim_break == "" || ps_child_claim_break == "0") {
+		            ps_child_claim_rollover = 0;
+		        } else {
+		            ps_child_claim_rollover = parseInt(ps_child_claim_break) + parseInt(data.rollover_value);
+		        }
+
+		        if (ps_infant_claim_break == "" || ps_infant_claim_break == "0") {
+		            ps_infant_claim_rollover = 0;
+		        } else {
+		            ps_infant_claim_rollover = parseInt(ps_infant_claim_break) + parseInt(data.rollover_value); 
+		        }
+
+		    } else { 
+		        ps_adult_claim_rollover = 0;
+		        ps_teen_claim_rollover = 0;
+		        ps_child_claim_rollover = 0;
+		        ps_infant_claim_rollover = 0;
+		    }
+
+		 	const url_save_productservice_claim_pax_break = "php/api/backofficeserviceclaim/saveproductserviceclaimpaxbreaks.php?t=" + encodeURIComponent(global_token);
+			var objPaxBreak = {
+					id_product_service_pax_break_claim: -1,
+					id_product_service_claim: data.id_product_service_claim,
+					id_product_service_cost: id_product_service_cost,
+					id_product_service: id_product_service, 
+		            charge: charge,
+		            pax_from: pax_from,
+		            pax_to: pax_to,
+		            ps_adult_claim_break: ps_adult_claim_break,
+		            ps_teen_claim_break: ps_teen_claim_break,
+		            ps_child_claim_break: ps_child_claim_break,
+		            ps_infant_claim_break: ps_infant_claim_break,
+		            ps_infant_claim_rollover: ps_infant_claim_rollover,
+		            ps_child_claim_rollover: ps_child_claim_rollover,
+		            ps_teen_claim_rollover: ps_teen_claim_rollover,
+		            ps_adult_claim_rollover: ps_adult_claim_rollover,
+		            rollover_value: data.rollover_value,
+		            rollover_type: data.rollover_type
+			}
+			console.log('objPaxBreak', objPaxBreak);
+			$.ajax({
+		        url : url_save_productservice_claim_pax_break,
+		        method : "POST",
+		        data : objPaxBreak, 
+		        cache: false,        
+		        dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                            
+		        success : function(data) {
+		        	console.log('duplicate_entry', data);
+		        	if (data.OUTCOME = 'duplicate_entry') {
+		        		alert('Duplicate entry, Please check Pax From And Pax To');
+		        		allServicesPaxBreakGridClaim(objPaxBreak);
+		        	} else {
+		        		allServicesPaxBreakGridClaim(data);
+		            	resetFormPaxbreaks(); 
+		        	}  
+		        },
+		        error: function(error) {
+		            console.log('Error', error);
+		        }
+		    });
 		}
-
-		// Check RollOver for pax breaks
-	    if (data.rollover_type == 'Percentage') {
-
-	        if (ps_adult_claim_break == "" || ps_adult_claim_break == "0") {
-	            ps_adult_claim_rollover = 0;
-	        } else { 
-	            ps_adult_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_adult_claim_break);
-	            ps_adult_claim_rollover = ps_adult_claim_per + parseInt(ps_adult_claim_break);
-	        }
-
-	        if (ps_teen_claim_break == "" || ps_teen_claim_break == "0") {
-	            ps_teen_claim_rollover = 0;
-	        } else {
-	            ps_teen_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_teen_claim_break);
-	            ps_teen_claim_rollover = ps_teen_claim_per + parseInt(ps_teen_claim_break);
-	        }
-
-	        if (ps_child_claim_break == "" || ps_child_claim_break == "0") {
-	            ps_child_claim_rollover = 0;
-	        } else {            
-	            ps_child_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_child_claim_break);
-	            ps_child_claim_rollover = ps_child_claim_per + parseInt(ps_child_claim_break);
-	        }
-
-	        if (ps_infant_claim_break == "" || ps_infant_claim_break == "0") {
-	            ps_infant_claim_rollover = 0;
-	        } else {
-	            ps_infant_claim_per = (parseInt(data.rollover_value) / 100) * parseInt(ps_infant_claim_break);
-	            ps_infant_claim_rollover = ps_infant_claim_per + parseInt(ps_infant_claim_break);
-	        }
-
-	    } else if (data.rollover_type == 'Fix Amount') {
-	        //check if zero
-	        if (ps_adult_claim_break == "" || ps_adult_claim_break == "0") {
-	            ps_adult_claim_rollover = 0;
-	        } else {
-	            ps_adult_claim_rollover = parseInt(ps_adult_claim_break) + parseInt(data.rollover_value);
-	        }
-
-	        if (ps_teen_claim_break == "" || ps_teen_claim_break == "0") {
-	            ps_teen_claim_rollover = 0;
-	        } else {
-	            ps_teen_claim_rollover = parseInt(ps_teen_claim_break) + parseInt(data.rollover_value);
-	        }
-
-	        if (ps_child_claim_break == "" || ps_child_claim_break == "0") {
-	            ps_child_claim_rollover = 0;
-	        } else {
-	            ps_child_claim_rollover = parseInt(ps_child_claim_break) + parseInt(data.rollover_value);
-	        }
-
-	        if (ps_infant_claim_break == "" || ps_infant_claim_break == "0") {
-	            ps_infant_claim_rollover = 0;
-	        } else {
-	            ps_infant_claim_rollover = parseInt(ps_infant_claim_break) + parseInt(data.rollover_value); 
-	        }
-
-	    } else { 
-	        ps_adult_claim_rollover = 0;
-	        ps_teen_claim_rollover = 0;
-	        ps_child_claim_rollover = 0;
-	        ps_infant_claim_rollover = 0;
-	    }
-
-	 	const url_save_productservice_claim_pax_break = "php/api/backofficeserviceclaim/saveproductserviceclaimpaxbreaks.php?t=" + encodeURIComponent(global_token);
-		var objPaxBreak = {
-				id_product_service_pax_break_claim: -1,
-				id_product_service_claim: data.id_product_service_claim,
-				id_product_service_cost: id_product_service_cost,
-				id_product_service: id_product_service, 
-	            charge: charge,
-	            pax_from: pax_from,
-	            pax_to: pax_to,
-	            ps_adult_claim_break: ps_adult_claim_break,
-	            ps_teen_claim_break: ps_teen_claim_break,
-	            ps_child_claim_break: ps_child_claim_break,
-	            ps_infant_claim_break: ps_infant_claim_break,
-	            ps_infant_claim_rollover: ps_infant_claim_rollover,
-	            ps_child_claim_rollover: ps_child_claim_rollover,
-	            ps_teen_claim_rollover: ps_teen_claim_rollover,
-	            ps_adult_claim_rollover: ps_adult_claim_rollover,
-	            rollover_value: data.rollover_value,
-	            rollover_type: data.rollover_type
-		}
-		console.log('objPaxBreak', objPaxBreak);
-		$.ajax({
-	        url : url_save_productservice_claim_pax_break,
-	        method : "POST",
-	        data : objPaxBreak, 
-	        cache: false,        
-	        dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                            
-	        success : function(data) {
-	            allServicesPaxBreakGridClaim(data);
-	            resetFormPaxbreaks();      
-	        },
-	        error: function(error) {
-	            console.log('Error', error);
-	        }
-	    });
 	});
 }
 
@@ -214,7 +243,7 @@ function allServicesPaxBreakGridClaim(data) {
                     deletePaxBreak(data);
                 })
         }
-    });
+    }); 
 }
 
 function deletePaxBreak(lineParam) {

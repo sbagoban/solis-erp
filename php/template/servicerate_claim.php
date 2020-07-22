@@ -329,21 +329,25 @@
 								<div class="form-group pax_breaks">
 													
 								<div class="col-sm-2">
+									<label>Type</label>
 									<input type="text" class="form-control" id="charge_pax_break" placeholder="UNIT/PAX" disabled>
 									<!-- for display only  --->
 								</div>
 								<div class="col-sm-2">
 									<div class="input-group">
+										<label>From</label>
 										<input type="number" id="pax_from" class="form-control" min="0" placeholder="from">
 									</div>
 								</div>
 
 								<div class="col-sm-2">
 									<div class="input-group">
+										<label>To</label>
 										<input type="number" id="pax_to" class="form-control" min="0" placeholder="to">
 									</div>
 								</div>
 								<div class="col-sm-5">
+									<label>Set Claim</label>
 									<div class="input-group">
 										<input type="number" class="form-control" id="ps_adult_claim_modal" min="0">
 										<span class="input-group-addon" id="ps_adult_claim_addon_modal">Adult</span>
@@ -355,9 +359,14 @@
 										<span class="input-group-addon" id="ps_infant_claim_addon_modal">Infant</span>
 									</div>
 								</div>
-								<div class="col-xs-1 text-center">
-                                    <span class="addBtn" id="btnCounter">
+								<div class="col-xs-1 text-center" id="enableCounter">
+                                    <span class="addBtn" id="btnCounter_pax">
                                         <i class="fa fa-plus fa-lg" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
+                                    </span>
+                                </div>
+                                <div class="col-xs-1 text-center" id="disableCounter" style="display: none">
+                                    <span class="addBtn" >
+                                        <i class="fa fa-times fa-lg" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
                                     </span>
                                 </div>
                                 <div class="col-xs-12 text-center" style="margin: 35px 0; background: #fff">

@@ -48,118 +48,101 @@ try {
     $con = pdo_con();
 
     //check duplicates for service
-    $sql = "SELECT * FROM product_service_paxbreak WHERE id_product_service_pax_break_claim = :id_product_service_pax_break_claim";
+    $sql = "
+    SELECT * FROM product_service_paxbreak 
+    WHERE id_product_service_pax_break_claim = :id_product_service_pax_break_claim";
     $stmt = $con->prepare($sql);
-    $stmt->execute(array(":id_product_service_pax_break_claim" => $id_product_service_pax_break_claim));
+    $stmt->execute(array(
+        ":id_product_service_pax_break_claim" => $id_product_service_pax_break_claim
+    ));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
         throw new Exception("DUPLICATE SERVICES PAX BREAKS!");
-    }
-
-    if ($id_product_service_pax_break_claim == "-1") {
-        $sql = "INSERT INTO product_service_paxbreak 
-        (
-                id_product_service_claim,
-                id_product_service_cost,
-                id_product_service,
-                pax_from,
-                pax_to,
-                charge,
-                ps_adult_claim_break,
-                ps_teen_claim_break,
-                ps_child_claim_break,
-                ps_infant_claim_break,
-                ps_infant_claim_rollover,
-                ps_child_claim_rollover,
-                ps_teen_claim_rollover,
-                ps_adult_claim_rollover,
-                rollover_value,
-                rollover_type,
-                active
-        ) 
-                VALUES (
-                    :id_product_service_claim,
-                    :id_product_service_cost,
-                    :id_product_service,
-                    :pax_from,
-                    :pax_to,
-                    :charge,
-                    :ps_adult_claim_break,
-                    :ps_teen_claim_break,
-                    :ps_child_claim_break,
-                    :ps_infant_claim_break,
-                    :ps_infant_claim_rollover,
-                    :ps_child_claim_rollover,
-                    :ps_teen_claim_rollover,
-                    :ps_adult_claim_rollover,
-                    :rollover_value,
-                    :rollover_type, 
-                    :active
-                )";
-
-        $stmt = $con->prepare($sql);
-        $stmt->execute(array(
-            ":id_product_service_claim" => $id_product_service_claim,
-            ":id_product_service_cost" => $id_product_service_cost,
-            ":id_product_service" => $id_product_service,
-            ":pax_to" => $pax_to,
-            ":pax_from" => $pax_from,
-            ":charge" => $charge,
-            ":ps_adult_claim_break" => $ps_adult_claim_break,
-            ":ps_teen_claim_break" => $ps_teen_claim_break,
-            ":ps_child_claim_break" => $ps_child_claim_break,
-            ":ps_infant_claim_break" => $ps_infant_claim_break,
-            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
-            ":ps_child_claim_rollover" => $ps_child_claim_rollover,
-            ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
-            ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
-            ":rollover_value" => $rollover_value,
-            ":rollover_type" => $rollover_type,
-            ":active" => $active
-        ));
-        
-        $id_product_service_extra_claim = $con->lastInsertId();
     } else {
-        $sql = "UPDATE product_service_paxbreak SET 
-                    id_product_service_claim = :id_product_service_claim,
-                    id_product_service_cost = :id_product_service_cost,
-                    id_product_service = :id_product_service,
-                    pax_from = :pax_from,
-                    pax_to = :pax_to,
-                    charge = :charge,
-                    ps_adult_claim_break = :ps_adult_claim_break,
-                    ps_teen_claim_break = :ps_teen_claim_break,
-                    ps_child_claim_break = :ps_child_claim_break,
-                    ps_infant_claim_break = :ps_infant_claim_break,
-                    ps_infant_claim_rollover = :ps_infant_claim_rollover,
-                    ps_child_claim_rollover = :ps_child_claim_rollover,
-                    ps_teen_claim_rollover = :ps_teen_claim_rollover,
-                    ps_adult_claim_rollover = :ps_adult_claim_rollover,
-                    rollover_value = :rollover_value,
-                    rollover_type = :rollover_type,
-                    active = :active
-                WHERE id_product_service_pax_break_claim=:id_product_service_pax_break_claim";
 
-        $stmt = $con->prepare($sql);
-        $stmt->execute(array(
-            ":id_product_service_pax_break_claim" => $id_product_service_pax_break_claim,
+        //check duplicates for service
+        $sql_chk = "
+        SELECT * FROM product_service_paxbreak 
+        WHERE id_product_service_claim = :id_product_service_claim
+        AND pax_from = :pax_from
+        AND pax_to = :pax_to";
+        $stmt_chk = $con->prepare($sql_chk);
+        $stmt_chk->execute(array(
             ":id_product_service_claim" => $id_product_service_claim,
-            ":id_product_service_cost" => $id_product_service_cost,
-            ":pax_to" => $pax_to,
             ":pax_from" => $pax_from,
-            ":id_product_service" => $id_product_service,
-            ":charge" => $charge,
-            ":ps_adult_claim_break" => $ps_adult_claim_break,
-            ":ps_teen_claim_break" => $ps_teen_claim_break,
-            ":ps_child_claim_break" => $ps_child_claim_break,
-            ":ps_infant_claim_break" => $ps_infant_claim_break,
-            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
-            ":ps_child_claim_rollover" => $ps_child_claim_rollover,
-            ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
-            ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
-            ":rollover_value" => $rollover_value,
-            ":rollover_type" => $rollover_type,
-            ":active" => $active));
+            ":pax_to" => $pax_to
+        ));
+        if ($rw = $stmt_chk->fetch(PDO::FETCH_ASSOC)) {
+            throw new Exception("duplicate_entry");
+
+        } else {
+                    if ($id_product_service_pax_break_claim == "-1") {
+                        $sql = "INSERT INTO product_service_paxbreak 
+                        (
+                                id_product_service_claim,
+                                id_product_service_cost,
+                                id_product_service,
+                                pax_from,
+                                pax_to,
+                                charge,
+                                ps_adult_claim_break,
+                                ps_teen_claim_break,
+                                ps_child_claim_break,
+                                ps_infant_claim_break,
+                                ps_infant_claim_rollover,
+                                ps_child_claim_rollover,
+                                ps_teen_claim_rollover,
+                                ps_adult_claim_rollover,
+                                rollover_value,
+                                rollover_type,
+                                active
+                        ) 
+                                VALUES (
+                                    :id_product_service_claim,
+                                    :id_product_service_cost,
+                                    :id_product_service,
+                                    :pax_from,
+                                    :pax_to,
+                                    :charge,
+                                    :ps_adult_claim_break,
+                                    :ps_teen_claim_break,
+                                    :ps_child_claim_break,
+                                    :ps_infant_claim_break,
+                                    :ps_infant_claim_rollover,
+                                    :ps_child_claim_rollover,
+                                    :ps_teen_claim_rollover,
+                                    :ps_adult_claim_rollover,
+                                    :rollover_value,
+                                    :rollover_type, 
+                                    :active
+                                )";
+
+                        $stmt = $con->prepare($sql);
+                        $stmt->execute(array(
+                            ":id_product_service_claim" => $id_product_service_claim,
+                            ":id_product_service_cost" => $id_product_service_cost,
+                            ":id_product_service" => $id_product_service,
+                            ":pax_to" => $pax_to,
+                            ":pax_from" => $pax_from,
+                            ":charge" => $charge,
+                            ":ps_adult_claim_break" => $ps_adult_claim_break,
+                            ":ps_teen_claim_break" => $ps_teen_claim_break,
+                            ":ps_child_claim_break" => $ps_child_claim_break,
+                            ":ps_infant_claim_break" => $ps_infant_claim_break,
+                            ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
+                            ":ps_child_claim_rollover" => $ps_child_claim_rollover,
+                            ":ps_teen_claim_rollover" => $ps_teen_claim_rollover,
+                            ":ps_adult_claim_rollover" => $ps_adult_claim_rollover,
+                            ":rollover_value" => $rollover_value,
+                            ":rollover_type" => $rollover_type,
+                            ":active" => $active
+                        ));
+                        
+                        $id_product_service_extra_claim = $con->lastInsertId();
+                    } 
+        }
+
     }
+
     echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
