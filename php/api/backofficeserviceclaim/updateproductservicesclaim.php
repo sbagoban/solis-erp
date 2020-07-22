@@ -69,6 +69,7 @@
         $ps_child_claim_rollover = trim($_POST["ps_child_claim_rollover"]);
         $ps_infant_claim_rollover = trim($_POST["ps_infant_claim_rollover"]);
 
+        $multiple_price = trim($_POST["multiple_price"]);   
         $on_api = trim($_POST["on_api"]);
         $on_approved = trim($_POST["on_approved"]);
 		
@@ -115,7 +116,8 @@
                 ps_child_claim_rollover=:ps_child_claim_rollover,
                 ps_infant_claim_rollover=:ps_infant_claim_rollover,
                 on_api =:on_api,
-                on_approved =:on_approved
+                on_approved =:on_approved,
+                multiple_price =:multiple_price
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);                        
@@ -146,7 +148,8 @@
             ":ps_child_claim_rollover" => $ps_child_claim_rollover,
             ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
             ":on_api" => $on_api,
-            ":on_approved" => $on_approved));
+            ":on_approved" => $on_approved,
+            ":multiple_price" => $multiple_price));
 
             if ($specific_to == 'A' || $specific_to == 'C') {
                 $sqlToDelete = $con->prepare("DELETE FROM product_service_claim_to WHERE id_product_service_claim=:id_product_service_claim");

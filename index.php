@@ -927,6 +927,7 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
             <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>
+            <script src="js/boproduct_claim/models/boclaimlistpaxbreakgrid.js"></script>
             <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script> 
             <script src="js/boproduct_claim/control/ctrlClaim.js"></script>          
             <script src="js/boproduct_claim/models/updateAllExtraServiceClaim.js"></script>';

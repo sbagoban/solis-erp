@@ -128,38 +128,54 @@ $(document).ready(function(){
     if (id_product_service_cost > 0 && is_pakage != 'Y') {
         if (ps_adult_cost > 0) {
             $("#ps_adult_claim").css("display", "block");
-            $("#ps_adult_claim").attr("placeholder", "Adult");
+            $("#ps_adult_claim").attr("placeholder", "Adult"); 
+            $("#ps_adult_claim_modal").css("display", "block");
+            $("#ps_adult_claim_modal").attr("placeholder", "Adult");   
         }
         if (ps_adult_cost <= 0) { 
             $("#ps_adult_claim_addon").css("display", "none");
             $("#ps_adult_claim").css("display", "none");
+            $("#ps_adult_claim_addon_modal").css("display", "none");
+            $("#ps_adult_claim_modal").css("display", "none");
         }
         
         if (ps_teen_cost > 0) {
             $("#ps_teen_claim").css("display", "block");
             $("#ps_teen_claim").attr("placeholder", "Teen");
+            $("#ps_teen_claim_modal").css("display", "block");
+            $("#ps_teen_claim_modal").attr("placeholder", "Teen");
         }
         if (ps_teen_cost <= 0) { 
             $("#ps_teen_claim_addon").css("display", "none");
             $("#ps_teen_claim").css("display", "none");
+            $("#ps_teen_claim_addon_modal").css("display", "none");
+            $("#ps_teen_claim_modal").css("display", "none");
         }
         
         if (ps_child_cost > 0) {
             $("#ps_child_claim").css("display", "block");
             $("#ps_child_claim").attr("placeholder", "Child");
+            $("#ps_child_claim_modal").css("display", "block");
+            $("#ps_child_claim_modal").attr("placeholder", "Child");
         }
         if (ps_child_cost <= 0) { 
             $("#ps_child_claim_addon").css("display", "none");
             $("#ps_child_claim").css("display", "none");
+            $("#ps_child_claim_addon_modal").css("display", "none");
+            $("#ps_child_claim_modal").css("display", "none");
         }
 
         if (ps_infant_cost > 0) {
             $("#ps_infant_claim").css("display", "block");
             $("#ps_infant_claim").attr("placeholder", "Infant");
+            $("#ps_infant_claim_modal").css("display", "block");
+            $("#ps_infant_claim_modal").attr("placeholder", "Infant");
         }
         if (ps_infant_cost <= 0) { 
             $("#ps_infant_claim_addon").css("display", "none");
             $("#ps_infant_claim").css("display", "none");
+            $("#ps_infant_claim_addon_modal").css("display", "none");
+            $("#ps_infant_claim_modal").css("display", "none");
         }
     } 
 
@@ -168,37 +184,53 @@ $(document).ready(function(){
         if (for_adult > 0) {
             $("#ps_adult_claim").css("display", "block");
             $("#ps_adult_claim").attr("placeholder", "Adult");
+            $("#ps_adult_claim_modal").css("display", "block");
+            $("#ps_adult_claim_modal").attr("placeholder", "Adult");
         }
         if (for_adult <= 0) { 
             $("#ps_adult_claim_addon").css("display", "none");
             $("#ps_adult_claim").css("display", "none");
+            $("#ps_adult_claim_addon_modal").css("display", "none");
+            $("#ps_adult_claim_modal").css("display", "none");
         }
         
         if (for_teen > 0) {
             $("#ps_teen_claim").css("display", "block");
             $("#ps_teen_claim").attr("placeholder", "Teen");
+            $("#ps_teen_claim_modal").css("display", "block");
+            $("#ps_teen_claim_modal").attr("placeholder", "Teen");
         }
         if (for_teen <= 0) { 
             $("#ps_teen_claim_addon").css("display", "none");
             $("#ps_teen_claim").css("display", "none");
+            $("#ps_teen_claim_addon_modal").css("display", "none");
+            $("#ps_teen_claim_modal").css("display", "none");
         }
         
         if (for_child > 0) {
             $("#ps_child_claim").css("display", "block");
             $("#ps_child_claim").attr("placeholder", "Child");
+            $("#ps_child_claim_modal").css("display", "block");
+            $("#ps_child_claim_modal").attr("placeholder", "Child");
         }
         if (for_child <= 0) { 
             $("#ps_child_claim_addon").css("display", "none");
             $("#ps_child_claim").css("display", "none");
+            $("#ps_child_claim_addon_modal").css("display", "none");
+            $("#ps_child_claim_modal").css("display", "none");
         }
 
         if (for_infant > 0) {
             $("#ps_infant_claim").css("display", "block");
             $("#ps_infant_claim").attr("placeholder", "Infant");
+            $("#ps_infant_claim_modal").css("display", "block");
+            $("#ps_infant_claim_modal").attr("placeholder", "Infant");
         }
         if (for_infant <= 0) { 
             $("#ps_infant_claim_addon").css("display", "none");
             $("#ps_infant_claim").css("display", "none");
+            $("#ps_infant_claim_addon_modal").css("display", "none");
+            $("#ps_infant_claim_modal").css("display", "none");
         }
     } 
 
@@ -207,6 +239,10 @@ $(document).ready(function(){
         $("#ps_adult_claim").attr("placeholder", "Adult");
         $("#ps_child_claim").css("display", "block");
         $("#ps_child_claim").attr("placeholder", "Child");
+        $("#ps_adult_claim_modal").css("display", "block");
+        $("#ps_adult_claim_modal").attr("placeholder", "Adult");
+        $("#ps_child_claim_modal").css("display", "block");
+        $("#ps_child_claim_modal").attr("placeholder", "Child");
     }
 
     /////////////////////////
@@ -228,7 +264,6 @@ $(document).ready(function(){
         if (roll_over == 'Percentage') {
             $('#txtRollOver').removeAttr('disabled');
         }
-
         if (roll_over == 'Fix Amount') {
             $('#txtRollOver').removeAttr('disabled');
         }
@@ -238,3 +273,29 @@ $(document).ready(function(){
     ///////ROLL OVER ////////
     /////////////////////////
 });
+
+// Paxbreak Multi price list modal
+function multiplePrice() { 
+    var chkmultipleprice = document.getElementById("multiple_price"); 
+    if (chkmultipleprice.checked == true) {
+        var multiple_price_chk = 1;        
+        document.getElementById("ps_adult_claim").disabled = true;
+        document.getElementById("ps_teen_claim").disabled = true;
+        document.getElementById("ps_child_claim").disabled = true;
+        document.getElementById("ps_infant_claim").disabled = true;
+        $("#ps_adult_claim").val(0); 
+        $("#ps_teen_claim").val(0); 
+        $("#ps_child_claim").val(0); 
+        $("#ps_infant_claim").val(0); 
+    } else { 
+        var multiple_price_chk = 0;        
+        document.getElementById("ps_adult_claim").disabled = false;
+        document.getElementById("ps_teen_claim").disabled = false;
+        document.getElementById("ps_child_claim").disabled = false;
+        document.getElementById("ps_infant_claim").disabled = false;
+        $("#ps_teen_claim").attr("placeholder", "Teen");
+        $("#ps_infant_claim").attr("placeholder", "Infant");
+        $("#ps_child_claim").attr("placeholder", "Child");
+        $("#ps_adult_claim").attr("placeholder", "Adult");
+    }
+}

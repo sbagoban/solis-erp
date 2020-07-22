@@ -31,7 +31,7 @@ $con = pdo_con();
 $query_c = $con->prepare("
 SELECT PRSC.id_product_service_claim, PRSC.id_product_service_cost, PRSC.id_product_service, PRSC.valid_from, PRSC.valid_to,
 PRSC.id_dept, PRSC.specific_to, PRSC.specific_to_name, PRSC.charge, PRSC.ps_adult_claim, PRSC.ps_teen_claim, PRSC.ps_child_claim, PRSC.ps_infant_claim, 
-PRSC.id_currency, PRSC.currency, PRSC.ex_monday, PRSC.ex_tuesday, PRSC.ex_wednesday, PRSC.ex_thursday, PRSC.ex_friday, PRSC.ex_saturday, PRSC.ex_sunday, PRSC.rollover_value, PRSC.rollover_type, PRSC.on_approved, PRSC.on_api, TD.deptname, 
+PRSC.id_currency, PRSC.currency, PRSC.ex_monday, PRSC.ex_tuesday, PRSC.ex_wednesday, PRSC.ex_thursday, PRSC.ex_friday, PRSC.ex_saturday, PRSC.ex_sunday, PRSC.rollover_value, PRSC.rollover_type, PRSC.on_approved, PRSC.on_api, PRSC.multiple_price, PRSC.rollover_value, PRSC.rollover_type, TD.deptname, 
 PS.service_name, PR.product_name
 FROM product_service_claim PRSC
 JOIN tbldepartments TD on PRSC.id_dept = TD.id
@@ -80,7 +80,10 @@ if ($row_count_c > 0) {
             'rollover_value' => $row['rollover_value'],
             'rollover_type' => $row['rollover_type'],            
             'on_approved' => $row['on_approved'],
-            'on_api' => $row['on_api']
+            'on_api' => $row['on_api'],            
+            'multiple_price' => $row['multiple_price'],
+            'rollover_value' => $row['rollover_value'],            
+            'rollover_type' => $row['rollover_type']
         );
     }
     $myData = $productServicesClaim;
@@ -118,7 +121,10 @@ if ($row_count_c > 0) {
         'rollover_value' => '-',
         'rollover_type' => '-',
         'on_approved' => '-',
-        'on_api' => '-'
+        'on_api' => '-',
+        'multiple_price' => '-',
+        'rollover_value' => '-',            
+        'rollover_type' => '-'
     );
     $myData = $productServicesClaim;
     echo json_encode($myData);

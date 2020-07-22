@@ -154,7 +154,7 @@
 											<!-- To modify - select from db -->
 											<option value="2">OUTSIDE SCOPE</option>
 											<option value="3" selected="selected">VAT</option>
-											<option value="4">Exempt VAT</option>
+											<!-- <option value="4">Exempt VAT</option> -->
 										</select>
 									</div>
 								</div>

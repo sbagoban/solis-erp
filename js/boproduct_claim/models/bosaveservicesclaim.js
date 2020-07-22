@@ -8,6 +8,7 @@ $(document).ready(function () {
     var charge = urlParams.get("charge"); 
     var servicetype = urlParams.get("servicetype"); 
     $('#charge').val(charge);
+    $('#charge_pax_break').val(charge);
     
     // Disable or Enable Charge - Child and Adult active for transfer
     if (servicetype == "TRANSFER") {
@@ -239,9 +240,9 @@ function saveClaim() {
                         if (((valid_to == x.valid_to) || (valid_from == x.valid_from))) {
                             if (id_currency == x.id_currency) {
                                 alert('Only One Currency for One Category');
-                            } else {
-                                addClaimProductService();
-                            }
+                            } 
+                        } else {
+                            addClaimProductService();
                         }
                     }
                     else if (specific_to == 'D' || specific_to == 'E' || specific_to == 'F') { // Directsales
@@ -393,6 +394,7 @@ function addClaimProductService(){
     var chksaturday = document.getElementById("ex_saturday");
     var chksunday = document.getElementById("ex_sunday");
     
+    var chkmultipleprice = document.getElementById("multiple_price"); 
     var allParams = window.location.href.split('data=').pop();
     const urlParams = new URLSearchParams(allParams);    
     var id_dept = urlParams.get("id_dept"); 
@@ -424,7 +426,6 @@ function addClaimProductService(){
         } else { 
             ps_adult_claim_per = (parseInt(rollover_value) / 100) * parseInt(ps_adult_claim_num);
             ps_adult_claim_rollover = ps_adult_claim_per + parseInt(ps_adult_claim_num);
-            console.log('---->', ps_adult_claim_num, ps_adult_claim);
         }
 
         if (ps_teen_claim_num == "" || ps_teen_claim_num == "0") {
@@ -519,28 +520,26 @@ function addClaimProductService(){
     }  
 
     if (specific_to == 'A') { 
+        alert('1');
         id_country = 0;
     } else if (specific_to == 'B') {
+        alert('2');
         id_country = 0;
         id_tour_operator = 0;
     } else if (specific_to == 'C' || specific_to == 'D' || specific_to == "E" || specific_to == "F") {
+        alert('3');
         id_tour_operator = 0;
+    }
+
+    if (chkmultipleprice.checked == true) {
+        var multiple_price = 1; 
+    } else { 
+        var multiple_price = 0; 
     }
 
     var allParams = window.location.href.split('data=').pop();
     var charge = urlParams.get("charge"); 
     var servicetype = urlParams.get("servicetype"); 
-
-    // if (servicetype == "TRANSFER") {
-    //     ps_teen_claim = 0;
-    //     ps_infant_claim = 0;
-    // } else if (servicetype == "TRANSFER" && charge == 'UNIT') {
-    //     ps_adult_claim= 0;
-    //     ps_teen_claim = 0;
-    //     ps_child_claim= 0;
-    //     ps_infant_claim = 0;
-    // }
-
     if (id_product_service_claim == 0) {
         const url_save_productservice_claim = "php/api/backofficeserviceclaim/saveproductservicesclaim.php?t=" + encodeURIComponent(global_token);
         var objProductServiceClaim = {
@@ -575,7 +574,8 @@ function addClaimProductService(){
             ps_child_claim_rollover: ps_child_claim_rollover,
             ps_infant_claim_rollover: ps_infant_claim_rollover, 
             on_approved: on_approved_1, 
-            on_api: on_api_1
+            on_api: on_api_1,
+            multiple_price: multiple_price
         };
 
         console.log(objProductServiceClaim);
@@ -584,8 +584,13 @@ function addClaimProductService(){
             url : url_save_productservice_claim,
             method : "POST",
             data : objProductServiceClaim, 
-            cache: false,                                                                                                                                                                                                                                                                                                                                                                                                               
-            success : function(data){
+            cache: false,        
+            dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                            
+            success : function(data) {
+                console.log('data', data);
+                if (data.multiple_price == "1") {
+                    modalPaxBreaks();
+                }                
                 resetProductServicesClaim();
                 $('.toast_added').stop().fadeIn(400).delay(3000).fadeOut(500);
             },
@@ -624,7 +629,8 @@ function addClaimProductService(){
             ps_child_claim_rollover: ps_child_claim_rollover,
             ps_infant_claim_rollover: ps_infant_claim_rollover,
             on_approved: on_approved_1, 
-            on_api: on_api_1
+            on_api: on_api_1,
+            multiple_price: multiple_price
         };
 
         $.ajax({
@@ -640,7 +646,7 @@ function addClaimProductService(){
             }
         });
 
-        if (specific_to == 'A' || specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') { 
+        if (specific_to == 'A' || specific_to == 'B' || specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') { 
             // UPDATE MULTISELECT
             var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
             const url_update_to_claim = "php/api/backofficeserviceclaim/deleteselectedto.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" +id_product_service_claim;
@@ -691,7 +697,7 @@ function addClaimProductService(){
                     console.log('Error ${error}');
                 }
             });
-        } else if (specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') {
+        } else if (specific_to == 'B' || specific_to == 'C' || specific_to == 'D' || specific_to == 'E' || specific_to == 'F') {
             var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
             const url_save_country_claim = "php/api/backofficeserviceclaim/saveselectedcountries.php?t=" + encodeURIComponent(global_token);
             var objProductServiceClaimSaveCountry = {
@@ -741,7 +747,17 @@ function resetProductServicesClaim() {
     $('#on_api_claim').prop('checked', false);
     $('.toggle:eq(0)').addClass('btn-default off').removeClass('btn-success');
     $('#on_approved_claim').prop('checked', false);
-
+    // MULTIPLE PRICE
+    document.getElementById("ps_adult_claim").disabled = false;
+    document.getElementById("ps_teen_claim").disabled = false;
+    document.getElementById("ps_child_claim").disabled = false;
+    document.getElementById("ps_infant_claim").disabled = false;
+    $("#multiple_price").prop("checked", false);
+    $("#ps_teen_claim").attr("placeholder", "Teen");
+    $("#ps_infant_claim").attr("placeholder", "Infant");
+    $("#ps_child_claim").attr("placeholder", "Child");
+    $("#ps_adult_claim").attr("placeholder", "Adult");
+    // MULTIPLE PRICE
     document.getElementById("id_product_service_claim").innerHTML = '0';
 }
 
@@ -862,3 +878,4 @@ function loadCountryClaim2(value1) {
         }
     );
 }
+
