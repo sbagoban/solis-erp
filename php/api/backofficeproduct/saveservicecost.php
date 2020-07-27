@@ -38,6 +38,7 @@ try {
     $currency = trim($_POST["currency"]);
     $id_dept = trim($_POST["id_dept"]);
     $charge = trim($_POST["charge"]);
+    $multiple_price_cost = trim($_POST["multiple_price_cost"]);
 
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
@@ -56,7 +57,6 @@ try {
 	{
 		$ps_infant_cost = 0;
 	}
-
 
     $con = pdo_con();
 
@@ -80,8 +80,9 @@ try {
             id_currency, 
             currency, 
             id_dept,
-            charge) 
-                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :currency, :id_dept, :charge)";
+            charge,
+            multiple_price_cost) 
+                VALUES (:id_product_service, :valid_from, :valid_to, :ps_adult_cost, :ps_teen_cost, :ps_child_cost, :ps_infant_cost, :id_currency, :currency, :id_dept, :charge, :multiple_price_cost)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -95,7 +96,8 @@ try {
             ":id_currency" => $id_currency,            
             ":currency" => $currency,
             ":id_dept" => $id_dept,
-            ":charge" => $charge));
+            ":charge" => $charge,
+            ":multiple_price_cost" => $multiple_price_cost));
         
         $id_product_service_cost = $con->lastInsertId();
 
@@ -163,7 +165,8 @@ try {
                 id_currency=:id_currency,
                 currency=:currency,
                 id_dept=:id_dept,
-                charge=:charge
+                charge=:charge,
+                multiple_price_cost=:multiple_price_cost
                 WHERE id_product_service_cost=:id_product_service_cost";
 
         $stmt = $con->prepare($sql);
@@ -179,9 +182,12 @@ try {
             ":id_currency" => $id_currency,
             ":currency" => $currency,
             ":id_dept" => $id_dept,
-            ":charge" => $charge));
+            ":charge" => $charge,
+            ":multiple_price_cost" => $multiple_price_cost));
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_service_cost"=>$id_product_service_cost));
+    echo json_encode(array("OUTCOME" => "OK", 
+        "id_product_service_cost"=>$id_product_service_cost, 
+        "multiple_price_cost"=>$multiple_price_cost));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

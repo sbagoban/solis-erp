@@ -6,6 +6,26 @@ $(document).ready(function() {
     id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
     charge = urlParams.get("charge"); 
 
+    // check whether cost is multiple price or not
+    multiple_price_cost = urlParams.get("multiple_price_cost");
+    if (multiple_price_cost == 1) { 
+    	$("#multiple_price").prop("checked", true);
+    	$("#multiple_price").prop('disabled',true);           
+        document.getElementById("ps_adult_claim").disabled = true;
+        document.getElementById("ps_teen_claim").disabled = true;
+        document.getElementById("ps_child_claim").disabled = true;
+        document.getElementById("ps_infant_claim").disabled = true;
+
+        var flagPaxBreak = pad('1', 3);
+        $("#ps_adult_claim").val(flagPaxBreak); 
+        $("#ps_teen_claim").val(flagPaxBreak); 
+        $("#ps_child_claim").val(flagPaxBreak); 
+        $("#ps_infant_claim").val(flagPaxBreak);
+    } else {
+    	$("#multiple_price"). prop("checked", false);    	
+    }
+
+
     // Check from - two textfield
      $('#pax_to').on('change', function() {
 
@@ -26,6 +46,12 @@ $(document).ready(function() {
     });
 });
 
+// Use flag 001 to the paxbreak single line values 
+function pad (str, max) {
+  str = str.toString();
+  return str.length < max ? pad("0" + str, max) : str;
+}
+
 $("#modal-paxBreakServicesClaim").on("hidden.bs.modal", function(){
 	$('#serviceLineId').text('');
 	$('#pax_from').val('');
@@ -41,7 +67,6 @@ function multiplePriceServiceClaim(data) {
 	// Active Line Data
 	$('#modal-paxBreakServicesClaim').modal('show');
 	$('#serviceLineId').text(data.id_product_service_claim);
-
 
 	// Action Save
 	$('#btnCounter_pax').click(function (event) { 
@@ -159,7 +184,7 @@ function multiplePriceServiceClaim(data) {
 		        dataType: 'JSON',                                                                                                                                                                                                                                                                                                                                                                                                            
 		        success : function(data) {
 		        	console.log('duplicate_entry', data);
-		        	if (data.OUTCOME = 'duplicate_entry') {
+		        	if (data.OUTCOME == 'ERROR: duplicate_entry') {
 		        		alert('Duplicate entry, Please check Pax From And Pax To');
 		        		allServicesPaxBreakGridClaim(objPaxBreak);
 		        	} else {
@@ -175,6 +200,7 @@ function multiplePriceServiceClaim(data) {
 	});
 }
 
+// Pax Break datatable
 function allServicesPaxBreakGridClaim(data) { 
 	var chkmultipleprice = document.getElementById("multiple_price");
     $('#tbl-productServicesClaimPaxBreaks').DataTable({

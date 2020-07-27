@@ -122,9 +122,9 @@ $(document).ready(function(){
     var for_teen = urlParams.get("for_teen");
     var for_adult = urlParams.get("for_adult");
     var is_pakage = urlParams.get("is_pakage");
+    var multiple_price_cost = urlParams.get("multiple_price_cost");
 
     // here sandeep check
-    console.log(id_product_service_cost > 0,  '&&', is_pakage != 'Y');
     if (id_product_service_cost > 0 && is_pakage != 'Y') {
         if (ps_adult_cost > 0) {
             $("#ps_adult_claim").css("display", "block");
@@ -239,10 +239,12 @@ $(document).ready(function(){
         $("#ps_adult_claim").attr("placeholder", "Adult");
         $("#ps_child_claim").css("display", "block");
         $("#ps_child_claim").attr("placeholder", "Child");
+
         $("#ps_adult_claim_modal").css("display", "block");
         $("#ps_adult_claim_modal").attr("placeholder", "Adult");
-        $("#ps_child_claim_modal").css("display", "block");
-        $("#ps_child_claim_modal").attr("placeholder", "Child");
+
+        // $("#ps_child_claim_modal").css("display", "block");
+        // $("#ps_child_claim_modal").attr("placeholder", "Child");
     }
 
     /////////////////////////

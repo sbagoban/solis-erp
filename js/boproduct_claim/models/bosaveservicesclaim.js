@@ -82,7 +82,6 @@ $("#specific_to").change(function () {
         $('#ddlMultiSpecificTo').multiselect('destroy');
     }
     if (specificto == "C") {
-        
         $('#ddlmultiSpecificMarket').multiselect('destroy');
         $("#multiSpecificTo").css("display", "none");
         $("#multiSpecificMarket").css("display", "block");
