@@ -418,7 +418,9 @@ function addProductServices(data) {
     + data.service_name+ "&idcoast=" + data.id_coast+ "&idcreditor=" + data.id_creditor+ "&charge=" 
     + data.charge + "&id_product_service=" 
     + data.id_product_service
-    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype + "&for_adult=" + data.for_adult + "&for_child=" + data.for_child
+    + "&valid_from=" + data.valid_from + "&valid_to=" + data.valid_to + "&servicetype=" + servicetype 
+    + "&for_adult=" + data.for_adult 
+    + "&for_child=" + data.for_child
     + "&for_infant=" + data.for_infant
     + "&for_teen=" + data.for_teen;
 }

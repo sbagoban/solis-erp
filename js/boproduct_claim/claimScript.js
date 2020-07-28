@@ -126,52 +126,52 @@ $(document).ready(function(){
 
     // here sandeep check
     if (id_product_service_cost > 0 && is_pakage != 'Y') {
-        if (ps_adult_cost > 0) {
+        if (ps_adult_cost > 0 || for_adult > 0) {
             $("#ps_adult_claim").css("display", "block");
             $("#ps_adult_claim").attr("placeholder", "Adult"); 
             $("#ps_adult_claim_modal").css("display", "block");
             $("#ps_adult_claim_modal").attr("placeholder", "Adult");   
         }
-        if (ps_adult_cost <= 0) { 
+        if (ps_adult_cost <= 0 || for_adult <= 0) { 
             $("#ps_adult_claim_addon").css("display", "none");
             $("#ps_adult_claim").css("display", "none");
             $("#ps_adult_claim_addon_modal").css("display", "none");
             $("#ps_adult_claim_modal").css("display", "none");
         }
         
-        if (ps_teen_cost > 0) {
+        if (ps_teen_cost > 0 || for_teen > 0) {
             $("#ps_teen_claim").css("display", "block");
             $("#ps_teen_claim").attr("placeholder", "Teen");
             $("#ps_teen_claim_modal").css("display", "block");
             $("#ps_teen_claim_modal").attr("placeholder", "Teen");
         }
-        if (ps_teen_cost <= 0) { 
+        if (ps_teen_cost <= 0 || for_teen <= 0) { 
             $("#ps_teen_claim_addon").css("display", "none");
             $("#ps_teen_claim").css("display", "none");
             $("#ps_teen_claim_addon_modal").css("display", "none");
             $("#ps_teen_claim_modal").css("display", "none");
         }
         
-        if (ps_child_cost > 0) {
+        if (ps_child_cost > 0 || for_child > 0) {
             $("#ps_child_claim").css("display", "block");
             $("#ps_child_claim").attr("placeholder", "Child");
             $("#ps_child_claim_modal").css("display", "block");
             $("#ps_child_claim_modal").attr("placeholder", "Child");
         }
-        if (ps_child_cost <= 0) { 
+        if (ps_child_cost <= 0 || for_child <= 0) { 
             $("#ps_child_claim_addon").css("display", "none");
             $("#ps_child_claim").css("display", "none");
             $("#ps_child_claim_addon_modal").css("display", "none");
             $("#ps_child_claim_modal").css("display", "none");
         }
 
-        if (ps_infant_cost > 0) {
+        if (ps_infant_cost > 0 || for_infant > 0) {
             $("#ps_infant_claim").css("display", "block");
             $("#ps_infant_claim").attr("placeholder", "Infant");
             $("#ps_infant_claim_modal").css("display", "block");
             $("#ps_infant_claim_modal").attr("placeholder", "Infant");
         }
-        if (ps_infant_cost <= 0) { 
+        if (ps_infant_cost <= 0 || for_infant <= 0) { 
             $("#ps_infant_claim_addon").css("display", "none");
             $("#ps_infant_claim").css("display", "none");
             $("#ps_infant_claim_addon_modal").css("display", "none");

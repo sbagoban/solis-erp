@@ -243,7 +243,19 @@ function serviceCostExtra(data) {
 
 // Add claim 
 function addServiceClaim(data) {
-    console.log('New', data);
+    var allParams = window.location.href.split('productservicecost').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var for_adult = urlParams.get("for_adult"); 
+    var for_child = urlParams.get("for_child"); 
+    var for_infant = urlParams.get("for_infant"); 
+    var for_teen = urlParams.get("for_teen"); 
+
     var params = jQuery.param(data);
-    window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_service_cost + "&data=" +params;
+    window.location.href = "index.php?m=servicerate_claim&pscid=" 
+    + data.id_product_service_cost 
+    + "&data=" +params
+    + "&for_adult=" +for_adult
+    + "&for_child=" +for_child
+    + "&for_infant=" +for_infant
+    + "&for_teen=" +for_teen;
 }
