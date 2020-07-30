@@ -78,6 +78,24 @@ try {
       $test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params_test);
 
      */
+    
+    
+      $arr_params_test["checkin_date"] = "2019-04-01";
+      $arr_params_test["checkin_time"] = "";
+      $arr_params_test["checkout_date"] = "2019-04-05";
+      $arr_params_test["checkout_time"] = "";
+      $arr_params_test["touroperator"] = 10;
+      $arr_params_test["max_pax"] = 4;
+      $arr_params_test["booking_date"] = "2019-04-01";
+      $arr_params_test["travel_date"] = "2019-04-01";
+      $arr_params_test["wedding_interested"] = 0;
+
+      $arr_params_test["arr_pax"] = array();
+      $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>"","bride_groom"=>"");
+      $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>"","bride_groom"=>"");
+      $arr_params_test["arr_pax"][] = array("count"=>3,"age"=>5,"bride_groom"=>"");
+
+      $test = _rates_calculator_get_applicable_contracts($con, $arr_params_test);
 
 
     $test = array();

@@ -6926,7 +6926,7 @@ function _rates_calculator_reservation_get_cost_claim_per_pax($arr_before_spo,
                     if (isset($arr_before_spo[$i]["EXTRA"])) {
                         $extra = $arr_before_spo[$i]["EXTRA"];
                     }
-                    
+
                     $cost_value = $arr_before_spo[$i]["COSTINGS"][$cost_colidx]["VALUE"];
                     $sp_value_without_spo = $arr_before_spo[$i]["COSTINGS"][$sp_colidx]["VALUE"];
                     $sp_value_with_spo = $arr_afer_spo[$i]["COSTINGS"][$sp_colidx]["VALUE"];
@@ -7286,6 +7286,321 @@ function _rates_calculator_get_pax_limits_persons_test_rule_ages_get_index($capa
     }
 
     return $total;
+}
+
+function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
+
+    try {
+
+        /**
+         * Summary.
+         *
+         * returns an array of contracts for the provided paramters
+         *
+         *
+         * @param PDOConnection  $con PDO Connection Object
+         * @param array $arr_params_resa {
+         *     Array of parameters from reservation
+         *
+         *     @type Integer    $touroperator       tour operator id
+         *     @type Date       $checkin_date       checkin date in yyyy-mm-dd
+         *     @type Date       $checkout_date      checkout date in yyyy-mm-dd
+         *     @type Date       $booking_date       booking date in yyyy-mm-dd
+         *     @type Date       $travel_date        travel date in yyyy-mm-dd
+         *     @type Boolean    $wedding_interested if interested in wedding SPOS (1/0)
+         *     @type array      $arr_pax {
+         *          Array of adults/children details mixed together
+         *          @type Integer $count        index of child/adult
+         *          @type Integer $age          age of the child/adult. If no age, then is adult
+         *          @type String  $bride_groom  if adult if bride or groom or none. values = {"BRIDE","GROOM",""}
+         *     }      
+         * }
+         * @return array An array of cost/claim amounts per pax for above parameters
+         */
+        //get array of contracts that are applicable to:
+        //the TO provided
+        //with active dates within checkin and checkout
+
+        $touroperator = $arr_params_resa["touroperator"];
+        $dtckin = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
+        $dtckout = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
+        $dtbook = $arr_params_resa["booking_date"]; //yyyy-mm-dd
+        $dttravel = $arr_params_resa["travel_date"]; //yyyy-mm-dd
+        $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
+        $arr_pax = $arr_params_resa["arr_pax"];
+
+
+        $resa_rates = -1; //to be decided below:
+        //=========================================
+        //get the country of the TO
+        $countryid = -1;
+        $sql = "select * from tblto_countries where tofk = :toid limit 1";
+        $query = $con->prepare($sql);
+        $query->execute(array(":toid" => $touroperator));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $countryid = $row["countryfk"];
+        }
+        //=========================================
+        //=========================================
+        //lookup the special and standard rates of that tour operator
+        $special_rate_id = -1;
+        $standard_rate_id = -1;
+
+        $sql = "select ratecode,specialratecode, 
+            ifnull(rc_std.id,-1) as stdid, ifnull(rc_spec.id,-1) as specid
+            from tbltouroperator tourop
+            left join tblratecodes rc_std on ratecode = rc_std.ratecodes
+            left join tblratecodes rc_spec on specialratecode = rc_spec.ratecodes
+            where tourop.id = :toid";
+
+        $query = $con->prepare($sql);
+        $query->execute(array(":toid" => $touroperator));
+        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $special_rate_id = $row["specid"];
+            $standard_rate_id = $row["stdid"];
+        }
+
+        //get list of ids for TO + checkin + checkout + special_rate
+        $arr_ids_spec = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin, $dtckout,
+                $touroperator, $countryid, $special_rate_id);
+
+        //get list of ids for TO + checkin + checkout + $standard_rate_id
+        $arr_ids_std = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin, $dtckout,
+                $touroperator, $countryid, $standard_rate_id);
+
+
+        $checkin_rollover = new DateTime($dtckin);
+        $checkout_rollover = new DateTime($dtckout);
+        $checkin_rollover = $checkin_rollover->modify('-1 year');
+        $checkout_rollover = $checkout_rollover->modify('-1 year');
+        $dtckin_roll = $checkin_rollover->format("Y-m-d");
+        $dtckout_roll = $checkout_rollover->format("Y-m-d");
+
+
+        //get list of ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
+        $arr_ids_spec_roll = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin_roll, $dtckout_roll,
+                $touroperator, $countryid, $standard_rate_id);
+
+        //get list of ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
+        $arr_ids_std_roll = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin_roll, $dtckout_roll,
+                $touroperator, $countryid, $standard_rate_id);
+
+        $arr_ids_final = array();
+
+        $arr_ids_final = _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_spec);
+        $arr_ids_final = _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_std);
+        $arr_ids_final = _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_spec_roll);
+        $arr_ids_final = _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_std_roll);
+
+        //now we got a valid list of contracts with hotel, room and mealplan
+        //reformat the parameter array to call _rates_calculator_reservation_get_cost_claim
+        $arr_params_rates = array();
+        $arr_params_rates["suppmealplan"] = "";
+        $arr_params_rates["touroperator"] = $touroperator;
+        $arr_params_rates["checkin_date"] = $dtckin; //yyyy-mm-dd
+        $arr_params_rates["checkout_date"] = $dtckout; //yyyy-mm-dd
+        $arr_params_rates["booking_date"] = $dtbook; //yyyy-mm-dd
+        $arr_params_rates["travel_date"] = $dttravel; //yyyy-mm-dd
+        $arr_params_rates["checkin_time"] = ""; //HH:mm
+        $arr_params_rates["checkout_time"] = ""; //HH:mm    
+        $arr_params_rates["wedding_interested"] = $wedding_interested; //1 or 0
+        $arr_params_rates["max_pax"] = count($arr_pax);
+        $arr_params_rates["arr_pax"] = $arr_pax;
+
+        $arr_return_values = array();
+
+        $image_relative_path_hotel = utils_getsysparams($con, "HOTEL", "PHOTO", "RELATIVE_PATH");
+        $image_relative_path_room = utils_getsysparams($con, "HOTEL_ROOM", "PHOTO", "RELATIVE_PATH");
+
+
+        for ($i = 0; $i < count($arr_ids_final); $i++) {
+
+            $hotelid = $arr_ids_final[$i]["HOTELID"];
+            $mealid = $arr_ids_final[$i]["MEALID"];
+            $contractid = $arr_ids_final[$i]["CONTRACTID"];
+            $roomid = $arr_ids_final[$i]["ROOMID"];
+            $hotelname = $arr_ids_final[$i]["HOTEL"];
+            $roomname = $arr_ids_final[$i]["ROOM"];
+
+            $arr_params_rates["mealplan"] = $mealid;
+            $arr_params_rates["hotel"] = $hotelid;
+            $arr_params_rates["hotelroom"] = $roomid;
+
+            $_arr = _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_rates);
+            $_arr["HOTELNAME"] = $hotelname;
+            $_arr["ROOMNAME"] = $roomname;
+            $_arr["ROOMIMAGES"] = _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room);
+            $_arr["HOTELIMAGES"] = _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
+            $_arr["ROOMFACILITIES"] = _rates_calculator_get_roomfacilities($con, $roomid, "ROOM");
+            $_arr["HOTELFACILITIES"] = _rates_calculator_get_hotelfacilities($con, $hotelid, "HOTEL");
+
+            $arr_return_values[] = $_arr;
+        }
+
+        return $arr_return_values;
+    } catch (Exception $ex) {
+        $arr_return_values = array("OUTCOME" => $ex->getMessage());
+        return $arr_return_values;
+    }
+}
+
+function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_spec) {
+    for ($i = 0; $i < count($arr_ids_spec); $i++) {
+        $hotelid = $arr_ids_spec[$i]["HOTELID"];
+        $mealid = $arr_ids_spec[$i]["MEALID"];
+        $contractid = $arr_ids_spec[$i]["CONTRACTID"];
+        $roomid = $arr_ids_spec[$i]["ROOMID"];
+        $hotelname = $arr_ids_spec[$i]["HOTEL"];
+        $roomname = $arr_ids_spec[$i]["ROOM"];
+
+
+        if (!_rates_calculator_filterout_hotel_room_meal_notinarray($arr_ids_final, $hotelid,
+                        $mealid, $roomid)) {
+            $arr_ids_final[] = array("CONTRACTID" => $contractid, "HOTELID" => $hotelid,
+                "MEALID" => $mealid, "ROOMID" => $roomid,
+                "HOTEL" => $hotelname, "ROOM" => $roomname);
+        }
+    }
+
+    return $arr_ids_final;
+}
+
+function _rates_calculator_filterout_hotel_room_meal_notinarray($arr_ids_final, $hotelid, $mealid, $roomid) {
+    for ($i = 0; $i < count($arr_ids_final); $i++) {
+        $_hotelid = $arr_ids_final[$i]["HOTELID"];
+        $_mealid = $arr_ids_final[$i]["MEALID"];
+        $_roomid = $arr_ids_final[$i]["ROOMID"];
+
+        if (!$_hotelid == $hotelid && $_mealid == $mealid && $_roomid == $roomid) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function _rates_calculator_lkupcontract_hotel_room_meal($con, $checkin, $checkout,
+        $toid, $countryid, $rateid) {
+
+    //search for contracts that fall within the dates above and that belong to that TO,
+    //country and rate
+    //return the list of contracts as a list of contractids, 
+    //hotels, hotelrooms and mealplans
+    //=============================================================
+    //and now search for any applicable contracts for these dates and rates provided
+
+    $sql = "SELECT sc.*,scr.roomfk, hr.roomname, h.hotelname
+            FROM tblservice_contract sc
+            INNER JOIN tblservice_contract_rooms scr on sc.id = scr.servicecontractfk
+            INNER JOIN tblhotel_rooms hr on scr.roomfk = hr.id
+            INNER JOIN tblhotels h on hr.hotelfk = h.id
+            WHERE sc.active_external = 1 AND sc.active_internal = 1";
+
+    $sql .= " AND sc.id IN 
+                  (SELECT service_contract_fk FROM 
+                   tblservice_contract_countries 
+                   WHERE countryfk=:countryfk 
+                  )";
+
+    //======================= RATES =========================
+    $sql .= " AND sc.id IN 
+                  (SELECT service_contract_fk FROM 
+                   tblservice_contract_rates 
+                   WHERE ratefk=:ratefk 
+                  )";
+
+    //======================= TOUR OPERATORS =========================
+    $sql .= " AND sc.id IN 
+                  (SELECT service_contract_fk FROM 
+                   tblservice_contract_touroperator 
+                   WHERE tofk=:tofk 
+                  )";
+
+    //======================= THE DATE =========================
+    $sql .= " AND :checkin BETWEEN sc.active_from AND sc.active_to ";
+    $sql .= " AND :checkout BETWEEN sc.active_from AND sc.active_to ";
+
+
+    $arr_return = array();
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":countryfk" => $countryid, ":ratefk" => $rateid,
+        ":tofk" => $toid, ":checkin" => $checkin,
+        ":checkout" => $checkout));
+
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        $arr_return[] = array("CONTRACTID" => $rw["id"], "HOTELID" => $rw["hotelfk"],
+            "MEALID" => $rw["mealplan_fk"], "ROOMID" => $rw["roomfk"],
+            "HOTEL" => $rw["hotelname"], "ROOM" => $rw["roomname"]);
+    }
+
+    return $arr_return;
+}
+
+function _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room) {
+    $sql = "SELECT * FROM tblhotel_room_images WHERE roomfk = :roomfk";
+    $query = $con->prepare($sql);
+
+    $query->execute(array(":roomfk" => $roomid));
+    $arr_return = array();
+
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        $rw["relative_path"] = $image_relative_path_room;
+        $arr_return[] = $rw;
+    }
+
+    return $arr_return;
+}
+
+function _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel) {
+    $sql = "SELECT * FROM tblhotel_images WHERE hotelfk = :hotelfk";
+    $query = $con->prepare($sql);
+
+    $query->execute(array(":hotelfk" => $hotelid));
+    $arr_return = array();
+
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        $rw["relative_path"] = $image_relative_path_hotel;
+        $arr_return[] = $rw;
+    }
+
+    return $arr_return;
+}
+
+function _rates_calculator_get_roomfacilities($con, $roomid) {
+    $sql = "select f.* from 
+            tblhotel_room_facilities hf
+            inner join tblfacilities f on hf.facilityfk = f.id
+            where hf.roomfk = :roomfk and f.category = 'ROOM' and f.deleted = 0 
+            order by f.ordering";
+
+
+    $query->execute(array(":roomfk" => $roomid));
+    $arr_return = array();
+
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        $arr_return[] = $rw;
+    }
+
+    return $arr_return;
+}
+
+function _rates_calculator_get_hotelfacilities($con, $hotelid) {
+    $sql = "select f.* from 
+            tblhotel_facilities hf
+            inner join tblfacilities f on hf.facilityfk = f.id
+            where hf.hotelfk = :hotelfk and f.category = 'HOTEL' and f.deleted = 0 
+            order by f.ordering";
+
+
+    $query->execute(array(":hotelfk" => $hotelid));
+    $arr_return = array();
+
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        $arr_return[] = $rw;
+    }
+
+    return $arr_return;
 }
 ?>
 

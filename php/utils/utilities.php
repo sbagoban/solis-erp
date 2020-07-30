@@ -358,6 +358,7 @@ function utils_DMY_YMD($dt, $default_blank = "") {
 }
 
 function utils_stringBlank($dt, $default_blank = "") {
+   
     if (trim($dt) == "") {
         return $default_blank;
     }

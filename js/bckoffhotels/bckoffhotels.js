@@ -93,8 +93,7 @@ function hotels()
 
             hotelSpecialOffers(uid);
 
-        }
-        else if(id == "inventory")
+        } else if (id == "inventory")
         {
             var uid = grid_hotels.getSelectedRowId();
             if (!uid)
@@ -103,8 +102,7 @@ function hotels()
             }
 
             hotelInventory(uid);
-        }
-        else if (id == "dateperiods")
+        } else if (id == "dateperiods")
         {
             var uid = grid_hotels.getSelectedRowId();
             if (!uid)
@@ -232,16 +230,16 @@ function hotels()
         t = window.setTimeout(function () {
 
             var x = $("#main_body").parent().width();
-            
+
             //====================
             var body = document.body,
-            html = document.documentElement;
-            var y = Math.max( body.scrollHeight, body.offsetHeight, 
-                       html.clientHeight, html.scrollHeight, html.offsetHeight );
+                    html = document.documentElement;
+            var y = Math.max(body.scrollHeight, body.offsetHeight,
+                    html.clientHeight, html.scrollHeight, html.offsetHeight);
             y -= 150;
-            
+
             //====================
-                       
+
 
             $("#main_body").height(y);
             $("#main_body").width(x - 20);
@@ -280,8 +278,31 @@ function hotels()
     popupwin_rooms.denyPark();
     popupwin_rooms.button("close").hide();
 
+
+
+    //========================
+    var popupwin_facilities = dhxWins.createWindow("popupwin_facilities", 50, 50, 1000, 440);
+    popupwin_facilities.setText("Hotel Facilities:");
+
+    var y = $("#main_body").parent().height() - 50;
+    popupwin_facilities.setDimension(1000, y);
+
+    popupwin_facilities.denyResize();
+    popupwin_facilities.denyPark();
+    popupwin_facilities.button("close").hide();
+
     //========================
 
+
+
+    var popupwin_add_facilities = dhxWins.createWindow("popupwin_facilities", 50, 50, 600, 200);
+    popupwin_add_facilities.setText("Add Hotel Facilities:");
+    popupwin_add_facilities.denyResize();
+    popupwin_add_facilities.denyPark();
+    popupwin_add_facilities.button("close").hide();
+
+
+//========================
     var popupwin_rooms_addmod = dhxWins.createWindow("popupwin_rooms_addmod", 50, 50, 800, 500);
     popupwin_rooms_addmod.setText("Room Details:");
 
@@ -479,11 +500,11 @@ function hotels()
                 {type: "label", label: "Mail Address"},
                 {type: "input", name: "mail_address", label: "Street 1:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", 
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                 },
                 {type: "input", name: "mail_address2", label: "Street 2:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", 
+                    labelTop: "10", inputLeft: "10", inputTop: "10",
                 },
                 {type: "input", name: "mail_city", label: "City:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -501,7 +522,7 @@ function hotels()
                 },
                 {type: "button", name: "cmdPhysical", value: "< Copy to Physical", width: "120", offsetLeft: 0}]},
 
-        {type: "fieldset", label: "Miscellaneous", width: 700, hidden:true, list: [
+        {type: "fieldset", label: "Miscellaneous", width: 700, hidden: true, list: [
 
                 {type: "combo", name: "ratecode", label: "Rate:", labelWidth: "100",
                     labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
@@ -642,7 +663,7 @@ function hotels()
 
     var cboCoast = form_hotels.getCombo("coastfk");
     var cboTransferCoast = form_hotels.getCombo("id_transfer_coast");
-    
+
     var dsCoast = new dhtmlXDataStore();
     dsCoast.load("php/api/combos/coast_combo.php?t=" + encodeURIComponent(global_token), "json", function () {
 
@@ -656,10 +677,10 @@ function hotels()
         }
         cboCoast.readonly(true);
         cboCoast.addOption([{value: "", text: "[SELECT]", img_src: "images/coast.png"}]);
-        
+
         cboTransferCoast.readonly(true);
         cboTransferCoast.addOption([{value: "", text: "[SELECT]", img_src: "images/coast.png"}]);
-        
+
     });
 
     //==========================
@@ -686,10 +707,10 @@ function hotels()
 
     var cboRateCode = form_hotels.getCombo("ratecode");
     var cboSpecialRateCode = form_hotels.getCombo("specialratecode");
-    
+
     cboSpecialRateCode.show(false);
     cboRateCode.show(false);
-    
+
     cboRateCode.addOption([{value: "-", text: "None", img_src: "images/rate_32.png"}]);
     cboSpecialRateCode.addOption([{value: "-", text: "None", img_src: "images/rate_32.png"}]);
 
@@ -780,8 +801,8 @@ function hotels()
 
 
                 var currencyid = utils_trim(arr_ids[i], " ");
-                
-                if(currencyid != "")
+
+                if (currencyid != "")
                 {
                     grid_currency_from.setRowHidden(currencyid, true);
                     grid_currency_from.uncheckAll();
@@ -1252,6 +1273,466 @@ function hotels()
     });
 
 
+    //=============================================================
+    var commissionlayout = tabViews.cells("commission").attachLayout("1C");
+    commissionlayout.cells("a").hideHeader();
+
+    var new_commission_row_id = 0;
+
+    var grid_commission = commissionlayout.cells("a").attachGrid();
+    grid_commission.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_commission.setHeader("Date From, Date To,Tax,Tax Amt,Commission (%),Mark Up (%),Action,Valid");
+    grid_commission.setColumnIds("dtfrom,dtto,taxcode_fk,taxamt,commission,markup,action,valid");
+    grid_commission.setColTypes("dhxCalendar,dhxCalendar,coro,edn,edn,edn,ro,ro");
+    grid_commission.setInitWidths("120,120,200,100,100,100,0,0");
+    grid_commission.setColAlign("left,left,left,right,right,right,left,left");
+    grid_commission.setColSorting('date,date,str,int,int,int,str,str');
+    grid_commission.setDateFormat("%d-%M-%Y", "%Y-%m-%d");
+    grid_commission.setEditable(true);
+    grid_commission.enableValidation(true);
+    grid_commission.setColValidators("ValidDate,ValidDate,NotEmpty,ValidNumeric,ValidNumeric,ValidNumeric,,");
+    grid_commission.enableEditEvents(true, false, true);
+    grid_commission.init();
+
+    var dsCommissionGrid = new dhtmlXDataStore();
+    loadCommissionGridCombos(true, "-1");
+
+    var toolbar_commission = commissionlayout.cells("a").attachToolbar();
+    toolbar_commission.setIconsPath("images/");
+    toolbar_commission.addButton("add", 1, "Add Commission", "add.png", "add.png");
+    toolbar_commission.addButton("delete", 2, "Delete Commission", "delete.png", "delete.png");
+    toolbar_commission.setIconSize(32);
+
+    toolbar_commission.attachEvent("onClick", function (id) {
+
+        if (id == "add")
+        {
+            new_commission_row_id--;
+            grid_commission.addRow(new_commission_row_id, ["", "", "", "0.00", "0.00", "0.00", "ADD", ""]);
+            grid_commission.selectRowById(new_commission_row_id, false, true, false);
+            grid_commission.setRowTextStyle(new_commission_row_id, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;");
+
+        } else if (id == "delete")
+        {
+            var rid = grid_commission.getSelectedRowId();
+            if (rid)
+            {
+                dhtmlx.confirm({
+                    title: "Delete Commission",
+                    type: "confirm",
+                    text: "Confirm Deletion?",
+                    callback: function (tf) {
+                        if (tf)
+                        {
+                            grid_commission.cells(rid, grid_commission.getColIndexById("action")).setValue("DELETE");
+                            grid_commission.setRowHidden(rid, true);
+                        }
+                    }});
+            }
+        }
+    });
+
+
+    //==============================================================
+
+    var facilitieslayout = tabViews.cells("facilities").attachLayout("1C");
+    facilitieslayout.cells("a").hideHeader();
+
+
+    var grid_facilities = facilitieslayout.cells("a").attachGrid();
+    grid_facilities.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_facilities.setHeader("Facility,Description");
+    grid_facilities.setColumnIds("facility,description");
+    grid_facilities.setColTypes("ro,ro");
+    grid_facilities.setInitWidths("200,*");
+    grid_facilities.setColAlign("left,left");
+    grid_facilities.setColSorting('str,str');
+    grid_facilities.init();
+
+    var dsFacilityGrid = new dhtmlXDataStore();
+
+    var toolbar_facility = facilitieslayout.cells("a").attachToolbar();
+    toolbar_facility.setIconsPath("images/");
+    toolbar_facility.addButton("add", 1, "Add/Manage Facilities", "add.png", "add.png");
+    toolbar_facility.addButton("delete", 2, "Delete Facility", "delete.png", "delete.png");
+    toolbar_facility.setIconSize(32);
+
+    toolbar_facility.attachEvent("onClick", function (id) {
+
+        if (id == "add")
+        {
+            loadAddFacilitiesGrid(grid_hotels.getSelectedRowId());
+
+            popupwin_hotels.setModal(false);
+            popupwin_facilities.setModal(true);
+            popupwin_facilities.show();
+            popupwin_facilities.center();
+
+
+        } else if (id == "delete")
+        {
+            var fid = grid_facilities.getSelectedRowId();
+            if (!fid)
+            {
+                return;
+            }
+
+
+            dhtmlx.confirm({
+                title: "Delete Facility",
+                type: "confirm",
+                text: "Confirm Deletion?",
+                callback: function (tf) {
+                    if (tf)
+                    {
+                        var params = "fid=" + fid + "&t=" + encodeURIComponent(global_token);
+                        dhtmlxAjax.post("php/api/bckoffhotels/deletehotelfacility.php", params, function (loader) {
+
+                            if (loader)
+                            {
+                                if (loader.xmlDoc.responseURL == "")
+                                {
+                                    dhtmlx.alert({
+                                        text: "Connection Lost!",
+                                        type: "alert-warning",
+                                        title: "DELETE",
+                                        callback: function () {
+                                        }
+                                    });
+                                    return false;
+                                }
+
+                                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                                if (!json_obj)
+                                {
+                                    dhtmlx.alert({
+                                        text: loader.xmlDoc.responseText,
+                                        type: "alert-warning",
+                                        title: "DELETE",
+                                        callback: function () {
+                                        }
+                                    });
+                                    return false;
+                                }
+                                if (json_obj.OUTCOME == "OK")
+                                {
+                                    grid_facilities.deleteRow(fid);
+                                } else
+                                {
+                                    dhtmlx.alert({
+                                        text: json_obj.OUTCOME,
+                                        type: "alert-warning",
+                                        title: "DELETE",
+                                        callback: function () {
+                                        }
+                                    });
+                                }
+
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+
+
+    var addfacilitieslayout = popupwin_facilities.attachLayout("1C");
+    addfacilitieslayout.cells("a").hideHeader();
+
+    var grid_add_facilities = addfacilitieslayout.cells("a").attachGrid();
+    grid_add_facilities.setIconsPath('libraries/dhtmlx/imgs/');
+    grid_add_facilities.setHeader(",Facility,Description");
+    grid_add_facilities.setColumnIds("X,facility,description");
+    grid_add_facilities.setColTypes("ch,ro,ro");
+    grid_add_facilities.setInitWidths("30,200,*");
+    grid_add_facilities.setColAlign("center,left,left");
+    grid_add_facilities.setColSorting('int,str,str');
+    grid_add_facilities.attachHeader("#master_checkbox,#text_filter,#text_filter");
+    grid_add_facilities.attachEvent("onRowDblClicked", modifyFacilityItem);
+    grid_add_facilities.init();
+
+
+    var dsAddFacilityGrid = new dhtmlXDataStore();
+
+    var toolbar_add_facility = addfacilitieslayout.cells("a").attachToolbar();
+    toolbar_add_facility.setIconsPath("images/");
+    toolbar_add_facility.addButton("attach", 1, "Attach Facilities to Hotel", "save.png", "save.png");
+    toolbar_add_facility.addButton("new", 2, "Add Item to Database", "add.png", "add.png");
+    toolbar_add_facility.addButton("delete", 3, "Delete Item From Database", "delete.png", "delete.png");
+    toolbar_add_facility.addSpacer("delete");
+    toolbar_add_facility.addButton("exit", 4, "Back", "exit.png", "exit.png");
+    toolbar_add_facility.setIconSize(32);
+
+
+    toolbar_add_facility.attachEvent("onClick", function (id) {
+
+        if (id == "attach")
+        {
+            var itemids = grid_add_facilities.getCheckedRows(grid_add_facilities.getColIndexById("X"));
+            if (itemids == "")
+            {
+                dhtmlx.alert({
+                    text: "Please Select at Least one Facility!",
+                    type: "alert-warning",
+                    title: "Attach Facilities",
+                    callback: function () {
+                    }
+                });
+
+                return;
+            }
+
+            var params = "itemids=" + itemids + "&t=" + encodeURIComponent(global_token) +
+                    "&hotelid=" + grid_hotels.getSelectedRowId();
+            dhtmlxAjax.post("php/api/bckoffhotels/attachfacility.php", params, function (loader) {
+
+                if (loader)
+                {
+                    if (loader.xmlDoc.responseURL == "")
+                    {
+                        dhtmlx.alert({
+                            text: "Connection Lost!",
+                            type: "alert-warning",
+                            title: "Attach Facilities",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+
+                    var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                    if (!json_obj)
+                    {
+                        dhtmlx.alert({
+                            text: loader.xmlDoc.responseText,
+                            type: "alert-warning",
+                            title: "Attach Facilities",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+                    if (json_obj.OUTCOME == "OK")
+                    {
+                        popupwin_facilities.setModal(false);
+                        popupwin_facilities.hide();
+                        popupwin_hotels.setModal(true);
+                        loadFacilitiesGrid(grid_hotels.getSelectedRowId());
+
+                    } else
+                    {
+                        dhtmlx.alert({
+                            text: json_obj.OUTCOME,
+                            type: "alert-warning",
+                            title: "Attach Facilities",
+                            callback: function () {
+                            }
+                        });
+                    }
+
+                }
+            });
+
+
+        } else if (id == "new")
+        {
+            popupwin_add_facilities.center();
+            popupwin_add_facilities.show();
+
+
+        } else if (id == "exit")
+        {
+            popupwin_facilities.setModal(false);
+            popupwin_facilities.hide();
+            popupwin_hotels.setModal(true);
+        } else if (id == "delete")
+        {
+            var fid = grid_add_facilities.getSelectedRowId();
+            if (!fid)
+            {
+                return;
+            }
+
+
+            dhtmlx.confirm({
+                title: "Delete Facility",
+                type: "confirm",
+                text: "Confirm Deletion of Item from Facilities Database?",
+                callback: function (tf) {
+                    if (tf)
+                    {
+                        var params = "fid=" + fid + "&t=" + encodeURIComponent(global_token);
+                        dhtmlxAjax.post("php/api/bckoffhotels/deletefacilityitem.php", params, function (loader) {
+
+                            if (loader)
+                            {
+                                if (loader.xmlDoc.responseURL == "")
+                                {
+                                    dhtmlx.alert({
+                                        text: "Connection Lost!",
+                                        type: "alert-warning",
+                                        title: "DELETE",
+                                        callback: function () {
+                                        }
+                                    });
+                                    return false;
+                                }
+
+                                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                                if (!json_obj)
+                                {
+                                    dhtmlx.alert({
+                                        text: loader.xmlDoc.responseText,
+                                        type: "alert-warning",
+                                        title: "DELETE",
+                                        callback: function () {
+                                        }
+                                    });
+                                    return false;
+                                }
+                                if (json_obj.OUTCOME == "OK")
+                                {
+                                    grid_add_facilities.deleteRow(fid);
+                                    loadFacilitiesGrid(grid_hotels.getSelectedRowId());
+
+                                } else
+                                {
+                                    dhtmlx.alert({
+                                        text: json_obj.OUTCOME,
+                                        type: "alert-warning",
+                                        title: "DELETE",
+                                        callback: function () {
+                                        }
+                                    });
+                                }
+
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+
+    var str_frm_add_item = [
+        {type: "settings", position: "label-left", id: "form_add_item"},
+        {type: "hidden", name: "id"},
+        {type: "input", name: "facility", label: "Facility:", labelWidth: "100",
+            labelHeight: "22", inputWidth: "400", labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+        },
+        {type: "input", name: "description", label: "Description:", labelWidth: "100",
+            labelHeight: "22", inputWidth: "400", rows: 3, labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10", required: true
+        },
+        {type: "button", name: "cmdSave", value: "Save", offsetLeft: 0},
+        {type: "button", name: "cmdCancel", value: "Cancel", offsetLeft: 0}
+    ];
+
+    var form_add_item = popupwin_add_facilities.attachForm(str_frm_add_item);
+
+    form_add_item.attachEvent("onButtonClick", function (name, command) {
+        if (name == "cmdSave")
+        {
+            if (!form_add_item.validate())
+            {
+                dhtmlx.alert({
+                    text: "Please fill highlighted fields correctly!",
+                    type: "alert-warning",
+                    title: "Save Facility",
+                    callback: function () {}
+                });
+                return false;
+            }
+
+            var data = form_add_item.getFormData();
+
+            var params = "token=" + encodeURIComponent(global_token) +
+                    "&data=" + encodeURIComponent(JSON.stringify(data)) +
+                    "&hotelid=" + grid_hotels.getSelectedRowId();
+
+            dhtmlxAjax.post("php/api/bckoffhotels/savefacility.php", params, function (loader) {
+                if (loader)
+                {
+                    if (loader.xmlDoc.responseURL == "")
+                    {
+                        dhtmlx.alert({
+                            text: "Connection Lost!",
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                                tree_menu.selectItem("details", true, false);
+                            }
+                        });
+                        return false;
+                    }
+
+                    //console.log(loader.xmlDoc.responseText);
+
+                    var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+
+                    if (!json_obj)
+                    {
+                        dhtmlx.alert({
+                            text: loader.xmlDoc.responseText,
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {}
+                        });
+                        return false;
+                    }
+
+                    if (json_obj.OUTCOME == "OK")
+                    {
+                        dhtmlx.alert({
+                            text: "Save Successful",
+                            type: "alert",
+                            title: "SAVE",
+                            callback: function () {}
+                        });
+                        form_add_item.clear();
+                        form_add_item.setItemValue("id", "-1");
+                        loadAddFacilitiesGrid(grid_hotels.getSelectedRowId());
+
+
+                    } else
+                    {
+                        dhtmlx.alert({
+                            text: json_obj.OUTCOME,
+                            type: "alert-warning",
+                            title: "SAVE",
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+            });
+
+
+
+        } else if (name == "cmdCancel")
+        {
+
+            popupwin_add_facilities.setModal(false);
+            popupwin_add_facilities.hide();
+            popupwin_facilities.setModal(true);
+        }
+    });
+
+    function modifyFacilityItem(rId, cInd) {
+        var data = dsAddFacilityGrid.item(rId);
+        form_add_item.setFormData(data);
+        popupwin_add_facilities.center();
+        popupwin_add_facilities.show();
+    }
+    //=========================================================
+
+
     function applyrights()
     {
         for (var i = 0; i < json_rights.length; i++)
@@ -1446,6 +1927,37 @@ function hotels()
         });
     }
 
+    function loadAddFacilitiesGrid(hoid)
+    {
+        dsAddFacilityGrid.clearAll();
+        dsAddFacilityGrid = null;
+        dsAddFacilityGrid = new dhtmlXDataStore();
+        addfacilitieslayout.cells("a").progressOn();
+        grid_add_facilities.clearAll();
+
+        dsAddFacilityGrid.load("php/api/bckoffhotels/addfacilitiesgrid.php?t=" + encodeURIComponent(global_token) + "&hoid=" + hoid, "json", function () {
+            addfacilitieslayout.cells("a").progressOff();
+            grid_add_facilities.sync(dsAddFacilityGrid);
+            var css = "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+            utils_formatGridRows(grid_add_facilities, css)
+        });
+    }
+    function loadFacilitiesGrid(hoid)
+    {
+        dsFacilityGrid.clearAll();
+        dsFacilityGrid = null;
+        dsFacilityGrid = new dhtmlXDataStore();
+        facilitieslayout.cells("a").progressOn();
+        grid_facilities.clearAll();
+
+        dsFacilityGrid.load("php/api/bckoffhotels/facilitiesgrid.php?t=" + encodeURIComponent(global_token) + "&hoid=" + hoid, "json", function () {
+            facilitieslayout.cells("a").progressOff();
+            grid_facilities.sync(dsFacilityGrid);
+            var css = "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+            utils_formatGridRows(grid_facilities, css)
+        });
+    }
+
     function loadContactGrid(hoid)
     {
         dsContactGrid.clearAll();
@@ -1522,14 +2034,14 @@ function hotels()
 
         if (from == "phy")
         {
-            if(utils_isIdInCombo(cboMailCountry, cboPhyCountry.getSelectedValue()))
+            if (utils_isIdInCombo(cboMailCountry, cboPhyCountry.getSelectedValue()))
             {
                 cboMailCountry.setComboValue(cboPhyCountry.getSelectedValue());
             }
-            
+
         } else
         {
-            if(utils_isIdInCombo(cboPhyCountry, cboMailCountry.getSelectedValue()))
+            if (utils_isIdInCombo(cboPhyCountry, cboMailCountry.getSelectedValue()))
             {
                 cboPhyCountry.setComboValue(cboMailCountry.getSelectedValue());
             }
@@ -1561,12 +2073,12 @@ function hotels()
 
             cboHotelGroup.setComboValue("-");
             cboCoast.setComboValue("");
-            
-            if(utils_isIdInCombo(cboHotelType, default_hoteltype_id))
+
+            if (utils_isIdInCombo(cboHotelType, default_hoteltype_id))
             {
                 cboHotelType.setComboValue(default_hoteltype_id);
             }
-            
+
 
             cboPhyCountry.setComboValue(null);
             cboPhyCountry.setComboText("");
@@ -1589,6 +2101,7 @@ function hotels()
             loadContactGridCombos(true, hoid);
             loadCommissionGridCombos(true, hoid);
             loadImageGrid(hoid);
+            loadFacilitiesGrid(hoid);
 
             popupwin_hotels.setModal(true);
             popupwin_hotels.center();
@@ -1631,19 +2144,19 @@ function hotels()
 
             cboHotelGroup.setComboValue("-");
             cboCoast.setComboValue("");
-            
-            if(utils_isIdInCombo(cboHotelType, default_hoteltype_id))
+
+            if (utils_isIdInCombo(cboHotelType, default_hoteltype_id))
             {
                 cboHotelType.setComboValue(default_hoteltype_id);
             }
-            
 
-            if(utils_isIdInCombo(cboPhyCountry, default_country_id))
+
+            if (utils_isIdInCombo(cboPhyCountry, default_country_id))
             {
                 cboPhyCountry.setComboValue(default_country_id);
             }
-            
-            if(utils_isIdInCombo(cboMailCountry, default_country_id))
+
+            if (utils_isIdInCombo(cboMailCountry, default_country_id))
             {
                 cboMailCountry.setComboValue(default_country_id);
             }
@@ -1965,18 +2478,18 @@ function hotels()
         //make sure at most one currency is default
 
         /*
-        if (grid_currency_to.getRowsNum() == 0)
-        {
-            dhtmlx.alert({
-                text: "Please add at least one Currency",
-                type: "alert-warning",
-                title: "SAVE",
-                callback: function () {
-                    tree_menu.selectItem("currencies", true, false);
-                }
-            });
-            return false;
-        }
+         if (grid_currency_to.getRowsNum() == 0)
+         {
+         dhtmlx.alert({
+         text: "Please add at least one Currency",
+         type: "alert-warning",
+         title: "SAVE",
+         callback: function () {
+         tree_menu.selectItem("currencies", true, false);
+         }
+         });
+         return false;
+         }
          * 
          */
 
@@ -2058,8 +2571,8 @@ function hotels()
             }
 
         }
-        
-        
+
+
         if (grid_currency_to.getRowsNum() > 0 && (default_count == 0 || default_count > 1))
         {
             dhtmlx.alert({
@@ -3149,7 +3662,7 @@ function hotels()
 
         return true;
     }
-    
+
     function hotelInventory(hid)
     {
         window.location.href = "index.php?m=inventory&hid=" + hid;
@@ -3180,8 +3693,8 @@ function hotels()
     popupwin_hotels.hide();
     popupwin_rooms.hide();
     popupwin_rooms_addmod.hide();
-
-
+    popupwin_facilities.hide();
+    popupwin_add_facilities.hide();
     //==============================================
 
     applyrights();

@@ -69,7 +69,8 @@ function login_logmeIn(u, p, t)
         }
 
         var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
-
+        console.log(loader);
+        
         if (!json_obj)
         {
             $("#output").removeClass('alert alert-success');
