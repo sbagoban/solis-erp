@@ -34,4 +34,5 @@ $sql = "select hf.*, f.facility,f.ordering,f.description from
         order by f.ordering, f.facility";
 
 $data->render_sql($sql, "id", "hotelfk,facilityfk,ordering,description,facility");
+
 ?>

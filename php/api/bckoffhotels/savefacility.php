@@ -72,5 +72,6 @@ try {
 } catch (Exception $ex) {
 
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
+    
 }
 ?>

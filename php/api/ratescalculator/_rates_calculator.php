@@ -7602,6 +7602,9 @@ function _rates_calculator_get_hotelfacilities($con, $hotelid) {
 
     return $arr_return;
 }
+
+
+
 ?>
 
 

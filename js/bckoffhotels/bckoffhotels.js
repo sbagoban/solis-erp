@@ -1,5 +1,6 @@
 var hotels_obj = new hotels();
 
+
 function hotels()
 {
     var popupwin_photo = null;

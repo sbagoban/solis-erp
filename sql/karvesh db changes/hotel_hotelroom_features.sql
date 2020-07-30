@@ -26,3 +26,5 @@ CREATE TABLE `dbsolis`.`tblhotel_room_facilities` (
     REFERENCES `dbsolis`.`tblfacilities` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION);
+
+
