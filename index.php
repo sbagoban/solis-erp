@@ -927,6 +927,7 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_claim/models/bosaveextraserviceclaim.js"></script>
             <script src="js/boproduct_claim/models/bosaveservicesclaim.js"></script>
             <script src="js/boproduct_claim/models/boclaimlistgrid.js"></script>
+            <script src="js/boproduct_claim/models/boclaimlistpaxbreakgrid.js"></script>
             <script src="js/boproduct_claim/models/boextraserviceclaimgrid.js"></script> 
             <script src="js/boproduct_claim/control/ctrlClaim.js"></script>          
             <script src="js/boproduct_claim/models/updateAllExtraServiceClaim.js"></script>';
@@ -949,13 +950,15 @@ if (isset($_GET["m"])) {
             <script src="js/boproduct_services/script/saveimagesproduct.js"></script>';
         } else if ($menu == "productservicescost") {
             echo '<script src="js/boproduct_services/product_script.js"></script>
+            <script src="js/boproduct_services/models/bocostlistpaxbreakgrid.js"></script> 
             <script src="js/boproduct_services/models/boservicecost.js"></script>            
             <script src="js/boproduct_services/models/boservicecostgrid.js"></script>
             <script src="js/boproduct_services/models/bosaveextraservicescost.js"></script>
             <script src="js/boproduct_services/extraservices_script.js"></script>
             <script src="js/boproduct_services/models/boextraservicecostgrid.js"></script>
             <script src="js/boproduct_services/control/productCtrl.js"></script>
-            <script src="js/boproduct_services/models/boupdateextraservicecost.js"></script>';
+            <script src="js/boproduct_services/models/boupdateextraservicecost.js"></script>
+            <script src="js/boproduct_services/models/bopaxbreakscost.js"></script>';
             
         }
 ?>

@@ -56,6 +56,7 @@ try {
     $ps_teen_claim_rollover = trim($_POST["ps_teen_claim_rollover"]);
     $ps_child_claim_rollover = trim($_POST["ps_child_claim_rollover"]);
     $ps_infant_claim_rollover = trim($_POST["ps_infant_claim_rollover"]);
+    $multiple_price = trim($_POST["multiple_price"]);
 
     $id_user = $_SESSION["solis_userid"];
     $uname = $_SESSION["solis_username"];
@@ -78,7 +79,6 @@ try {
 	{
 		$ps_infant_claim = NULL;
 	}
-	
 	
     $con = pdo_con();
 
@@ -120,7 +120,8 @@ try {
             ps_child_claim_rollover,
             ps_infant_claim_rollover, 
             on_api, 
-            on_approved
+            on_approved,
+            multiple_price
             ) 
                 VALUES (
                     :id_product_service_cost, 
@@ -151,7 +152,8 @@ try {
                     :ps_child_claim_rollover,
                     :ps_infant_claim_rollover,
                     :on_api, 
-                    :on_approved)";
+                    :on_approved,
+                    :multiple_price)";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(
@@ -183,7 +185,8 @@ try {
             ":ps_child_claim_rollover" => $ps_child_claim_rollover,
             ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
             ":on_api" => $on_api,
-            ":on_approved" => $on_approved));
+            ":on_approved" => $on_approved,
+            ":multiple_price" => $multiple_price));
         
             $id_product_service_claim = $con->lastInsertId();
 
@@ -338,7 +341,8 @@ try {
                 ps_child_claim_rollover=:ps_child_claim_rollover,
                 ps_infant_claim_rollover=:ps_infant_claim_rollover,
                 on_api=:on_api,
-                on_approved=:on_approved
+                on_approved=:on_approved,
+                multiple_price=:multiple_price
                 WHERE id_product_service_claim=:id_product_service_claim";
 
         $stmt = $con->prepare($sql);
@@ -371,9 +375,12 @@ try {
             ":ps_child_claim_rollover" => $ps_child_claim_rollover,
             ":ps_infant_claim_rollover" => $ps_infant_claim_rollover,
             ":on_api" => $on_api,
-            ":on_approved" => $on_approved));
+            ":on_approved" => $on_approved,
+            ":multiple_price" => $multiple_price));
     }
-    echo json_encode(array("OUTCOME" => "OK", "id_product_service_claim"=>$id_product_service_claim));
+    echo json_encode(array("OUTCOME" => "OK", 
+        "id_product_service_claim"=>$id_product_service_claim,
+        "multiple_price" => $multiple_price));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

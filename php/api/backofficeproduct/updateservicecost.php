@@ -42,8 +42,9 @@
         $ps_teen_cost = trim($_POST["ps_teen_cost"]);
         $ps_child_cost = trim($_POST["ps_child_cost"]);
         $ps_infant_cost = trim($_POST["ps_infant_cost"]);
-        $id_currency = trim($_POST["id_currency"]);		
-        $currency = trim($_POST["currency"]);
+        $id_currency = trim($_POST["id_currency"]);	    
+        $currency = trim($_POST["currency"]);   
+        $multiple_price_cost = trim($_POST["multiple_price_cost"]);
         $id_user = $_SESSION["solis_userid"];
         $uname = $_SESSION["solis_username"];
 
@@ -72,7 +73,8 @@
                         ps_infant_cost=:ps_infant_cost,
                         id_currency=:id_currency,
                         currency=:currency,
-                        id_dept=:id_dept
+                        id_dept=:id_dept, 
+                        multiple_price_cost=:multiple_price_cost
                         WHERE id_product_service_cost=:id_product_service_cost";
 
         $stmt = $con->prepare($sql);                        
@@ -86,7 +88,8 @@
                 ":ps_infant_cost" => $ps_infant_cost,
                 ":id_currency" => $id_currency,
                 ":currency" => $currency,
-                ":id_dept" => $id_dept));
+                ":id_dept" => $id_dept,
+                ":multiple_price_cost" => $multiple_price_cost));
 
                 $sqlLog = "INSERT INTO product_service_cost_log ( 
                     id_product_service_cost,

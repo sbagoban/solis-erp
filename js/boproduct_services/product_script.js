@@ -169,37 +169,52 @@ $(document).ready(function(){
         if (for_infant > 0) { 
             $("#ps_infant_cost").css("display", "block");
             $("#ps_infant_cost").attr("placeholder", "Infant");
+            $("#ps_infant_cost_modal").css("display", "block");
+            $("#ps_infant_cost_modal").attr("placeholder", "Infant");
         } if (for_infant <= 0) { 
             $("#ps_infant_cost_addon").css("display", "none");
             $("#ps_infant_cost").css("display", "none");
+            $("#ps_infant_cost_addon_modal").css("display", "none");
+            $("#ps_infant_cost_modal").css("display", "none");
         }
 
         if (for_teen > 0) { 
             $("#ps_teen_cost").css("display", "block");
             $("#ps_teen_cost").attr("placeholder", "Teen");
+            $("#ps_teen_cost_modal").css("display", "block");
+            $("#ps_teen_cost_modal").attr("placeholder", "Teen");
         } if (for_teen <= 0) { 
             $("#ps_teen_cost_addon").css("display", "none");
             $("#ps_teen_cost").css("display", "none");
+            $("#ps_teen_cost_addon_modal").css("display", "none");
+            $("#ps_teen_cost_modal").css("display", "none");
         }
 
         if (for_child > 0) { 
             $("#ps_child_cost").css("display", "block");
             $("#ps_child_cost").attr("placeholder", "Child");
+            $("#ps_child_cost_modal").css("display", "block");
+            $("#ps_child_cost_modal").attr("placeholder", "Child");
         } if (for_child <= 0) { 
             $("#ps_child_cost_addon").css("display", "none");
             $("#ps_child_cost").css("display", "none");
+            $("#ps_child_cost_addon_modal").css("display", "none");
+            $("#ps_child_cost_modal").css("display", "none");
         }
 
         if (for_adult > 0) { 
             $("#ps_adult_cost").css("display", "block");
             $("#ps_adult_cost").attr("placeholder", "Adult");
+            $("#ps_adult_cost_modal").css("display", "block");
+            $("#ps_adult_cost_modal").attr("placeholder", "Adult");
         } if (for_adult <= 0) { 
             $("#ps_adult_cost_addon").css("display", "none");
             $("#ps_adult_cost").css("display", "none");
+            $("#ps_adult_cost_addon_modal").css("display", "none");
+            $("#ps_adult_cost_modal").css("display", "none");
         }
     }
 });
-
 
 function applyFor() {
     var chkinfant = document.getElementById("for_infant");
@@ -207,8 +222,8 @@ function applyFor() {
     var chkteen = document.getElementById("for_teen");
     var chkadult = document.getElementById("for_adult");
 
-    $('input').on('click',function () {
-        if (chkinfant.checked) {
+    $('.requiredChkApplyFor').on('click',function () {
+        if (chkinfant.checked == true) {
             $("#age_inf_from").prop("readonly", false);
             $("#age_inf_to").prop("readonly", false);
         } if (chkinfant.checked == false) {
@@ -249,39 +264,6 @@ function applyFor() {
             $("#max_age").val(0);
         }
 
-        // if (chkadult.checked && chkteen.checked == false && chkchild.checked == false && chkinfant.checked == false) {
-        //     $('#min_age').css("border", "2px solid orange");
-        //     $('#max_age').css("border", "2px solid orange");
-
-        //     var minage = Number ($('#min_age').val());
-        //     var maxage = Number ($('#max_age').val());
-        //     if (minage == '' || maxage == '') {
-        //         $('#btn-saveProductServices').attr('disabled', true); 
-        //     } else {
-        //         $('#btn-saveProductServices').attr('disabled', false); 
-        //     }
-        // }
-        // if (chkadult.checked == false || chkteen.checked || chkchild.checked || chkinfant.checked) {
-        //     $('#min_age').css("border", "1px solid black");
-        //     $('#max_age').css("border", "1px solid black");
-        // }
     });
 }
 
-// $('#max_age').change(function(){
-//     var minage = Number ($('#min_age').val());
-//     var maxage = Number ($('#max_age').val());
-//     if (minage > maxage){        
-//         $('#max_age').css("border", "2px solid orange");
-//         alert ('Choose a number greater than ' + minage );
-//     }
-// });
-
-// $('#min_age').change(function(){
-//     var minage = Number ($('#min_age').val());
-//     if (minage != ''){
-//         $('#btn-saveProductServices').attr('disabled', false); 
-//     } else { 
-//         $('#btn-saveProductServices').attr('disabled', true); 
-//     }
-// });

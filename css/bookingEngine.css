@@ -709,3 +709,20 @@ div#verticalSeparator {
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
 /* BACKOFFICE ADD EXCURSION */
+
+
+i.fa.fa-times.fa-lg {
+  background: #e2e2e2;
+  color: red;
+  padding: 10px;
+  border-radius: 25px;
+  transition: all .5s ease-in-out;
+}
+
+#enableCounter {
+  top: 26px;
+}
+
+#disableCounter {
+  top: 26px;
+}

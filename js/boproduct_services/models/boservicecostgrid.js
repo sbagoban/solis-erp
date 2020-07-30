@@ -78,6 +78,18 @@ function allServicesGridCost(addedCost) {
                 '<i id="btnEditServiceCost" class="fa fa-fw fa-edit" title="Edit Line"></i>' +
                 '<i id="btnDeleteServiceCost" class="fa fa-fw fa-trash-o" title="Delete Line"></i>' + 
                 '<i id="btnAddClaim" class="fa fa-fw fa-money" title="Add Claim"></i></div>'
+            },
+            {
+                "data" : null,
+                    render: function( data, type, row ) {
+                        var multiple_price_cost = data.multiple_price_cost ;
+                        if (data.multiple_price_cost == 1) {
+                            var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#00a65a" title="Multiple Price" id="btnPaxBreaksCost"></i> &nbsp; &nbsp;';
+                        } else {
+                            var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#e6e6e6" title="Single price"></i> &nbsp; &nbsp;';                            
+                        }
+                        return icon;
+                }
             }
         ],
         "initComplete": function () {
@@ -103,6 +115,12 @@ function allServicesGridCost(addedCost) {
                     var table = $('#tbl-productServicesCost').DataTable();
                     var data = table.row( $(this).parents('tr') ).data();
                     addServiceClaim(data);
+                })
+                .on( 'click', '#btnPaxBreaksCost', function (e) {
+                    var table = $('#tbl-productServicesCost').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    allServicesPaxBreakGridCost(data);
+                    multiplePriceServiceCost(data);
                 })
                 
                 if (addedCost == true) {
@@ -173,7 +191,6 @@ function serviceCostEdit(data) {
     var valid_to = valid_to[0]+","+valid_to[1]+","+valid_to[2];
     var valid_to = new Date(valid_to);
     document.getElementById("id_product_service_cost_1").innerHTML = data.id_product_service_cost;
-		console.log(data);
 	var start_date = data.valid_from;
 	var date_from = start_date.split("-");
 	var date_from_y = date_from[0];
@@ -204,7 +221,18 @@ function serviceCostEdit(data) {
         "minDate" : valid_from,
         "maxDate" : valid_to
     });
-    
+
+    if (data.multiple_price_cost == 1) {
+        $('#multiple_price_cost').prop('checked', true);
+        var multiple_price_cost = 1;    
+        document.getElementById("ps_adult_cost").disabled = true;
+        document.getElementById("ps_teen_cost").disabled = true;
+        document.getElementById("ps_child_cost").disabled = true;
+        document.getElementById("ps_infant_cost").disabled = true;
+    } else { 
+        $('#multiple_price_cost').prop('checked', false);
+        var multiple_price_cost = 0;   
+    } 
 }
 
 // Add Extra Service
@@ -215,7 +243,19 @@ function serviceCostExtra(data) {
 
 // Add claim 
 function addServiceClaim(data) {
-    console.log('New', data);
+    var allParams = window.location.href.split('productservicecost').pop();
+    const urlParams = new URLSearchParams(allParams);
+    var for_adult = urlParams.get("for_adult"); 
+    var for_child = urlParams.get("for_child"); 
+    var for_infant = urlParams.get("for_infant"); 
+    var for_teen = urlParams.get("for_teen"); 
+
     var params = jQuery.param(data);
-    window.location.href = "index.php?m=servicerate_claim&pscid=" + data.id_product_service_cost + "&data=" +params;
+    window.location.href = "index.php?m=servicerate_claim&pscid=" 
+    + data.id_product_service_cost 
+    + "&data=" +params
+    + "&for_adult=" +for_adult
+    + "&for_child=" +for_child
+    + "&for_infant=" +for_infant
+    + "&for_teen=" +for_teen;
 }

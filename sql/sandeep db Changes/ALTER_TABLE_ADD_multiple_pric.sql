@@ -1,0 +1,1 @@
+ALTER TABLE product_service_cost ADD multiple_price_cost smallint(1) NOT NULL DEFAULT 0;

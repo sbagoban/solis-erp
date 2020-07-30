@@ -103,6 +103,13 @@ function addCostProductService() {
         var currency = $('#id_currency').find(":selected").text();
         var id_product_service_cost = document.getElementById("id_product_service_cost_1").innerHTML;
 
+        var chkmultipleprice = document.getElementById("multiple_price_cost"); 
+         if (chkmultipleprice.checked == true) {
+            var multiple_price_cost = 1;
+        } else { 
+            var multiple_price_cost = 0;
+        }
+
         if (id_product_service_cost != 0) {
             var objServiceCostEdit = {
                 id_product_service: id_product_service,
@@ -114,7 +121,8 @@ function addCostProductService() {
                 ps_infant_cost: ps_infant_cost,
                 id_currency: id_currency,
                 currency: currency,
-                id_dept: id_dept
+                id_dept: id_dept,
+                multiple_price_cost: multiple_price_cost
             };
             const url_edit_service_cost = "php/api/backofficeproduct/updateservicecost.php?t=" + encodeURIComponent(global_token) + "&id_product_service_cost=" + id_product_service_cost;
             $.ajax({
@@ -143,7 +151,8 @@ function addCostProductService() {
                 id_currency: id_currency,                
                 currency: currency,                
                 charge: charge,
-                id_dept: id_dept
+                id_dept: id_dept,
+                multiple_price_cost: multiple_price_cost
             };
             const url_save_service_cost = "php/api/backofficeproduct/saveservicecost.php?t=" + encodeURIComponent(global_token);
             $.ajax({
@@ -179,4 +188,10 @@ function resetFormAddServiceCost() {
     $('#ps_infant_cost').val('').end();
     $('#id_currency').val('').end();
     document.getElementById("id_product_service_cost_1").innerHTML = 0;
+    $('#multiple_price_cost').prop('checked', false);
+    var multiple_price_cost = 0;        
+    document.getElementById("ps_adult_cost").disabled = false;
+    document.getElementById("ps_teen_cost").disabled = false;
+    document.getElementById("ps_child_cost").disabled = false;
+    document.getElementById("ps_infant_cost").disabled = false;
 }

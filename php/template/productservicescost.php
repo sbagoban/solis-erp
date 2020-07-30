@@ -31,7 +31,16 @@
 									</div>
 									
 							</div>
-							<div class="form-group">
+							<div class="form-group pax_breaks">
+								<label class="col-sm-2 control-label">Multiple Price</label>
+								<div class="col-sm-10">
+									<li class="checkBoxMain" id="multiple_price_1">
+										<label class='with-square-checkbox'>
+											<input type='checkbox' id="multiple_price_cost" onclick="multiplePriceCost()">
+											<span></span>
+										</label>
+									</li>
+								</div>	
 								<label class="col-sm-2 control-label">Cost</label>
 								<div class="col-sm-10">
 									<div class="input-group">
@@ -135,7 +144,8 @@
 												<th class="col-sm-3">Date</th>												
 												<th class="col-sm-1">Currency</th>
 												<th class="col-sm-1">Charges</th>
-												<th class="col-sm-3"></th>
+												<th class="col-sm-2"></th>
+												<th class="col-sm-1"></th>
 											</tr>
 										</thead>
 									</table>
@@ -222,5 +232,90 @@
 	</div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="modal-paxBreakServicesCost" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Multiple Price - Pax Breaks - Service Line : <span id="serviceLineId"></span></h4>
+			</div>
+			<div class="modal-body">
+				
+					<form class="form-horizontal">
+						<div class="box-body">
+								<div class="form-group pax_breaks">
+													
+								<div class="col-sm-2">
+									<label>Type</label>
+									<input type="text" class="form-control" id="charge_pax_break" placeholder="UNIT/PAX" disabled>
+									<!-- for display only  --->
+								</div>
+								<div class="col-sm-2">
+									<div class="input-group">
+										<label>From</label>
+										<input type="number" id="pax_from" class="form-control" min="0" placeholder="from">
+									</div>
+								</div>
 
+								<div class="col-sm-2">
+									<div class="input-group">
+										<label>To</label>
+										<input type="number" id="pax_to" class="form-control" min="0" placeholder="to">
+									</div>
+								</div>
+								<div class="col-sm-5">
+									<label>Set Claim</label>
+									<div class="input-group">
+										<input type="number" class="form-control" id="ps_adult_cost_modal" min="0">
+										<!-- <span class="input-group-addon" id="ps_adult_cost_addon_modal">Adult</span> -->
+										<input type="number" class="form-control" id="ps_teen_cost_modal" min="0">
+										<!-- <span class="input-group-addon" id="ps_teen_cost_addon_modal">Teen</span> -->
+										<input type="number" class="form-control" id="ps_child_cost_modal" min="0">
+										<!-- <span class="input-group-addon" id="ps_child_cost_addon_modal">Child</span> -->
+										<input type="number" class="form-control" id="ps_infant_cost_modal" min="0">
+										<!-- <span class="input-group-addon" id="ps_infant_cost_addon_modal">Infant</span> -->
+									</div>
+								</div>
+								<div class="col-xs-1 text-center" id="enableCounter">
+                                    <span class="addBtn" id="btnCounter_pax">
+                                        <i class="fa fa-plus fa-lg" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
+                                    </span>
+                                </div>
+                                <div class="col-xs-1 text-center" id="disableCounter" style="display: none">
+                                    <span class="addBtn" >
+                                        <i class="fa fa-times fa-lg" data-toggle="tooltip" title="" data-original-title="Add Extra Field"></i>
+                                    </span>
+                                </div>
+                                <div class="col-xs-12 text-center" style="margin: 35px 0; background: #fff">
+                                	<h4>Pax Break</h4>
+                                </div>
+                                <div class="col-xs-12 text-center">
+                                	<table id="tbl-productServicesCostPaxBreaks" class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th class="col-sm-1">Code</th>
+												<th class="col-sm-1">Type</th>
+												<th class="col-sm-1">From</th>
+												<th class="col-sm-1">To</th>
+												<th class="col-sm-1">Adult</th>
+												<th class="col-sm-1">Teen</th>
+												<th class="col-sm-1">Child</th>
+												<th class="col-sm-1">Infant</th>
+												<th class="col-lg-1"></th>
+											</tr>
+										</thead>
 
+										<tbody></tbody>
+									</table>
+                                </div>
+							</div>							
+							<div class="pager">
+							</div>
+						</div>
+						<!-- /.box-body -->
+					</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -16,7 +16,7 @@ $(document).ready(function(){
 });
 
 function allServicesGridClaim(id_product_service_cost,id_product_service_claim, addedClaim) {    
-   // var id_product_service_claim = document.getElementById("id_product_service_claim").innerHTML;
+    var chkmultipleprice = document.getElementById("multiple_price");
     $('#tbl-productServicesClaim').DataTable({
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
             if (is_pakage_chk == "Y") {
@@ -104,6 +104,18 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim, 
                 '<i class="fa fa-fw fa-plus-circle" id="btnAddExtraServicesClaim"></i>' +
                 '<i class="fa fa-fw fa-edit" id="btnEditClaim"></i>'+
                 '<i class="fa fa-fw fa-trash-o" id="btnDeleteClaim"></i>'
+            },
+            {
+            "data" : null,
+                render: function( data, type, row ) {
+                    var multiple_price = data.multiple_price ;
+                    if (data.multiple_price == 1) {
+                        var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#00a65a" title="Multiple Price" id="btnPaxBreaks"></i> &nbsp; &nbsp;';
+                    } else {
+                        var icon =  '<i class = "fa fa-fw fa-user-plus" style="font-size:18px;color:#e6e6e6" title="Single price"></i> &nbsp; &nbsp;';                            
+                    }
+                    return icon;
+                }
             }
         ],
 
@@ -125,6 +137,12 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim, 
                     var data = table.row( $(this).parents('tr') ).data();
                     editServiceClaim(data);
                     extraServiceGridClaim(data);
+                })
+                .on( 'click', '#btnPaxBreaks', function (e) {
+                    var table = $('#tbl-productServicesClaim').DataTable();
+                    var data = table.row( $(this).parents('tr') ).data();
+                    allServicesPaxBreakGridClaim(data);
+                    multiplePriceServiceClaim(data);
                 })
                 .on('click', 'td', function(e) {
                     var table = $('#tbl-productServicesClaim').DataTable();
@@ -160,7 +178,6 @@ function allServicesGridClaim(id_product_service_cost,id_product_service_claim, 
 }
 
 function countryDetails(row2, e) {
-    console.log('row2', row2);
     const url_display_selected_countries = "php/api/backofficeserviceclaim/selectedmarketclaim.php?t=" + encodeURIComponent(global_token) + "&id_product_service_claim=" + row2.id_product_service_claim;
     var objCountryClaim = {
         id_product_service_claim : row2.id_product_service_claim
@@ -293,6 +310,8 @@ function editServiceClaim(data) {
     var chksaturday = data.ex_saturday;
     var chksunday = data.ex_sunday;
 
+    var chkmultipleprice = data.multiple_price;
+
     if (data.rollover_type == 'Same Rate') {
         $('#txtRollOver').val(0);
         $('#txtRollOver').attr('disabled', 'disabled');
@@ -351,6 +370,21 @@ function editServiceClaim(data) {
     } else if (chksunday == '0') {
         $('#ex_sunday').prop('checked', false);
     }  
+
+    if (chkmultipleprice == '1') {
+        $('#multiple_price').prop('checked', true);           
+        document.getElementById("ps_adult_claim").disabled = true;
+        document.getElementById("ps_teen_claim").disabled = true;
+        document.getElementById("ps_child_claim").disabled = true;
+        document.getElementById("ps_infant_claim").disabled = true;
+        $("#ps_adult_claim").val(0); 
+        $("#ps_teen_claim").val(0); 
+        $("#ps_child_claim").val(0); 
+        $("#ps_infant_claim").val(0); 
+
+    } else if (chkmonday == '0') {
+        $('#multiple_price').prop('checked', false);
+    }
 
 }
 

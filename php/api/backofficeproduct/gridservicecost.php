@@ -26,7 +26,7 @@ $con = pdo_con();
 
 $query_c = $con->prepare("
 SELECT PRS.id_product_service_cost, PRS.id_product_service, PRS.valid_from, PRS.valid_to, PS.charge, 
-PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency,
+PRS.ps_adult_cost, PRS.ps_teen_cost, PRS.ps_child_cost, PRS.ps_infant_cost, PRS.id_currency, PRS.multiple_price_cost,
 PS.service_name, TC.currency_code,
 PS.id_dept, PS.on_monday, PS.on_tuesday, PS.on_wednesday, PS.on_thursday, PS.on_friday, PS.on_saturday, PS.on_sunday,
 PR.product_name, PS.id_coast, TCO.coast, PS.id_creditor, TD.deptname
@@ -69,7 +69,8 @@ if ($row_count_c > 0) {
             'on_friday' => $row['on_friday'],
             'on_saturday' => $row['on_saturday'],
             'on_sunday' => $row['on_sunday'],
-            'product_name' => $row['product_name']
+            'product_name' => $row['product_name'],
+            'multiple_price_cost' => $row['multiple_price_cost']
         );
     }
     $myData = $productServicesCost;
@@ -102,7 +103,8 @@ if ($row_count_c > 0) {
         'on_friday' => '-',
         'on_saturday' => '-',
         'on_sunday' => '-',
-        'product_name' => '-'
+        'product_name' => '-',
+        'multiple_price_cost' => '-'
     );
     $myData = $productServicesCost;
     echo json_encode($myData);

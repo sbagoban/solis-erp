@@ -280,3 +280,10 @@ td.deleteBtnCol {
   box-shadow: none;
   opacity: .65;
 }
+
+.form-group.pax_breaks { 
+  background: #f0f4ff;
+  width: 100%;
+  padding: 13px 0;
+  margin: 0 auto;
+}
