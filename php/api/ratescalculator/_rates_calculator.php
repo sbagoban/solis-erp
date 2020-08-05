@@ -7295,7 +7295,7 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         /**
          * Summary.
          *
-         * returns an array of contracts for the provided paramters
+         * returns an array of contracts for the provided parameters
          *
          *
          * @param PDOConnection  $con PDO Connection Object
@@ -7418,6 +7418,7 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
 
             $hotelid = $arr_ids_final[$i]["HOTELID"];
             $mealid = $arr_ids_final[$i]["MEALID"];
+            $mealplan = $arr_ids_final[$i]["MEALPLAN"];
             $contractid = $arr_ids_final[$i]["CONTRACTID"];
             $roomid = $arr_ids_final[$i]["ROOMID"];
             $hotelname = $arr_ids_final[$i]["HOTEL"];
@@ -7429,6 +7430,9 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
 
             $_arr = _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_rates);
             $_arr["HOTELNAME"] = $hotelname;
+            $_arr["CONTRACTID"] = $contractid;
+            $_arr["MEALID"] = $mealid;
+            $_arr["MEALPLAN"] = $mealplan;
             $_arr["ROOMNAME"] = $roomname;
             $_arr["ROOMIMAGES"] = _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room);
             $_arr["HOTELIMAGES"] = _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
@@ -7449,6 +7453,7 @@ function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_sp
     for ($i = 0; $i < count($arr_ids_spec); $i++) {
         $hotelid = $arr_ids_spec[$i]["HOTELID"];
         $mealid = $arr_ids_spec[$i]["MEALID"];
+        $mealplan = $arr_ids_spec[$i]["MEALPLAN"];
         $contractid = $arr_ids_spec[$i]["CONTRACTID"];
         $roomid = $arr_ids_spec[$i]["ROOMID"];
         $hotelname = $arr_ids_spec[$i]["HOTEL"];
@@ -7458,7 +7463,9 @@ function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_sp
         if (!_rates_calculator_filterout_hotel_room_meal_notinarray($arr_ids_final, $hotelid,
                         $mealid, $roomid)) {
             $arr_ids_final[] = array("CONTRACTID" => $contractid, "HOTELID" => $hotelid,
-                "MEALID" => $mealid, "ROOMID" => $roomid,
+                "MEALID" => $mealid, 
+                "MEALPLAN" => $mealplan, 
+                "ROOMID" => $roomid,
                 "HOTEL" => $hotelname, "ROOM" => $roomname);
         }
     }
@@ -7489,11 +7496,12 @@ function _rates_calculator_lkupcontract_hotel_room_meal($con, $checkin, $checkou
     //=============================================================
     //and now search for any applicable contracts for these dates and rates provided
 
-    $sql = "SELECT sc.*,scr.roomfk, hr.roomname, h.hotelname
+    $sql = "SELECT sc.*,scr.roomfk, hr.roomname, h.hotelname, mp.mealfullname
             FROM tblservice_contract sc
             INNER JOIN tblservice_contract_rooms scr on sc.id = scr.servicecontractfk
             INNER JOIN tblhotel_rooms hr on scr.roomfk = hr.id
             INNER JOIN tblhotels h on hr.hotelfk = h.id
+            INNER JOIN tblmealplans mp ON mp.id = sc.mealplan_fk
             WHERE sc.active_external = 1 AND sc.active_internal = 1";
 
     $sql .= " AND sc.id IN 
@@ -7530,7 +7538,9 @@ function _rates_calculator_lkupcontract_hotel_room_meal($con, $checkin, $checkou
 
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
         $arr_return[] = array("CONTRACTID" => $rw["id"], "HOTELID" => $rw["hotelfk"],
-            "MEALID" => $rw["mealplan_fk"], "ROOMID" => $rw["roomfk"],
+            "MEALID" => $rw["mealplan_fk"], 
+            "MEALPLAN" => $rw["mealfullname"],
+            "ROOMID" => $rw["roomfk"],
             "HOTEL" => $rw["hotelname"], "ROOM" => $rw["roomname"]);
     }
 
@@ -7574,6 +7584,8 @@ function _rates_calculator_get_roomfacilities($con, $roomid) {
             where hf.roomfk = :roomfk and f.category = 'ROOM' and f.deleted = 0 
             order by f.ordering";
 
+    $query = $con->prepare($sql);
+    
 
     $query->execute(array(":roomfk" => $roomid));
     $arr_return = array();
@@ -7592,6 +7604,7 @@ function _rates_calculator_get_hotelfacilities($con, $hotelid) {
             where hf.hotelfk = :hotelfk and f.category = 'HOTEL' and f.deleted = 0 
             order by f.ordering";
 
+    $query = $con->prepare($sql);
 
     $query->execute(array(":hotelfk" => $hotelid));
     $arr_return = array();

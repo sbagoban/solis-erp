@@ -117,8 +117,8 @@ function ratescalculator() {
     //extra supplement??
     var str_frm_exec = [
         {type: "settings", position: "label-left", id: "form_exec"},
-        {type: "button", name: "cmdTest", value: "Launch Rates Calculator", width: "300", offsetLeft: 200}
-        //,{type: "button", name: "cmdTestMe", value: "Launch Rates API", width: "300", offsetLeft: 200}
+        {type: "button", name: "cmdTest", value: "Launch Rates Calculator", width: "300", offsetLeft: 200},
+        {type: "button", name: "cmdTestMe", value: "Launch Rates API", width: "300", offsetLeft: 200}
     ];
 
     var form_exec = main_layout.cells("b").attachForm(str_frm_exec);
@@ -127,10 +127,10 @@ function ratescalculator() {
         if (name == "cmdTest")
         {
             testRatesCalculator();
-        }
-        else if (name == "cmdTestMe")
+        } else if (name == "cmdTestMe")
         {
-            testRatesAPI();
+            //testRatesAPI();
+            subsidiarytest();
         }
     });
 
@@ -369,26 +369,26 @@ function ratescalculator() {
         {type: "checkbox", name: "chk_show_invalid_spos", label: "Show Invalid SPOS:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10"
-        }        
+        }
     ];
 
     var form_spo = accordConSPO.cells("spo").attachForm(str_frm_spo);
 
     form_spo.getCombo("spo_type").addOption([
-        {value: "contractual", text: "CONTRACTUAL", img_src: "images/solution.png"}, 
-        {value: "tactical", text: "TACTICAL", img_src: "images/solution.png"}, 
+        {value: "contractual", text: "CONTRACTUAL", img_src: "images/solution.png"},
+        {value: "tactical", text: "TACTICAL", img_src: "images/solution.png"},
         {value: "both", text: "BOTH", img_src: "images/solution.png"}]);
     form_spo.getCombo("spo_type").readonly(true);
     form_spo.getCombo("spo_type").setComboValue("BOTH");
 
     form_spo.getCombo("spo_chosen").addOption([
-        {value: "CHOICE", text: "LET ME CHOOSE OFFERS", img_src: "images/offer.png"}, 
+        {value: "CHOICE", text: "LET ME CHOOSE OFFERS", img_src: "images/offer.png"},
         {value: "LOWEST", text: "APPLY OFFER GIVING LOWEST PRICE", img_src: "images/offer.png"},
         {value: "NONE", text: "DO NOT APPLY ANY OFFERS", img_src: "images/offer.png"}]);
     form_spo.getCombo("spo_chosen").readonly(true);
     form_spo.getCombo("spo_chosen").setComboValue("CHOICE");
 
-    
+
 
     jQuery(function ($) {
         $("[name='spo_booking_date']").mask("99-99-9999");
@@ -469,9 +469,9 @@ function ratescalculator() {
     choiceLayout.cells("b").hideHeader();
     choiceLayout.cells("a").setHeight(800);
     choiceLayout.cells("b").setHeight(40);
-    
+
     choiceLayout.cells("a").fixSize(true, true);
-    
+
     var grid_choices = choiceLayout.cells("a").attachGrid();
     grid_choices.setIconsPath('libraries/dhtmlx/imgs/');
     grid_choices.setHeader(",Category,Description,Offers,Price After Offer");
@@ -504,12 +504,12 @@ function ratescalculator() {
         if (name == "cmdApply")
         {
             applySPOOptions();
-        }       
+        }
     });
-    
-    
+
+
     function applySPOOptions()
-    {   
+    {
         //check if there is an option chosen
         var checkedid = grid_choices.getCheckedRows(grid_choices.getColIndexById("choice"));
 
@@ -527,12 +527,12 @@ function ratescalculator() {
         }
 
         form_spo.setItemValue("spo_chosen", checkedid);
-                
+
         popupwin_choice.setModal(false);
         popupwin_choice.hide();
-        
+
         testRatesCalculator();
-        
+
         return;
     }
 
@@ -632,7 +632,7 @@ function ratescalculator() {
             grid_children.cells(rowid, grid_children.getColIndexById("count")).setValue((i + 1));
         }
     }
-    
+
     function testRatesAPI()
     {
         var arradults = [];
@@ -657,32 +657,32 @@ function ratescalculator() {
 
             arrchildren.push({count: count, age: age, sharing_own: sharing_own});
         }
-        
+
         var params = "u=" + encodeURIComponent("SCGP_API_USER") +
-                     "&p=" + encodeURIComponent("SCGP_API_USER") +
-                     "&t=" + encodeURIComponent("UZghvY3ToXFiuCr1nLVwKHt4pW6dQBqJbRk8yDz9") +
-                     "&checkin_date=" + encodeURIComponent("2019-04-03") +
-                     "&checkout_date=" + encodeURIComponent("2019-04-07") +
-                     "&checkin_time=" + encodeURIComponent("10:00") +
-                     "&checkout_time=" + encodeURIComponent("14:00") +
-                     "&adults=" + encodeURIComponent(JSON.stringify(arradults)) +
-                     "&children=" + encodeURIComponent(JSON.stringify(arrchildren)) +
-                     "&hotel=" + encodeURIComponent("19") +
-                     "&hotelroom=" + encodeURIComponent("2") + 
-                     "&mealplan=" + encodeURIComponent("6") + 
-                     "&supp_mealplan=" + encodeURIComponent("4") + 
-                     "&is_wedding=" + encodeURIComponent("0") + 
-                     "&booking_date=" + encodeURIComponent("2019-03-01") +
-                     "&party_pax=" + encodeURIComponent("5") + 
-                     "&travel_date=" + encodeURIComponent("2019-04-01");
-                
+                "&p=" + encodeURIComponent("SCGP_API_USER") +
+                "&t=" + encodeURIComponent("UZghvY3ToXFiuCr1nLVwKHt4pW6dQBqJbRk8yDz9") +
+                "&checkin_date=" + encodeURIComponent("2019-04-03") +
+                "&checkout_date=" + encodeURIComponent("2019-04-07") +
+                "&checkin_time=" + encodeURIComponent("10:00") +
+                "&checkout_time=" + encodeURIComponent("14:00") +
+                "&adults=" + encodeURIComponent(JSON.stringify(arradults)) +
+                "&children=" + encodeURIComponent(JSON.stringify(arrchildren)) +
+                "&hotel=" + encodeURIComponent("19") +
+                "&hotelroom=" + encodeURIComponent("2") +
+                "&mealplan=" + encodeURIComponent("6") +
+                "&supp_mealplan=" + encodeURIComponent("4") +
+                "&is_wedding=" + encodeURIComponent("0") +
+                "&booking_date=" + encodeURIComponent("2019-03-01") +
+                "&party_pax=" + encodeURIComponent("5") +
+                "&travel_date=" + encodeURIComponent("2019-04-01");
+
         dhtmlxAjax.post("api_connect/hotelroomrates.php", params, function (loader) {
-           
+
             if (loader)
             {
-                
+
                 console.log(loader);
-                
+
                 var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
 
                 if (!json_obj)
@@ -835,7 +835,7 @@ function ratescalculator() {
         var params = "params=" + encodeURIComponent(JSON.stringify(main_details)) +
                 "&spo_params=" + encodeURIComponent(JSON.stringify(spo_details)) +
                 "&t=" + encodeURIComponent(global_token);
-                
+
         dhtmlxAjax.post("php/api/ratescalculator/testrates.php", params, function (loader) {
             param_layout.progressOff();
             results_layout.progressOff();
@@ -872,10 +872,10 @@ function ratescalculator() {
                 if (json_obj.OUTCOME == "OK")
                 {
                     console.log(json_obj);
-                    
+
                     if (json_obj.RESULT.OUTCOME == "OK")
                     {
-                        
+
 
                         var choice_or_prices = json_obj.RESULT.CHOICE_PRICES;
 
@@ -914,6 +914,55 @@ function ratescalculator() {
 
     }
 
+
+    function subsidiarytest()
+    {
+        param_layout.progressOn();
+        results_layout.progressOn();
+        
+        dhtmlxAjax.post("php/api/ratescalculator/testrates_subsidiary.php", "", function (loader) {
+            
+            param_layout.progressOff();
+            results_layout.progressOff();
+        
+            if (loader)
+            {
+                if (loader.xmlDoc.responseURL == "")
+                {
+                    dhtmlx.alert({
+                        text: "Connection Lost!",
+                        type: "alert-warning",
+                        title: "Test Rates Calculator",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+
+                var json_obj = utils_response_extract_jsonobj(loader, false, "", "");
+
+                if (!json_obj)
+                {
+                    dhtmlx.alert({
+                        text: loader.xmlDoc.responseText,
+                        type: "alert-warning",
+                        title: "Test Rates Calculator",
+                        callback: function () {
+                        }
+                    });
+                    console.log(loader.xmlDoc.responseText);
+                    return false;
+                }
+
+                console.log(json_obj);
+
+
+            }
+        });
+
+    }
+
+
     function loadSPOchoices(json_obj)
     {
         grid_choices.clearAll();
@@ -925,13 +974,13 @@ function ratescalculator() {
             var description = arrchoices[i].DESCRIPTION;
             var single_combined = arrchoices[i].SINGLE_COMBINED;
             var totalsells = arrchoices[i].TOTAL_SELL_DESCRIPTION;
-            
+
             var arr_spos = arrchoices[i].ARR_SPOS;
 
-            var offers = arr_spos.map(function (elem) {                
+            var offers = arr_spos.map(function (elem) {
                 var spo_name = elem.NAME;
                 var iscumulative = elem.ISCUMULATIVE;
-                if(iscumulative == "1")
+                if (iscumulative == "1")
                 {
                     return spo_name + " - <b>CUMULATIVE</b>";
                 }
@@ -944,12 +993,12 @@ function ratescalculator() {
             grid_choices.cells(choiceid, grid_choices.getColIndexById("description")).setValue(description);
             grid_choices.cells(choiceid, grid_choices.getColIndexById("offers")).setValue(offers);
             grid_choices.cells(choiceid, grid_choices.getColIndexById("price")).setValue(totalsells);
-            
+
             grid_choices.setRowTextStyle(choiceid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:3px solid black; border-right:1px solid #A4A4A4;");
 
 
         }
-      
+
         grid_choices.setRowTextStyle(choiceid, "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:3px solid black; border-right:1px solid #A4A4A4;");
 
 
