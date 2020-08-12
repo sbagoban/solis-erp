@@ -9,7 +9,6 @@ function _rates_calculator($con, $arr_params) {
         $stmt = $con->prepare($sql);
         $stmt->execute();
 
-
         $time_pre = microtime(true);
 
 
@@ -269,6 +268,7 @@ function _rates_calculator($con, $arr_params) {
 
         return array("OUTCOME" => "OK",
             "CHOICE_PRICES" => "PRICES",
+            "CONTRACT_DETAILS"=>$arr_capacity,
             "NUM NIGHTS" => $num_nights, "DAILY" => $arr_daily,
             "EXEC_TIME" => $exec_time, "COLUMNS" => $arr_columns,
             "INVALID_SPOS" => $arr_invalid_spos);
@@ -6603,7 +6603,7 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
 
         //============================================
         //=========================================
-        //reset my parameters
+        //reset my parameters 
         $arr_params["checkin_date"] = $checkin_date;
         $arr_params["checkout_date"] = $checkout_date;
         $arr_params["checkin_time"] = $checkin_time;
@@ -6720,16 +6720,22 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
 
 
         $arr_amounts = _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant);
-
-
+        
+        //get the rules for that room and date period
+        $contract_details = _rates_calculator_get_filter_room($hotelroom, $checkin_date, $checkout_date, $arr_outcome_without_spo["CONTRACT_DETAILS"]);
+        
+        
         $arr_return = array("OUTCOME" => "OK",
             "CONTRACT_ID" => $contractid,
             "ROOM_TYPE" => $room_variant,
             "ROOM_ID" => $hotelroom,
+            "CONTRACT_DETAILS" => $contract_details,
             "PAX_LIMITS_POSSIBILITIES" => $arr_limits,
             "DAILY_STATUS" => $arr_daily_status,
             "COST_CURRENCY_ID" => $currency_cost_id,
             "CLAIM_CURRENCY_ID" => $currency_sell_id,
+            "COST_CURRENCY_NAME" => _rates_calculator_get_currencyname($con, $currency_cost_id),
+            "CLAIM_CURRENCY_NAME" => _rates_calculator_get_currencyname($con, $currency_sell_id),
             "COST_CLAIM_AMOUNTS" => $arr_amounts,
             "AGE_POLICIES" => $arr_age_policies,
             "SPECIAL_OFFERS" => $arr_spos["SPOS"]);
@@ -6741,6 +6747,51 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         $arr_return = array("OUTCOME" => $ex->getMessage());
         return $arr_return;
     }
+}
+
+
+function _rates_calculator_get_filter_room($roomid, $checkin_date, $checkout_date, $arr_capacity)
+{
+    //$checkin_date in YYYY-MM-DD
+    //$checkout_date in YYYY-MM-DD
+    
+    $arr_return = array();
+    
+    for ($i = 0; $i < count($arr_capacity); $i++) {
+        //get the room
+        if ($roomid == $arr_capacity[$i]["room_id"]) {
+            $arr_dates = $arr_capacity[$i]["room_dates"];
+            for ($j = 0; $j < count($arr_dates); $j++) {
+
+                $date_dtfrom = $arr_dates[$j]["date_dtfrom"];
+                $date_dtto = $arr_dates[$j]["date_dtto"];
+
+                if ($date_dtfrom != "" && $date_dtto != "") {
+                    $date_dtfrom = date("Y-m-d", strtotime($date_dtfrom));
+                    $date_dtto = date("Y-m-d", strtotime($date_dtto));
+                    if (($checkin_date >= $date_dtfrom) && ($checkin_date <= $date_dtto)) {
+                        $arr_return[] = $arr_dates[$j];
+                    }
+                } else if ($date_dtfrom == "" && $date_dtto != "") {
+                    $date_dtto = date("Y-m-d", strtotime($date_dtto));
+                    if ($checkout_date <= $date_dtto) {
+                        $arr_return[] = $arr_dates[$j];
+                    }
+                } else if ($date_dtfrom != "" && $date_dtto == "") {
+                    $date_dtfrom = date("Y-m-d", strtotime($date_dtfrom));
+                    if ($checkin_date >= $date_dtfrom) {
+                        $arr_return[] = $arr_dates[$j];
+                    }
+                }
+                else if ($date_dtfrom == "" && $date_dtto == "") {
+
+                    $arr_return[] = $arr_dates[$j];
+                }
+            }
+        }
+    }
+
+    return $arr_return;
 }
 
 function _rates_calculator_reservation_get_daily_status($arr_daily) {
@@ -7430,6 +7481,8 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
 
             $_arr = _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_rates);
             $_arr["HOTELNAME"] = $hotelname;
+            $_arr["HOTELID"] = $hotelid;
+            $_arr["HOTELFIELDS"] = _hotel_details($con, $hotelid);
             $_arr["CONTRACTID"] = $contractid;
             $_arr["MEALID"] = $mealid;
             $_arr["MEALPLAN"] = $mealplan;
@@ -7449,6 +7502,7 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
     }
 }
 
+
 function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_spec) {
     for ($i = 0; $i < count($arr_ids_spec); $i++) {
         $hotelid = $arr_ids_spec[$i]["HOTELID"];
@@ -7463,8 +7517,8 @@ function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_sp
         if (!_rates_calculator_filterout_hotel_room_meal_notinarray($arr_ids_final, $hotelid,
                         $mealid, $roomid)) {
             $arr_ids_final[] = array("CONTRACTID" => $contractid, "HOTELID" => $hotelid,
-                "MEALID" => $mealid, 
-                "MEALPLAN" => $mealplan, 
+                "MEALID" => $mealid,
+                "MEALPLAN" => $mealplan,
                 "ROOMID" => $roomid,
                 "HOTEL" => $hotelname, "ROOM" => $roomname);
         }
@@ -7538,7 +7592,7 @@ function _rates_calculator_lkupcontract_hotel_room_meal($con, $checkin, $checkou
 
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
         $arr_return[] = array("CONTRACTID" => $rw["id"], "HOTELID" => $rw["hotelfk"],
-            "MEALID" => $rw["mealplan_fk"], 
+            "MEALID" => $rw["mealplan_fk"],
             "MEALPLAN" => $rw["mealfullname"],
             "ROOMID" => $rw["roomfk"],
             "HOTEL" => $rw["hotelname"], "ROOM" => $rw["roomname"]);
@@ -7585,7 +7639,7 @@ function _rates_calculator_get_roomfacilities($con, $roomid) {
             order by f.ordering";
 
     $query = $con->prepare($sql);
-    
+
 
     $query->execute(array(":roomfk" => $roomid));
     $arr_return = array();
@@ -7616,8 +7670,17 @@ function _rates_calculator_get_hotelfacilities($con, $hotelid) {
     return $arr_return;
 }
 
+function _rates_calculator_get_currencyname($con, $currencyid) {
+    $sql = "SELECT * FROM tblcurrency WHERE id=:id";
 
+    $query = $con->prepare($sql);
+    $query->execute(array(":id" => $currencyid));
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        return $rw["currency_code"];
+    }
 
+    return "";
+}
 ?>
 
 
