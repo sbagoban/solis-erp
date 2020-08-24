@@ -7883,7 +7883,16 @@ function _rates_calculator_get_inventory_statuses($con, $tofk, $countryid, $hote
     }
     
     //=========================================================
-    //STEP 3: 
+    //STEP 3 : IF ONE OF THE DATES IS ON REQUEST 
+    for($i = 0; $i < count($arr_date_status); $i++)
+    {
+        if($arr_date_status[$i]["STATUS"] == "on_request")
+        {
+            return "ON REQUEST";
+        }
+    }
+    //=========================================================
+    //STEP 4: 
     /*
     Stay Period  = 10 – 15 August
     Room On request = 13 – 30 August
