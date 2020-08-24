@@ -44,6 +44,9 @@ try {
     require_once("../hotelcontracts/_contract_combinations_rooms.php");
     require_once("../../globalvars/globalvars.php");
     require_once("../../utils/utilities.php");
+    
+    require_once("../bckoffhotels/_hotels_details.php");
+
 
 
     $con = pdo_con();
