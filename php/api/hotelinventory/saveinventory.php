@@ -94,7 +94,7 @@ try {
             }
             //=========================================================
             //COUNTRIES MARKET: COUNTRIES BUT NO TOs 
-            else if($market_countries_ids != "")
+            else if($market_countries_ids != "" && $to_ids == "")
             {
                 //split TO wise
                 $arr_country_ids = explode(",", $market_countries_ids);

@@ -268,7 +268,7 @@ function _rates_calculator($con, $arr_params) {
 
         return array("OUTCOME" => "OK",
             "CHOICE_PRICES" => "PRICES",
-            "CONTRACT_DETAILS"=>$arr_capacity,
+            "CONTRACT_DETAILS" => $arr_capacity,
             "NUM NIGHTS" => $num_nights, "DAILY" => $arr_daily,
             "EXEC_TIME" => $exec_time, "COLUMNS" => $arr_columns,
             "INVALID_SPOS" => $arr_invalid_spos);
@@ -2048,7 +2048,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
                 $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates,
                     "ADCH" => "CHILDREN",
                     "AGE" => $child_age,
-                    "BRIDEGROOM" => "");
+                    "BRIDEGROOM" => "", "OCCUP_MODE" => "");
             } else {
                 //need to split
                 $ch_buyprice = round($rates / $split_between);
@@ -2078,7 +2078,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
                     $temp_arr[] = array("MSG" => $msg, "COSTINGS" => $ch_buyprice,
                         "ADCH" => "CHILDREN",
                         "AGE" => $child_age,
-                        "BRIDEGROOM" => "");
+                        "BRIDEGROOM" => "", "OCCUP_MODE" => "");
 
                     $childindex--;
                 }
@@ -2206,11 +2206,12 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
         //======================================================================
         //calculate adult rates ================================================
         //then split the adult rates for each adult
-        $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+        $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "", "OCCUP_MODE" => "");
 
         $arr_adult_workings = _rates_calculator_calc_adult_recur($adult, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
         $rates = $arr_adult_workings["RATES_ADULT"];
         $workings = $arr_adult_workings["WORKINGS_ADULT"];
+        $occup_mode = $arr_adult_workings["OCCUP_MODE"];
 
         $adult_buyprice = 0;
         if ($adult > 0) {
@@ -2244,7 +2245,7 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
                 "COSTINGS" => $adult_buyprice,
                 "ADCH" => "ADULT",
                 "AGE" => $pax["age"],
-                "BRIDEGROOM" => $pax["bride_groom"]);
+                "BRIDEGROOM" => $pax["bride_groom"], "OCCUP_MODE" => $occup_mode);
         }
 
 
@@ -2338,16 +2339,18 @@ function _rates_calculator_get_children_agegroups($arr_params, $con, $spo_contra
 function _rates_calculator_calc_adult_recur($adult, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params) {
     if ($adult == 0) {
         //base case
-        return array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "<font color='orange'>NO RATES DEFINED</font>");
+        return array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "<font color='orange'>NO RATES DEFINED</font>", "OCCUP_MODE" => "");
     } else {
 
         $arr = _rates_calculator_lookup_adult_rates($adult, $arr_adultpolicies_rules, $arr_params);
         $val = $arr["VAL"];
         $msg = $arr["MSG"];
         $recur = $arr["RECUR"];
+        $occup_mode = $arr["OCCUP_MODE"];
 
         $arr_adult_workings["RATES_ADULT"] += $val;
         $arr_adult_workings["WORKINGS_ADULT"] .= "$msg";
+        $arr_adult_workings["OCCUP_MODE"] .= "$occup_mode";
 
         if ($recur) {
             $adult--;
@@ -2362,6 +2365,7 @@ function _rates_calculator_lookup_adult_rates($adultcount, $arr_adultpolicies_ru
     $rates = 0;
     $recur = false;
     $workings = "";
+    $occupancy_room_mode = "";
 
     $currency_buy = $arr_params["currency_buy_code"];
 
@@ -2372,11 +2376,23 @@ function _rates_calculator_lookup_adult_rates($adultcount, $arr_adultpolicies_ru
             $value = _rates_calculator_lookup_rates_valuebasis($arr_rule_policy, "value");
             $basis = _rates_calculator_lookup_rates_valuebasis($arr_rule_policy, "basis");
 
+
+            //===========================
+            $occup_mode = "";
+            if ($basis == "1/n") {
+                $occup_mode = "1/$adultcount " . _rates_calculator_get_occupancy_mode($adultcount);
+            } else if ($basis == "ADD") {
+                $occup_mode = _rates_calculator_get_occupancy_mode($adultcount) . " ADD ";
+            }
+
+
             if ($basis == "") {
                 //happpens when there is only 1 adult
+                $occupancy_room_mode = "SINGLE";
                 $rates = $value;
                 $workings = "($adultcount AD = $currency_buy $value = $currency_buy $rates)";
             } else if ($basis == "1/n") {
+                $occupancy_room_mode = "SINGLE";
                 $rates = $value * $adultcount;
                 $workings = "($adultcount AD * $currency_buy $value = $currency_buy $rates)";
             } else if ($basis == "n") {
@@ -2390,7 +2406,7 @@ function _rates_calculator_lookup_adult_rates($adultcount, $arr_adultpolicies_ru
         }
     }
 
-    return array("VAL" => $rates, "MSG" => $workings, "RECUR" => $recur);
+    return array("VAL" => $rates, "MSG" => $workings, "RECUR" => $recur, "OCCUP_MODE" => $occup_mode);
 }
 
 function _rates_calculator_lookup_rates_valuebasis($arr_rule_policy, $value_basis) {
@@ -3053,6 +3069,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
     $rates = 0;
 
     $workings = "";
+    $occup_mode = "";
 
     //==============================FLAT RATE SPO? ================================
     if ($arr_params["flat_rate_spo_apply"]["APPLY_SPO_FLAT_RATE"]) {
@@ -3093,6 +3110,10 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             //take price as it is
             $rates = $value;
 
+            $occup_mode = "SINGLE";
+
+
+
             //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
 
@@ -3104,19 +3125,23 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
                 "ADCH" => "ADULT",
                 "AGE" => $single_pax["age"],
-                "BRIDEGROOM" => $single_pax["bride_groom"]);
+                "BRIDEGROOM" => $single_pax["bride_groom"], "OCCUP_MODE" => $occup_mode);
         } else if ($basis == "%") {
             //calculate as a percentage of adult single
 
-            $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+            $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "", "OCCUP_MODE" => "");
+
             $adult_index = 1;
+
             $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
             $rates_adult = $arr_adult_workings["RATES_ADULT"];
             $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
+            $workings_occup_mode = $arr_adult_workings["OCCUP_MODE"];
 
             $workings .= " $category {$value}% of ";
             if (trim($workings_adult) != "") {
                 $workings .= "$workings_adult";
+                $occup_mode .= "$workings_occup_mode";
             }
 
             $fees = 0;
@@ -3139,7 +3164,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
                 "ADCH" => "ADULT",
                 "AGE" => $single_pax["age"],
-                "BRIDEGROOM" => $single_pax["bride_groom"]);
+                "BRIDEGROOM" => $single_pax["bride_groom"], "OCCUP_MODE" => $occup_mode);
         }
     } else if ($category == "1/2 DBL") {
         if ($basis == "FLAT") {
@@ -3149,6 +3174,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             //take price as it is
             $rates = $value;
 
+            $occup_mode = "1/2 DOUBLE";
 
             //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
@@ -3162,7 +3188,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
                 "ADCH" => "ADULT",
                 "AGE" => $single_pax["age"],
-                "BRIDEGROOM" => $single_pax["bride_groom"]);
+                "BRIDEGROOM" => $single_pax["bride_groom"], "OCCUP_MODE" => $occup_mode);
         } else if ($basis == "%") {
             //calculate as a percentage of adult 1/2 DBL
             //if there is no adult 1/2 DBL, take adult DOUBLE and divide by 2
@@ -3173,10 +3199,12 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
             $rates_adult = $arr_adult_workings["RATES_ADULT"];
             $workings_adult = $arr_adult_workings["WORKINGS_ADULT"];
+            $workings_occup_mode = $arr_adult_workings["OCCUP_MODE"];
 
             $workings .= "$category {$value}% of ";
             if (trim($workings_adult) != "") {
                 $workings .= "$workings_adult";
+                $occup_mode .= "$workings_occup_mode";
             }
 
             $fees = 0;
@@ -3198,7 +3226,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             $arr[] = array("MSG" => $workings, "COSTINGS" => $rates,
                 "ADCH" => "ADULT",
                 "AGE" => $single_pax["age"],
-                "BRIDEGROOM" => $single_pax["bride_groom"]);
+                "BRIDEGROOM" => $single_pax["bride_groom"], "OCCUP_MODE" => $occup_mode);
         }
     }
 
@@ -3404,7 +3432,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                 $temp_arr[] = array("MSG" => $work, "COSTINGS" => $rates,
                     "ADCH" => "CHILDREN",
                     "AGE" => $child_age,
-                    "BRIDEGROOM" => "");
+                    "BRIDEGROOM" => "", "OCCUP_MODE" => "");
             } else {
                 //need to split
                 $ch_buyprice = round($rates / $split_between);
@@ -3434,7 +3462,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                     $temp_arr[] = array("MSG" => $msg, "COSTINGS" => $ch_buyprice,
                         "ADCH" => "CHILDREN",
                         "AGE" => $child_age,
-                        "BRIDEGROOM" => "");
+                        "BRIDEGROOM" => "", "OCCUP_MODE" => "");
 
                     $childindex--;
                 }
@@ -6489,8 +6517,25 @@ function _rates_calculator_reservation_get_applicable_spos($con, $arr_params) {
 
         $arr_list_spos = $arr_choices[$index]["ARR_SPOS"];
         for ($i = 0; $i < count($arr_list_spos); $i++) {
+
+            //get the SPO description texts
+            $conditions = "";
+            $added_values = "";
+            $sql = "select conditions_text, added_values_text 
+                    from tblspecial_offer
+                    where id = :id;";
+            $query = $con->prepare($sql);
+            $query->execute(array(":id" => $arr_list_spos[$i]["SPOID"]));
+            if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+                $conditions = $row["conditions_text"];
+                $added_values = $row["added_values_text"];
+            }
+
             $arr_spos["SPOS"][] = array("SPO_ID" => $arr_list_spos[$i]["SPOID"],
-                "SPO_NAME" => $arr_list_spos[$i]["NAME"]);
+                "SPO_NAME" => $arr_list_spos[$i]["NAME"],
+                "SPO_CONDITIONS_TEXT" => $conditions,
+                "SPO_ADDED_VALUES_TEXT" => $added_values);
         }
     }
 
@@ -6686,6 +6731,7 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
             return array("OUTCOME" => $outcome);
         }
 
+        $room_occupancy_mode = _rates_calculator_filterout_room_occup($arr_outcome_without_spo);
 
         //==========================================================
         //success in lookup
@@ -6720,15 +6766,19 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
 
 
         $arr_amounts = _rates_calculator_reservation_organise_costs($arr_adult_rates, $arr_children_rates, $room_variant);
-        
+
         //get the rules for that room and date period
-        $contract_details = _rates_calculator_get_filter_room($hotelroom, $checkin_date, $checkout_date, $arr_outcome_without_spo["CONTRACT_DETAILS"]);
-        
-        
+
+        $contract_details = _rates_calculator_get_contract_description($con, $contractid);
+        $contract_rates_details = _rates_calculator_get_filter_room($hotelroom, $checkin_date, $checkout_date, $arr_outcome_without_spo["CONTRACT_DETAILS"]);
+        $contract_details["RATES_DETAILES"] = $contract_rates_details;
+        $contract_details["CONTRACT_ID"] = $contractid;
+
+
         $arr_return = array("OUTCOME" => "OK",
-            "CONTRACT_ID" => $contractid,
             "ROOM_TYPE" => $room_variant,
             "ROOM_ID" => $hotelroom,
+            "ROOM_OCCUPANCY" => $room_occupancy_mode,
             "CONTRACT_DETAILS" => $contract_details,
             "PAX_LIMITS_POSSIBILITIES" => $arr_limits,
             "DAILY_STATUS" => $arr_daily_status,
@@ -6740,8 +6790,6 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
             "AGE_POLICIES" => $arr_age_policies,
             "SPECIAL_OFFERS" => $arr_spos["SPOS"]);
 
-
-
         return $arr_return;
     } catch (Exception $ex) {
         $arr_return = array("OUTCOME" => $ex->getMessage());
@@ -6749,14 +6797,45 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
     }
 }
 
+function _rates_calculator_get_contract_description($con, $contractid) {
 
-function _rates_calculator_get_filter_room($roomid, $checkin_date, $checkout_date, $arr_capacity)
-{
+    $arr = array("CONTRACT_NAME" => "", "EXTERNAL_NOTES" => "");
+
+    $sql = "select * from tblservice_contract WHERE id=:contractid";
+    $query = $con->prepare($sql);
+    $query->execute(array(":contractid" => $contractid));
+    if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+        $arr["CONTRACT_NAME"] = $row["contractname"];
+        $arr["EXTERNAL_NOTES"] = $row["external_notes"];
+    }
+
+    return $arr;
+}
+
+function _rates_calculator_filterout_room_occup($arr_outcome) {
+    $arr_daily = $arr_outcome["DAILY"];
+
+    for ($i = 0; $i < count($arr_daily); $i++) {
+        $arr_costings_workings = $arr_daily[$i]["COSTINGS_WORKINGS"];
+        for ($j = 0; $j < count($arr_costings_workings); $j++) {
+            if (isset($arr_costings_workings[$j]["OCCUP_MODE"])) {
+                if (trim($arr_costings_workings[$j]["OCCUP_MODE"] != "")) {
+                    return trim($arr_costings_workings[$j]["OCCUP_MODE"]);
+                }
+            }
+        }
+    }
+
+    return "";
+}
+
+function _rates_calculator_get_filter_room($roomid, $checkin_date, $checkout_date, $arr_capacity) {
     //$checkin_date in YYYY-MM-DD
     //$checkout_date in YYYY-MM-DD
-    
+
     $arr_return = array();
-    
+
     for ($i = 0; $i < count($arr_capacity); $i++) {
         //get the room
         if ($roomid == $arr_capacity[$i]["room_id"]) {
@@ -6782,8 +6861,7 @@ function _rates_calculator_get_filter_room($roomid, $checkin_date, $checkout_dat
                     if ($checkin_date >= $date_dtfrom) {
                         $arr_return[] = $arr_dates[$j];
                     }
-                }
-                else if ($date_dtfrom == "" && $date_dtto == "") {
+                } else if ($date_dtfrom == "" && $date_dtto == "") {
 
                     $arr_return[] = $arr_dates[$j];
                 }
@@ -7076,17 +7154,18 @@ function _rates_calculator_reservation_get_ad_ch_categories($con, $contractid, $
             }
 
             //===========================
+            $occup_mode = _rates_calculator_get_occupancy_mode($i);
 
             if ($i == 1) {
-                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "SINGLE", "BASIS" => $basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => $occup_mode, "BASIS" => $basis);
             } else if ($i == 2) {
-                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "DOUBLE", "BASIS" => $basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => $occup_mode, "BASIS" => $basis);
             } else if ($i == 3) {
-                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "TRIPLE", "BASIS" => $basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => $occup_mode, "BASIS" => $basis);
             } else if ($i == 4) {
-                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "QUADRUPLE", "BASIS" => $basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => $occup_mode, "BASIS" => $basis);
             } else if ($i >= 5) {
-                $arr_adults[] = array("INDEX" => $i, "CAPTION" => "$i-PAX", "BASIS" => $basis);
+                $arr_adults[] = array("INDEX" => $i, "CAPTION" => $occup_mode, "BASIS" => $basis);
             }
 
             //===========================
@@ -7491,6 +7570,7 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
             $_arr["HOTELIMAGES"] = _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
             $_arr["ROOMFACILITIES"] = _rates_calculator_get_roomfacilities($con, $roomid, "ROOM");
             $_arr["HOTELFACILITIES"] = _rates_calculator_get_hotelfacilities($con, $hotelid, "HOTEL");
+            $_arr["INVENTORY_STATUS"] = _rates_calculator_get_inventory_statuses($con, $touroperator, $countryid, $hotelid, $roomid, $dtckin, $dtckout);
 
             $arr_return_values[] = $_arr;
         }
@@ -7501,7 +7581,6 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         return $arr_return_values;
     }
 }
-
 
 function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_spec) {
     for ($i = 0; $i < count($arr_ids_spec); $i++) {
@@ -7680,6 +7759,160 @@ function _rates_calculator_get_currencyname($con, $currencyid) {
     }
 
     return "";
+}
+
+function _rates_calculator_get_occupancy_mode($adult_index) {
+    $mode = "";
+
+    if ($adult_index == 1) {
+        $mode = "SINGLE";
+    } else if ($adult_index == 2) {
+        $mode = "DOUBLE";
+    } else if ($adult_index == 3) {
+        $mode = "TRIPLE";
+    } else if ($adult_index == 4) {
+        $mode = "QUADRUPLE";
+    } else if ($adult_index >= 5) {
+        $mode = "$i-PAX";
+    }
+
+    return $mode;
+}
+
+function _rates_calculator_get_inventory_statuses($con, $tofk, $countryid, $hotelid, $roomid, $dtfrom, $dtto) {
+    
+    //$dtfrom in yyyy-mm-dd format
+    //$dtto in yyyy-mm-dd format
+    
+    $arr_date_status = array();
+    
+    //================================= TO SPECIFIC RECORD LEVEL FIRST ===================
+    $sql = "SELECT * FROM tblinventory_dates 
+            WHERE deleted=0 AND 
+            to_fk=:to_fk AND 
+            country_fk IS NULL
+            AND roomfk = :roomfk AND 
+            hotelfk = :hotelfk AND 
+            inventory_date BETWEEN :dtfrom AND :dtto 
+            ORDER BY inventory_date";
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":to_fk" => $tofk, ":roomfk" => $roomid, ":hotelfk" => $hotelid,
+        ":dtfrom" => $dtfrom, ":dtto" => $dtto));
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        $arr_date_status[] = array("DATE"=>$rw["inventory_date"],
+                                   "STATUS"=>$rw["inventory_status"]);
+    }
+    
+    //================================= COUNTRY SPECIFIC RECORD LEVEL SECOND ===================
+    $sql = "SELECT * FROM tblinventory_dates 
+            WHERE deleted=0 AND 
+            to_fk IS NULL AND 
+            country_fk = :countryid
+            AND roomfk = :roomfk AND 
+            hotelfk = :hotelfk AND 
+            inventory_date BETWEEN :dtfrom AND :dtto 
+            ORDER BY inventory_date";
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":countryid" => $countryid, ":roomfk" => $roomid, ":hotelfk" => $hotelid,
+        ":dtfrom" => $dtfrom, ":dtto" => $dtto));
+    
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        if(!_rates_calculator_is_inventory_date_inserted($arr_date_status,$rw["inventory_date"]))
+        {
+            $arr_date_status[] = array("DATE"=>$rw["inventory_date"],
+                                   "STATUS"=>$rw["inventory_status"]);
+        }
+    }
+    
+    //================================= WORLDWIDE RECORD LEVEL THIRD ===================
+    $sql = "SELECT * FROM tblinventory_dates 
+            WHERE deleted=0 AND 
+            to_fk IS NULL AND 
+            country_fk IS NULL
+            AND roomfk = :roomfk AND 
+            hotelfk = :hotelfk AND 
+            inventory_date BETWEEN :dtfrom AND :dtto 
+            ORDER BY inventory_date";
+
+    $query = $con->prepare($sql);
+    $query->execute(array(":roomfk" => $roomid, ":hotelfk" => $hotelid,
+        ":dtfrom" => $dtfrom, ":dtto" => $dtto));
+    
+    while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
+        if(!_rates_calculator_is_inventory_date_inserted($arr_date_status,$rw["inventory_date"]))
+        {
+            $arr_date_status[] = array("DATE"=>$rw["inventory_date"],
+                                   "STATUS"=>$rw["inventory_status"]);
+        }
+    }
+    
+    //========================================================
+    //STEP  1 : CHECK IF THERE ARE MISSING DATES
+    $checkin = new DateTime($dtfrom);
+    $checkout = new DateTime($dtto);
+
+    $interval = DateInterval::createFromDateString('1 day');
+    $period = new DatePeriod($checkin, $interval, $checkout);
+
+    foreach ($period as $dt) {
+        $this_date = $dt->format("Y-m-d");
+        
+        if(!_rates_calculator_is_inventory_date_inserted($arr_date_status,$this_date))
+        {
+            return "ON REQUEST";
+        }
+    }
+    
+    //========================================================
+    //STEP2 : NO DATES MISSING, NOW MAKE SURE THAT ALL STATUS ARE ON FREE SALES
+    $flg_all_status_on_free_sales = true;
+    
+    for($i = 0; $i < count($arr_date_status); $i++)
+    {
+        if($arr_date_status[$i]["inventory_status"] != "free_sales")
+        {
+            $flg_all_status_on_free_sales = false;
+        }
+    }
+    
+    if($flg_all_status_on_free_sales)
+    {
+        return "AVAILABLE"; //all status are on free sales!
+    }
+    
+    //=========================================================
+    //STEP 3: 
+    /*
+    Stay Period  = 10 – 15 August
+    Room On request = 13 – 30 August
+    Room in Allotment = 12 – 30 August
+    Book by date : 30 before arrival
+    Booking Date : 01 July
+    
+    Since room allotment cover the on request period and book by date is statisfied, 
+    the room status for the total stay should be Available, 
+    
+    else if the was no allotment or allotment condition is not satisfied then 
+    the room should be On Request,  for the total stay
+     
+     */
+    
+}
+
+
+function _rates_calculator_is_inventory_date_inserted($arr_date_status,$inventory_date)
+{
+    for($i = 0; $i < count($arr_date_status); $i++)
+    {
+        if($arr_date_status[$i]["DATE"] == $inventory_date)
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 ?>
 
