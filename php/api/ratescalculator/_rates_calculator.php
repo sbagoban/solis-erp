@@ -7871,7 +7871,7 @@ function _rates_calculator_get_inventory_statuses($con, $tofk, $countryid, $hote
     
     for($i = 0; $i < count($arr_date_status); $i++)
     {
-        if($arr_date_status[$i]["inventory_status"] != "free_sales")
+        if($arr_date_status[$i]["STATUS"] != "free_sales")
         {
             $flg_all_status_on_free_sales = false;
         }
