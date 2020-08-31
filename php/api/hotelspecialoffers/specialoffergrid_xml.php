@@ -100,6 +100,7 @@ while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
 
     $xml .= "<row id=\"" . $rw["id"] . "\"  >";
     $xml .= "<cell type=\"$subgrid_type\" ><![CDATA[$url]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["id"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["sponame"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["active_internal"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["active_external"]) . "]]></cell>";

@@ -1138,9 +1138,16 @@ function _rates_calculator_getcontracts_for_the_date($arr_params, $thedate, $con
     $mealplan = $arr_params["mealplan"];
     $rate = $arr_params["rate"];
     $touroperator = $arr_params["touroperator"];
-
+    $active_external = $arr_params["active_external"];
+    
     $sql = "SELECT * FROM tblservice_contract WHERE deleted = 0 AND active_internal = 1";
-
+    
+    if ($active_external == 0) {
+        $sql .= " AND active_external = 0 ";
+    } else {
+        $sql .= " AND active_external = 1 ";
+    }
+    
 
     //======================= HOTEL =========================
     $sql .= " AND hotelfk = :hotelfk ";
@@ -4030,7 +4037,6 @@ function _rates_calculator_apply_spo_discount_PPPN(&$rates, &$msg, $arr_params, 
         }
 
 
-
         if ($apply_discounts) {
             if ($flg_index_passed) {
                 if (($adult_children == "ADULT" && ($disc_ad_ch == "BOTH" || $disc_ad_ch == "ADULT")) ||
@@ -4124,7 +4130,10 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
         $disc_max_ch_category = $discount_item["MAX_CH_CATEGORY"];
 
         $disc_bd_gm = $discount_item["BRIDE_GROOM"]; //is discount for bride, groom or both
+        $disc_bd_sngl_dbl = $discount_item["WEDDING_BRIDE_SNGL_DBL"]; //if discount is for bride, then is it on single or double
+        $disc_gm_sngl_dbl = $discount_item["WEDDING_GROOM_SNGL_DBL"]; //if discount is for groom, then is it on single or double
 
+                
         $disc_ag_frm = $discount_item["AGE_FROM"]; //is discount for a specific age group
         $disc_ag_to = $discount_item["AGE_TO"]; //is discount for a specific age group
         $disc_type = $discount_item["ROOM_ALL_FLAT"]; //is discount percentage_room, percentage_all or FLAT
@@ -5054,7 +5063,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
             $s = _rates_calculator_create_spo_obj($con, $id, $sponame, "FREE_UPGRADES", "",
                     "", -1, -1, "", 0, $dates, 0, "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
             $arr_final_single_spos[] = $s;
         }
         //====================================================================
@@ -5063,7 +5072,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
             $s = _rates_calculator_create_spo_obj($con, $id, $sponame, "FREE_UPGRADES", "", "", -1, -1, "",
                     0, $dates, 0, "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
 
             $arr_final_single_spos[] = $s;
         }
@@ -5077,7 +5086,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
                     "", -1, -1, "%ROOM", 100, $dates, $free_nights_num_nights,
                     $spo_free_nights_start_end, array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
             $arr_final_single_spos[] = $s;
         }
         //====================================================================
@@ -5089,7 +5098,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
                     "", -1, -1, "", 0, $dates, "",
                     "", $arr_fr["FLAT_RATES_CAPACITY"],
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
 
             $arr_final_single_spos[] = $s;
         }
@@ -5102,7 +5111,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
                     "", -1, -1, $discount_basis, $discount_value, $dates, "",
                     "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
 
             $arr_final_single_spos[] = $s;
         }
@@ -5115,7 +5124,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
                     "", -1, -1, $discount_basis, $discount_value, $dates, "",
                     "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
 
             $arr_final_single_spos[] = $s;
         }
@@ -5143,7 +5152,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
                     "", -1, -1, $discount_basis, $discount_value,
                     $dates, "", "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
 
             $arr_final_single_spos[] = $s;
         }
@@ -5162,7 +5171,7 @@ function _rates_calculator_create_spos($arr_single_spos, $con, $arr_params) {
                     $discount_value, $dates, "",
                     "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,"","");
 
             $arr_final_single_spos[] = $s;
         }
@@ -5212,7 +5221,11 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
     $wedding_apply_discount_both_value = $rw["wedding_apply_discount_both_value"];
     $wedding_apply_discount_bride_value = $rw["wedding_apply_discount_bride_value"];
     $wedding_apply_discount_groom_value = $rw["wedding_apply_discount_groom_value"];
-
+     
+    $wedding_apply_discount_both_sngl_dbl = $rw["wedding_apply_discount_both_sngl_dbl"];
+    $wedding_apply_discount_bride_sngl_dbl = $rw["wedding_apply_discount_bride_sngl_dbl"];
+    $wedding_apply_discount_groom_sngl_dbl = $rw["wedding_apply_discount_groom_sngl_dbl"];
+    
     if ($wedding_apply_discount_both == 1) {
 
         $s = _rates_calculator_create_spo_obj($con, $id, $sponame, "DISCOUNT", "AD",
@@ -5220,10 +5233,11 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
                 $wedding_apply_discount_both_value, $dates, "",
                 "", array(),
                 $max_adult, $max_adult_category,
-                $max_children, $max_children_category, $iscumulative);
+                $max_children, $max_children_category, $iscumulative,
+                "","");
         $arr_spo_return[] = $s;
     } else {
-        //will need to split into two separate offers
+        //will need to split into two separate offers: bride and groom
 
         if ($wedding_apply_discount_bride == 1) {
 
@@ -5232,7 +5246,8 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
                     $wedding_apply_discount_bride_value, $dates, "",
                     "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,
+                    $wedding_apply_discount_bride_sngl_dbl,$wedding_apply_discount_groom_sngl_dbl);
 
             $arr_spo_return[] = $s;
         }
@@ -5243,7 +5258,8 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
                     $wedding_apply_discount_groom_value, $dates, "",
                     "", array(),
                     $max_adult, $max_adult_category,
-                    $max_children, $max_children_category, $iscumulative);
+                    $max_children, $max_children_category, $iscumulative,
+                    $wedding_apply_discount_bride_sngl_dbl,$wedding_apply_discount_groom_sngl_dbl);
 
             $arr_spo_return[] = $s;
         }
@@ -5285,7 +5301,7 @@ function _rates_calculator_create_spos_family_offer($the_family_spo, $con) {
                 "", $age_from, $age_to, $discount_basis,
                 $discount_value, $dates, "", "", array(),
                 $max_adult, $max_adult_category,
-                $max_children, $max_children_category, $iscumulative);
+                $max_children, $max_children_category, $iscumulative,"","");
 
         $arr_spo_return[] = $s;
     }
@@ -5355,13 +5371,16 @@ function _rates_calculator_spo_generate_spo_obj_from_choice($arr_choices, $spo_c
         //add the selected spo to the array $arr_spo_records_selected
         $arr_spo_records_selected[$spo_records_selected_idx] = _rates_calculator_spo_lookup_spo_record_by_id($spoid, $arr_spo_records);
 
-        //push cumulative attribute to that spo locked to 0 by default
+        //push cumulative attribute to that spo is locked to cumulative = 0 by default
         $arr_spo_records_selected[$spo_records_selected_idx]["SPO_RW"]["iscumulative"] = 0;
 
         $spo_records_selected_idx++;
     }
-
-    //2. convert SPO records in objects  
+    
+    
+    //2. sort spos as per priority 
+    
+    //3. convert SPO records in objects  
     $arr_spo_discounts = _rates_calculator_create_spos($arr_spo_records_selected, $con, $arr_params);
 
     return $arr_spo_discounts;
@@ -6010,40 +6029,49 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
     $touroperator = $arr_params["touroperator"];
     $spo_type = $arr_params["spo_type"];
     $wedding_interested = $arr_params["spo_chk_is_wedding"];
+    $spo_active_external = $arr_params["spo_active_external"];
 
-
-    $sql = "SELECT * FROM tblspecial_offer WHERE deleted = 0 
-            and active_internal = 1 ";
-
+    $sql = "SELECT * FROM tblspecial_offer spo
+            WHERE spo.deleted = 0 
+            and spo.active_internal = 1 ";
+    
+    if($spo_active_external == 0)
+    {
+        $sql .= " AND spo.active_external = 0 ";
+    }
+    else
+    {
+        $sql .= " AND spo.active_external = 1 ";
+    }
 
     //======================= HOTEL =========================
-    $sql .= " AND hotel_fk = :hotelfk ";
+    $sql .= " AND spo.hotel_fk = :hotelfk ";
 
     //======================= HOTEL ROOM =========================
-    $sql .= " AND id IN 
+    $sql .= " AND spo.id IN 
                   (SELECT spo_fk
                    FROM tblspecial_offer_rooms
                    WHERE roomfk=:roomfk
                   )";
 
     //======================= COUNTRY =========================
-    $sql .= " AND id IN 
+    $sql .= " AND spo.id IN 
                   (SELECT spo_fk FROM 
                    tblspecial_offer_countries 
                    WHERE country_fk=:countryfk 
                   )";
 
     //======================= MEAL PLAN =========================
-    $sql .= " AND id IN (SELECT spo_fk FROM 
+    $sql .= " AND spo.id IN (SELECT spo_fk FROM 
               tblspecial_offer_mealplan 
               WHERE mealplanfk = :mealplan_fk
               )";
 
     //======================= RATES =========================
-    $sql .= " AND rate_fk=:ratefk   ";
+    $sql .= " AND spo.rate_fk=:ratefk   ";
 
     //======================= TOUR OPERATORS =========================
-    $sql .= " AND id IN 
+    $sql .= " AND spo.id IN 
                   (SELECT spofk FROM 
                    tblspecial_offer_touroperator 
                    WHERE tofk=:tofk 
@@ -6051,13 +6079,13 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
 
     //======================= SPO TYPE =================================
     if (strtoupper($spo_type) != "BOTH") {
-        $sql .= " AND spo_type = '$spo_type' ";
+        $sql .= " AND spo.spo_type = '$spo_type' ";
     }
 
     //======================= WEDDING SPO INTERESTED ===================
     if ($wedding_interested == 0) {
         //skip wedding offers on purpose
-        $sql .= " AND template NOT IN ('wedding_anniversary','wedding_party','honeymoon') ";
+        $sql .= " AND spo.template NOT IN ('wedding_anniversary','wedding_party','honeymoon') ";
     }
 
 
@@ -6291,7 +6319,8 @@ function _rates_calculator_create_spo_obj($con, $spoid, $sponame, $spo_type, $ad
         $value, $apply_to_dates, $free_nights,
         $free_nights_start_end, $flat_rate_capacity_array,
         $max_adult, $max_adult_category,
-        $max_children, $max_children_category, $iscumulative) {
+        $max_children, $max_children_category, $iscumulative,
+        $wedding_bride_sngl_dbl,$wedding_groom_sngl_dbl) {
 
     $arr_sharing_age_ranges = _rates_calculator_spo_check_child_age_sharing_own($spoid, "SHARING", $con);
     $arr_own_age_ranges = _rates_calculator_spo_check_child_age_sharing_own($spoid, "OWN", $con);
@@ -6316,7 +6345,9 @@ function _rates_calculator_create_spo_obj($con, $spoid, $sponame, $spo_type, $ad
         "IS_CUMULATIVE" => $iscumulative,
         "FREE_NIGHTS" => $free_nights,
         "FREE_NIGHTS_START_END" => $free_nights_start_end,
-        "FLAT_RATE_CAPACITY_ARRAY" => $flat_rate_capacity_array);
+        "FLAT_RATE_CAPACITY_ARRAY" => $flat_rate_capacity_array,
+        "WEDDING_BRIDE_SNGL_DBL" => $wedding_bride_sngl_dbl,
+        "WEDDING_GROOM_SNGL_DBL" => $wedding_groom_sngl_dbl);
 
     return $arr_item;
 }
@@ -6574,6 +6605,8 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
          *     @type Date       $travel_date        travel date in yyyy-mm-dd
          *     @type Integer    $max_pax            maximum passengers in reservation
          *     @type Boolean    $wedding_interested if interested in wedding SPOS (1/0)
+         *     @type Boolean    $spo_active_external if interested in externally activated SPOs (1/0)
+         *     @type Boolean    $active_external if interested in externally activated contracts (1/0)
          *     @type array      $arr_pax {
          *          Array of adults/children details mixed together
          *          @type Integer $count        index of child/adult
@@ -6598,6 +6631,8 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
         $max_pax = $arr_params_resa["max_pax"];
         $arr_pax = $arr_params_resa["arr_pax"];
+        $spo_active_external = $arr_params_resa["spo_active_external"]; //1 or 0
+        $active_external = $arr_params_resa["active_external"]; //1 or 0
 
         $arr_limits = array();
 
@@ -6666,6 +6701,9 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         $arr_params["spo_travel_date"] = $travel_date;
         $arr_params["spo_party_pax"] = $max_pax;
         $arr_params["spo_chk_is_wedding"] = $wedding_interested;
+        $arr_params["spo_active_external"] = $spo_active_external;
+        $arr_params["active_external"] = $active_external;
+        
 
         //================================================================
         //get age policies
@@ -7537,6 +7575,9 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         $arr_params_rates["wedding_interested"] = $wedding_interested; //1 or 0
         $arr_params_rates["max_pax"] = count($arr_pax);
         $arr_params_rates["arr_pax"] = $arr_pax;
+        $arr_params_rates["active_external"] = 1; //always lookup active externally contracts
+        $arr_params_rates["spo_active_external"] = 1; //always lookup active externally SPOs
+        
 
         $arr_return_values = array();
 

@@ -59,7 +59,12 @@ function hotelspecialoffers()
     var _flat_rate_tax_commi_obj = {buying_settings: [], selling_settings: []};
     var _json_capacity = [];
 
-
+    
+    //load the templates into the array
+    var arr_templates = [];
+    
+        
+    /*
     var arr_templates = [{value: "early_booking", text: "Early Booking", tabs: ["name", "periods", "conditions", "applicable", "discounts"]}, //--
         {value: "long_stay", text: "Long Stay", tabs: ["name", "periods", "conditions", "applicable", "discounts"]}, //--
         {value: "honeymoon", text: "Honeymoon", tabs: ["name", "periods", "conditions", "applicable", "wedding_discounts"]}, //--
@@ -75,7 +80,8 @@ function hotelspecialoffers()
 
     arr_templates.sort((a, b) => (a.text > b.text) ? 1 : ((b.text > a.text) ? -1 : 0));
 
-
+    */
+   
     document.getElementById("aTitle").innerHTML = "List of Special Offers: ";
 
     var spolayout = new dhtmlXLayoutObject("main_body", "1C");
@@ -83,13 +89,13 @@ function hotelspecialoffers()
 
     var grid_spo = spolayout.cells("a").attachGrid();
     grid_spo.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_spo.setHeader(",SPO Name,Active Internal,Active External,Type,Code,Template,Tour Operators,Rate,Valid Dates");
-    grid_spo.setColumnIds("subgrid,sponame,active_internal,active_external,spo_type,spocode,template,tour_operator_names,ratecodes,validities");
-    grid_spo.setColTypes("sub_row_grid,ro,ch,ch,ro,ro,ro,ro,ro,ro");
-    grid_spo.setInitWidths("50,250,60,60,160,200,200,200,50,200");
-    grid_spo.setColAlign("center,left,center,center,center,left,left,center,center,center");
-    grid_spo.setColSorting("str,str,int,int,str,str,str,str,date");
-    grid_spo.attachHeader(",#text_filter,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#text_filter,#select_filter,#text_filter");
+    grid_spo.setHeader(",ID,SPO Name,Active Internal,Active External,Type,Code,Template,Tour Operators,Rate,Valid Dates");
+    grid_spo.setColumnIds("subgrid,id,sponame,active_internal,active_external,spo_type,spocode,template,tour_operator_names,ratecodes,validities");
+    grid_spo.setColTypes("sub_row_grid,ro,ro,ch,ch,ro,ro,ro,ro,ro,ro");
+    grid_spo.setInitWidths("50,80,250,60,60,160,200,200,200,50,200");
+    grid_spo.setColAlign("center,center,left,center,center,center,left,left,center,center,center");
+    grid_spo.setColSorting("str,int,str,int,int,str,str,str,str,date");
+    grid_spo.attachHeader(",#text_filter,#text_filter,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#text_filter,#select_filter,#text_filter");
     grid_spo.setEditable(false);
     grid_spo.enableMultiline(true);
     grid_spo.enableAlterCss("", "");
@@ -3365,15 +3371,25 @@ function hotelspecialoffers()
     {
         cboSpoType.addOption([{value: "contractual", text: "Contractual", img_src: "images/solution.png"}]);
         cboSpoType.addOption([{value: "tactical", text: "Tactical", img_src: "images/solution.png"}]);
-
-
-        for (var i = 0; i < arr_templates.length; i++)
-        {
-            var value = arr_templates[i].value;
-            var txt = arr_templates[i].text;
-            cboTemplate.addOption([{value: value, text: txt, img_src: "images/solution.png"}]);
-        }
-
+        
+        var dsTemplates = new dhtmlXDataStore();
+        dsTemplates.load("php/api/hotelspecialoffers/templategrid.php?t=" + encodeURIComponent(global_token), "json", function () {
+            for (var i = 0; i < dsTemplates.dataCount(); i++)
+            {   
+                var item = dsTemplates.item(dsTemplates.idByIndex(i));
+                var value = item.template_code;
+                var text = item.description;
+                var arr_tabs = item.tabs.split(",");
+                arr_templates.push({value: value, text: text, tabs: arr_tabs});
+            }
+            
+            for (var i = 0; i < arr_templates.length; i++)
+            {
+                var value = arr_templates[i].value;
+                var txt = arr_templates[i].text;
+                cboTemplate.addOption([{value: value, text: txt, img_src: "images/solution.png"}]);
+            }
+        });
     }
 
     function toggleSPOTabsVisible(template)

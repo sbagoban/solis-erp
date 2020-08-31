@@ -232,6 +232,10 @@ function ratescalculator() {
             }
 
         },
+        {type: "checkbox", name: "active_external", label: "Active External:", labelWidth: "180",
+            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "0", inputTop: "6"
+        },
         {type: "combo", name: "extra_mealsupp", label: "Extra Meal Supplement:", labelWidth: "150",
             labelHeight: "22", inputWidth: "400", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10",
@@ -361,6 +365,10 @@ function ratescalculator() {
         {type: "input", name: "spo_party_pax", label: "Additional Num Pax in Party:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
+        },
+        {type: "checkbox", name: "spo_active_external", label: "Active External:", labelWidth: "180",
+            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10"
         },
         {type: "checkbox", name: "spo_chk_is_wedding", label: "Interested in Wedding SPOS:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
@@ -979,12 +987,13 @@ function ratescalculator() {
 
             var offers = arr_spos.map(function (elem) {
                 var spo_name = elem.NAME;
+                var spo_id = elem.SPOID;
                 var iscumulative = elem.ISCUMULATIVE;
                 if (iscumulative == "1")
                 {
-                    return spo_name + " - <b>CUMULATIVE</b>";
+                    return spo_name + " (ID: " + spo_id + ")" + " - <b>CUMULATIVE</b>";
                 }
-                return spo_name;
+                return spo_name + " (ID: " + spo_id + ")";
             }).join("<br>");
 
             grid_choices.addRow(choiceid, "");

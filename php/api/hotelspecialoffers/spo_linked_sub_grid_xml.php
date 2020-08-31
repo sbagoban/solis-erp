@@ -81,6 +81,7 @@ $xml .= "<head>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\"  sort=\"str\">Link Description</column>";
 $xml .= "    <column width=\"70\" type=\"ro\" align=\"center\"  sort=\"str\">Link Active</column>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">SPO Template</column>";
+$xml .= "    <column width=\"80\" type=\"ro\" align=\"left\" sort=\"str\">ID</column>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">SPO Code</column>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">SPO Name</column>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">Tour Operator</column>";
@@ -202,6 +203,7 @@ while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
     $xml .= "<cell style='$cellstyle $topborder' $rowspan ><![CDATA[$link_description]]></cell>";
     $xml .= "<cell style='$cellstyle $topborder' $rowspan ><![CDATA[$link_active]]></cell>";
     $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_template]]></cell>";
+    $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_id]]></cell>";
     $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_spocode]]></cell>";
     $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_sponame]]></cell>";
     $xml .= "<cell style='$cellstyle $topborder $forecolor $bgcolor'><![CDATA[$spo_touroperators]]></cell>";

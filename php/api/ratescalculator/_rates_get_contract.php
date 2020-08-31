@@ -1,33 +1,31 @@
 <?php
 
 function _rates_reservation_get_contract_id($con, $arr_params_resa) {
-    
-    /**
-    * Summary.
-    *
-    * looks up the contract id for the reservation parameters passed
-    *
-    *
-    * @param PDOConnection  $con PDO Connection Object
-    * @param array $arr_params_resa {
-    *     Array of parameters from reservation
-    *
-    *     @type Integer $mealplan meal plan id 
-    *     @type Integer $touroperator tour operator id
-    *     @type Integer $hotel hotel id
-    *     @type Integer $hotelroom hotel room id
-    *     @type Date $checkin_date checkin date in yyyy-mm-dd
-    *     @type Date $checkout_date checkout date in yyyy-mm-dd
-    *     @type Date $booking_date booking date in yyyy-mm-dd
-    *     @type Date $travel_date travel date in yyyy-mm-dd
-    *     @type Integer $max_pax maximum passengers in reservation
-    * 
-    * }
-    * @return INTEGER IF SUCCESSFUL CONTRACT ID LOOKUP 
-    * OTHERWISE RETURNS STRING "FAIL_NO_CONTRACT", "FAIL_OVERLAPPING_TEST", "FAIL_MULTILE_PERIODS_TEST"     
-    */
-    
 
+    /**
+     * Summary.
+     *
+     * looks up the contract id for the reservation parameters passed
+     *
+     *
+     * @param PDOConnection  $con PDO Connection Object
+     * @param array $arr_params_resa {
+     *     Array of parameters from reservation
+     *
+     *     @type Integer $mealplan meal plan id 
+     *     @type Integer $touroperator tour operator id
+     *     @type Integer $hotel hotel id
+     *     @type Integer $hotelroom hotel room id
+     *     @type Date $checkin_date checkin date in yyyy-mm-dd
+     *     @type Date $checkout_date checkout date in yyyy-mm-dd
+     *     @type Date $booking_date booking date in yyyy-mm-dd
+     *     @type Date $travel_date travel date in yyyy-mm-dd
+     *     @type Integer $max_pax maximum passengers in reservation
+     * 
+     * }
+     * @return INTEGER IF SUCCESSFUL CONTRACT ID LOOKUP 
+     * OTHERWISE RETURNS STRING "FAIL_NO_CONTRACT", "FAIL_OVERLAPPING_TEST", "FAIL_MULTILE_PERIODS_TEST"     
+     */
     try {
 
         $mealplan = $arr_params_resa["mealplan"];
@@ -38,8 +36,9 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         $checkout_date = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
         $booking_date = $arr_params_resa["booking_date"]; //yyyy-mm-dd
         $travel_date = $arr_params_resa["travel_date"]; //yyyy-mm-dd
-        $max_pax = $arr_params_resa["max_pax"]; 
-        
+        $max_pax = $arr_params_resa["max_pax"];
+        $active_external = $arr_params_resa["active_external"];
+
         //=========================================
         //get the country of the TO
         $countryid = -1;
@@ -82,25 +81,21 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
         $arr_params["supp_mealplan"] = "";
         $arr_params["touroperator"] = $touroperator;
         $arr_params["contractids"] = "";
+        $arr_params["active_external"] = $active_external;
         //======================================================================
         //now proceed with looking up the contract with special rates
         $arr_params["rate"] = $special_rate_id;
         $the_contract_id = rates_reservation_lookup_contract($con, $arr_params);
-        
-        if(is_numeric($the_contract_id))
-        {
+
+        if (is_numeric($the_contract_id)) {
             return $the_contract_id; //successful contract id lookup
-        }
-        else if($the_contract_id == "FAIL_OVERLAPPING_TEST" || $the_contract_id == "FAIL_MULTILE_PERIODS_TEST")
-        {
+        } else if ($the_contract_id == "FAIL_OVERLAPPING_TEST" || $the_contract_id == "FAIL_MULTILE_PERIODS_TEST") {
             return $the_contract_id; //error during lookup
-        }
-        else if($the_contract_id == "FAIL_NO_CONTRACT")
-        {
+        } else if ($the_contract_id == "FAIL_NO_CONTRACT") {
             //no special contracts found, need to search with standard rates
             $arr_params["rate"] = $standard_rate_id;
             $the_contract_id = rates_reservation_lookup_contract($con, $arr_params);
-            return $the_contract_id; 
+            return $the_contract_id;
         }
         //======================================================================
     } catch (Exception $ex) {
@@ -109,40 +104,36 @@ function _rates_reservation_get_contract_id($con, $arr_params_resa) {
 }
 
 function rates_reservation_lookup_contract($con, $arr_params) {
-    
+
     $arr_results = _rates_get_contract_id($con, $arr_params);
     $arr_contract_id = _rates_parse_contract_id($arr_results, $arr_params);
-    
+
     if ($arr_contract_id["OUTCOME"] == "OK") {
         return $arr_contract_id["CONTRACT_ID"];
-        
     } else if ($arr_contract_id["OUTCOME"] == "FAIL_NO_CONTRACT") {
-        
+
         //no contracts found for that period
         //try again but roll over this time
-        
+
         $checkin_rollover = new DateTime($arr_params["checkin_date"]);
         $checkout_rollover = new DateTime($arr_params["checkout_date"]);
         $checkin_rollover = $checkin_rollover->modify('-1 year');
         $checkout_rollover = $checkout_rollover->modify('-1 year');
-        
+
         $arr_params["checkin_date"] = $checkin_rollover->format("Y-m-d");
         $arr_params["checkout_date"] = $checkout_rollover->format("Y-m-d");
 
         $arr_results = _rates_get_contract_id($con, $arr_params);
         $arr_contract_id = _rates_parse_contract_id($arr_results, $arr_params);
-        
+
         if ($arr_contract_id["OUTCOME"] == "OK") {
             return $arr_contract_id["CONTRACT_ID"];
-        }
-        else
-        {
+        } else {
             return $arr_contract_id["OUTCOME"];
         }
-        
     } else {
         return $arr_contract_id["OUTCOME"]; //FAIL_OVERLAPPING_TEST, 
-                                            //FAIL_MULTILE_PERIODS_TEST
+        //FAIL_MULTILE_PERIODS_TEST
     }
 }
 
@@ -158,6 +149,7 @@ function _rates_get_contract_id($con, $arr_params) {
         $mealplan = $arr_params["mealplan"];
         $rate = $arr_params["rate"];
         $touroperator = $arr_params["touroperator"];
+        $active_external = $arr_params["active_external"];
         $filter_contract_ids = $arr_params["contractids"];
 
         //return array of days
@@ -213,15 +205,23 @@ function _rates_get_contract_for_the_date($arr_params, $thedate, $con) {
     $rate = $arr_params["rate"];
     $touroperator = $arr_params["touroperator"];
     $filter_contract_ids = $arr_params["contractids"];
+    $active_external = $arr_params["active_external"];
 
     $filter_cond = "";
     if ($filter_contract_ids != "") {
         $filter_cond = " AND id IN ($filter_contract_ids) ";
     }
 
-    $sql = "SELECT * FROM tblservice_contract WHERE deleted = 0 AND active_internal = 1 $filter_cond ";
+    $sql = "SELECT * FROM tblservice_contract
+            WHERE deleted = 0 AND active_internal = 1 ";
 
+    if ($active_external == 0) {
+        $sql .= " AND active_external = 0 ";
+    } else {
+        $sql .= " AND active_external = 1 ";
+    }
 
+    $sql .= $filter_cond;
 
     //======================= HOTEL =========================
     $sql .= " AND hotelfk = :hotelfk ";
