@@ -687,7 +687,7 @@ function touroperators()
     grid_currency_to.setIconsPath('libraries/dhtmlx/imgs/');
     grid_currency_to.setHeader("Currency,Default,Tax,Terms Value,Terms Code,Cr Limit,Bank,Bank Acc,Acc Name,Action,Valid");
     grid_currency_to.setColumnIds("currencyid,use_default,tax_code,terms_value,terms_code,credit_limit,bankfk,bankaccount,accountname,action,valid");
-    grid_currency_to.setColTypes("coro,ch,coro,edn,coro,edn,coro,ed,ed,ro,ro");
+    grid_currency_to.setColTypes("combo,ch,combo,edn,combo,edn,combo,ed,ed,ro,ro");
     grid_currency_to.setInitWidths("80,60,120,60,120,100,100,100,100,100,100");
     grid_currency_to.setColAlign("left,center,left,right,left,right,left,left,left");
     grid_currency_to.setColSorting('str,int,str,int,str,str,str,str,str,str,str');
@@ -1116,7 +1116,7 @@ function touroperators()
 
         ds = null;
         ds = new dhtmlXDataStore();
-        ds.load("php/api/combos/contactdepartment_combo.php?t=" + global_token, "json", function () {
+        ds.load("php/api/combos/to_contactdepartment_combo.php?t=" + global_token, "json", function () {
             grid_contact.getCombo(grid_contact.getColIndexById("deptfk")).put("", " ");
             for (var i = 0; i < ds.dataCount(); i++)
             {
@@ -1141,11 +1141,15 @@ function touroperators()
         //load currency
         var ds = new dhtmlXDataStore();
         ds.load("php/api/combos/currency_combo.php?t=" + global_token, "json", function () {
+            
+            var _cbo1 = grid_currency_to.getColumnCombo(grid_currency_to.getColIndexById("currencyid"));
+            _cbo1.addOption([{value: "", text: " "}]);
+        
             grid_currency_to.getCombo(grid_currency_to.getColIndexById("currencyid")).put("", " ");
             for (var i = 0; i < ds.dataCount(); i++)
             {
                 var item = ds.item(ds.idByIndex(i));
-                grid_currency_to.getCombo(grid_currency_to.getColIndexById("currencyid")).put(item.value, item.text);
+                _cbo1.addOption([{value: item.value, text: item.text}]);
             }
         });
 
@@ -1155,11 +1159,14 @@ function touroperators()
 
         //load tax code
         dstc.load("php/api/combos/taxcode_combo.php?t=" + global_token, "json", function () {
-            grid_currency_to.getCombo(grid_currency_to.getColIndexById("tax_code")).put("", " ");
-            for (var i = 0; i < dstc.dataCount(); i++)
+            
+            var _cbo2 = grid_currency_to.getColumnCombo(grid_currency_to.getColIndexById("tax_code"));
+            _cbo2.addOption([{value: "", text: " "}]);
+            
+           for (var i = 0; i < dstc.dataCount(); i++)
             {
                 var item = dstc.item(dstc.idByIndex(i));
-                grid_currency_to.getCombo(grid_currency_to.getColIndexById("tax_code")).put(item.text, item.description);
+                _cbo2.addOption([{value: item.text, text: item.description}]);
             }
         });
 
@@ -1167,22 +1174,28 @@ function touroperators()
 
         //load payment terms
         dspt.load("php/api/combos/paymentterms_combo.php?t=" + global_token, "json", function () {
-            grid_currency_to.getCombo(grid_currency_to.getColIndexById("terms_code")).put("", " ");
+            
+            var _cbo3 = grid_currency_to.getColumnCombo(grid_currency_to.getColIndexById("terms_code"));
+            _cbo3.addOption([{value: "", text: " "}]);
+            
             for (var i = 0; i < dspt.dataCount(); i++)
             {
                 var item = dspt.item(dspt.idByIndex(i));
-                grid_currency_to.getCombo(grid_currency_to.getColIndexById("terms_code")).put(item.text, item.description);
+                _cbo3.addOption([{value: item.text, text: item.description}]);
             }
         });
 
         //load banks
         var dsbnk = new dhtmlXDataStore();
         dsbnk.load("php/api/combos/bank_combo.php?t=" + global_token, "json", function () {
-            grid_currency_to.getCombo(grid_currency_to.getColIndexById("bankfk")).put("", " ");
+           
+            var _cbo4 = grid_currency_to.getColumnCombo(grid_currency_to.getColIndexById("bankfk"));
+            _cbo4.addOption([{value: "", text: " "}]);
+            
             for (var i = 0; i < dsbnk.dataCount(); i++)
             {
                 var item = dsbnk.item(dsbnk.idByIndex(i));
-                grid_currency_to.getCombo(grid_currency_to.getColIndexById("bankfk")).put(item.value, item.text);
+                _cbo4.addOption([{value: item.value, text: item.text}]);
             }
         });
 
