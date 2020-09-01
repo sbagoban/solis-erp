@@ -4991,7 +4991,8 @@ function _rates_calculator_spo_remove_duplicates($arr_spoids, $arr_spos, $types)
 function _rates_calculator_spo_search($arr_params, $con) {
     try {
 
-        //will return a list of valid spos and a list of invalid spos with reasons why they failed
+        //will return a list of valid spos and a list of invalid spos with reasons 
+        //why they failed
 
         $arr_spos = array();
         $arr_invalid_spos = array();
@@ -6031,7 +6032,9 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
     $wedding_interested = $arr_params["spo_chk_is_wedding"];
     $spo_active_external = $arr_params["spo_active_external"];
 
-    $sql = "SELECT * FROM tblspecial_offer spo
+    $sql = "SELECT spo.*, spot.priority 
+            FROM tblspecial_offer spo
+            INNER JOIN tblspecial_offer_templates spot ON spo.template = spot.template_code
             WHERE spo.deleted = 0 
             and spo.active_internal = 1 ";
     
@@ -6087,7 +6090,8 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
         //skip wedding offers on purpose
         $sql .= " AND spo.template NOT IN ('wedding_anniversary','wedding_party','honeymoon') ";
     }
-
+    
+    $sql .= " ORDER BY spot.priority DESC;";
 
 
     $query = $con->prepare($sql);

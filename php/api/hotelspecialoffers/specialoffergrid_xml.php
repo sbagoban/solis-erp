@@ -49,7 +49,8 @@ $stmt->execute();
 $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
         A.active_external, A.spo_type,A.ratecodes,
         B.validities,
-        D.tour_operator_names
+        D.tour_operator_names,
+        E.countries
         FROM
         (
             select spo.*, rc.ratecodes
@@ -68,7 +69,7 @@ $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
         ) B,        
         (
                 select spo.id,
-                group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR '<br>') as tour_operator_names,
+                group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as tour_operator_names,
                 group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as tour_operators_display,
                 group_concat(tp.id ORDER BY tp.toname ASC SEPARATOR ',') as tour_operators_ids
                 from tblspecial_offer spo
@@ -76,9 +77,18 @@ $sql = "select A.id, A.sponame, A.spocode, A.template, A.active_internal,
                 inner join tbltouroperator tp on sots.tofk = tp.id
                 where spo.hotel_fk = $hotelfk and spo.deleted = 0 
                 group by spo.id
-        ) D
+        ) D,
+        (
+                select spo.id,
+                group_concat(c.country_name ORDER BY c.country_name ASC SEPARATOR ' , ') as countries
+                from tblspecial_offer spo
+                left join tblspecial_offer_countries sots on spo.id = sots.spo_fk
+                inner join tblcountries c on sots.country_fk = c.id
+                where spo.hotel_fk = $hotelfk and spo.deleted = 0 
+                group by spo.id
+        ) E
 
-        WHERE A.id = B.spo_fk AND A.id = D.id ORDER BY B.validities";
+        WHERE A.id = B.spo_fk AND A.id = D.id AND A.id = E.id ORDER BY B.validities";
 
 
 
@@ -108,6 +118,7 @@ while ($rw = $query_parent->fetch(PDO::FETCH_ASSOC)) {
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["spocode"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["template"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["tour_operator_names"]) . "]]></cell>";
+    $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["countries"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", ">", "<", "'"), "", $rw["ratecodes"]) . "]]></cell>";
     $xml .= "<cell><![CDATA[ " . str_replace(array("\"", "/", "'"), "", $rw["validities"]) . "]]></cell>";
     $xml .= "</row>";

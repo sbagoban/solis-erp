@@ -89,13 +89,13 @@ function hotelspecialoffers()
 
     var grid_spo = spolayout.cells("a").attachGrid();
     grid_spo.setIconsPath('libraries/dhtmlx/imgs/');
-    grid_spo.setHeader(",ID,SPO Name,Active Internal,Active External,Type,Code,Template,Tour Operators,Rate,Valid Dates");
-    grid_spo.setColumnIds("subgrid,id,sponame,active_internal,active_external,spo_type,spocode,template,tour_operator_names,ratecodes,validities");
-    grid_spo.setColTypes("sub_row_grid,ro,ro,ch,ch,ro,ro,ro,ro,ro,ro");
-    grid_spo.setInitWidths("50,80,250,60,60,160,200,200,200,50,200");
-    grid_spo.setColAlign("center,center,left,center,center,center,left,left,center,center,center");
-    grid_spo.setColSorting("str,int,str,int,int,str,str,str,str,date");
-    grid_spo.attachHeader(",#text_filter,#text_filter,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#text_filter,#select_filter,#text_filter");
+    grid_spo.setHeader(",ID,SPO Name,Active Internal,Active External,Type,Code,Template,Tour Operators,Countries,Rate,Valid Dates");
+    grid_spo.setColumnIds("subgrid,id,sponame,active_internal,active_external,spo_type,spocode,template,tour_operator_names,countries,ratecodes,validities");
+    grid_spo.setColTypes("sub_row_grid,ro,ro,ch,ch,ro,ro,ro,ro,ro,ro,ro");
+    grid_spo.setInitWidths("50,80,250,60,60,160,200,200,500,400,50,200");
+    grid_spo.setColAlign("center,center,left,center,center,center,left,left,center,center,center,center");
+    grid_spo.setColSorting("str,int,str,int,int,str,str,str,str,str,date");
+    grid_spo.attachHeader(",#text_filter,#text_filter,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#text_filter,#text_filter,#select_filter,#text_filter");
     grid_spo.setEditable(false);
     grid_spo.enableMultiline(true);
     grid_spo.enableAlterCss("", "");

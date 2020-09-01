@@ -84,7 +84,7 @@ left join
 
 (
 	select sc.id, 
-        group_concat(hr.roomname ORDER BY hr.roomname ASC SEPARATOR '<br>') as roomnames,
+        group_concat(hr.roomname ORDER BY hr.roomname ASC SEPARATOR ' , ') as roomnames,
         group_concat(hr.roomname ORDER BY hr.roomname ASC SEPARATOR ' , ') as rooms_display,
         group_concat(hr.id ORDER BY hr.roomname ASC SEPARATOR ',') as rooms_ids
 	from tblservice_contract sc
@@ -101,7 +101,7 @@ left join
 
 (
         select sc.id, 
-	group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR '<br>') as tour_operator_names,
+	group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as tour_operator_names,
 	group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as tour_operators_display,
 	group_concat(tp.id ORDER BY tp.toname ASC SEPARATOR ',') as tour_operators_ids
         from tblservice_contract sc
@@ -118,7 +118,7 @@ left join
 
 (
 	select sc.id, 
-        group_concat(c.country_name ORDER BY c.country_name ASC SEPARATOR '<br>') AS countries,
+        group_concat(c.country_name ORDER BY c.country_name ASC SEPARATOR ' , ') AS countries,
         group_concat(c.country_name ORDER BY c.country_name ASC SEPARATOR ' , ') AS market_countries_display,
         group_concat(c.id ORDER BY c.country_name ASC SEPARATOR ',') AS market_countries_ids
 	from tblservice_contract sc
