@@ -45,7 +45,7 @@ FROM
 	sols.id as sols_id, sols.cumulative, 
 	so.id as spoid, so.active_external, so.active_internal,
 	so.spocode, so.sponame, so.template, so.spo_type,
-        group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR '<br>') as tour_operator_names
+        group_concat(tp.toname ORDER BY tp.toname ASC SEPARATOR ' , ') as tour_operator_names
 	from tblspecial_offer_link sol
 	left join tblspecial_offer_link_spos sols on sol.id = sols.linkfk AND sols.spofk in (select id from tblspecial_offer where hotel_fk = :hotel_fk and deleted=0)
 	left join tblspecial_offer so on sols.spofk = so.id and so.hotel_fk = :hotel_fk and so.deleted = 0
@@ -80,11 +80,11 @@ $xml = "<rows>";
 $xml .= "<head>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\"  sort=\"str\">Link Description</column>";
 $xml .= "    <column width=\"70\" type=\"ro\" align=\"center\"  sort=\"str\">Link Active</column>";
-$xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">SPO Template</column>";
-$xml .= "    <column width=\"80\" type=\"ro\" align=\"left\" sort=\"str\">ID</column>";
+$xml .= "    <column width=\"100\" type=\"ro\" align=\"left\" sort=\"str\">SPO Template</column>";
+$xml .= "    <column width=\"80\" type=\"ro\" align=\"left\" sort=\"str\">SPO ID</column>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">SPO Code</column>";
 $xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">SPO Name</column>";
-$xml .= "    <column width=\"200\" type=\"ro\" align=\"left\" sort=\"str\">Tour Operator</column>";
+$xml .= "    <column width=\"1000\" type=\"ro\" align=\"left\" sort=\"str\">Tour Operator</column>";
 $xml .= "    <column width=\"70\" type=\"ro\" align=\"center\" sort=\"str\">SPO Cumulative</column>";
 $xml .= "    <column width=\"70\" type=\"ro\" align=\"center\" sort=\"str\">SPO Active Internal</column>";
 $xml .= "    <column width=\"70\" type=\"ro\" align=\"center\" sort=\"str\">SPO Active External</column>";

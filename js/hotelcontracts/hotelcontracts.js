@@ -84,7 +84,7 @@ function hotelcontracts()
     grid_contracts.setHeader("ID,Contract Name,Active Internal,Active External,Validity From,Validity To,Meal Plan,Rooms,Tour Operators,Countries,Meal,Rates,Children,Currencies Buy,Currencies Sell");
     grid_contracts.setColumnIds("id,contractname,active_internal,active_external,active_from,active_to,meal,roomnames,tour_operator_names,countries,mymeals,myrates,agerange,mycurrencies_buy,mycurrencies_sell");
     grid_contracts.setColTypes("ro,ro,ch,ch,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro,ro");
-    grid_contracts.setInitWidths("70,200,60,60,80,80,60,220,400,650,0,45,70,80,80");
+    grid_contracts.setInitWidths("70,200,60,60,80,80,60,220,1000,650,0,45,70,80,80");
     grid_contracts.setColAlign("center,left,center,center,center,center,center,center,center,center,center,center,center,center,center");
     grid_contracts.setColSorting('int,str,int,int,date,date,str,str,str,str,str,str,str,str');
     grid_contracts.attachHeader("#text_filter,#text_filter,#select_filter,#select_filter,#text_filter,#text_filter,#select_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter,#text_filter");

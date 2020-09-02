@@ -92,8 +92,8 @@ function hotelspecialoffers()
     grid_spo.setHeader(",ID,SPO Name,Active Internal,Active External,Type,Code,Template,Tour Operators,Countries,Rate,Valid Dates");
     grid_spo.setColumnIds("subgrid,id,sponame,active_internal,active_external,spo_type,spocode,template,tour_operator_names,countries,ratecodes,validities");
     grid_spo.setColTypes("sub_row_grid,ro,ro,ch,ch,ro,ro,ro,ro,ro,ro,ro");
-    grid_spo.setInitWidths("50,80,250,60,60,160,200,200,500,400,50,200");
-    grid_spo.setColAlign("center,center,left,center,center,center,left,left,center,center,center,center");
+    grid_spo.setInitWidths("30,70,250,55,55,100,100,120,1000,1000,50,200");
+    grid_spo.setColAlign("center,center,left,center,center,center,center,center,center,center,center,center");
     grid_spo.setColSorting("str,int,str,int,int,str,str,str,str,str,date");
     grid_spo.attachHeader(",#text_filter,#text_filter,#select_filter,#select_filter,#select_filter,#text_filter,#select_filter,#text_filter,#text_filter,#select_filter,#text_filter");
     grid_spo.setEditable(false);
@@ -1299,40 +1299,46 @@ function hotelspecialoffers()
                 {type: "input", name: "adult_min",
                     label: "Min Adults:", labelWidth: "100",
                     validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "40", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "adult_max",
                     label: "Max Adults:", labelWidth: "100",
                     validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "40", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
-                {type: "combo", name: "adult_max_category", label: "Limit:",
-                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                {type: "combo", name: "adult_max_category", label: "Max Limit/Applicable:",
+                    labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
-                    comboImagePath: "../../images/"
+                    comboImagePath: "../../images/",
+                    note: {
+                        text: "Limit = Ignore SPO for everyone if Max is exceeded. Appicable = Apply SPO to Pax within Max range only"
+                    }
                 }
             ]},
         {type: "block", width: 900, list: [
                 {type: "input", name: "children_min",
                     label: "Min Children:", labelWidth: "100",
                     validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "40", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
                 {type: "input", name: "children_max",
                     label: "Max Children:", labelWidth: "100",
                     validate: "ValidNumeric",
-                    labelHeight: "22", inputWidth: "50", inputHeight: "28", labelLeft: "0",
+                    labelHeight: "22", inputWidth: "40", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10"},
                 {type: "newcolumn"},
-                {type: "combo", name: "children_max_category", label: "Limit:",
-                    labelHeight: "22", inputWidth: "200", inputHeight: "28", labelLeft: "0",
+                {type: "combo", name: "children_max_category", label: "Max Limit/Applicable:",
+                    labelHeight: "22", inputWidth: "250", inputHeight: "28", labelLeft: "0",
                     labelTop: "10", inputLeft: "10", inputTop: "10", required: true,
                     comboType: "image",
-                    comboImagePath: "../../images/"
+                    comboImagePath: "../../images/",
+                    note: {
+                        text: "Limit = Ignore SPO for everyone if Max is exceeded. Appicable = Apply SPO to Pax within Max range only"
+                    }
                 }
             ]},
 
