@@ -2239,16 +2239,22 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
 
 
             $pax = $arr_params["adults"][($adinx - 1)];
-
+            
+            
+            $_workings = "$flat_rate_comments $single_parent_comments $workings => Ad #$adinx = $currency_buy $adult_buyprice";
+            
+            
             //===========================================
-            //need to check if there is any wedding type SPO for that person (bride/groom)
-            //whereby that bride or groom rate is based on a single rate
+            //need to check if there is any Wedding SPO for that pax bride/groom
+            //whereby that pax is assigned a flat rate
+
             $wedding_offer_comments = "";
-            _rates_calculator_spo_overwrite_rates($adult_buyprice, $wedding_offer_comments, $arr_adultpolicies_rules, $arr_params, $pax);
+            _rates_calculator_spo_overwrite_rates($adult_buyprice, $wedding_offer_comments, $arr_adultpolicies_rules, $arr_params, $pax, $this_date);
+            
+            $_workings .= $wedding_offer_comments;
             //===========================================
 
-            $_workings = "$flat_rate_comments $single_parent_comments $workings => Ad #$adinx = $currency_buy $adult_buyprice $wedding_offer_comments";
-
+            
             //apply eci for that adult if any
             _rates_calculator_apply_rates_eci_percentage($adult_buyprice, $arr_eci, $_workings, $currency_buy);
 
@@ -4002,7 +4008,7 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr, $this_date, &$ar
                                                     //=========================
 
 
-                                                    $msg .= "<br><font color='#BB3C94'> &minus; (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : FLAT PNI : $currency_buy $disc_value => Paid off $currency_buy $discount_for_that_pax by pax)</font>";
+                                                    $msg .= "<br><font color='#BB3C94'> &minus; (<b>SPO</b> => [ID:$spo_id $spo_type : $spo_name] : FLAT PNI DISCOUNT: $currency_buy $disc_value => Paid off $currency_buy $discount_for_that_pax by pax)</font>";
 
                                                     $arr[$p]["MSG"] = $msg;
                                                     $arr[$p]["COSTINGS"] = $costings;
@@ -4137,7 +4143,7 @@ function _rates_calculator_apply_spo_discount_PPPN(&$rates, &$msg, $arr_params, 
 
 
                                             $disc_amt = $disc_value;
-                                            $msg .= "<br><font color='#BB3C94'> &minus; (<b>SPO</b> => [ID:$spo_id $spo_type - $spo_name] : PPPN : $currency_buy $disc_amt)</font>";
+                                            $msg .= "<br><font color='#BB3C94'> &minus; (<b>SPO</b> => [ID:$spo_id $spo_type : $spo_name] : FLAT PPPN DISCOUNT : $currency_buy $disc_amt)</font>";
                                             $rates -= $disc_amt;
 
                                             if ($rates < 0) {
@@ -4203,9 +4209,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
         $disc_max_ch_category = $discount_item["MAX_CH_CATEGORY"];
 
         $disc_bd_gm = $discount_item["BRIDE_GROOM"]; //is discount for bride, groom or both
-        $disc_bd_sngl_dbl = $discount_item["WEDDING_BRIDE_SNGL_DBL"]; //if discount is for bride, then is it on single or double
-        $disc_gm_sngl_dbl = $discount_item["WEDDING_GROOM_SNGL_DBL"]; //if discount is for groom, then is it on single or double
-
+        
 
         $disc_ag_frm = $discount_item["AGE_FROM"]; //is discount for a specific age group
         $disc_ag_to = $discount_item["AGE_TO"]; //is discount for a specific age group
@@ -4258,10 +4262,10 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
 
                                                 //discount applied                                                
                                                 $cumul_room_percentage += $disc_value;
-                                                $cumul_room_workings[] = "[<b>SPO</b> - ID:$spo_id $spo_type - $spo_name : $disc_value%]";
+                                                $cumul_room_workings[] = "[<b>SPO</b> ID:$spo_id $spo_type : $spo_name : $disc_value%]";
 
                                                 $cumul_nonroom_percentage += $disc_value;
-                                                $cumul_nonroom_workings[] = "[<b>SPO</b> - ID:$spo_id $spo_type - $spo_name : $disc_value%]";
+                                                $cumul_nonroom_workings[] = "[<b>SPO</b> ID:$spo_id $spo_type : $spo_name : $disc_value%]";
                                             } else if ($disc_type == "%ROOM" && $room_nonroom == "ROOM") {
                                                 //update the counter in $arr_spo_summary_applied
                                                 _rates_calculator_update_spo_counter($spo_id, $adult_children, $arr_spo_summary_applied);
@@ -4269,7 +4273,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
 
                                                 //discount applied                                                
                                                 $cumul_room_percentage += $disc_value;
-                                                $cumul_room_workings[] = "[<b>SPO</b> - ID:$spo_id $spo_type - $spo_name : $disc_value%]";
+                                                $cumul_room_workings[] = "[<b>SPO</b> ID:$spo_id $spo_type : $spo_name : $disc_value%]";
                                             }
                                         } else {
                                             if (($disc_type == "%ROOM" && $room_nonroom == "ROOM") ||
@@ -4278,7 +4282,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
                                                 //update the counter in $arr_spo_summary_applied
                                                 _rates_calculator_update_spo_counter($spo_id, $adult_children, $arr_spo_summary_applied);
 
-                                                $arr_individual_percentage[] = array("SPO" => "[<b>SPO</b> - ID:$spo_id $spo_type - $spo_name : $disc_value%]", "DISCOUNT_PER" => $disc_value);
+                                                $arr_individual_percentage[] = array("SPO" => "[<b>SPO</b> ID:$spo_id $spo_type : $spo_name : $disc_value%]", "DISCOUNT_PER" => $disc_value);
                                             }
                                         }
                                     }
@@ -4297,7 +4301,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
     //apply the discounts now
     if ($cumul_room_percentage > 0 && $room_nonroom == "ROOM") {
         $workings_room = implode("<br> + ", $cumul_room_workings);
-        $workings_room = "<br><font color='#BB3C94'> - <b>(CUMULATIVE</b> :<br>$workings_room<b>)</b>";
+        $workings_room = "<br><font color='#BB3C94'> &minus; <b>(CUMULATIVE</b> :<br>$workings_room<b>)</b>";
 
         $_rates_before = $rates;
         $disc_amt = round(($cumul_room_percentage / 100) * $rates, 2);
@@ -4385,7 +4389,7 @@ function _rates_calculator_apply_spo_discount_test_sharingown_children_age($adul
     //if child and sharing, make sure age in within $disc_sharing_age_ranges
     //if child and own, make sure age in within $disc_own_age_ranges
 
-    if ($adult_children == "CHILDREN") {
+    if ($adult_children == "CHILDREN" || $adult_children == "CH") {
         //determine if sharing or own
         //get the sharing_own status of the first child
         //first child is enough because, remember, cannot have both SHARING and OWN in the same grid
@@ -4427,15 +4431,15 @@ function _rates_calculator_apply_spo_discount_test_bride_groom($pax_bride_groom,
 
     if ($disc_bd_gm == "") {
         return true; //no bride groom filter check
-    } else if ($adult_children == "CHILDREN" && $disc_bd_gm != "") {
+    } else if (($adult_children == "CHILDREN" || $adult_children == "CH") && $disc_bd_gm != "") {
         return false; //interested in adults only
     }
 
-    if ($adult_children == "ADULT" && ($disc_bd_gm == "BOTH")) {
+    if (($adult_children == "ADULT" || $adult_children == "AD") && $disc_bd_gm == "BOTH") {
         return true;
     }
 
-    if ($adult_children == "ADULT" && $pax_bride_groom == $disc_bd_gm) {
+    if (($adult_children == "ADULT" || $adult_children == "AD") && $pax_bride_groom == $disc_bd_gm) {
         return true;
     }
 
@@ -4469,7 +4473,7 @@ function _rates_calculator_apply_spo_discount_test_pax_index($adult_children, $d
     //test if adult or children max applicable passed
 
     $flg_index_passed = true;
-        if ($adult_children == "ADULT" || $adult_children == "AD") {
+    if ($adult_children == "ADULT" || $adult_children == "AD") {
         if ($disc_max_ad != "" && $disc_max_ad_category == "APPLICABLE") {
             $ad_count = _rates_calculator_get_spo_counter($spo_id, $adult_children, $arr_spo_summary_applied);
             if ($ad_count >= $disc_max_ad) {
@@ -4552,7 +4556,7 @@ function _rates_calculator_apply_rates_eci_percentage(&$rates, $arr_eci, &$msg, 
             $eci_fees = 0;
         }
 
-        $msg .= "<br> + <b>(</b>$workings:$currency_buy $rates - Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees => $currency_buy $eci_fees<b>)</b>";
+        $msg .= "<br> + <b>(</b>$workings:$currency_buy $rates &minus; Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees => $currency_buy $eci_fees<b>)</b>";
         $rates += $eci_fees;
     } else if ($charge_type == "%C") {
         $fees = 0;
@@ -4598,7 +4602,7 @@ function _rates_calculator_apply_rates_lco_percentage($arr_rates, $arr_lco, &$lc
                 $lco_fees = 0;
             }
 
-            $msg .= "<br> => ($workings: $currency_buy $rates - Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees) = $currency_buy $lco_fees";
+            $msg .= "<br> => ($workings: $currency_buy $rates &minus; Discount <b>$charge_value%</b> of $currency_buy $rates = $currency_buy $discount_fees) = $currency_buy $lco_fees";
             $rates = $lco_fees;
         } else if ($charge_type == "%C") {
             $fees = 0;
@@ -5019,7 +5023,7 @@ function _rates_calculator_decide_contract_or_spo_flatrate($arr_params, $this_da
                     //return SPO Flat Rates
                     return array("RATES" => $discount_item["FLAT_RATE_CAPACITY_ARRAY"],
                         "SPO_ID" => $spo_id, "SPO_NAME" => $spo_name, "SPO_TYPE" => $spo_type,
-                        "COMMENTS" => "<font color='#BB3C94'><b>SPO </b>[ID:$spo_id $spo_type - $spo_name]</font><br>",
+                        "COMMENTS" => "<font color='#BB3C94'><b>SPO </b>[ID:$spo_id $spo_type : $spo_name]</font><br>",
                         "APPLY_SPO_FLAT_RATE" => true);
                 }
             }
@@ -5310,7 +5314,7 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
                 "", array(),
                 $max_adult, $max_adult_category,
                 $max_children, $max_children_category, $iscumulative,
-                "", "");
+                $wedding_apply_discount_both_sngl_dbl);
         $arr_spo_return[] = $s;
     } else {
         //will need to split into two separate offers: bride and groom
@@ -5323,7 +5327,7 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
                     "", array(),
                     $max_adult, $max_adult_category,
                     $max_children, $max_children_category, $iscumulative,
-                    $wedding_apply_discount_bride_sngl_dbl, $wedding_apply_discount_groom_sngl_dbl);
+                    $wedding_apply_discount_bride_sngl_dbl);
 
             $arr_spo_return[] = $s;
         }
@@ -5335,7 +5339,7 @@ function _rates_calculator_create_spos_wedding_offer($the_wedding_spo, $con) {
                     "", array(),
                     $max_adult, $max_adult_category,
                     $max_children, $max_children_category, $iscumulative,
-                    $wedding_apply_discount_bride_sngl_dbl, $wedding_apply_discount_groom_sngl_dbl);
+                    $wedding_apply_discount_groom_sngl_dbl);
 
             $arr_spo_return[] = $s;
         }
@@ -6395,7 +6399,7 @@ function _rates_calculator_create_spo_obj($con, $spoid, $sponame, $spo_type, $ad
         $free_nights_start_end, $flat_rate_capacity_array,
         $max_adult, $max_adult_category,
         $max_children, $max_children_category, $iscumulative,
-        $wedding_bride_sngl_dbl, $wedding_groom_sngl_dbl) {
+        $wedding_bth_db_gm_sngl_dbl) {
 
     $arr_sharing_age_ranges = _rates_calculator_spo_check_child_age_sharing_own($spoid, "SHARING", $con);
     $arr_own_age_ranges = _rates_calculator_spo_check_child_age_sharing_own($spoid, "OWN", $con);
@@ -6421,8 +6425,7 @@ function _rates_calculator_create_spo_obj($con, $spoid, $sponame, $spo_type, $ad
         "FREE_NIGHTS" => $free_nights,
         "FREE_NIGHTS_START_END" => $free_nights_start_end,
         "FLAT_RATE_CAPACITY_ARRAY" => $flat_rate_capacity_array,
-        "WEDDING_BRIDE_SNGL_DBL" => $wedding_bride_sngl_dbl,
-        "WEDDING_GROOM_SNGL_DBL" => $wedding_groom_sngl_dbl);
+        "WEDDING_BOTH_BD_GM_SNGL_DBL" => $wedding_bth_db_gm_sngl_dbl);
 
     return $arr_item;
 }
@@ -8027,23 +8030,161 @@ function _rates_calculator_is_inventory_date_inserted($arr_date_status, $invento
     return false;
 }
 
-function _rates_calculator_spo_overwrite_rates(&$adult_buyprice, &$wedding_offer_comments, $arr_adultpolicies_rules, $arr_params, $pax) {
+function _rates_calculator_spo_overwrite_rates(&$adult_buyprice, &$wedding_offer_comments, $arr_adultpolicies_rules,
+        $arr_params, $pax, $this_date) {
+   
+   
+    $arr_spo_summary_applied = array();
+    
     //this function will first look if there any SPOs applicable for that person whereby the 
     //rates can be overwritten
-    
     //this mainly applies to:
     //wedding offers where bride/groom/both get single rate
-    
 
 
-    $bride_groom = $pax["bride_groom"];
+    $pax_bridegroom = $pax["bride_groom"];
+    $adult_children = "ADULT";
+    $pax_age = $pax["age"];
+
+    $arr_spo_discounts = $arr_params["spo_discounts_array"];
+    $currency_buy = $arr_params["currency_buy_code"];
+    $apply_discounts = $arr_params["lookupmode"]["DISCOUNTS"]; //true or false
 
 
-    //$arr = _rates_calculator_lookup_adult_rates($adult, $arr_adultpolicies_rules, $arr_params);
-    //$val = $arr["VAL"];
-    //$msg = $arr["MSG"];
-    //$recur = $arr["RECUR"];
-    //$occup_mode = $arr["OCCUP_MODE"];
+    for ($i = 0; $i < count($arr_spo_discounts); $i++) {
+
+        $discount_item = $arr_spo_discounts[$i];
+
+        $spo_id = $discount_item["SPO_ID"];
+        $spo_name = $discount_item["SPO_NAME"];
+        $spo_type = $discount_item["SPO_TYPE"];
+
+        $disc_ad_ch = $discount_item["AD_CH"]; //is discount for children or adults or both
+
+        $disc_max_ad = $discount_item["MAX_AD"]; //max adult discount is applicable to
+        $disc_max_ad_category = $discount_item["MAX_AD_CATEGORY"];
+        $disc_max_ch = $discount_item["MAX_CH"]; //max children discount is applicable to
+        $disc_max_ch_category = $discount_item["MAX_CH_CATEGORY"];
+
+        $disc_bd_gm = $discount_item["BRIDE_GROOM"]; //is discount for bride, groom or both
+
+        $disc_bth_db_gm_sngl_dbl = $discount_item["WEDDING_BOTH_BD_GM_SNGL_DBL"]; //if discount basis single or double or system
+
+
+        $disc_ag_frm = $discount_item["AGE_FROM"]; //is discount for a specific age group
+        $disc_ag_to = $discount_item["AGE_TO"]; //is discount for a specific age group
+
+        $disc_basis = $discount_item["ROOM_ALL_FLAT"]; //is discount percentage_room, percentage_all or FLAT
+
+        $disc_value = $discount_item["VALUE"]; //value of discount
+
+        $disc_sharing_age_ranges = $discount_item["SHARING_AGE_RANGES"]; //children sharing age ranges
+        $disc_own_age_ranges = $discount_item["OWN_AGE_RANGES"]; //children own age ranges
+
+        $disc_is_cumulative = $discount_item["IS_CUMULATIVE"]; //is discount cumulative or not
+
+        $apply_to_dates = $discount_item["APPLY_TO_DATES"]; //any array of date filters?
+
+
+        if ($apply_discounts) {
+
+            //passed apply discount check
+
+            if (_rates_calculator_apply_spo_discount_test_dates($apply_to_dates, $this_date)) {
+
+                //passed date check for SPO
+
+                if (_rates_calculator_apply_spo_discount_test_pax_index($adult_children, $disc_max_ad, $disc_max_ad_category, $disc_max_ch, $disc_max_ch_category, $arr_spo_summary_applied, $spo_id)) {
+
+                    //passed adult/children index check for SPO
+
+                    if (_rates_calculator_apply_spo_discount_test_ad_ch($adult_children, $disc_ad_ch)) {
+
+                        //passed check for adult or children applicable discounts
+
+                        if (_rates_calculator_apply_spo_discount_test_age($pax_age, $disc_ag_frm, $disc_ag_to)) {
+
+                            //passed age limits check
+
+                            if (_rates_calculator_apply_spo_discount_test_sharingown_children_age($adult_children, $pax_age, $disc_sharing_age_ranges, $disc_own_age_ranges, $arr_params)) {
+
+                                //passed children sharing/own age limits check
+
+                                if (_rates_calculator_apply_spo_discount_test_bride_groom($pax_bridegroom, $disc_bd_gm, $adult_children)) {
+
+                                    //passed bride groom checks
+
+
+                                    if ($disc_value > 0) {
+                                        //the rates are re-looked up here depending on the discount basis of the wedding offer
+                                        //if $disc_basis == "%ROOM" || $disc_basis == "%ALL" || 
+                                        //   $disc_basis == "FLAT_PNI" || $disc_basis == "FLAT_PPPN" then
+                                        //   
+                                        //      if $disc_bth_db_gm_sngl_dbl == "single" then
+                                        //
+                                        //          rate = force a lookup from the system for a single rate
+                                        //
+                                        //      else if $disc_bth_db_gm_sngl_dbl == "double" then
+                                        //      
+                                        //          rate = (force a lookup from the system for a double rate) / 2
+                                        //      
+                                        //      else if $disc_bth_db_gm_sngl_dbl == "system" then
+                                        //      
+                                        //          let it be as it is (rate is not changed)
+                                        //
+                                        //      end if
+                                        //      
+                                        //else if $disc_basis == "FLAT_RATE_PPPN" then
+                                        //      
+                                        //      if $disc_bd_gm == "BOTH" then
+                                        //          rate = $disc_value / 2
+                                        //      else 
+                                        //          rate = $disc_value
+                                        //       end if 
+                                        //      
+                                        //end if
+
+                                        if ($disc_basis == "%ROOM" || $disc_basis == "%ALL" ||
+                                                $disc_basis == "FLAT_PNI" || $disc_basis == "FLAT_PPPN") {
+
+                                            if ($disc_bth_db_gm_sngl_dbl == "single") {
+                                                //rate = force a lookup from the system for a single rate
+                                                $arr = _rates_calculator_lookup_adult_rates(1, $arr_adultpolicies_rules, $arr_params);
+                                                $adult_buyprice = $arr["VAL"];
+                                                $wedding_offer_comments = "<br><font color='#BB3C94'> <b>SPO</b> => [ID:$spo_id : $spo_type : $spo_name] : Single Rate forced to $currency_buy $adult_buyprice</font>";
+                                                ;
+                                            } else if ($disc_bth_db_gm_sngl_dbl == "double") {
+                                                //          rate = (force a lookup from the system for a double rate) / 2
+
+                                                $arr = _rates_calculator_lookup_adult_rates(2, $arr_adultpolicies_rules, $arr_params);
+                                                $adult_buyprice = $arr["VAL"];
+                                                $adult_buyprice = round($adult_buyprice / 2, 2);
+                                                $wedding_offer_comments = "<br><font color='#BB3C94'> <b>SPO</b> => [ID:$spo_id : $spo_type : $spo_name] : 1/2 Double Rate forced to $currency_buy $adult_buyprice</font>";
+                                            } else if ($disc_bth_db_gm_sngl_dbl == "system") {
+                                                //let the rate be as it is
+                                            }
+                                        } else if ($disc_basis == "FLAT_RATE_PPPN") {
+                                            if ($disc_bd_gm == "BOTH") {
+                                                //rate = $disc_value / 2
+                                                $adult_buyprice = round($disc_value / 2, 2);
+                                                $wedding_offer_comments = "<br><font color='#BB3C94'> <b>SPO</b> => [ID:$spo_id : $spo_type : $spo_name] : 1/2 Double Rate forced to $currency_buy $adult_buyprice</font>";
+                                            } else {
+                                                //rate = $disc_value
+                                                $adult_buyprice = $disc_value;
+                                                $wedding_offer_comments = "<br><font color='#BB3C94'> <b>SPO</b> => [ID:$spo_id : $spo_type: $spo_name] : 1/2 Double Rate forced to $currency_buy $adult_buyprice</font>";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+   
 }
 ?>
 

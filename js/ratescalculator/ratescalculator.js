@@ -122,7 +122,7 @@ function ratescalculator() {
     ];
 
     var form_exec = main_layout.cells("b").attachForm(str_frm_exec);
-
+    
     form_exec.attachEvent("onButtonClick", function (name, command) {
         if (name == "cmdTest")
         {
