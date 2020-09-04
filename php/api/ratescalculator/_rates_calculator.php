@@ -1982,7 +1982,7 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
 
                     //here just calculate a percentage value of adult.index
                     //get adult rates
-                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "", "OCCUP_MODE" => "");
                     $arr_adult_workings = _rates_calculator_calc_adult_recur($child_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
 
@@ -3217,7 +3217,7 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
             //if there is no adult 1/2 DBL, take adult DOUBLE and divide by 2
             //TODO
 
-            $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+            $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "", "OCCUP_MODE" => "");
             $adult_index = 2;
             $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
             $rates_adult = $arr_adult_workings["RATES_ADULT"];
@@ -3323,7 +3323,7 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
                 if ($category == "SINGLE") {
 
                     //get price from adult for that index and category
-                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "");
+                    $arr_adult_workings = array("RATES_ADULT" => 0, "WORKINGS_ADULT" => "", "OCCUP_MODE" => "");
                     $adult_index = 1;
                     $arr_adult_workings = _rates_calculator_calc_adult_recur($adult_index, $arr_adultpolicies_rules, $arr_adult_workings, $arr_params);
                     $rates_adult = $arr_adult_workings["RATES_ADULT"];
