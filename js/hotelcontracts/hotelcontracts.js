@@ -11953,6 +11953,10 @@ function hotelcontracts()
 
     function cleanChildSharingOwnRuleRange(sharing_single, rule_ageranges, roomid, date_rwid, date_childpolicies_rules)
     {
+        if(roomid == "290" && date_rwid == "23402")
+        {
+            console.log("here");
+        }
 
         //get all rule lines for that _rulerange
         var arr_rules = getChildSharingOwnRulesByRuleRange(sharing_single, rule_ageranges, roomid, date_rwid);
@@ -12007,7 +12011,7 @@ function hotelcontracts()
             if (!flg_found_ruleage_range_incapacity)
             {
                 //delete all rates record for that rule_ageranges
-                deleteAllChildrenRates("sharing", date_childpolicies_rules, rule_ageranges);
+                deleteAllChildrenRates(sharing_single, date_childpolicies_rules, rule_ageranges);
             }
         }
     }

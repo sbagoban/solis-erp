@@ -6730,7 +6730,7 @@ function hotelspecialoffers()
             if (!flg_found_ruleage_range_incapacity)
             {
                 //delete all rates record for that rule_ageranges
-                deleteAllChildrenRates("sharing", date_childpolicies_rules, rule_ageranges);
+                deleteAllChildrenRates(sharing_single, date_childpolicies_rules, rule_ageranges);
             }
         }
     }

@@ -142,7 +142,10 @@ function ratescalculator() {
 
     var str_frm_calc = [
         {type: "settings", position: "label-left", id: "form_calculator"},
-
+        {type: "checkbox", name: "active_external", label: "Add Active External Contracts:", labelWidth: "180",
+            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
+            labelTop: "10", inputLeft: "0", inputTop: "6", checked:true
+        },
         {type: "block", width: 400, list: [
                 {type: "calendar", name: "checkin_date", label: "Check In:",
                     labelHeight: "22", inputWidth: "100", inputHeight: "28",
@@ -232,10 +235,7 @@ function ratescalculator() {
             }
 
         },
-        {type: "checkbox", name: "active_external", label: "Active External:", labelWidth: "180",
-            labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "0", inputTop: "6"
-        },
+        
         {type: "combo", name: "extra_mealsupp", label: "Extra Meal Supplement:", labelWidth: "150",
             labelHeight: "22", inputWidth: "400", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10",
@@ -366,9 +366,9 @@ function ratescalculator() {
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10", validate: "ValidNumeric"
         },
-        {type: "checkbox", name: "spo_active_external", label: "Active External:", labelWidth: "180",
+        {type: "checkbox", name: "spo_active_external", label: "Add Active External SPOs:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10"
+            labelTop: "10", inputLeft: "10", inputTop: "10", checked:true
         },
         {type: "checkbox", name: "spo_chk_is_wedding", label: "Interested in Wedding SPOS:", labelWidth: "180",
             labelHeight: "22", inputWidth: "100", inputHeight: "28", labelLeft: "0",
