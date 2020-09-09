@@ -2229,7 +2229,7 @@ function hotelspecialoffers()
     cboWeddingPartyDiscountBrideSnglDbl.addOption([{value: "double", text: "On Double Specifically", img_src: "images/family_three_24.png"}]);
     cboWeddingPartyDiscountBrideSnglDbl.addOption([{value: "system", text: "On System Decided", img_src: "images/system_24.png"}]);
     cboWeddingPartyDiscountBrideSnglDbl.readonly(true);
-    
+
     form_wedding_party_discounts.attachEvent("onChange", function (id, value) {
         onFormWeddingPartyChanged(id, value);
     });
@@ -2469,11 +2469,11 @@ function hotelspecialoffers()
     cboWeddingAnniversaryApplicableBasis.addOption([{value: "months", text: "Months", img_src: "images/rollover.png"}]);
     cboWeddingAnniversaryApplicableBasis.addOption([{value: "years", text: "Years", img_src: "images/rollover.png"}]);
     cboWeddingAnniversaryApplicableBasis.readonly(true);
-    
+
     form_wedding_anniversary_discounts.attachEvent("onChange", function (id, value) {
         onFormWeddingAnniversaryChanged(id, value);
     });
-    
+
     //=====================================================================================
     //SENIOR TAB
 
@@ -6511,11 +6511,7 @@ function hotelspecialoffers()
                     date_childpolicies_rules[i].rule_sharing_single == sharing_single.toUpperCase())
             {
                 var rule_ageranges = date_childpolicies_rules[i].rule_ageranges;
-                var pos = arr.map(function (e) {
-                    return e.rule_ageranges;
-                }).indexOf(rule_ageranges);
-
-                if (pos == -1)
+                if (!is_rule_agerange_in_array(room_id, date_rwid, rule_ageranges, arr))
                 {
                     arr.push({room_id: room_id, date_rwid: date_rwid, rule_ageranges: rule_ageranges});
                 }
@@ -6523,6 +6519,21 @@ function hotelspecialoffers()
         }
 
         return arr;
+    }
+
+    function is_rule_agerange_in_array(room_id, date_rwid, rule_ageranges, arr)
+    {
+        for (var i = 0; i < arr.length; i++)
+        {
+            if (arr[i].room_id == room_id &&
+                    arr[i].date_rwid == date_rwid &&
+                    arr[i].rule_ageranges == rule_ageranges)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -6634,12 +6645,18 @@ function hotelspecialoffers()
             {
                 var _the_ages = _the_range.split(":");
                 var age_value = _the_ages[0];
-
+                var minmax_values = _the_ages[1];
+                
                 if (utils_trim(age_value, " ") != "")
                 {
                     var arr_age_from_to = age_value.split("_");
                     var age_from = arr_age_from_to[0];
                     var age_to = arr_age_from_to[1];
+                    
+                    var arr_min_max = minmax_values.split("^");
+                    var _min = arr_min_max[0];
+                    var _max = arr_min_max[1];
+                    
                     var found = false;
 
                     //now for this age range, search into copy_children_ages
@@ -6648,7 +6665,9 @@ function hotelspecialoffers()
                     while (j--) {
 
                         if (copy_children_ages[j].capacity_child_agefrom == age_from &&
-                                copy_children_ages[j].capacity_child_ageto == age_to)
+                                copy_children_ages[j].capacity_child_ageto == age_to &&
+                                copy_children_ages[j].capacity_maxpax == _max && 
+                                copy_children_ages[j].capacity_minpax == _min)
                         {
                             copy_children_ages.splice(j, 1);
                             found = true;
@@ -6984,9 +7003,9 @@ function hotelspecialoffers()
             var myroom_id = arr_ruleranges[i].room_id;
             var mydate_rwid = arr_ruleranges[i].date_rwid;
 
-            cleanSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid);
+            cleanSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid);  
 
-            decideDeleteSingleParentRuleRange(arr_ruleranges[i].rule_ageranges);
+            decideDeleteSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid); 
         }
     }
 
@@ -7017,11 +7036,8 @@ function hotelspecialoffers()
                                 if (date_single_rules[ad].rule_action != "DELETE")
                                 {
                                     var rule_ageranges = date_single_rules[ad].rule_ageranges;
-                                    var pos = arr.map(function (e) {
-                                        return e.rule_ageranges;
-                                    }).indexOf(rule_ageranges);
 
-                                    if (pos == -1)
+                                    if (!is_rule_agerange_in_array(room_id, date_rwid, rule_ageranges, arr))
                                     {
                                         arr.push({room_id: room_id, date_rwid: date_rwid, rule_ageranges: rule_ageranges});
                                     }
@@ -7040,7 +7056,7 @@ function hotelspecialoffers()
     {
 
         //get all rule lines for that _rulerange
-        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges);
+        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges,roomid,date_rwid);
 
         if (arr_rules.length == 0)
         {
@@ -7119,9 +7135,9 @@ function hotelspecialoffers()
     }
 
 
-    function decideDeleteSingleParentRuleRange(rule_ageranges)
+    function decideDeleteSingleParentRuleRange(rule_ageranges, myroom_id, mydate_rwid)
     {
-        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges);
+        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges, myroom_id, mydate_rwid);
 
         for (var i = 0; i < arr_rules.length; i++)
         {
@@ -7158,45 +7174,26 @@ function hotelspecialoffers()
         }
     }
 
-    function getSingleParentRulesByRuleRange(rulerange)
+    function getSingleParentRulesByRuleRange(rulerange, _roomid, _date_rw_id)
     {
         var arr = [];
-
-        for (var i = 0; i < _json_capacity.length; i++)
+        
+        
+        var dateobj = lookupCapacityRoomDateObj(_roomid, _date_rw_id);
+        var date_single_rules = dateobj.date_singleparentpolicies_rules;
+        
+        for (var ad = 0; ad < date_single_rules.length; ad++)
         {
-            if (_json_capacity[i].room_action != "DELETE")
+            if (date_single_rules[ad].rule_action != "DELETE")
             {
-                var room_id = _json_capacity[i].room_id;
-                var room_variants = _json_capacity[i].room_variants;
-                var room_dates = _json_capacity[i].room_dates;
-                if (room_variants == "PERSONS")
+                var rule_ageranges = date_single_rules[ad].rule_ageranges;
+                if (rulerange == rule_ageranges)
                 {
-                    for (var d = 0; d < room_dates.length; d++)
-                    {
-                        var date_action = room_dates[d].date_action;
-                        var date_dtfrom = room_dates[d].date_dtfrom;
-                        var date_dtto = room_dates[d].date_dtto;
-
-                        if (date_action != "DELETE")
-                        {
-                            var date_single_rules = room_dates[d].date_singleparentpolicies_rules;
-                            for (var ad = 0; ad < date_single_rules.length; ad++)
-                            {
-                                if (date_single_rules[ad].rule_action != "DELETE")
-                                {
-                                    var rule_ageranges = date_single_rules[ad].rule_ageranges;
-                                    if (rulerange == rule_ageranges)
-                                    {
-                                        arr.push(date_single_rules[ad]);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    arr.push(date_single_rules[ad]);
                 }
             }
         }
-
+        
         return arr;
     }
 
@@ -16726,12 +16723,18 @@ function hotelspecialoffers()
             {
                 var _the_ages = _the_range.split(":");
                 var age_value = _the_ages[0];
-
+                var minmax_values = _the_ages[1];
+                
                 if (utils_trim(age_value, " ") != "")
                 {
                     var arr_age_from_to = age_value.split("_");
                     var age_from = arr_age_from_to[0];
                     var age_to = arr_age_from_to[1];
+                    
+                    var arr_min_max = minmax_values.split("^");
+                    var _min = arr_min_max[0];
+                    var _max = arr_min_max[1];
+                    
                     var found = false;
 
                     //now for this age range, search into copy_children_ages
@@ -16740,7 +16743,9 @@ function hotelspecialoffers()
                     while (j--) {
 
                         if (copy_children_ages[j].capacity_child_agefrom == age_from &&
-                                copy_children_ages[j].capacity_child_ageto == age_to)
+                                copy_children_ages[j].capacity_child_ageto == age_to &&
+                                copy_children_ages[j].capacity_maxpax == _max && 
+                                copy_children_ages[j].capacity_minpax == _min)
                         {
                             copy_children_ages.splice(j, 1);
                             found = true;
