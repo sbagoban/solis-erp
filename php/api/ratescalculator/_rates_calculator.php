@@ -5516,7 +5516,7 @@ function _rates_calculator_spo_generate_choices($arr_spos, $con, $arr_params) {
         $arr_spoids = _rates_calculator_spo_remove_duplicates($arr_spoids, $arr_spos, $types);
         //======================================================================
 
-        $outcome = _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_spoids);
+        $outcome = _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_spoids, $arr_params);
         if ($outcome != "OK") {
             //flag any error if spo missing from the linking
             $arr_warnings[] = $outcome;
@@ -5593,7 +5593,7 @@ function _rates_calculator_spo_determine_cumulative($con, $linkid, $spoid) {
     return 0;
 }
 
-function _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_listed_spos) {
+function _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_listed_spos, $arr_params) {
     //$spoids is comma separated
     $outcome = "";
 
@@ -5605,8 +5605,17 @@ function _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_list
             from tblspecial_offer_link sol
             inner join tblspecial_offer_link_spos sols on sol.id = sols.linkfk
             inner join tblspecial_offer so on sols.spofk = so.id
-            where sol.id = :linkid and so.deleted = 0 and so.active_external = 1";
+            where sol.id = :linkid and so.deleted = 0 and so.active_internal = 1";
+    
+    $spo_active_external = $arr_params["spo_active_external"];
 
+    if ($spo_active_external == 0) {
+        $sql .= " AND so.active_external = 0 ";
+    } else {
+        $sql .= " AND so.active_external = 1 ";
+    }
+
+    
     $query = $con->prepare($sql);
     $query->execute(array(":linkid" => $linkid));
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -6196,7 +6205,7 @@ function _rates_calculator_getSPO_first_test($arr_params, $con) {
                         "TEMPLATE" => $rw["template"],
                         "DATES" => $arr_spo_dates); //spo passed initial tests! remember it
                 } else {
-                    $arr_invalid_spos[] = $rw["sponame"] . " : <br> NO VALID BOOKING DATES WITHIN VALIDITY PERIODS";
+                    $arr_invalid_spos[] = "SPO ID: " . $rw["id"] . " - " . $rw["sponame"] . " : <br> NO VALID BOOKING DATES WITHIN VALIDITY PERIODS";
                 }
             } else {
                 $arr_invalid_spos[] = "SPO ID: " . $rw["id"] . " - " . $rw["sponame"] . ": <br> BOOKING DAYS FAILED: $flg_book_days_chk";
