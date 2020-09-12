@@ -316,6 +316,9 @@ function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contra
 
         $msg = "<font color='red'>NO CONTRACTS FOUND FOR <b>" . $arr_params["checkin_dmy"] . " - " . $arr_params["checkout_dmy"] . "</b></font>";
         $msg .= "<br>ROLLING OVER TO: <b>" . $arr_params["checkin_rollover_dmy"] . " - " . $arr_params["checkout_rollover_dmy"] . "</b>";
+        if ($arr_params["roll_over_basis"] == "per_request") {
+            $msg .= " - ON REQUEST RATES";
+        }
 
         $arr_daily[$idx]["COSTINGS_WORKINGS"][] = array("MSG" => $msg, "COSTINGS" => array());
     }
@@ -630,7 +633,6 @@ function _rates_calculator_eci_lco_lookup_charge($checkinout_time_dt, $arr_polic
 function _rates_calculator_eci_lco($eci_lco, $arr_params, $this_date) {
 
     $workings = "";
-
 
     $hotelroom = $arr_params["hotelroom"];
     $arr_capacity = $arr_params["arr_capacity"];
@@ -1200,6 +1202,7 @@ function _rates_calculator_getcontracts_for_the_date($arr_params, $thedate, $con
 
 function _rates_calculator_lookup_rates($arr_params, $this_date, $con, $arr_eci) {
 
+
     $room_details = _rates_calculator_get_room_details($arr_params);
     $room_type = $room_details["room_variants"]; //"PERSONS", "UNITS"
 
@@ -1350,6 +1353,15 @@ function _rates_calculator_lookup_rates_units($arr_params, $this_date, $con, $ar
             _rates_calculator_apply_spo_discount_percentage($per_person_after_eci, $_workings, $arr_params,
                     $pax["adch"], $pax["age"], $pax["bride_groom"], "ROOM",
                     $this_date, $index_to_use, $arr_spo_summary_applied);
+
+
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $per_person_after_eci = 0;
+                $_workings .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
 
 
             $arr[] = array("MSG" => $_workings, "COSTINGS" => $per_person_after_eci,
@@ -2034,11 +2046,20 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
         $temp_arr = array();
 
         for ($i = 0; $i < count($arr); $i++) {
+
             $work = $arr[$i]["WORKINGS"];
             $rates = $arr[$i]["RATES"];
             $childindex = $arr[$i]["CHILDINDEX"];
             $split_between = $arr[$i]["TO_SPLIT_BETWEEN"];
             $child_age = $arr_children[$childindex - 1]["age"];
+
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $rates = 0;
+                $work .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
 
             if ($split_between == 0) {
                 //apply eci percentage if any for that kiddo
@@ -2239,22 +2260,20 @@ function _rates_calculator_lookup_rates_normal($arr_params, $this_date, $con, $a
 
 
             $pax = $arr_params["adults"][($adinx - 1)];
-            
-            
+
+
             $_workings = "$flat_rate_comments $single_parent_comments $workings => Ad #$adinx = $currency_buy $adult_buyprice";
-            
-            
+
+
             //===========================================
             //need to check if there is any Wedding SPO for that pax bride/groom
             //whereby that pax is assigned a flat rate
 
             $wedding_offer_comments = "";
             _rates_calculator_spo_overwrite_rates($adult_buyprice, $wedding_offer_comments, $arr_adultpolicies_rules, $arr_params, $pax, $this_date);
-            
+
             $_workings .= $wedding_offer_comments;
             //===========================================
-
-            
             //apply eci for that adult if any
             _rates_calculator_apply_rates_eci_percentage($adult_buyprice, $arr_eci, $_workings, $currency_buy);
 
@@ -2429,6 +2448,15 @@ function _rates_calculator_lookup_adult_rates($adultcount, $arr_adultpolicies_ru
         }
     }
 
+
+    //===================================================
+    if ($arr_params["roll_over_basis"] == "per_request") {
+        //if rollover has been per_request then nullify all the costings
+        $rates = 0;
+        $workings .= " - ROLLOVER IS ON REQUEST";
+    }
+    //===================================================
+
     return array("VAL" => $rates, "MSG" => $workings, "RECUR" => $recur, "OCCUP_MODE" => $occup_mode);
 }
 
@@ -2530,6 +2558,13 @@ function _rates_calculator_extra_meal_supp($arr_params, $this_date, $con) {
 
                     $msg = "$workings Ad #{$a} = $currency_buy $extra_adult";
 
+                    //===================================================
+                    if ($arr_params["roll_over_basis"] == "per_request") {
+                        //if rollover has been per_request then nullify all the costings
+                        $extra_adult = 0;
+                        $msg .= " - ROLLOVER IS ON REQUEST";
+                    }
+                    //===================================================
                     //apply any percentage discount if applicable
                     if ($extra_spo_deductable == 1) {
                         _rates_calculator_apply_spo_discount_percentage($extra_adult, $msg, $arr_params,
@@ -2653,6 +2688,14 @@ function _rates_calculator_meal_supp_lookup($arr_capacity, $workings_flat_rate, 
                             $arr_spo_summary_applied);
 
 
+                    //===================================================
+                    if ($arr_params["roll_over_basis"] == "per_request") {
+                        //if rollover has been per_request then nullify all the costings
+                        $adult_supp_price = 0;
+                        $workings .= " - ROLLOVER IS ON REQUEST";
+                    }
+                    //===================================================
+
                     $arr[] = array("MSG" => $workings,
                         "COSTINGS" => $adult_supp_price,
                         "ADCH" => "ADULT",
@@ -2731,6 +2774,14 @@ function _rates_calculator_extra_meal_supplement_children($children_rules, $chil
                         }
 
 
+                        //===================================================
+                        if ($arr_params["roll_over_basis"] == "per_request") {
+                            //if rollover has been per_request then nullify all the costings
+                            $child_meal_rate = 0;
+                            $msg .= " - ROLLOVER IS ON REQUEST";
+                        }
+                        //===================================================
+
                         $arr[] = array("MSG" => $msg, "COSTINGS" => $child_meal_rate,
                             "ADCH" => "CHILDREN",
                             "AGE" => $age,
@@ -2793,6 +2844,14 @@ function _rates_calculator_meal_supplement_children($children_rules, $children, 
                                 "CHILDREN", $age, "", "MEAL_SUPPLEMENT", $this_date, $child_total_index,
                                 $arr_spo_summary_applied);
 
+
+                        //===================================================
+                        if ($arr_params["roll_over_basis"] == "per_request") {
+                            //if rollover has been per_request then nullify all the costings
+                            $child_meal_rate = 0;
+                            $workings .= " - ROLLOVER IS ON REQUEST";
+                        }
+                        //===================================================
 
                         $arr[] = array("MSG" => $workings, "COSTINGS" => $child_meal_rate,
                             "ADCH" => "CHILDREN",
@@ -3135,8 +3194,13 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             $occup_mode = "SINGLE";
 
-
-
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $rates = 0;
+                $workings .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
             //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
 
@@ -3175,6 +3239,13 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             $workings .= " = $currency_buy $fees";
 
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $rates = 0;
+                $workings .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
             //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
 
@@ -3199,6 +3270,16 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             $occup_mode = "1/2 DOUBLE";
 
+
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $rates = 0;
+                $workings .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
+            //
+            //
             //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
 
@@ -3238,6 +3319,14 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
 
             $workings .= " = $currency_buy $fees";
 
+
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $rates = 0;
+                $workings .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
             //apply eci percentage for that single parent if any
             _rates_calculator_apply_rates_eci_percentage($rates, $arr_eci, $workings, $currency_buy);
 
@@ -3252,6 +3341,8 @@ function _rates_calculator_lookup_single_parent_parent_rates($rules, $arr_params
                 "BRIDEGROOM" => $single_pax["bride_groom"], "OCCUP_MODE" => $occup_mode);
         }
     }
+
+
 
     return $arr;
 }
@@ -3441,6 +3532,14 @@ function _rates_calculator_lookup_single_parent_children_rates($arr_group_childr
             $childindex = $_arr[$i]["CHILDINDEX"];
             $split_between = $_arr[$i]["TO_SPLIT_BETWEEN"];
             $child_age = $arr_children[$childindex - 1]["age"];
+
+            //===================================================
+            if ($arr_params["roll_over_basis"] == "per_request") {
+                //if rollover has been per_request then nullify all the costings
+                $rates = 0;
+                $work .= " - ROLLOVER IS ON REQUEST";
+            }
+            //===================================================
 
             if ($split_between == 0) {
                 //apply eci percentage if any for that kiddo
@@ -4209,7 +4308,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
         $disc_max_ch_category = $discount_item["MAX_CH_CATEGORY"];
 
         $disc_bd_gm = $discount_item["BRIDE_GROOM"]; //is discount for bride, groom or both
-        
+
 
         $disc_ag_frm = $discount_item["AGE_FROM"]; //is discount for a specific age group
         $disc_ag_to = $discount_item["AGE_TO"]; //is discount for a specific age group
@@ -5606,7 +5705,7 @@ function _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_list
             inner join tblspecial_offer_link_spos sols on sol.id = sols.linkfk
             inner join tblspecial_offer so on sols.spofk = so.id
             where sol.id = :linkid and so.deleted = 0 and so.active_internal = 1";
-    
+
     $spo_active_external = $arr_params["spo_active_external"];
 
     if ($spo_active_external == 0) {
@@ -5615,7 +5714,7 @@ function _rates_calculator_spo_validate_combinable_link($con, $linkid, $arr_list
         $sql .= " AND so.active_external = 1 ";
     }
 
-    
+
     $query = $con->prepare($sql);
     $query->execute(array(":linkid" => $linkid));
     while ($rw = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -8007,7 +8106,7 @@ function _rates_calculator_get_inventory_statuses($con, $tofk, $countryid, $hote
     //=========================================================
     //STEP 3 : IF ONE OF THE DATES IS ON REQUEST 
     for ($i = 0; $i < count($arr_date_status); $i++) {
-        if ($arr_date_status[$i]["STATUS"] == "on_request") {
+        if ($arr_date_status[$i]["STATUS"] == "per_request") {
             return "ON REQUEST";
         }
     }
@@ -8041,10 +8140,10 @@ function _rates_calculator_is_inventory_date_inserted($arr_date_status, $invento
 
 function _rates_calculator_spo_overwrite_rates(&$adult_buyprice, &$wedding_offer_comments, $arr_adultpolicies_rules,
         $arr_params, $pax, $this_date) {
-   
-   
+
+
     $arr_spo_summary_applied = array();
-    
+
     //this function will first look if there any SPOs applicable for that person whereby the 
     //rates can be overwritten
     //this mainly applies to:
@@ -8192,8 +8291,6 @@ function _rates_calculator_spo_overwrite_rates(&$adult_buyprice, &$wedding_offer
             }
         }
     }
-
-   
 }
 ?>
 

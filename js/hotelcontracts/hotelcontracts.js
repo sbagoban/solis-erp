@@ -1549,7 +1549,7 @@ function hotelcontracts()
                 {type: "newcolumn"},
                 {type: "input", name: "rollover_value", label: "Value", labelWidth: "50",
                     labelHeight: "22", inputWidth: "60", inputHeight: "28", labelLeft: "0",
-                    labelTop: "10", inputLeft: "10", inputTop: "10", required: true}
+                    labelTop: "10", inputLeft: "10", inputTop: "10"}
             ]},
 
         {type: "label", label: "<b><hr></b>", labelWidth: "800"},
@@ -1619,11 +1619,38 @@ function hotelcontracts()
 
 
 
-
     var form_main = tabViews.cells("main").attachForm(str_frm_main);
 
 
     form_main.attachEvent("onChange", function (id, value) {
+        onFormMainChange(id, value);
+    });
+
+    form_main.attachEvent("onButtonClick", function (name, command) {
+        if (name == "cmdLoadRates")
+        {
+            showPopUp(form_main, "Rates", "selected_rate_codes_display", "selected_rate_codes_ids", _dsRates, "MULTIPLE", null);
+        } else if (name == "cmdLoadChildrenPolicy")
+        {
+            showPopUp(form_main, "Children Ages", "children_ages_display", "children_ages_ids", _dsChildPolicy, "MULTIPLE", updateChildAges);
+        } else if (name == "cmdLoaddepartments")
+        {
+            showPopUp(form_main, "Departments", "departments_display", "departments_ids", _dsDepartments, "MULTIPLE", null);
+        } else if (name == "cmdLoadCountries")
+        {
+            showPopUpCountries(form_main, "Countries", "market_countries_display", "market_countries_ids", "MULTIPLE", null);
+        } else if (name == "cmdLoadRooms")
+        {
+            showPopUp(form_main, "Rooms", "rooms_display", "rooms_ids", _dsRooms, "MULTIPLE", updateRooms);
+        } else if (name == "cmdLoadTourOperators")
+        {
+            showPopUpTourOperators(form_main, "Tour Operators", "tour_operators_display", "tour_operators_ids", "MULTIPLE", null);
+        }
+    });
+
+
+    function onFormMainChange(id, value)
+    {
         if (id == "countryfk")
         {
             loadArea(value, "");
@@ -1655,30 +1682,19 @@ function hotelcontracts()
             {
                 form_main.setItemValue("active_external", 0);
             }
+        } else if (id == "rollover_basis")
+        {
+            var rollover_basis = form_main.getItemValue("rollover_basis");
+            if (rollover_basis == "percentage" || rollover_basis == "add_per_night")
+            {
+                form_main.showItem("rollover_value");
+            } else if (rollover_basis == "per_request")
+            {
+                form_main.hideItem("rollover_value");
+            }
         }
-    });
+    }
 
-    form_main.attachEvent("onButtonClick", function (name, command) {
-        if (name == "cmdLoadRates")
-        {
-            showPopUp(form_main, "Rates", "selected_rate_codes_display", "selected_rate_codes_ids", _dsRates, "MULTIPLE", null);
-        } else if (name == "cmdLoadChildrenPolicy")
-        {
-            showPopUp(form_main, "Children Ages", "children_ages_display", "children_ages_ids", _dsChildPolicy, "MULTIPLE", updateChildAges);
-        } else if (name == "cmdLoaddepartments")
-        {
-            showPopUp(form_main, "Departments", "departments_display", "departments_ids", _dsDepartments, "MULTIPLE", null);
-        } else if (name == "cmdLoadCountries")
-        {
-            showPopUpCountries(form_main, "Countries", "market_countries_display", "market_countries_ids", "MULTIPLE", null);
-        } else if (name == "cmdLoadRooms")
-        {
-            showPopUp(form_main, "Rooms", "rooms_display", "rooms_ids", _dsRooms, "MULTIPLE", updateRooms);
-        } else if (name == "cmdLoadTourOperators")
-        {
-            showPopUpTourOperators(form_main, "Tour Operators", "tour_operators_display", "tour_operators_ids", "MULTIPLE", null);
-        }
-    });
 
 
     jQuery(function ($) {
@@ -1761,6 +1777,7 @@ function hotelcontracts()
     var cboRollOverBasis = form_main.getCombo("rollover_basis");
     cboRollOverBasis.addOption([{value: "percentage", text: "Percentage", img_src: "images/rollover.png"}]);
     cboRollOverBasis.addOption([{value: "add_per_night", text: "Add Per Night", img_src: "images/rollover.png"}]);
+    cboRollOverBasis.addOption([{value: "per_request", text: "Per Request", img_src: "images/rollover.png"}]);
     cboRollOverBasis.readonly(true);
     //=========================================================================
 
@@ -2270,7 +2287,9 @@ function hotelcontracts()
 
         form_main.setItemValue("service_code", "ACC");
         form_main.setItemValue("cross_season", "split");
+        form_main.setItemValue("rollover_basis", "percentage");
 
+        onFormMainChange("rollover_basis", "percentage");
 
         form_currency.clear();
         form_notes.clear();
@@ -11043,17 +11062,21 @@ function hotelcontracts()
         var rolloverbasis = form_main.getItemValue("rollover_basis");
         var rollovervalue = utils_trim(form_main.getItemValue("rollover_value"), " ");
 
-        if (isNaN(rollovervalue) || rollovervalue == "")
+        if (rolloverbasis == "percentage" || rolloverbasis == "add_per_night")
         {
-            return "<b>Rollover:</b> Missing Value";
+            if (isNaN(rollovervalue) || rollovervalue == "")
+            {
+                return "<b>Rollover:</b> Missing <b>" + rolloverbasis + "</b> Value";
+            }
         }
+
 
         if (rolloverbasis == "percentage")
         {
             rollovervalue = parseInt(rollovervalue, 10);
             if (rollovervalue < 0 || rollovervalue > 100)
             {
-                return "<b>Rollover:</b>Percentage Value invalid";
+                return "<b>Rollover:</b>Percentage Value Invalid";
             }
         }
 
@@ -11807,17 +11830,17 @@ function hotelcontracts()
                 var _the_ages = _the_range.split(":");
                 var age_value = _the_ages[0];
                 var minmax_values = _the_ages[1];
-                
+
                 if (utils_trim(age_value, " ") != "")
                 {
                     var arr_age_from_to = age_value.split("_");
                     var age_from = arr_age_from_to[0];
                     var age_to = arr_age_from_to[1];
-                    
+
                     var arr_min_max = minmax_values.split("^");
                     var _min = arr_min_max[0];
                     var _max = arr_min_max[1];
-                    
+
                     var found = false;
 
                     //now for this age range, search into copy_children_ages
@@ -11827,7 +11850,7 @@ function hotelcontracts()
 
                         if (copy_children_ages[j].capacity_child_agefrom == age_from &&
                                 copy_children_ages[j].capacity_child_ageto == age_to &&
-                                copy_children_ages[j].capacity_maxpax == _max && 
+                                copy_children_ages[j].capacity_maxpax == _max &&
                                 copy_children_ages[j].capacity_minpax == _min)
                         {
                             copy_children_ages.splice(j, 1);
@@ -12082,15 +12105,15 @@ function hotelcontracts()
 
         //now for each ruleranges, assess if they are outside or within scope
         for (var i = 0; i < arr_ruleranges.length; i++)
-        {   
+        {
 
             var myrulerange = arr_ruleranges[i].rule_ageranges;
             var myroom_id = arr_ruleranges[i].room_id;
             var mydate_rwid = arr_ruleranges[i].date_rwid;
-             
-            cleanSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid);  
 
-            decideDeleteSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid); 
+            cleanSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid);
+
+            decideDeleteSingleParentRuleRange(myrulerange, myroom_id, mydate_rwid);
         }
     }
 
@@ -12152,18 +12175,18 @@ function hotelcontracts()
                 var _the_ages = _the_range.split(":");
                 var age_value = _the_ages[0];
                 var minmax_values = _the_ages[1];
-                
+
                 if (utils_trim(age_value, " ") != "")
                 {
                     var arr_age_from_to = age_value.split("_");
                     var age_from = arr_age_from_to[0];
                     var age_to = arr_age_from_to[1];
-                    
+
                     var arr_min_max = minmax_values.split("^");
                     var _min = arr_min_max[0];
                     var _max = arr_min_max[1];
-                    
-                    
+
+
                     var found = false;
 
                     //now for this age range, search into copy_children_ages
@@ -12173,7 +12196,7 @@ function hotelcontracts()
 
                         if (copy_children_ages[j].capacity_child_agefrom == age_from &&
                                 copy_children_ages[j].capacity_child_ageto == age_to &&
-                                copy_children_ages[j].capacity_maxpax == _max && 
+                                copy_children_ages[j].capacity_maxpax == _max &&
                                 copy_children_ages[j].capacity_minpax == _min)
                         {
                             copy_children_ages.splice(j, 1);
@@ -12222,13 +12245,13 @@ function hotelcontracts()
 
         }
     }
-    
-    function cleanSingleParentRuleRange(rule_ageranges, roomid, date_rwid) 
+
+    function cleanSingleParentRuleRange(rule_ageranges, roomid, date_rwid)
     {
-                    
+
         //get all capacity rule lines that satisfy that _rulerange
-        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges,roomid,date_rwid);
-        
+        var arr_rules = getSingleParentRulesByRuleRange(rule_ageranges, roomid, date_rwid);
+
         if (arr_rules.length == 0)
         {
             return; //nothing to do since there are no rates defined for that rule_range
@@ -12250,10 +12273,10 @@ function hotelcontracts()
 
             for (var r = 0; r < arr_result.length; r++)
             {
-                
+
                 if (singleParentChildrenAgesInCategory(arr_result[r].children_ages, rule_ageranges))
-                {                       
-                
+                {
+
                     flg_found_ruleage_range_incapacity = true;
 
                     for (var i = 0; i < arr_result[r].children_ages.length; i++)
@@ -12266,8 +12289,8 @@ function hotelcontracts()
                     }
                 }
             }
-            
-                
+
+
             //if rule_age range is no longer in capacity
             if (!flg_found_ruleage_range_incapacity)
             {
@@ -12304,14 +12327,14 @@ function hotelcontracts()
     }
 
 
-    function getSingleParentRulesByRuleRange(rulerange, _roomid, _date_rw_id) 
+    function getSingleParentRulesByRuleRange(rulerange, _roomid, _date_rw_id)
     {
         var arr = [];
-        
-        
+
+
         var dateobj = lookupCapacityRoomDateObj(_roomid, _date_rw_id);
         var date_single_rules = dateobj.date_singleparentpolicies_rules;
-        
+
         for (var ad = 0; ad < date_single_rules.length; ad++)
         {
             if (date_single_rules[ad].rule_action != "DELETE")
@@ -12323,8 +12346,8 @@ function hotelcontracts()
                 }
             }
         }
-        
-        
+
+
         return arr;
     }
 
@@ -12370,7 +12393,7 @@ function hotelcontracts()
                 }
             }
         }
-        
+
         return arr;
     }
 
@@ -12848,6 +12871,8 @@ function hotelcontracts()
         form_main.setFormData(data);
         form_currency.setFormData(data);
         form_notes.setFormData(data);
+
+        onFormMainChange("rollover_basis", form_main.getItemValue("rollover_basis"));
 
         loadArea(data.countryfk, data.areafk);
 

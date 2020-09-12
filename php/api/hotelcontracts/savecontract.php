@@ -68,7 +68,7 @@ try {
     $selected_rate_codes_ids = $arrmain_details["selected_rate_codes_ids"];
     $cross_season = $arrmain_details["cross_season"];
     $rollover_basis = $arrmain_details["rollover_basis"];
-    $rollover_value = $arrmain_details["rollover_value"];
+    $rollover_value = utils_stringBlank($arrmain_details["rollover_value"],0);
     $children_ages_ids = $arrmain_details["children_ages_ids"];
     $market_countries_ids = $arrmain_details["market_countries_ids"];
     $touroperator_ids = $arrmain_details["tour_operators_ids"];
