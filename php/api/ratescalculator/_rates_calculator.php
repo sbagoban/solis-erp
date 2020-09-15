@@ -2176,7 +2176,7 @@ function _rates_calculator_lookup_rates_single_parent($arr_params, $this_date, $
             $rules_age_range = _rates_calculator_children_get_rules_by_agerange($arr_singleparent_rules, $the_age_range);
 
             //calculate children rates
-            $arr_children_rates = _rates_calculator_lookup_single_parent_children_rates($arr_group_children, $rules_age_range, $arr_params, $arr_adultpolicies_rules, $arr_eci, $this_date, $arr_spo_summary_applied);
+            $arr_children_rates = _rates_calculator_lookup_single_parent_children_rates($arr_group_children, $rules_age_range, $arr_params, $arr_singleparent_rules, $arr_eci, $this_date, $arr_spo_summary_applied);
             $arr = array_merge($arr, $arr_children_rates);
 
             //calculate adult rates
