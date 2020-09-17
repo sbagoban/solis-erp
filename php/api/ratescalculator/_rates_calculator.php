@@ -765,7 +765,8 @@ function _rates_calculator_min_stay_nights($arr_params, $this_date, &$flg_min_te
         $contract_active_from = $arr_params["contract_details"]["active_from"];
         $contract_active_to = $arr_params["contract_details"]["active_to"];
 
-
+        $num_nights = $arr_params["num_nights"];
+                
         $rules = _rates_calculator_get_arrcapacity_daterange($arr_capacity, $hotelroom, $this_date);
         if (!is_null($rules)) {
 
@@ -785,29 +786,35 @@ function _rates_calculator_min_stay_nights($arr_params, $this_date, &$flg_min_te
 
             //========================================================
             //get the number of nights spent in the period $rules_date_from - $rules_date_to
-            $overlapping_nights = 0;
-            if ($rules_date_from < $checkout_date && $rules_date_to > $checkin_date) {
-                $overlapping_nights = min($rules_date_to, $checkout_date)->diff(max($checkin_date, $rules_date_from))->days + 1;
-            }
+            //$overlapping_nights = 0;
+            //if ($rules_date_from < $checkout_date && $rules_date_to > $checkin_date) {
+            //    $overlapping_nights = min($rules_date_to, $checkout_date)->diff(max($checkin_date, $rules_date_from))->days + 1;
+            //}
 
             $arr_minstay_rules = $rules["date_minstay_rules"];
             for ($i = 0; $i < count($arr_minstay_rules); $i++) {
                 $minstay_duration = $arr_minstay_rules[$i]["minstay_duration"];
 
                 //if ($num_nights < $minstay_duration) {
-                if ($checkout_date <= $rules_date_to) {
+                //if ($checkout_date <= $rules_date_to) {
                     //this is the last period
-                    $overlapping_nights--;
-                }
+                //    $overlapping_nights--;
+                //}
 
-                if ($overlapping_nights < $minstay_duration) {
+                //if ($overlapping_nights < $minstay_duration) {
+                //    $flg_min_test = false;
+                //    return "PERIOD <b>" . $rules_date_from->format("d M Y") . " - " . $rules_date_to->format("d M Y") . "</b> : STAYED <b>$overlapping_nights</b> NIGHTS &lt; <b>$minstay_duration</b> NIGHTS";
+                //}
+                
+                if($num_nights < $minstay_duration) 
+                {
                     $flg_min_test = false;
-                    return "PERIOD <b>" . $rules_date_from->format("d M Y") . " - " . $rules_date_to->format("d M Y") . "</b> : STAYED <b>$overlapping_nights</b> NIGHTS &lt; <b>$minstay_duration</b> NIGHTS";
+                    return "PERIOD <b>" . $checkin_date->format("d M Y") . " - " . $checkout_date->format("d M Y") . "</b> : STAYED <b>$num_nights</b> NIGHTS &lt; <b>$minstay_duration</b> NIGHTS";
                 }
             }
         }
         $flg_min_test = true;
-        return "PERIOD <b>" . $rules_date_from->format("d M Y") . " - " . $rules_date_to->format("d M Y") . "</b> : STAYED <b>$overlapping_nights</b> NIGHTS &ge; <b>$minstay_duration</b> NIGHTS";
+        return "PERIOD <b>" . $checkin_date->format("d M Y") . " - " . $checkout_date->format("d M Y") . "</b> : STAYED <b>$num_nights</b> NIGHTS &ge; <b>$minstay_duration</b> NIGHTS";
     } catch (Exception $ex) {
         return "_RATES_CALCULATOR_MIN_STAY_NIGHTS: " . $ex->getMessage();
     }
