@@ -573,7 +573,11 @@ function _contract_getRoomDatesCancellationRules($con, $date_rwid) {
     $arr_rules = array();
 
 
-    $sql = "SELECT *
+    $sql = "SELECT id, canceltype, charge_method, charge_value,
+            IFNULL(days_before_arrival_from,'') AS days_before_arrival_from,
+            IFNULL(days_before_arrival_to,'') AS days_before_arrival_to,
+            IFNULL(dates_before_arrival_from,'') AS dates_before_arrival_from,
+            IFNULL(dates_before_arrival_to,'') AS dates_before_arrival_to
             FROM tblservice_contract_cancellation 
             WHERE service_contract_roomcapacity_dates_fk=:id";
 

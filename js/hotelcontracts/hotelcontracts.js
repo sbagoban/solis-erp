@@ -14134,6 +14134,7 @@ function hotelcontracts()
             }
         } else if (context == "date_policies_cancellation")
         {
+            
             //1. delete all existing items in object to
             for (var i = 0; i < arrto.length; i++)
             {
@@ -14153,6 +14154,9 @@ function hotelcontracts()
                     arrto.push(_obj);
                 }
             }
+            
+            console.log(_json_capacity);
+            
         } else if (context == "date_mealsupplement_rules")
         {
             //1. delete all existing items in object to
