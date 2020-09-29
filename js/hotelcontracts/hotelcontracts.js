@@ -9508,11 +9508,29 @@ function hotelcontracts()
 
             return;
         }
-
+        
+        
+        //get the ages arrays
+        var arr_ages = [];
+        var child_ages_ids = form_main.getItemValue("children_ages_ids");
+        var arr_ids = child_ages_ids.split(",");
+        for (var i = 0; i < arr_ids.length; i++)
+        {
+            var id = arr_ids[i];
+            if (id != "")
+            {
+                var item = _dsChildPolicy.item(id);
+                var agefrom = item.agefrom;
+                var ageto = item.ageto;
+                arr_ages.push({AGEFROM:agefrom,AGETO:ageto});
+            }
+        }
         var params = "t=" + encodeURIComponent(global_token) +
                 "&roomid=" + roomid + "&dateid=" + dateid +
+                "&ages=" + encodeURIComponent(JSON.stringify(arr_ages)) +
                 "&json_capacity=" + encodeURIComponent(JSON.stringify(_json_capacity));
-
+        
+        console.log(params);
 
         popupwin_capacitycombinations.center();
         popupwin_capacitycombinations.show();
@@ -9708,8 +9726,6 @@ function hotelcontracts()
                                 }
                             }
                         }
-
-
 
                         return;
                     }

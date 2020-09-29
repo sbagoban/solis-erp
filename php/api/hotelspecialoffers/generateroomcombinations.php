@@ -21,35 +21,41 @@ try {
     if (!isset($_POST["t"])) {
         throw new Exception("INVALID TOKEN");
     }
-    
+
     /*
-    if ($_POST["t"] != $_SESSION["token"]) {
-        throw new Exception("INVALID TOKEN");
-    }
-    *
+      if ($_POST["t"] != $_SESSION["token"]) {
+      throw new Exception("INVALID TOKEN");
+      }
+     *
      * 
      */
     if (!isset($_POST["json_capacity"])) {
         throw new Exception("INVALID CAPACITY JSON VALUE");
     }
-    
+
     if (!isset($_POST["dateid"])) {
         throw new Exception("INVALID DATE ID VALUE");
     }
-    
+
     if (!isset($_POST["roomid"])) {
         throw new Exception("INVALID ROOM ID");
     }
     
-    
-    
+    if (!isset($_POST["ages"])) {
+        throw new Exception("INVALID AGES");
+    }
+
+
+
     require_once("../../connector/pdo_connect_main.php");
     require_once("../hotelcontracts/_contract_combinations_rooms.php");
-    
+
     $roomid = $_POST["roomid"];
     $dateid = $_POST["dateid"];
-    $arr_room = json_decode($_POST["json_capacity"],true);
-    $arr_combinations = _contract_combinations_rooms($arr_room,$roomid, $dateid);
+    $arr_ages = json_decode($_POST["ages"], true);
+    $arr_room = json_decode($_POST["json_capacity"], true);
+    
+    $arr_combinations = _contract_combinations_rooms($arr_room, $roomid, $dateid, $arr_ages);
 
     echo json_encode(array("OUTCOME" => "OK", "COMBINATIONS" => $arr_combinations));
 } catch (Exception $ex) {
