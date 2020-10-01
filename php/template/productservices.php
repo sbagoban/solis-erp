@@ -143,7 +143,7 @@
 								<div id="id_creditor_blk">
 									<label class="col-sm-2 control-label">Supplier</label>
 									<div class="col-sm-6">
-										<select type="text" class="form-control" id="id_creditor">
+										<select type="text" class="form-control select2" id="id_creditor">
 										</select>
 									</div>
 								</div>
