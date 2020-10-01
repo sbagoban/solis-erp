@@ -17,7 +17,7 @@ require_once("../../connector/pdo_connect_main.php");
 
 $con = pdo_con();
 
-$query_c = $con->prepare("SELECT * FROM creditor WHERE active = 1");
+$query_c = $con->prepare("SELECT * FROM creditor WHERE active = 1 ORDER BY creditor_name ASC");
 $query_c->execute();
 $row_count_c = $query_c->rowCount();
 
