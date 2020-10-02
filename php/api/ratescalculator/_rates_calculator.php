@@ -7877,25 +7877,29 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
             $arr_params_rates["hotelroom"] = $roomid;
 
             $_arr = _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_params_rates);
-            $_arr["HOTELNAME"] = $hotelname;
-            $_arr["HOTELID"] = $hotelid;
-            $_arr["HOTELFIELDS"] = _hotel_details($con, $hotelid);
-            $_arr["CONTRACTID"] = $contractid;
-            $_arr["MEALID"] = $mealid;
-            $_arr["MEALPLAN"] = $mealplan;
-            $_arr["ROOMNAME"] = $roomname;
-            $_arr["ROOMIMAGES"] = _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room);
-            $_arr["HOTELIMAGES"] = _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
-            $_arr["ROOMFACILITIES"] = _rates_calculator_get_roomfacilities($con, $roomid, "ROOM");
-            $_arr["HOTELFACILITIES"] = _rates_calculator_get_hotelfacilities($con, $hotelid, "HOTEL");
-            $_arr["INVENTORY_STATUS"] = _rates_calculator_get_inventory_statuses($con, $touroperator, $countryid, $hotelid, $roomid, $dtckin, $dtckout);
+            
+            if(is_array($_arr))
+            {
+                $_arr["HOTELNAME"] = $hotelname;
+                $_arr["HOTELID"] = $hotelid;
+                $_arr["HOTELFIELDS"] = _hotel_details($con, $hotelid);
+                $_arr["CONTRACTID"] = $contractid;
+                $_arr["MEALID"] = $mealid;
+                $_arr["MEALPLAN"] = $mealplan;
+                $_arr["ROOMNAME"] = $roomname;
+                $_arr["ROOMIMAGES"] = _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room);
+                $_arr["HOTELIMAGES"] = _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
+                $_arr["ROOMFACILITIES"] = _rates_calculator_get_roomfacilities($con, $roomid, "ROOM");
+                $_arr["HOTELFACILITIES"] = _rates_calculator_get_hotelfacilities($con, $hotelid, "HOTEL");
+                $_arr["INVENTORY_STATUS"] = _rates_calculator_get_inventory_statuses($con, $touroperator, $countryid, $hotelid, $roomid, $dtckin, $dtckout);
 
-            $arr_return_values[] = $_arr;
+                $arr_return_values[] = $_arr;
+            }
         }
 
         return $arr_return_values;
     } catch (Exception $ex) {
-        $arr_return_values = array("OUTCOME" => $ex->getMessage());
+        $arr_return_values = array("OUTCOME" => $ex->getMessage() . " +$contractid+ " . $_arr );
         return $arr_return_values;
     }
 }
