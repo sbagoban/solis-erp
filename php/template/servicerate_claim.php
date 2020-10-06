@@ -113,8 +113,8 @@
 									<option value="B" name="Worldwide">Worldwide</option>
 									<option value="C" name="Market">Market</option>
 									<option value="D" name="Direct Sales">Direct Sales</option>
-									<option value="E" name="Local Sales">Local Sales</option>
-									<option value="F" name="Mice">Mice</option>
+									<!--<option value="E" name="Local Sales">Local Sales</option>
+									<option value="F" name="Mice">Mice</option>-->
 								</select>
 							</div>
 							<div class="col-sm-7" id="multiSpecificTo">

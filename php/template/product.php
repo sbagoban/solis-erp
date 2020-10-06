@@ -7,7 +7,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
                         <i class="icon-calendar"></i>
-                        <h3 class="panel-title">Product <span id="productId" style="display: block">0</span></h3>
+                        <h3 class="panel-title">Product <span id="productId" style="display: none">0</span></h3>
                     </div>
 
                     <div class="panel-body">
