@@ -1,5 +1,6 @@
 <?php
 
+
 session_start();
 
 if (!isset($_SESSION["solis_userid"])) {
@@ -13,11 +14,11 @@ if ($_GET["t"] != $_SESSION["token"]) {
     die("INVALID TOKEN");
 }
 
-if (!isset($_GET["hoid"])) {
-    die("INVALID HOTEL ID");
+if (!isset($_GET["rid"])) {
+    die("INVALID ROOM ID");
 }
 
-$hotelfk = $_GET["hoid"];
+$roomfk = $_GET["rid"];
 
 require_once("../../connector/pdo_connect_main.php");
 require_once("../../connector/db_pdo.php");
@@ -27,12 +28,10 @@ $con = pdo_con();
 
 $data = new JSONDataConnector($con, "PDO");
 
-$sql = "select hf.*, f.facility,f.ordering,f.description from 
-        tblhotel_facilities hf
-        inner join tblfacilities f on hf.facilityfk = f.id
-        where hf.hotelfk = $hotelfk and f.deleted = 0
-        order by f.ordering asc, f.facility asc;";
+$sql = "select *, 0 as X
+        from tblfacilities where category = 'ROOM' and 
+        deleted = 0 and id not in (select facilityfk from tblhotel_room_facilities where roomfk = $roomfk)
+        order by ordering asc, facility asc;";
 
-$data->render_sql($sql, "id", "hotelfk,facilityfk,ordering,description,facility");
-
+$data->render_sql($sql, "id", "X,category,facility,description");
 ?>

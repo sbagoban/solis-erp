@@ -185,7 +185,7 @@ function _contract_getRoomDatesChildPoliciesRules($con, $date_rwid) {
 
 function _contract_getRoomDatesAdultPoliciesRules($con, $date_rwid) {
     $arr_rules = array();
-    $sql = "SELECT * 
+    $sql = "SELECT id,  rulecounter, rulecategory
             FROM tblservice_contract_adultpolicy_room_dates_rules 
             WHERE service_contract_roomcapacity_dates_fk=:dateid 
             ORDER BY id ASC";

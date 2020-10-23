@@ -125,11 +125,13 @@ try {
 
         print "<cell type='ro' align='center' context='category' variant='PERSONS' "
                 . "sort='na' category='$i' agefrom='0' ageto='0' currencyid='' buy_sell='' "
+                . "rule_ageranges='' "
                 . "style='$cellstyle $cellstylelocked'>" . decideCategoryCaption($i) . "</cell>";
 
         $arr_basis = decideBaisCell($i, $cellstylelocked);
         print "<cell type='" . $arr_basis["CELLTYPE"] . "' "
                 . "align='center' context='basis' variant='PERSONS' "
+                . "rule_ageranges='' "
                 . "sort='na' category='$i' agefrom='0' ageto='0' currencyid='' buy_sell='' "
                 . $arr_basis["XML"]
                 . "style='$cellstyle " . $arr_basis["CELLSTYLELOCKED"] . "'>" .
@@ -142,6 +144,7 @@ try {
 
                 print "<cell type='edn' align='right' context='value' variant='PERSONS' "
                         . "sort='na' category='$i'  buy_sell='buy' "
+                        . "rule_ageranges='' "
                         . "currencyid='$buycurrencyid' agefrom='0' ageto='0' "
                         . "style='$cellstyle'></cell>";
             }
@@ -153,6 +156,7 @@ try {
                 print "<cell type='ron' align='right' context='value' variant='PERSONS' "
                         . "sort='na' category='$i' buy_sell='sell' "
                         . "currencyid='$sellcurrencyid' agefrom='0' ageto='0' "
+                        . "rule_ageranges='' "
                         . "style='$cellstyle $cellstylelocked'></cell>";
             }
         

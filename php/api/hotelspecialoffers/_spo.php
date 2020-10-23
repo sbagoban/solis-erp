@@ -1070,7 +1070,7 @@ function _load_capacity_room_dates_capacityrules_childpoliciesrules_ages_values(
 function _load_capacity_room_dates_capacityrules_adultpoliciesrules($con, $date_rwid)
 {
     $arr_rules = array();
-    $sql = "SELECT * 
+    $sql = "SELECT id,  rulecounter, rulecategory
             FROM tblspecial_offer_flatrate_ad_rm_dt_rules 
             WHERE spo_flatrate_roomcapacity_dates_fk=:dateid 
             ORDER BY id ASC";
@@ -1081,7 +1081,7 @@ function _load_capacity_room_dates_capacityrules_adultpoliciesrules($con, $date_
         $rule_rwid = $rwrules["id"];
         $rule_rulecounter = $rwrules["rulecounter"];
         $rule_category = $rwrules["rulecategory"];
-
+        
         $arr_rules[] = array("rule_rwid" => $rule_rwid,
             "rule_rulecounter" => $rule_rulecounter,
             "rule_category" => $rule_category,

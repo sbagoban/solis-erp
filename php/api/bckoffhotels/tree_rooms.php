@@ -34,6 +34,7 @@ if ($action == "NEW") {
 } else {
     echo '<item text="Details" id="details" select="yes"  />';
     echo '<item text="Images" id="images"  />';
+    echo '<item text="Facilities" id="facilities"  />';
 }
 
 print '</tree>';

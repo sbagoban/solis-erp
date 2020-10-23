@@ -1922,9 +1922,11 @@ function saveRmAdultPolicyDtRules($date_rwid, $arr_adultpolicies_rules) {
             } else {
                 if ($rule_rwid < 0) {
                     $sql = "INSERT INTO tblservice_contract_adultpolicy_room_dates_rules
-                            (service_contract_roomcapacity_dates_fk,rulecounter,rulecategory)
+                            (service_contract_roomcapacity_dates_fk,
+                             rulecounter,rulecategory)
                             VALUES
-                            (:service_contract_roomcapacity_dates_fk,:rulecounter,:rulecategory)";
+                            (:service_contract_roomcapacity_dates_fk,
+                             :rulecounter,:rulecategory)";
 
                     $stmt = $con->prepare($sql);
                     $stmt->execute(array(":service_contract_roomcapacity_dates_fk" => $date_rwid,
@@ -1934,7 +1936,8 @@ function saveRmAdultPolicyDtRules($date_rwid, $arr_adultpolicies_rules) {
                     $rule_rwid = $con->lastInsertId();
                 } else {
                     $sql = "UPDATE tblservice_contract_adultpolicy_room_dates_rules
-                            SET rulecounter=:rulecounter, rulecategory=:rulecategory
+                            SET 
+                            rulecounter=:rulecounter, rulecategory=:rulecategory
                             WHERE id=:id";
                     $stmt = $con->prepare($sql);
                     $stmt->execute(array(":id" => $rule_rwid,

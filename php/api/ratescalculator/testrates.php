@@ -56,53 +56,7 @@ try {
 
     $outcome = _rates_calculator($con, $arr_params);
 
-
-    /*
-      $arr_params_test["checkin_date"] = "2019-04-01";
-      $arr_params_test["checkin_time"] = "";
-      $arr_params_test["checkout_date"] = "2019-04-05";
-      $arr_params_test["checkout_time"] = "";
-      $arr_params_test["mealplan"] = 6;
-      $arr_params_test["suppmealplan"] = 4;
-      $arr_params_test["country"] = 845;
-      $arr_params_test["touroperator"] = 10;
-      $arr_params_test["hotel"] = 19;
-      $arr_params_test["hotelroom"] = 3;
-      $arr_params_test["max_pax"] = 4;
-      $arr_params_test["booking_date"] = "2019-04-01";
-      $arr_params_test["travel_date"] = "2019-04-01";
-      $arr_params_test["wedding_interested"] = 1;
-
-      $arr_params_test["arr_pax"] = array();
-      $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>30,"bride_groom"=>"BRIDE");
-      $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>35,"bride_groom"=>"GROOM");
-      $arr_params_test["arr_pax"][] = array("count"=>3,"age"=>5,"bride_groom"=>"");
-
-      $test = _rates_calculator_reservation_get_cost_claim($con, 5, $arr_params_test);
-
-     */
-    
-    
-      $arr_params_test["checkin_date"] = "2019-04-01";
-      $arr_params_test["checkin_time"] = "";
-      $arr_params_test["checkout_date"] = "2019-04-05";
-      $arr_params_test["checkout_time"] = "";
-      $arr_params_test["touroperator"] = 10;
-      $arr_params_test["max_pax"] = 4;
-      $arr_params_test["booking_date"] = "2019-04-01";
-      $arr_params_test["travel_date"] = "2019-04-01";
-      $arr_params_test["wedding_interested"] = 0;
-
-      $arr_params_test["arr_pax"] = array();
-      $arr_params_test["arr_pax"][] = array("count"=>1,"age"=>"","bride_groom"=>"");
-      $arr_params_test["arr_pax"][] = array("count"=>2,"age"=>"","bride_groom"=>"");
-      $arr_params_test["arr_pax"][] = array("count"=>3,"age"=>5,"bride_groom"=>"");
-
-      $test = _rates_calculator_get_applicable_contracts($con, $arr_params_test);
-
-
-    $test = array();
-    echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome, "TEST" => $test));
+    echo json_encode(array("OUTCOME" => "OK", "RESULT" => $outcome));
 } catch (Exception $ex) {
     die(json_encode(array("OUTCOME" => "ERROR: " . $ex->getMessage())));
 }

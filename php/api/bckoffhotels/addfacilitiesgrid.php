@@ -30,8 +30,8 @@ $data = new JSONDataConnector($con, "PDO");
 
 $sql = "select *, 0 as X
         from tblfacilities where category = 'HOTEL' and 
-        deleted = 0 
-        order by ordering;";
+        deleted = 0 and id not in (select facilityfk from tblhotel_facilities where hotelfk = $hotelfk)
+        order by ordering asc, facility asc;";
 
 $data->render_sql($sql, "id", "X,category,facility,description");
 ?>

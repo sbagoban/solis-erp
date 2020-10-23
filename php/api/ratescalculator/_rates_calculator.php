@@ -262,8 +262,10 @@ function _rates_calculator($con, $arr_params) {
         $time_post = microtime(true);
         $exec_time = round(($time_post - $time_pre), 2);
 
-
-        return array("OUTCOME" => "OK",
+        $arr_resumed_outcome = _rates_calculator_resume_daily_outcome($arr_daily);
+        
+        return array("OUTCOME" => $arr_resumed_outcome["OUTCOME"],
+            "OUTCOME_MESSAGES" => $arr_resumed_outcome["MESSAGES"],
             "CHOICE_PRICES" => "PRICES",
             "CONTRACT_DETAILS" => $arr_capacity,
             "NUM NIGHTS" => $num_nights, "DAILY" => $arr_daily,
@@ -272,6 +274,45 @@ function _rates_calculator($con, $arr_params) {
     } catch (Exception $ex) {
         return array("OUTCOME" => "_RATES_CALCULATOR: " . $ex->getMessage());
     }
+}
+
+
+function _rates_calculator_resume_daily_outcome($arr_daily)
+{   
+    $arr_outcomes = array();
+    $arr_outcome_reasons = array();
+    
+    for($i = 0; $i < count($arr_daily); $i++)
+    {
+        $status = $arr_daily[$i]["STATUS"];
+        
+        if($status != "OK")
+        {
+            $status_reason = $arr_daily[$i]["STATUS_REASON"];
+            $status_reason = str_replace("<b>","",$status_reason);
+            $status_reason = str_replace("</b>","",$status_reason);
+            $status_reason = str_replace("<B>","",$status_reason);
+            $status_reason = str_replace("</B>","",$status_reason);
+            
+            $arr_status = explode("<br>", $status);
+            $arr_reason = explode("<br>", $status_reason);
+            
+            $arr_outcomes  = array_merge($arr_outcomes, $arr_status);
+            $arr_outcomes = array_unique($arr_outcomes);
+            
+            $arr_outcome_reasons  = array_merge($arr_outcome_reasons, $arr_reason);
+            $arr_outcome_reasons = array_unique($arr_outcome_reasons);
+            
+        }
+    }
+    
+    if(count($arr_outcomes) > 0)
+    {
+        //there has been an error in at least one day
+        return array("OUTCOME" => implode("<br>", $arr_outcomes), "MESSAGES"=>implode("<br>", $arr_outcome_reasons)); 
+    }
+    
+    return array("OUTCOME" => "OK", "MESSAGES"=>"");
 }
 
 function rates_calculator_CORE_lookup(&$arr_daily, $idx, $this_date, $arr_contract_ids,
@@ -743,7 +784,7 @@ function _rates_calculator_test_children_ages($arr_params, $con) {
         //now check if there are ages outside the contract definition
         for ($i = 0; $i < count($children); $i++) {
             if ($children[$i]["age"] != "OK") {
-                return $children[$i]["age"] . "YRS OUTSIDE ALLOWABLE AGE RANGES";
+                return "CHILDREN AGED " . $children[$i]["age"] . " YRS ARE OUTSIDE ALLOWABLE AGE RANGES BY THE CONTRACT";
             }
         }
 
@@ -805,17 +846,17 @@ function _rates_calculator_min_stay_nights($arr_params, $this_date, &$flg_min_te
                 //}
                 //if ($overlapping_nights < $minstay_duration) {
                 //    $flg_min_test = false;
-                //    return "PERIOD <b>" . $rules_date_from->format("d M Y") . " - " . $rules_date_to->format("d M Y") . "</b> : STAYED <b>$overlapping_nights</b> NIGHTS &lt; <b>$minstay_duration</b> NIGHTS";
+                //    return "PERIOD <b>" . $rules_date_from->format("d M Y") . " - " . $rules_date_to->format("d M Y") . "</b> : STAYED <b>$overlapping_nights</b> NIGHTS < <b>$minstay_duration</b> NIGHTS";
                 //}
 
                 if ($num_nights < $minstay_duration) {
                     $flg_min_test = false;
-                    return "PERIOD <b>" . $checkin_date->format("d M Y") . " - " . $checkout_date->format("d M Y") . "</b> : STAYED <b>$num_nights</b> NIGHTS &lt; <b>$minstay_duration</b> NIGHTS";
+                    return "PERIOD <b>" . $checkin_date->format("d M Y") . " - " . $checkout_date->format("d M Y") . "</b> : STAYED <b>$num_nights</b> NIGHTS WHICH IS LESS THAN MIN STAY <b>$minstay_duration</b> NIGHTS";
                 }
             }
         }
         $flg_min_test = true;
-        return "PERIOD <b>" . $checkin_date->format("d M Y") . " - " . $checkout_date->format("d M Y") . "</b> : STAYED <b>$num_nights</b> NIGHTS &ge; <b>$minstay_duration</b> NIGHTS";
+        return "PERIOD <b>" . $checkin_date->format("d M Y") . " - " . $checkout_date->format("d M Y") . "</b> : STAYED <b>$num_nights</b> NIGHTS >= MIN STAY <b>$minstay_duration</b> NIGHTS";
     } catch (Exception $ex) {
         return "_RATES_CALCULATOR_MIN_STAY_NIGHTS: " . $ex->getMessage();
     }
@@ -885,12 +926,12 @@ function _rates_calculator_ch_own_capacity($arr_params, $this_date, $contract_sp
 
             //======================================================
             //if we are here means that no rules satisfy
-            return array("MSG" => "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT");
+            return array("MSG" => "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT", "INDEX"=>"");
         } else {
-            return array("MSG" => "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT");
+            return array("MSG" => "NO CHILDREN OWN ROOM CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT", "INDEX"=>"");
         }
     } catch (Exception $ex) {
-        return array("MSG" => "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage());
+        return array("MSG" => "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage(), "INDEX"=>"");
     }
 }
 
@@ -957,12 +998,12 @@ function _rates_calculator_adch_capacity($arr_params, $this_date, $contract_spo,
 
             //======================================================
             //if we are here means that no rules satisfy
-            return array("MSG" => "ADULT AND CHILDREN CAPACITY <B>NOT</B> SATISFIED");
+            return array("MSG" => "ADULT AND CHILDREN CAPACITY IS <B>NOT</B> SATISFIED ACCORDING TO THE CONTRACT", "INDEX"=>"");
         } else {
-            return array("MSG" => "NO ADULT AND CHILDREN CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT");
+            return array("MSG" => "NO ADULT AND CHILDREN CAPACITY DEFINED FOR THAT DATE, ROOM AND CONTRACT", "INDEX"=>"");
         }
     } catch (Exception $ex) {
-        return array("MSG" => "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage());
+        return array("MSG" => "_RATES_CALCULATOR_ADCH_CAPACITY: " . $ex->getMessage(), "INDEX"=>"");
     }
 }
 
@@ -1999,7 +2040,11 @@ function _rates_calculator_lookup_sharing_own_children_rates($arr_group_children
             //SINGLE, %, FLAT, DOUBLE, TRIPLE
 
             $value = _rates_calculator_lookup_sharing_own_children_rates_index($child_index, $rules, $age_from, $age_to, "value", $sharing_own);
-
+            if(trim($value) == "" || is_null($value))
+            {
+                $value = 0;
+            }
+            
             if ($basis == "") {
                 $workings = "$workings_spo $single_parent_comments $sharing_own (CH #$child_index {$child_age}yr <font color='orange'>NO RATES</font>) => ";
 
@@ -4121,7 +4166,7 @@ function _rates_calculator_calc_discount_PNI($arr_params, $arr, $this_date, &$ar
                 //passed date check for SPO
                 //passed children sharing/own age limits check
 
-                if ($disc_value > 0) {
+                if ($disc_value >= 0) {
 
                     if ($disc_type == "FLAT_PNI") {
 
@@ -4303,7 +4348,7 @@ function _rates_calculator_apply_spo_discount_PPPN(&$rates, &$msg, $arr_params, 
 
                                     //passed bride groom checks
                                     //finally apply the discount when it flat PPPN
-                                    if ($disc_value > 0) {
+                                    if ($disc_value >= 0) {
 
                                         if (($disc_type == "FLAT_PPPN" && $room_nonroom == "ROOM")) {
 
@@ -4423,7 +4468,7 @@ function _rates_calculator_apply_spo_discount_percentage(&$rates, &$msg, $arr_pa
                                     //passed bride groom checks
                                     //finally apply the discount when it is percetage only
 
-                                    if ($disc_value > 0) {
+                                    if ($disc_value >= 0) {
 
                                         if ($disc_is_cumulative == 1) {
                                             if ($disc_type == "%ALL") {
@@ -4959,12 +5004,17 @@ function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &
     if (!$flg_min_test) {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 2</font>: $min_test_msg",
             "COSTINGS" => array());
+        
         $arr_daily_idx["STATUS"] = "MIN_STAY_FAIL";
-        return;
+        $arr_daily_idx["STATUS_REASON"] = $min_test_msg;
+        
     }
-
-    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 2</font>: MIN STAY $min_test_msg",
+    else
+    {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 2</font>: MIN STAY $min_test_msg",
         "COSTINGS" => array());
+    }
+    
 
     //========================================================
     //========================================================
@@ -4973,12 +5023,24 @@ function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &
     if ($children_age_test != "OK") {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 3</font>: CHILDREN AGES: $children_age_test",
             "COSTINGS" => array());
-        $arr_daily_idx["STATUS"] = "CHILDREN_AGE_FAIL";
-        return;
+        
+        if($arr_daily_idx["STATUS"] != "OK") //already failed test above
+        {
+            $arr_daily_idx["STATUS"] .= "<br>CHILDREN_AGE_FAIL";
+            $arr_daily_idx["STATUS_REASON"] .= "<br>$children_age_test";
+        }
+        else
+        {
+            $arr_daily_idx["STATUS"] = "CHILDREN_AGE_FAIL";
+            $arr_daily_idx["STATUS_REASON"] = $children_age_test;
+        }
     }
-
-    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 3</font>: CHILDREN AGES",
+    else
+    {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 3</font>: CHILDREN AGES",
         "COSTINGS" => array());
+    }
+    
     //========================================================
     //========================================================
     //TEST 4: ADULT AND CHILDREN CAPACITY
@@ -4986,16 +5048,28 @@ function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &
     if ($capacity_test_adch["MSG"] != "OK") {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 4</font>: CAPACITY TEST ADULT + CHILDREN SHARING: " . $capacity_test_adch["MSG"],
             "COSTINGS" => array());
-        $arr_daily_idx["STATUS"] = "CAPACITY_FAIL";
-
-        return;
+        
+        if($arr_daily_idx["STATUS"] != "OK") //already failed test above
+        {
+            $arr_daily_idx["STATUS"] .= "<br>CAPACITY_FAIL";
+            $arr_daily_idx["STATUS_REASON"] .= "<br>" . $capacity_test_adch["MSG"];
+        }
+        else
+        {
+            $arr_daily_idx["STATUS"] = "CAPACITY_FAIL";
+            $arr_daily_idx["STATUS_REASON"] = $capacity_test_adch["MSG"];
+        }
+        
     }
-
-    $test_4_index = $capacity_test_adch["INDEX"];
-
-    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: <b>" . $test_4_index . "</b>",
-        "COMBINATION_INDEX" => $test_4_index,
-        "COSTINGS" => array());
+    else
+    {
+        $test_4_index = $capacity_test_adch["INDEX"];
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 4</font>: CAPACITY ADULT + CHILDREN SHARING. COMBINATION INDEX: <b>" . $test_4_index . "</b>",
+            "COMBINATION_INDEX" => $test_4_index,
+            "COSTINGS" => array());
+    }
+    
+    
     //========================================================
     //========================================================
     //TEST 5: CHILDREN IN OWN ROOM
@@ -5003,16 +5077,27 @@ function _rates_calculator_validate_reservation($arr_params, $this_date, $con, &
     if ($capacity_test_ch_ownroom["MSG"] != "OK") {
         $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='red'>FAILED TEST 5</font>: CAPACITY TEST CHILDREN OWN ROOM: " . $capacity_test_ch_ownroom["MSG"],
             "COSTINGS" => array());
-        $arr_daily_idx["STATUS"] = "CHILDREN_OWN_ROOM_FAIL";
-
-        return;
+        
+        if($arr_daily_idx["STATUS"] != "OK") //already failed test above
+        {
+            $arr_daily_idx["STATUS"] .= "<br>CHILDREN_OWN_ROOM_FAIL";
+            $arr_daily_idx["STATUS_REASON"] .= "<br>" . $capacity_test_ch_ownroom["MSG"];
+        }
+        else
+        {
+            $arr_daily_idx["STATUS"] = "CHILDREN_OWN_ROOM_FAIL";
+            $arr_daily_idx["STATUS_REASON"] = $capacity_test_ch_ownroom["MSG"];
+        }
     }
-
-    $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM. COMBINATION INDEX: <b>" . $capacity_test_ch_ownroom["INDEX"] . "</b>",
+    else
+    {
+        $arr_daily_idx["COSTINGS_WORKINGS"][] = array("MSG" => "<font color='green'>PASSED TEST 5</font>: CAPACITY CHILDREN OWN ROOM. COMBINATION INDEX: <b>" . $capacity_test_ch_ownroom["INDEX"] . "</b>",
         "COMBINATION_INDEX" => $capacity_test_ch_ownroom["INDEX"],
         "COSTINGS" => array());
+    }
+    
     //========================================================
-    //all ok finally
+    
     return;
 }
 
@@ -5849,7 +5934,7 @@ function _rates_calculator_validate_SPO_minnights($spo_minstay_priority, $spo_mi
         if ($spo_minstay_from <= $num_spo_nights) {
             return "OK";
         } else {
-            return " $num_spo_nights NIGHT(S) SHOULD BE &ge; SPO $spo_minstay_from NIGHTS";
+            return " $num_spo_nights NIGHT(S) SHOULD BE >= SPO $spo_minstay_from NIGHTS";
         }
     }
 
@@ -6501,7 +6586,7 @@ function _rates_calculator_spo_check_booking_date($arr_params, $rw) {
             return "OK";
         } else {
             return "BOOKING DATE " . date("d-m-Y", strtotime($spo_booking_date)) .
-                    " SHOULD BE &ge; SPO BOOKING DATE" .
+                    " SHOULD BE >= SPO BOOKING DATE" .
                     date("d-m-Y", strtotime($rw["booking_before_date_from"]));
         }
     } else if ($rw["booking_before_date_from"] == "" && $rw["booking_before_date_to"] == "") {
@@ -6550,7 +6635,7 @@ function _rates_calculator_spo_check_booking_days($arr_params, $rw) {
             return "OK";
         } else {
             return "TRAVEL DATE - BOOKING DATE = $days_booking DAY(S) " .
-                    "SHOULD BE &ge; " .
+                    "SHOULD BE >= " .
                     $rw["booking_before_days_from"] . " DAY(S)";
         }
     } else if ($rw["booking_before_days_from"] == "" && $rw["booking_before_days_to"] == "") {
@@ -6914,15 +6999,24 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         $arr_limits = array();
 
         $resa_rates = -1; //to be decided below:
+        
         //=========================================
         //get the country of the TO
         $countryid = -1;
-        $sql = "select * from tblto_countries where tofk = :toid limit 1";
-        $query = $con->prepare($sql);
-        $query->execute(array(":toid" => $touroperator));
-        if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $countryid = $row["countryfk"];
+        if(isset($arr_params_resa["countryid"]))
+        {
+            $countryid = $arr_params_resa["countryid"];
         }
+        else
+        {
+            $sql = "select * from tblto_countries where tofk = :toid limit 1";
+            $query = $con->prepare($sql);
+            $query->execute(array(":toid" => $touroperator));
+            if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $countryid = $row["countryfk"];
+            }
+        }
+        
         //=========================================
         //=========================================
         //lookup the special and standard rates of that tour operator
@@ -7036,7 +7130,8 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         if ($outcome != "OK") {
             return array("OUTCOME" => $outcome);
         }
-
+        
+        //===========================================================
         //run rates calculator without SPO applied
         $arr_params["spo_chosen"] = "NONE";
         $arr_outcome_without_spo = _rates_calculator($con, $arr_params);
@@ -7045,6 +7140,7 @@ function _rates_calculator_reservation_get_cost_claim($con, $contractid, $arr_pa
         if ($outcome != "OK") {
             return array("OUTCOME" => $outcome);
         }
+        //===========================================================
 
         $room_occupancy_mode = _rates_calculator_filterout_room_occup($arr_outcome_without_spo);
 
@@ -7765,7 +7861,9 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         //get array of contracts that are applicable to:
         //the TO provided
         //with active dates within checkin and checkout
-
+        
+        
+        
         $touroperator = $arr_params_resa["touroperator"];
         $dtckin = $arr_params_resa["checkin_date"]; //yyyy-mm-dd
         $dtckout = $arr_params_resa["checkout_date"]; //yyyy-mm-dd
@@ -7773,11 +7871,10 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         $dttravel = $arr_params_resa["travel_date"]; //yyyy-mm-dd
         $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
         $arr_pax = $arr_params_resa["arr_pax"];
-
-
-        $resa_rates = -1; //to be decided below:
-        //=========================================
-        //get the country of the TO
+        
+        
+        
+        //get the country of the TO        
         $countryid = -1;
         $sql = "select * from tblto_countries where tofk = :toid limit 1";
         $query = $con->prepare($sql);
@@ -7786,6 +7883,8 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
             $countryid = $row["countryfk"];
         }
         //=========================================
+        
+        
         //=========================================
         //lookup the special and standard rates of that tour operator
         $special_rate_id = -1;
@@ -7806,11 +7905,11 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
             $standard_rate_id = $row["stdid"];
         }
 
-        //get list of ids for TO + checkin + checkout + special_rate
+        //get list of contract ids for TO + checkin + checkout + special_rate
         $arr_ids_spec = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin, $dtckout,
                 $touroperator, $countryid, $special_rate_id);
 
-        //get list of ids for TO + checkin + checkout + $standard_rate_id
+        //get list of contract ids for TO + checkin + checkout + $standard_rate_id
         $arr_ids_std = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin, $dtckout,
                 $touroperator, $countryid, $standard_rate_id);
 
@@ -7823,11 +7922,11 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         $dtckout_roll = $checkout_rollover->format("Y-m-d");
 
 
-        //get list of ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
+        //get list of contract ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
         $arr_ids_spec_roll = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin_roll, $dtckout_roll,
                 $touroperator, $countryid, $standard_rate_id);
 
-        //get list of ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
+        //get list of contract ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
         $arr_ids_std_roll = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin_roll, $dtckout_roll,
                 $touroperator, $countryid, $standard_rate_id);
 
@@ -7840,6 +7939,7 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
 
         //now we got a valid list of contracts with hotel, room and mealplan
         //reformat the parameter array to call _rates_calculator_reservation_get_cost_claim
+        
         $arr_params_rates = array();
         $arr_params_rates["suppmealplan"] = "";
         $arr_params_rates["touroperator"] = $touroperator;
@@ -7854,14 +7954,17 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         $arr_params_rates["arr_pax"] = $arr_pax;
         $arr_params_rates["active_external"] = 1; //always lookup active externally contracts
         $arr_params_rates["spo_active_external"] = 1; //always lookup active externally SPOs
-
+        $arr_params_rates["countryid"] = $countryid; 
 
         $arr_return_values = array();
 
         $image_relative_path_hotel = utils_getsysparams($con, "HOTEL", "PHOTO", "RELATIVE_PATH");
         $image_relative_path_room = utils_getsysparams($con, "HOTEL_ROOM", "PHOTO", "RELATIVE_PATH");
-
-
+        
+        $arr_hotels_details = array(); //array to  keep hotel details
+        $arr_rooms_details = array(); //array to  keep room details
+        
+        
         for ($i = 0; $i < count($arr_ids_final); $i++) {
 
             $hotelid = $arr_ids_final[$i]["HOTELID"];
@@ -7880,31 +7983,50 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
             
             if(is_array($_arr))
             {
+                if(!isset($arr_hotels_details[$hotelid]))
+                {
+                    //get all the details for that hotel
+                    $arr_hotels_details[$hotelid]["FIELDS"] =  _hotel_details($con, $hotelid);
+                    $arr_hotels_details[$hotelid]["IMAGES"] =  _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
+                    $arr_hotels_details[$hotelid]["FACILITIES"] =  _rates_calculator_get_hotelfacilities($con, $hotelid, "HOTEL");
+                }
+                
+                if(!isset($arr_rooms_details[$roomid]))
+                {
+                    //get all the details for that room
+                    $arr_rooms_details[$roomid]["IMAGES"] =  _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room);
+                    $arr_rooms_details[$roomid]["FACILITIES"] =  _rates_calculator_get_roomfacilities($con, $roomid, "ROOM");
+                }
+                
+                
+                
                 $_arr["HOTELNAME"] = $hotelname;
                 $_arr["HOTELID"] = $hotelid;
-                $_arr["HOTELFIELDS"] = _hotel_details($con, $hotelid);
+                $_arr["HOTELFIELDS"] = $arr_hotels_details[$hotelid]["FIELDS"];
                 $_arr["CONTRACTID"] = $contractid;
                 $_arr["MEALID"] = $mealid;
                 $_arr["MEALPLAN"] = $mealplan;
                 $_arr["ROOMNAME"] = $roomname;
-                $_arr["ROOMIMAGES"] = _rates_calculator_get_roomimages($con, $roomid, $image_relative_path_room);
-                $_arr["HOTELIMAGES"] = _rates_calculator_get_hotelimages($con, $hotelid, $image_relative_path_hotel);
-                $_arr["ROOMFACILITIES"] = _rates_calculator_get_roomfacilities($con, $roomid, "ROOM");
-                $_arr["HOTELFACILITIES"] = _rates_calculator_get_hotelfacilities($con, $hotelid, "HOTEL");
+                $_arr["ROOMIMAGES"] = $arr_rooms_details[$roomid]["IMAGES"];
+                $_arr["HOTELIMAGES"] = $arr_hotels_details[$hotelid]["IMAGES"];
+                $_arr["ROOMFACILITIES"] = $arr_rooms_details[$roomid]["FACILITIES"];
+                $_arr["HOTELFACILITIES"] = $arr_hotels_details[$hotelid]["FACILITIES"];
                 $_arr["INVENTORY_STATUS"] = _rates_calculator_get_inventory_statuses($con, $touroperator, $countryid, $hotelid, $roomid, $dtckin, $dtckout);
 
                 $arr_return_values[] = $_arr;
             }
         }
-
+        
         return $arr_return_values;
+        
     } catch (Exception $ex) {
-        $arr_return_values = array("OUTCOME" => $ex->getMessage() . " +$contractid+ " . $_arr );
+        $arr_return_values = array("OUTCOME" => $ex->getMessage() . " + $contractid + " . $_arr );
         return $arr_return_values;
     }
 }
 
 function _rates_calculator_filterout_hotel_room_meal($arr_ids_final, $arr_ids_spec) {
+    
     for ($i = 0; $i < count($arr_ids_spec); $i++) {
         $hotelid = $arr_ids_spec[$i]["HOTELID"];
         $mealid = $arr_ids_spec[$i]["MEALID"];
@@ -8318,7 +8440,7 @@ function _rates_calculator_spo_overwrite_rates(&$adult_buyprice, &$wedding_offer
                                     //passed bride groom checks
 
 
-                                    if ($disc_value > 0) {
+                                    if ($disc_value >= 0) {
                                         //the rates are re-looked up here depending on the discount basis of the wedding offer
                                         //if $disc_basis == "%ROOM" || $disc_basis == "%ALL" || 
                                         //   $disc_basis == "FLAT_PNI" || $disc_basis == "FLAT_PPPN" then

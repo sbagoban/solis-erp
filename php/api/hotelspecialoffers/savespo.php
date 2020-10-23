@@ -2292,9 +2292,11 @@ function saveflatratermadultpolicydtrules($date_rwid, $arr_adultpolicies_rules) 
                 if ($rule_rwid < 0) {
                     $sql = "INSERT INTO 
                             tblspecial_offer_flatrate_ad_rm_dt_rules
-                            (spo_flatrate_roomcapacity_dates_fk,rulecounter,rulecategory)
+                            (spo_flatrate_roomcapacity_dates_fk,rulecounter,
+                             rulecategory)
                             VALUES
-                            (:spo_flatrate_roomcapacity_dates_fk,:rulecounter,:rulecategory)";
+                            (:spo_flatrate_roomcapacity_dates_fk,:rulecounter,
+                            :rulecategory)";
 
                     $stmt = $con->prepare($sql);
                     $stmt->execute(array(":spo_flatrate_roomcapacity_dates_fk" => $date_rwid,

@@ -122,7 +122,7 @@ function ratescalculator() {
     ];
 
     var form_exec = main_layout.cells("b").attachForm(str_frm_exec);
-    
+
     form_exec.attachEvent("onButtonClick", function (name, command) {
         if (name == "cmdTest")
         {
@@ -235,7 +235,7 @@ function ratescalculator() {
             }
 
         },
-        
+
         {type: "combo", name: "extra_mealsupp", label: "Extra Meal Supplement:", labelWidth: "150",
             labelHeight: "22", inputWidth: "400", inputHeight: "28", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10",
@@ -881,23 +881,21 @@ function ratescalculator() {
                 {
                     console.log(json_obj);
 
-                    if (json_obj.RESULT.OUTCOME == "OK")
+
+                    var choice_or_prices = json_obj.RESULT.CHOICE_PRICES;
+
+
+                    //all fine! contract without errors!
+                    if (choice_or_prices == "PRICES")
                     {
+                        populateResultsGrid(json_obj);
+                        tabViews.setTabActive("results");
+                    } else if (choice_or_prices == "CHOICES")
+                    {
+                        loadSPOchoices(json_obj);
+                    }
 
-
-                        var choice_or_prices = json_obj.RESULT.CHOICE_PRICES;
-
-
-                        //all fine! contract without errors!
-                        if (choice_or_prices == "PRICES")
-                        {
-                            populateResultsGrid(json_obj);
-                            tabViews.setTabActive("results");
-                        } else if (choice_or_prices == "CHOICES")
-                        {
-                            loadSPOchoices(json_obj);
-                        }
-                    } else
+                    if (json_obj.RESULT.OUTCOME != "OK")
                     {
                         dhtmlx.alert({
                             text: json_obj.RESULT.OUTCOME,
@@ -927,12 +925,12 @@ function ratescalculator() {
     {
         param_layout.progressOn();
         results_layout.progressOn();
-        
+
         dhtmlxAjax.post("php/api/ratescalculator/testrates_subsidiary.php", "", function (loader) {
-            
+
             param_layout.progressOff();
             results_layout.progressOff();
-        
+
             if (loader)
             {
                 if (loader.xmlDoc.responseURL == "")

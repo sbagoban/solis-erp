@@ -27,7 +27,7 @@ try {
 
     require_once("../../connector/pdo_connect_main.php");
 
-    $hotelfk = trim($_POST["hotelid"]);
+    $roomfk = trim($_POST["roomid"]);
     $data = trim($_POST["data"]);
 
     $arrdata_details = json_decode($data, true);
@@ -39,7 +39,7 @@ try {
     $con = pdo_con();
 
     //check duplicates for roomname
-    $sql = "SELECT * FROM tblfacilities WHERE facility = :facility AND category='HOTEL' AND
+    $sql = "SELECT * FROM tblfacilities WHERE facility = :facility AND category='ROOM' AND
             deleted=0 AND id<>:id";
 
     $stmt = $con->prepare($sql);
@@ -51,7 +51,7 @@ try {
     if ($id == "-1") {
         $sql = "INSERT INTO tblfacilities 
                 (facility,description,deleted,ordering,category) 
-                VALUES (:facility,:description,0,0,'HOTEL') ";
+                VALUES (:facility,:description,0,0,'ROOM') ";
 
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":facility" => $facility,
