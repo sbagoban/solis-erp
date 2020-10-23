@@ -519,14 +519,12 @@ function addClaimProductService(){
     }  
 
     if (specific_to == 'A') { 
-        alert('1');
         id_country = 0;
     } else if (specific_to == 'B') {
-        alert('2');
         id_country = 0;
         id_tour_operator = 0;
     } else if (specific_to == 'C' || specific_to == 'D' || specific_to == "E" || specific_to == "F") {
-        alert('3');
+       
         id_tour_operator = 0;
     }
 

@@ -126,7 +126,15 @@ $(document).ready(function(){
 
     // here sandeep check
     if (id_product_service_cost > 0 && is_pakage != 'Y') {
-        if (ps_adult_cost > 0 || for_adult > 0) {
+        
+            /*Date : 2020, 06 October 
+        Application : Product - Service Claim
+        Developer : slouis@solis360.com
+        Purpose : PAX claim input block - When cost 0, Pax block was hidden
+        ------------------------> START*/
+        
+        
+        /*if (ps_adult_cost > 0 || for_adult > 0) {
             $("#ps_adult_claim").css("display", "block");
             $("#ps_adult_claim").attr("placeholder", "Adult"); 
             $("#ps_adult_claim_modal").css("display", "block");
@@ -176,7 +184,63 @@ $(document).ready(function(){
             $("#ps_infant_claim").css("display", "none");
             $("#ps_infant_claim_addon_modal").css("display", "none");
             $("#ps_infant_claim_modal").css("display", "none");
+        } */
+        
+    
+        
+        if (for_adult = 1) {
+            $("#ps_adult_claim").css("display", "block");
+            $("#ps_adult_claim").attr("placeholder", "Adult"); 
+            $("#ps_adult_claim_modal").css("display", "block");
+            $("#ps_adult_claim_modal").attr("placeholder", "Adult");   
+        } else{
+            $("#ps_adult_claim_addon").css("display", "none");
+            $("#ps_adult_claim").css("display", "none");
+            $("#ps_adult_claim_addon_modal").css("display", "none");
+            $("#ps_adult_claim_modal").css("display", "none");
         }
+        
+        if (for_teen = 1) {
+            $("#ps_teen_claim").css("display", "block");
+            $("#ps_teen_claim").attr("placeholder", "Teen");
+            $("#ps_teen_claim_modal").css("display", "block");
+            $("#ps_teen_claim_modal").attr("placeholder", "Teen");
+        } else {
+            $("#ps_teen_claim_addon").css("display", "none");
+            $("#ps_teen_claim").css("display", "none");
+            $("#ps_teen_claim_addon_modal").css("display", "none");
+            $("#ps_teen_claim_modal").css("display", "none");
+        }
+        
+        if (for_child = 1) {
+            $("#ps_child_claim").css("display", "block");
+            $("#ps_child_claim").attr("placeholder", "Child");
+            $("#ps_child_claim_modal").css("display", "block");
+            $("#ps_child_claim_modal").attr("placeholder", "Child");
+        } else { 
+            $("#ps_child_claim_addon").css("display", "none");
+            $("#ps_child_claim").css("display", "none");
+            $("#ps_child_claim_addon_modal").css("display", "none");
+            $("#ps_child_claim_modal").css("display", "none");
+        }
+
+        if (for_infant = 0) {
+            $("#ps_infant_claim").css("display", "block");
+            $("#ps_infant_claim").attr("placeholder", "Infant");
+            $("#ps_infant_claim_modal").css("display", "block");
+            $("#ps_infant_claim_modal").attr("placeholder", "Infant");
+        } else { 
+            $("#ps_infant_claim_addon").css("display", "none");
+            $("#ps_infant_claim").css("display", "none");
+            $("#ps_infant_claim_addon_modal").css("display", "none");
+            $("#ps_infant_claim_modal").css("display", "none");
+        }
+                
+            /*Date : 2020, 06 October 
+        Application : Product - Service Claim
+        Developer : slouis@solis360.com
+        Purpose : PAX claim input block - When cost 0, Pax block was hidden
+        ------------------------> END*/
     } 
 
     // Check if package for this statement
