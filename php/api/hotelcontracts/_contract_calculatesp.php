@@ -132,9 +132,11 @@ function _executeConversionBuySell(&$arr_variables, $item, $currenyid_input, $cu
 
     $tempval = 0;
     eval('$tempval =' . $formula . ';'); //temp val stores the value that needs to be converted
-
+    
+    
     if ($currencyid_mapped_to == $currenyid_input) {
         //no conversion needed because same currency buying and selling
+        $tempval = _decideRounding($tempval, $item["setting_rounding"]);
         $arr_variables[$item["setting_row_name"]] = $tempval;
         return $tempval;
     }
@@ -208,7 +210,11 @@ function _executeFormulaBuySell(&$arr_variables, $item, $value_input, $currenyid
 
         $tempval = 0;
         eval('$tempval =' . $formula . ';');
-
+        if($tempval < 0)
+        {
+            $tempval = 0;
+        }
+        
         if ($item["setting_core_addon"] == "CORE") {
             $value = $tempval;
             //place calculated value in array of variables
@@ -322,6 +328,12 @@ function _executeFormulaBuySell(&$arr_variables, $item, $value_input, $currenyid
 }
 
 function _decideRounding($tempval, $rounding) {
+    
+    if($tempval < 0)
+    {
+        $tempval = 0;
+    }
+    
     if ($rounding == "ROUNDUP") {
         return ceil($tempval);
     } else if ($rounding == "ROUNDDOWN") {
