@@ -322,6 +322,11 @@ function _executeFormulaBuySell(&$arr_variables, $item, $value_input, $currenyid
 }
 
 function _decideRounding($tempval, $rounding) {
+    if($tempval < 0)
+    {
+        $tempval = 0;
+    }
+    
     if ($rounding == "ROUNDUP") {
         return ceil($tempval);
     } else if ($rounding == "ROUNDDOWN") {
