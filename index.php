@@ -103,7 +103,8 @@ if (isset($_GET["m"])) {
         <script src="js/utils/md5.min.js?<?php echo time(); ?>"></script>
         <script src="js/logout/logout.js?<?php echo time(); ?>"></script>
         <script src="js/index/index.js?<?php echo time(); ?>"></script>
-
+        <script type="text/javascript" src="js/utils/test_connection.js?<?php echo time() ?>"></script>
+        
         <script type="text/javascript" src="libraries/dhtmlx/dhtmlx.js"></script>
         <link rel="stylesheet" type="text/css" href="libraries/dhtmlx/dhtmlx.css?<?php echo time(); ?>">
 
@@ -114,9 +115,13 @@ if (isset($_GET["m"])) {
         <script type="text/javascript" src="libraries/dhtmlx/dhtmlxform_item_colorpicker.js"></script>
         <script type="text/javascript" src="libraries/dhtmlx/dhtmlxgrid_post.js"></script>
 
-
+        
 
         <script>
+            
+            var global_test_connection_obj = new test_connection();
+           global_test_connection_obj.startTest();
+            
             dhtmlx.image_path = "libraries/dhtmlx/imgs/";
         </script>
 
@@ -783,7 +788,7 @@ if (isset($_GET["m"])) {
             echo '<script>' . $_SESSION["menu_item_selected_open"] . '</script>';
         }
 
-//generate token
+        //generate token
         $token = openssl_random_pseudo_bytes(16);
         $token = bin2hex($token);
         $_SESSION["token"] = $token;
