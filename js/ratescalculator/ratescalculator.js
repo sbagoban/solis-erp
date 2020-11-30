@@ -926,7 +926,25 @@ function ratescalculator() {
         param_layout.progressOn();
         results_layout.progressOn();
 
-        dhtmlxAjax.post("php/api/ratescalculator/testrates_subsidiary.php", "", function (loader) {
+        var arr_chars = ["A","B","C","D"];
+        var arr_pax = [{count: 1, age: "", bride_groom: ""}, //there are 2 adults here
+                       {count: 2, age: "", bride_groom: ""}
+                      ];
+
+        var params = "checkin_date=" + encodeURIComponent("2020-10-10") +
+                "&checkin_time=" + encodeURIComponent("") +
+                "&checkout_date=" + encodeURIComponent("2020-10-15") +
+                "&checkout_time=" + encodeURIComponent("") +
+                "&touroperator=" + encodeURIComponent("1") +
+                "&max_pax=" + encodeURIComponent("2") +
+                "&booking_date=" + encodeURIComponent("2020-10-04") +
+                "&travel_date=" + encodeURIComponent("2020-10-10") +
+                "&wedding_interested=" + 0 +
+                "&hotel_char_starts_with=" + encodeURIComponent(JSON.stringify(arr_chars)) +
+                "&room_type=" + encodeURIComponent("PERSONS") + 
+                "&arr_pax=" + encodeURIComponent(JSON.stringify(arr_pax));
+
+        dhtmlxAjax.post("php/api/ratescalculator/rates_b2b_api.php", params, function (loader) {
 
             param_layout.progressOff();
             results_layout.progressOff();

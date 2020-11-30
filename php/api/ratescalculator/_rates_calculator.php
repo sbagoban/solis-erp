@@ -7843,12 +7843,14 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
          * @param array $arr_params_resa {
          *     Array of parameters from reservation
          *
-         *     @type Integer    $touroperator       tour operator id
-         *     @type Date       $checkin_date       checkin date in yyyy-mm-dd
-         *     @type Date       $checkout_date      checkout date in yyyy-mm-dd
-         *     @type Date       $booking_date       booking date in yyyy-mm-dd
-         *     @type Date       $travel_date        travel date in yyyy-mm-dd
-         *     @type Boolean    $wedding_interested if interested in wedding SPOS (1/0)
+         *     @type Integer    $touroperator               tour operator id
+         *     @type Date       $checkin_date                checkin date in yyyy-mm-dd
+         *     @type Date       $checkout_date               checkout date in yyyy-mm-dd
+         *     @type Date       $booking_date                booking date in yyyy-mm-dd
+         *     @type Date       $travel_date                 travel date in yyyy-mm-dd
+         *     @type String     $room_type                  tpye of room: PERSONS/UNITS/BOTH
+         *     @type Array      $hotel_char_starts_with     Hotel names starting with given characters
+         *     @type Boolean    $wedding_interested         if interested in wedding SPOS (1/0)
          *     @type array      $arr_pax {
          *          Array of adults/children details mixed together
          *          @type Integer $count        index of child/adult
@@ -7872,6 +7874,35 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
         $wedding_interested = $arr_params_resa["wedding_interested"]; //1 or 0
         $arr_pax = $arr_params_resa["arr_pax"];
         
+        //============ get the filter of hotel starting with character ============================
+        $arr_hotels_starts_with = array();
+        if(isset($arr_params_resa["hotel_char_starts_with"]))
+        {
+            $arr_hotels_starts_with = $arr_params_resa["hotel_char_starts_with"];
+        }
+        $hotel_name_condition = _rates_calculator_format_hotel_name_condition($arr_hotels_starts_with);
+        //=========================================================================================
+        
+        //============ get the room filter if any ============================
+        $room_filter = "";
+        if(isset($arr_params_resa["room_type"]))
+        {
+            $room_filter = $arr_params_resa["room_type"];
+            if($room_filter == "PERSONS")
+            {
+                $room_filter = " AND scrc.variant = 'PERSONS' ";
+            }
+            else if($room_filter == "UNITS")
+            {
+                $room_filter = " AND scrc.variant = 'UNITS' ";
+            }
+            else
+            {
+                $room_filter = "";
+            }
+        }
+
+        //=========================================================================================
         
         
         //get the country of the TO        
@@ -7907,11 +7938,11 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
 
         //get list of contract ids for TO + checkin + checkout + special_rate
         $arr_ids_spec = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin, $dtckout,
-                $touroperator, $countryid, $special_rate_id);
+                $touroperator, $countryid, $special_rate_id, $hotel_name_condition, $room_filter);
 
         //get list of contract ids for TO + checkin + checkout + $standard_rate_id
         $arr_ids_std = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin, $dtckout,
-                $touroperator, $countryid, $standard_rate_id);
+                $touroperator, $countryid, $standard_rate_id, $hotel_name_condition, $room_filter);
 
 
         $checkin_rollover = new DateTime($dtckin);
@@ -7924,11 +7955,11 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
 
         //get list of contract ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
         $arr_ids_spec_roll = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin_roll, $dtckout_roll,
-                $touroperator, $countryid, $standard_rate_id);
+                $touroperator, $countryid, $standard_rate_id, $hotel_name_condition, $room_filter);
 
         //get list of contract ids for TO + checkin-1yr + checkout-1yr + $standard_rate_id
         $arr_ids_std_roll = _rates_calculator_lkupcontract_hotel_room_meal($con, $dtckin_roll, $dtckout_roll,
-                $touroperator, $countryid, $standard_rate_id);
+                $touroperator, $countryid, $standard_rate_id, $hotel_name_condition, $room_filter);
 
         $arr_ids_final = array();
 
@@ -7983,7 +8014,9 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
             
             if(is_array($_arr))
             {
-                if(!isset($arr_hotels_details[$hotelid]))
+                if($_arr["OUTCOME"] == "OK")
+                {
+                    if(!isset($arr_hotels_details[$hotelid]))
                 {
                     //get all the details for that hotel
                     $arr_hotels_details[$hotelid]["FIELDS"] =  _hotel_details($con, $hotelid);
@@ -8002,7 +8035,7 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
                 
                 $_arr["HOTELNAME"] = $hotelname;
                 $_arr["HOTELID"] = $hotelid;
-                $_arr["HOTELFIELDS"] = $arr_hotels_details[$hotelid]["FIELDS"];
+                $_arr["HOTELFIELDS"] = $arr_hotels_details[$hotelid]["FIELDS"][0];
                 $_arr["CONTRACTID"] = $contractid;
                 $_arr["MEALID"] = $mealid;
                 $_arr["MEALPLAN"] = $mealplan;
@@ -8014,13 +8047,15 @@ function _rates_calculator_get_applicable_contracts($con, $arr_params_resa) {
                 $_arr["INVENTORY_STATUS"] = _rates_calculator_get_inventory_statuses($con, $touroperator, $countryid, $hotelid, $roomid, $dtckin, $dtckout);
 
                 $arr_return_values[] = $_arr;
+                }
+                
             }
         }
         
         return $arr_return_values;
         
     } catch (Exception $ex) {
-        $arr_return_values = array("OUTCOME" => $ex->getMessage() . " + $contractid + " . $_arr );
+        $arr_return_values = array("OUTCOME" => $ex->getMessage());
         return $arr_return_values;
     }
 }
@@ -8064,7 +8099,7 @@ function _rates_calculator_filterout_hotel_room_meal_notinarray($arr_ids_final, 
 }
 
 function _rates_calculator_lkupcontract_hotel_room_meal($con, $checkin, $checkout,
-        $toid, $countryid, $rateid) {
+        $toid, $countryid, $rateid, $hotel_name_condition, $room_filter) {
 
     //search for contracts that fall within the dates above and that belong to that TO,
     //country and rate
@@ -8073,14 +8108,17 @@ function _rates_calculator_lkupcontract_hotel_room_meal($con, $checkin, $checkou
     //=============================================================
     //and now search for any applicable contracts for these dates and rates provided
 
-    $sql = "SELECT sc.*,scr.roomfk, hr.roomname, h.hotelname, mp.mealfullname
+    $sql = "SELECT sc.*, scr.roomfk, hr.roomname, h.hotelname, mp.mealfullname
             FROM tblservice_contract sc
             INNER JOIN tblservice_contract_rooms scr on sc.id = scr.servicecontractfk
             INNER JOIN tblhotel_rooms hr on scr.roomfk = hr.id
             INNER JOIN tblhotels h on hr.hotelfk = h.id
             INNER JOIN tblmealplans mp ON mp.id = sc.mealplan_fk
-            WHERE sc.active_external = 1 AND sc.active_internal = 1";
-
+            INNER JOIN tblservice_contract_roomcapacity scrc ON scrc.service_contract_fk = sc.id AND scrc.roomfk = hr.id
+            WHERE sc.active_external = 1 AND sc.active_internal = 1
+            $hotel_name_condition $room_filter
+            ";
+    
     $sql .= " AND sc.id IN 
                   (SELECT service_contract_fk FROM 
                    tblservice_contract_countries 
@@ -8508,6 +8546,33 @@ function _rates_calculator_spo_overwrite_rates(&$adult_buyprice, &$wedding_offer
             }
         }
     }
+}
+
+function _rates_calculator_format_hotel_name_condition($arr_hotels_starts_with)
+{
+    $cond = "";
+    $first = true;
+    
+    for($i = 0; $i < count($arr_hotels_starts_with); $i++)
+    {
+        $char = $arr_hotels_starts_with[$i];
+        
+        if(!$first)
+        {
+            $cond .= " OR ";
+        }
+        
+        $cond .= " h.hotelname LIKE '$char%' ";
+        
+        $first = false;
+    }
+    
+    if(trim($cond) != "")
+    {
+        $cond = " AND ($cond) ";
+    }
+    return $cond;
+    
 }
 ?>
 
