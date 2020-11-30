@@ -101,7 +101,7 @@ try {
     */
 
     //check duplicates for TO Name
-    $sql = "SELECT * FROM tbltouroperator WHERE toname = :toname AND id <> :id ";
+    $sql = "SELECT * FROM tbltouroperator WHERE toname = :toname AND id <> :id AND deleted=0";
     $stmt = $con->prepare($sql);
     $stmt->execute(array(":toname" => $toname, ":id" => $id));
     if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -110,7 +110,7 @@ try {
 
     //check api token
     if ($api_token != "") {
-        $sql = "SELECT * FROM tbltouroperator WHERE api_token = :api_token AND id <> :id ";
+        $sql = "SELECT * FROM tbltouroperator WHERE deleted=0 AND api_token = :api_token AND id <> :id ";
         $stmt = $con->prepare($sql);
         $stmt->execute(array(":api_token" => $api_token, ":id" => $id));
         if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
