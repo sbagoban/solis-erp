@@ -1138,34 +1138,38 @@ function saveflatratevaliditygroup_childrenages($grpid, $children_ages_ids) {
         global $con;
 
         $arr_needed_ids = array();
-
+        
+        
         $arr_child_age_ids = explode(",", $children_ages_ids);
 
         for ($i = 0; $i < count($arr_child_age_ids); $i++) {
 
             $ageid = trim($arr_child_age_ids[$i]);
+            
+            if($ageid != "")
+            {
+                //check if exists
+                $sql = "SELECT * FROM 
+                        tblspecial_offer_flatrate_group_validity_period_childages
+                        WHERE spo_fltrate_grp_valid_period_fk=$grpid AND 
+                        childage_fk=$ageid";
 
-            //check if exists
-            $sql = "SELECT * FROM 
-                    tblspecial_offer_flatrate_group_validity_period_childages
-                    WHERE spo_fltrate_grp_valid_period_fk=$grpid AND 
-                    childage_fk=$ageid";
-
-            $stmt = $con->prepare($sql);
-            $stmt->execute();
-
-            if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $arr_needed_ids[] = $rw["id"];
-            } else {
-                //insert
-                $sql = "INSERT INTO 
-                        tblspecial_offer_flatrate_group_validity_period_childages 
-                        (spo_fltrate_grp_valid_period_fk, childage_fk) 
-                        VALUES 
-                        ($grpid,$ageid)";
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
-                $arr_needed_ids[] = $con->lastInsertId();
+
+                if ($rw = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $arr_needed_ids[] = $rw["id"];
+                } else {
+                    //insert
+                    $sql = "INSERT INTO 
+                            tblspecial_offer_flatrate_group_validity_period_childages 
+                            (spo_fltrate_grp_valid_period_fk, childage_fk) 
+                            VALUES 
+                            ($grpid,$ageid)";
+                    $stmt = $con->prepare($sql);
+                    $stmt->execute();
+                    $arr_needed_ids[] = $con->lastInsertId();
+                }
             }
         }
         //====================================================================
