@@ -30,7 +30,7 @@ try {
     $id = $_POST["id"];
     $hotelfk = trim($_POST["hotelfk"]);
     $roomname = trim($_POST["roomname"]);
-    $description = trim($_POST["description"]);
+    $description = trim($_POST["room_description"]);
     $numbedrooms = trim($_POST["numbedrooms"]);
     
     if(!is_numeric($numbedrooms))

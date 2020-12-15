@@ -27,7 +27,9 @@ $con = pdo_con();
 
 $data = new JSONDataConnector($con, "PDO");
 
-$sql = "SELECT * FROM tblhotel_rooms WHERE hotelfk=$hotelfk ORDER BY roomname";
+$sql = "SELECT id,roomname,description as room_description,
+        numbedrooms,hotelfk
+        FROM tblhotel_rooms WHERE hotelfk=$hotelfk ORDER BY roomname";
 
-$data->render_sql($sql, "id", "roomname,description,numbedrooms,hotelfk");
+$data->render_sql($sql, "id", "roomname,room_description,numbedrooms,hotelfk");
 ?>

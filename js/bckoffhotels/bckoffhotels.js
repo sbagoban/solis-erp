@@ -256,43 +256,8 @@ function hotels()
     var dhxWins = new dhtmlXWindows();
     dhxWins.enableAutoViewport(false);
     dhxWins.attachViewportTo(main_layout.cells("a"));
-
-    var popupwin_hotels = dhxWins.createWindow("popupwin_hotels", 50, 50, 700, 440);
-    popupwin_hotels.setText("Hotel Details:");
-
-    var x = $("#main_body").parent().width() - 20;
-    var y = $("#main_body").parent().height() - 25;
-    popupwin_hotels.setDimension(x, y);
-
-    popupwin_hotels.denyResize();
-    popupwin_hotels.denyPark();
-    popupwin_hotels.button("close").hide();
-
-
-    //======================
-
-    var popupwin_rooms = dhxWins.createWindow("popupwin_rooms", 50, 50, 1000, 440);
-    popupwin_rooms.setText("Hotel Rooms:");
-
-    var y = $("#main_body").parent().height() - 50;
-    popupwin_rooms.setDimension(1000, y);
-
-    popupwin_rooms.denyResize();
-    popupwin_rooms.denyPark();
-    popupwin_rooms.button("close").hide();
-
     
-    //========================
-    var popupwin_rooms_addmod = dhxWins.createWindow("popupwin_rooms_addmod", 50, 50, 800, 500);
-    popupwin_rooms_addmod.setText("Room Details:");
-
-    var y = $("#main_body").parent().height() - 50;
-    popupwin_rooms.setDimension(800, y);
-
-    popupwin_rooms_addmod.denyResize();
-    popupwin_rooms_addmod.denyPark();
-
-
+    
     //========================
     var popupwin_facilities = dhxWins.createWindow("popupwin_facilities", 50, 50, 1000, 440);
     popupwin_facilities.setText("Hotel Facilities:");
@@ -330,6 +295,44 @@ function hotels()
     popupwin_add_room_facilities.denyPark();
     popupwin_add_room_facilities.button("close").hide();
 
+
+
+
+    //=====================================================================================
+    var popupwin_hotels = dhxWins.createWindow("popupwin_hotels", 50, 50, 700, 440);
+    popupwin_hotels.setText("Hotel Details:");
+
+    var x = $("#main_body").parent().width() - 20;
+    var y = $("#main_body").parent().height() - 25;
+    popupwin_hotels.setDimension(x, y);
+
+    popupwin_hotels.denyResize();
+    popupwin_hotels.denyPark();
+    popupwin_hotels.button("close").hide();
+
+
+    //======================
+
+    var popupwin_rooms = dhxWins.createWindow("popupwin_rooms", 50, 50, 1000, 440);
+    popupwin_rooms.setText("Hotel Rooms:");
+
+    var y = $("#main_body").parent().height() - 50;
+    popupwin_rooms.setDimension(1000, y);
+
+    popupwin_rooms.denyResize();
+    popupwin_rooms.denyPark();
+    popupwin_rooms.button("close").hide();
+
+    
+    //========================
+    var popupwin_rooms_addmod = dhxWins.createWindow("popupwin_rooms_addmod", 50, 50, 800, 500);
+    popupwin_rooms_addmod.setText("Room Details:");
+
+    var y = $("#main_body").parent().height() - 50;
+    popupwin_rooms.setDimension(800, y);
+
+    popupwin_rooms_addmod.denyResize();
+    popupwin_rooms_addmod.denyPark();
 
 
     
@@ -767,9 +770,9 @@ function hotels()
         {type: "settings", position: "label-left", id: "form_description"},
         {type: "hidden", name: "id", required: true},
         {type: "hidden", name: "token"},
-        {type: "input", name: "description", label: "Description:", labelWidth: "100",
-            labelHeight: "22", inputWidth: "650", rows: 10, labelLeft: "0",
-            labelTop: "10", inputLeft: "10", inputTop: "10", inputHeight: "150"
+        {type: "editor", name: "description", label: "Description:", labelWidth: "100",
+            labelHeight: "22", inputWidth: "650", rows: 20, labelLeft: "0",
+            labelTop: "10", inputLeft: "10", inputTop: "10", inputHeight: "350"
         }
     ];
 
@@ -1080,7 +1083,7 @@ function hotels()
     var grid_rooms = roomlayout.cells("a").attachGrid();
     grid_rooms.setIconsPath('libraries/dhtmlx/imgs/');
     grid_rooms.setHeader("Category,Num Bedrooms,Description");
-    grid_rooms.setColumnIds("roomname,numbedrooms,description");
+    grid_rooms.setColumnIds("roomname,numbedrooms,room_description");
     grid_rooms.setColTypes("ro,ro,ro");
     grid_rooms.setInitWidths("200,100,*");
     grid_rooms.setColAlign("left,center,left");
@@ -1150,7 +1153,7 @@ function hotels()
             labelTop: "10", inputLeft: "10", inputTop: "10",
             validate: "ValidInteger"
         },
-        {type: "editor", name: "description", label: "Description:", labelWidth: "130",
+        {type: "editor", name: "room_description", label: "Description:", labelWidth: "130",
             labelHeight: "22", inputWidth: "400", inputHeight: "200", labelLeft: "0",
             labelTop: "10", inputLeft: "10", inputTop: "10"
         },
@@ -1395,11 +1398,13 @@ function hotels()
             toolbar_add_facility.hideItem("delete");
             
             popupwin_hotels.setModal(false);
-            popupwin_facilities.setModal(true);
+            popupwin_hotels.hide();
+            
             popupwin_facilities.setText("Attach Facilities From List:");
             popupwin_facilities.show();
             popupwin_facilities.center();
-
+            popupwin_facilities.bringToTop();
+            popupwin_facilities.setModal(true);
 
         }
         else if (id == "manage")
@@ -1414,11 +1419,13 @@ function hotels()
             toolbar_add_facility.showItem("delete");
             
             popupwin_hotels.setModal(false);
-            popupwin_facilities.setModal(true);
+            popupwin_hotels.hide();
+            
             popupwin_facilities.setText("Manage List of Facilities:");
             popupwin_facilities.show();
             popupwin_facilities.center();
-
+            popupwin_facilities.bringToTop();
+            popupwin_facilities.setModal(true);
 
         } 
         else if (id == "delete")
@@ -1584,6 +1591,7 @@ function hotels()
                         popupwin_facilities.setModal(false);
                         popupwin_facilities.hide();
                         popupwin_hotels.setModal(true);
+                         popupwin_hotels.show();
                         loadFacilitiesGrid(grid_hotels.getSelectedRowId());
 
                     } else
@@ -1616,7 +1624,11 @@ function hotels()
         {
             popupwin_facilities.setModal(false);
             popupwin_facilities.hide();
+            
             popupwin_hotels.setModal(true);
+            popupwin_hotels.show();
+            
+            
         } else if (id == "delete")
         {
             var fid = grid_add_facilities.getSelectedRowId();
@@ -1772,7 +1784,7 @@ function hotels()
                         
                         form_add_item.clear();
                         form_add_item.setItemValue("id", "-1");
-                        loadAddFacilitiesGrid("", new_id);
+                        loadAddFacilitiesGrid("-1", new_id);
                         
                         
                         if(old_id != "-1")
@@ -2693,10 +2705,11 @@ function hotels()
 
 
             var data = dsHotels.item(hoid);
-
+            
             form_hotels.setFormData(data);
             form_description.setFormData(data);
-
+            
+            
             loadArea(data.phy_countryfk, data.areafk);
 
             loadCurrencyGridCombos(true, hoid);
@@ -2818,13 +2831,14 @@ function hotels()
         }
 
         hotellayout.cells("b").progressOn();
-
+        
         var data_details = form_hotels.getFormData();
         var data_notes = form_description.getFormData();
         var json_currencies = utils_dhxSerializeGridToJson(grid_currency_to);
         var json_contacts = utils_dhxSerializeGridToJson(grid_contact);
         var json_commission = utils_dhxSerializeGridToJson(grid_commission);
-
+        
+        
         var params = "token=" + encodeURIComponent(global_token) +
                 "&data_details=" + encodeURIComponent(JSON.stringify(data_details)) +
                 "&data_notes=" + encodeURIComponent(JSON.stringify(data_notes)) +
@@ -2832,7 +2846,8 @@ function hotels()
                 "&json_contacts=" + encodeURIComponent(json_contacts) +
                 "&json_commission=" + encodeURIComponent(json_commission);
 
-
+        
+                
         dhtmlxAjax.post("php/api/bckoffhotels/savehotel.php", params, function (loader) {
             if (loader)
             {
@@ -3769,7 +3784,10 @@ function hotels()
         dsHotelRooms.load("php/api/bckoffhotels/roomgrid.php?t=" + encodeURIComponent(global_token) + "&hoid=" + hoid, "json", function () {
             roomlayout.cells("a").progressOff();
             grid_rooms.sync(dsHotelRooms);
+            var css = "border-left:1px solid #A4A4A4; border-bottom:1px solid #A4A4A4; border-top:1px solid #A4A4A4; border-right:1px solid #A4A4A4;";
+            utils_formatGridRows(grid_rooms,css);
             grid_rooms.selectRowById(roomid);
+            
         });
     }
 
