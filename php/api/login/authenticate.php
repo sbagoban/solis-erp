@@ -120,7 +120,7 @@ try {
             throw new Exception("Your User Group has been deactivated by System Administrator");
         }
         
-        if ($user_to_active == 0) {
+        if ($intern_extern == "EXT" && !is_null($user_to_active) && $user_to_active == 0) {
             throw new Exception("Your Tour Operator has been deactivated");
         }
 
