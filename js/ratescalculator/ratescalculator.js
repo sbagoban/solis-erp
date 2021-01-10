@@ -1080,6 +1080,19 @@ function ratescalculator() {
                 for (var j = 0; j < arr_costings_workings.length; j++)
                 {
                     var message = arr_costings_workings[j].MSG;
+                    
+                    if(!message)
+                    {
+                        dhtmlx.alert({
+                            text: "Message is not properly returned. Please try again.",
+                            type: "alert-warning",
+                            title: "Error Loading Results",
+                            callback: function () {
+                            }
+                        });
+                    }
+                    
+                    
                     var row_style = "";
                     if (message.includes("TOTAL"))
                     {
