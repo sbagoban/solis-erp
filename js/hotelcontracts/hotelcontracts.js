@@ -7448,7 +7448,7 @@ function hotelcontracts()
                             return false;
                         }
 
-                        nValue = parseInt(nValue, 10);
+                        nValue = parseFloat(nValue);
                         if (nValue < 0)
                         {
                             return false;
@@ -8702,7 +8702,7 @@ function hotelcontracts()
                             return false;
                         }
 
-                        nValue = parseInt(nValue, 10);
+                        nValue = parseFloat(nValue);
                         if (nValue < 0)
                         {
                             return false;
