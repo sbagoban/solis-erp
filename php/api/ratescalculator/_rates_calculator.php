@@ -8255,7 +8255,7 @@ function _rates_calculator_get_occupancy_mode($adult_index) {
     } else if ($adult_index == 4) {
         $mode = "QUADRUPLE";
     } else if ($adult_index >= 5) {
-        $mode = "$i-PAX";
+        $mode = "$adult_index-PAX";
     }
 
     return $mode;
