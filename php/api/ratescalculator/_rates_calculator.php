@@ -52,10 +52,11 @@ function _rates_calculator($con, $arr_params) {
         //validate the contracts 
 
         $arr_days = _rates_get_contract_id($con, $arr_params);
-        $arr_outcome = _rates_validate_daily_contract_id($arr_days["DAILY"], false);
+        $arr_outcome = _rates_validate_daily_contract_id($con, $arr_days, $arr_params, false);
 
         if ($arr_outcome["OUTCOME"] != "OK") {
             if ($arr_outcome["OUTCOME"] == "FAIL_OVERLAPPING_TEST" ||
+                $arr_outcome["OUTCOME"] == "FAIL_NO_ROOM_TEST" ||
                     $arr_outcome["OUTCOME"] == "FAIL_MULTILE_PERIODS_TEST") {
 
                 $time_post = microtime(true);
@@ -83,7 +84,9 @@ function _rates_calculator($con, $arr_params) {
                 //==================================================================
                 //retry now
                 $arr_days = _rates_get_contract_id($con, $arr_params);
-                $arr_outcome = _rates_validate_daily_contract_id($arr_days["DAILY"], true);
+                
+                $arr_outcome = _rates_validate_daily_contract_id($con, $arr_days, $arr_params, true);
+                
                 if ($arr_outcome["OUTCOME"] != "OK") {
                     if ($arr_outcome["OUTCOME"] == "FAIL_OVERLAPPING_TEST" ||
                             $arr_outcome["OUTCOME"] == "FAIL_MULTILE_PERIODS_TEST" ||
@@ -103,6 +106,7 @@ function _rates_calculator($con, $arr_params) {
                 //==================================================================
             }
         }
+        
         //=========================================================================
         //TEST 1: CONTRACT ID:
         $contractid = $arr_days["DAILY"][0]["CONTRACT_ID"][0]; //get the final contract id
